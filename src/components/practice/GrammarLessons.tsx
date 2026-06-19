@@ -7,7 +7,7 @@ const ACCENT = "var(--plum)";
 // Native <details> — accessible and works without JavaScript.
 export function GrammarLessons() {
   return (
-    <div className="grid gap-3 sm:grid-cols-2">
+    <div className="grid items-start gap-3 sm:grid-cols-2">
       {GRAMMAR_LESSONS.map((lesson, idx) => (
         <details
           key={lesson.id}

@@ -5,7 +5,7 @@ import { WORLDS, SKILL_META, type Skill } from "@/lib/curriculum";
 import { LevelBadge } from "@/components/SkillPill";
 import { SkillIcon, WorldIcon } from "@/lib/icons";
 import { SkillPractice } from "@/components/practice/SkillPractice";
-import { GrammarLessons } from "@/components/practice/GrammarLessons";
+import { GrammarWorkspace } from "@/components/practice/GrammarWorkspace";
 
 const SKILLS = Object.keys(SKILL_META) as Skill[];
 
@@ -73,30 +73,16 @@ export default async function SkillPage({
         </div>
       </header>
 
-      {/* Learn step (study before practice) — grammar for now */}
-      {s === "grammar" && (
-        <section className="mt-6">
-          <div className="mb-3 flex items-baseline gap-3">
-            <h2 className="font-display text-xl font-semibold">Learn first</h2>
-            <span className="text-sm text-muted">
-              Quick refreshers — then test yourself below.
-            </span>
-          </div>
-          <GrammarLessons />
-        </section>
-      )}
-
-      {/* Interactive practice for this skill */}
-      <section className="mt-8">
-        <h2 className="mb-1 font-display text-xl font-semibold">
-          {s === "grammar" ? "Now practice" : "Practice now"}
-        </h2>
-        <p className="mb-3 text-sm text-muted">
-          {s === "grammar"
-            ? "Answer in context — you'll get the rule and an explanation after each one."
-            : "Hands-on practice with instant feedback."}
-        </p>
-        <SkillPractice skill={s} />
+      {/* Grammar gets a Learn/Practice workspace; other skills practice directly */}
+      <section className="mt-6">
+        {s === "grammar" ? (
+          <GrammarWorkspace />
+        ) : (
+          <>
+            <h2 className="mb-3 font-display text-xl font-semibold">Practice now</h2>
+            <SkillPractice skill={s} />
+          </>
+        )}
       </section>
 
       <p className="mt-10 text-sm text-muted">
