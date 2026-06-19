@@ -5,9 +5,10 @@ import { useState } from "react";
 import type { Scenario, World } from "@/lib/curriculum";
 import { useProgress } from "@/lib/progress";
 import { getPhrases } from "@/lib/content/phrases";
+import { getScenarioLesson } from "@/lib/content/scenario-lessons";
 import { SkillPill, LevelBadge } from "./SkillPill";
 import { PronunciationLab } from "./practice/PronunciationLab";
-import { Check, MessageSquareText } from "lucide-react";
+import { Check, MessageSquareText, Lightbulb } from "lucide-react";
 
 export function ScenarioView({
   world,
@@ -21,6 +22,7 @@ export function ScenarioView({
   const done = (ready && isDone(world.slug, scenario.slug)) || justDone;
   const accent = `var(${world.color})`;
   const phrases = getPhrases(world.slug, scenario.slug);
+  const lesson = getScenarioLesson(world.slug, scenario.slug);
 
   function markDone() {
     complete(world.slug, scenario.slug);
@@ -58,25 +60,43 @@ export function ScenarioView({
         <p className="mt-2 text-ink-soft">{scenario.blurb}</p>
       </header>
 
-      {/* Step 1 — Warm up & speak (fully functional, no API) */}
+      {/* Step 1 — Learn the essentials (mini-lesson) */}
       <section className="mt-6">
         <h2 className="mb-3 flex items-center gap-2 font-display text-xl font-semibold">
-          <span
-            className="grid h-7 w-7 place-items-center rounded-full font-display text-sm text-paper"
-            style={{ background: accent }}
-          >
-            1
-          </span>
+          <StepNumber accent={accent}>1</StepNumber>
+          Learn the essentials
+        </h2>
+        <div className="rounded-[var(--radius)] border border-line bg-card p-6 shadow-[var(--shadow-soft)]">
+          <p className="text-ink-soft">{lesson.intro}</p>
+          <ul className="mt-4 space-y-2">
+            {lesson.tips.map((tip, i) => (
+              <li key={i} className="flex gap-2.5 text-sm">
+                <Lightbulb
+                  className="mt-0.5 h-4 w-4 shrink-0"
+                  style={{ color: accent }}
+                  strokeWidth={1.75}
+                />
+                <span>{tip}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* Step 2 — Warm up & speak (fully functional, no API) */}
+      <section className="mt-8">
+        <h2 className="mb-3 flex items-center gap-2 font-display text-xl font-semibold">
+          <StepNumber accent={accent}>2</StepNumber>
           Warm up &amp; speak
         </h2>
         <PronunciationLab phrases={phrases} accent={accent} onComplete={markDone} />
       </section>
 
-      {/* Step 2 — Role-play with the tutor */}
+      {/* Step 3 — Role-play with the tutor */}
       <section className="mt-8">
         <h2 className="mb-3 flex items-center gap-2 font-display text-xl font-semibold">
           <span className="grid h-7 w-7 place-items-center rounded-full bg-paper-deep font-display text-sm">
-            2
+            3
           </span>
           Role-play the conversation
         </h2>
@@ -107,5 +127,22 @@ export function ScenarioView({
         </div>
       </section>
     </div>
+  );
+}
+
+function StepNumber({
+  accent,
+  children,
+}: {
+  accent: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <span
+      className="grid h-7 w-7 place-items-center rounded-full font-display text-sm text-paper"
+      style={{ background: accent }}
+    >
+      {children}
+    </span>
   );
 }
