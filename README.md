@@ -35,6 +35,9 @@ npx auth secret
   quiz, reading room, writing desk.
 - **Learning engine** — placement test (CEFR estimate), spaced-repetition
   review, day streak, per-skill progress.
+- **SEO** — public, indexable scenario/skill catalog (great content funnel),
+  per-page metadata, `sitemap.xml`, `robots.txt`, JSON-LD, and a generated
+  Open Graph image. Private pages (dashboard, review…) are noindex.
 
 ## Project layout
 
@@ -65,7 +68,8 @@ prisma/schema.prisma      Data model (SQLite dev → Postgres prod)
    pooled connection string.
 2. In `prisma/schema.prisma`, set `provider = "postgresql"`.
 3. Set env vars on Vercel: `DATABASE_URL` (Neon string), `AUTH_SECRET`,
-   `AUTH_URL` (your deployed URL). Run `npx prisma migrate deploy`.
+   `AUTH_URL` and `NEXT_PUBLIC_SITE_URL` (your deployed URL). Run
+   `npx prisma migrate deploy`.
 4. Push to GitHub and import the repo at https://vercel.com/new — Vercel builds
    and deploys automatically.
 

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { WORLDS, SKILL_META, type Skill } from "@/lib/curriculum";
@@ -9,6 +10,24 @@ const SKILLS = Object.keys(SKILL_META) as Skill[];
 
 export function generateStaticParams() {
   return SKILLS.map((skill) => ({ skill }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ skill: string }>;
+}): Promise<Metadata> {
+  const { skill } = await params;
+  if (!SKILLS.includes(skill as Skill)) return {};
+  const meta = SKILL_META[skill as Skill];
+  const title = `Practice English ${meta.label.toLowerCase()}`;
+  const description = `${meta.blurb} Free interactive ${meta.label.toLowerCase()} practice on FluentPath.`;
+  return {
+    title,
+    description,
+    alternates: { canonical: `/skill/${skill}` },
+    openGraph: { title, description, url: `/skill/${skill}`, type: "website" },
+  };
 }
 
 export default async function SkillPage({

@@ -11,8 +11,28 @@ import {
 import { auth } from "@/auth";
 import { WORLDS, SKILL_META, TOTAL_SCENARIOS, type Skill } from "@/lib/curriculum";
 import { WorldIcon, SkillIcon } from "@/lib/icons";
+import { JsonLd } from "@/components/JsonLd";
+import { SITE, absoluteUrl } from "@/lib/site";
 
 const SKILLS = Object.keys(SKILL_META) as Skill[];
+
+const STRUCTURED_DATA = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      name: SITE.name,
+      url: absoluteUrl("/"),
+      description: SITE.description,
+    },
+    {
+      "@type": "WebSite",
+      name: SITE.name,
+      url: absoluteUrl("/"),
+      inLanguage: "en",
+    },
+  ],
+};
 
 export default async function Landing() {
   const session = await auth();
@@ -20,6 +40,7 @@ export default async function Landing() {
 
   return (
     <div className="min-h-screen">
+      <JsonLd data={STRUCTURED_DATA} />
       <SiteHeader />
 
       {/* Hero */}

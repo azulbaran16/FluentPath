@@ -119,6 +119,23 @@ export function Sidebar({ user }: { user?: SidebarUser }) {
           ))}
         </nav>
 
+        {!user && (
+          <div className="mt-8 space-y-2 border-t border-line pt-4">
+            <Link
+              href="/signup"
+              className="flex w-full cursor-pointer items-center justify-center rounded-xl bg-ink px-3 py-2 text-sm font-semibold text-paper transition-transform hover:-translate-y-0.5"
+            >
+              Sign up free
+            </Link>
+            <Link
+              href="/login"
+              className="flex w-full cursor-pointer items-center justify-center rounded-xl border border-line-strong px-3 py-2 text-sm font-semibold transition-colors hover:bg-paper-deep"
+            >
+              Log in
+            </Link>
+          </div>
+        )}
+
         {user && (
           <div className="mt-8 border-t border-line pt-4">
             <div className="flex items-center gap-3 px-3">
