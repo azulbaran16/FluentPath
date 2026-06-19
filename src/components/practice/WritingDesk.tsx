@@ -66,6 +66,9 @@ export function WritingDesk({
             }`}
             style={p.id === activeId ? { background: accent, borderColor: accent } : undefined}
           >
+            <span className={p.id === activeId ? "opacity-80" : "text-muted"}>
+              {p.level}
+            </span>{" "}
             {p.title}
           </button>
         ))}

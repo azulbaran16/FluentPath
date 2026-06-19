@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Volume2, Check, X, BookOpen } from "lucide-react";
-import type { Passage } from "@/lib/content/reading";
+import { type Passage, READING_LEVELS, type ReadingLevel } from "@/lib/content/reading";
 import { LevelBadge } from "../SkillPill";
+
+type Filter = "all" | ReadingLevel;
 
 export function ReadingRoom({
   passages,
@@ -13,12 +15,34 @@ export function ReadingRoom({
   accent?: string;
 }) {
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [filter, setFilter] = useState<Filter>("all");
   const active = passages.find((p) => p.id === activeId) ?? null;
+
+  const shown = useMemo(
+    () => (filter === "all" ? passages : passages.filter((p) => p.level === filter)),
+    [passages, filter],
+  );
 
   if (!active) {
     return (
-      <div className="grid gap-3 sm:grid-cols-2">
-        {passages.map((p) => (
+      <div>
+        <div className="mb-4 flex flex-wrap gap-2">
+          <FilterPill active={filter === "all"} onClick={() => setFilter("all")} accent={accent}>
+            All levels
+          </FilterPill>
+          {READING_LEVELS.map((lv) => (
+            <FilterPill
+              key={lv}
+              active={filter === lv}
+              onClick={() => setFilter(lv)}
+              accent={accent}
+            >
+              {lv}
+            </FilterPill>
+          ))}
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {shown.map((p) => (
           <button
             key={p.id}
             onClick={() => setActiveId(p.id)}
@@ -40,7 +64,8 @@ export function ReadingRoom({
               <LevelBadge level={p.level} />
             </span>
           </button>
-        ))}
+          ))}
+        </div>
       </div>
     );
   }
@@ -176,5 +201,31 @@ function PassageReader({
         )}
       </section>
     </div>
+  );
+}
+
+function FilterPill({
+  active,
+  onClick,
+  accent,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  accent: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`cursor-pointer rounded-full border px-3 py-1 text-sm font-medium transition-colors ${
+        active
+          ? "border-transparent text-paper"
+          : "border-line-strong text-ink-soft hover:bg-paper-deep"
+      }`}
+      style={active ? { background: accent } : undefined}
+    >
+      {children}
+    </button>
   );
 }

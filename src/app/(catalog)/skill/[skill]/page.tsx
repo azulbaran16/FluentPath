@@ -6,6 +6,8 @@ import { LevelBadge } from "@/components/SkillPill";
 import { SkillIcon, WorldIcon } from "@/lib/icons";
 import { SkillPractice } from "@/components/practice/SkillPractice";
 import { GrammarWorkspace } from "@/components/practice/GrammarWorkspace";
+import { WritingWorkspace } from "@/components/practice/WritingWorkspace";
+import { SpeakingWorkspace } from "@/components/practice/SpeakingWorkspace";
 
 const SKILLS = Object.keys(SKILL_META) as Skill[];
 
@@ -73,13 +75,19 @@ export default async function SkillPage({
         </div>
       </header>
 
-      {/* Grammar gets a Learn/Practice workspace; other skills practice directly */}
+      {/* Each skill renders its own Learn/Practice workspace */}
       <section className="mt-6">
         {s === "grammar" ? (
           <GrammarWorkspace />
+        ) : s === "writing" ? (
+          <WritingWorkspace />
+        ) : s === "speaking" ? (
+          <SpeakingWorkspace />
         ) : (
           <>
-            <h2 className="mb-3 font-display text-xl font-semibold">Practice now</h2>
+            <h2 className="mb-3 font-display text-xl font-semibold">
+              Reading room
+            </h2>
             <SkillPractice skill={s} />
           </>
         )}

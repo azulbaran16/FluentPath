@@ -106,3 +106,116 @@ export function getPhrases(worldSlug: string, scenarioSlug: string): Phrase[] {
     WORLD_FALLBACK.social
   );
 }
+
+// ── Speaking packs (for the Speaking skill page) ──────────────
+export type SpeakingLevel = "A2" | "B1" | "B2" | "C1";
+
+export interface SpeakingPack {
+  id: string;
+  title: string;
+  level: SpeakingLevel;
+  blurb: string;
+  phrases: Phrase[];
+}
+
+const TONGUE_TWISTERS: Phrase[] = [
+  { text: "She sells seashells by the seashore.", es: "(trabalenguas /s/ vs /ʃ/)", tip: "Distingue 's' de 'sh'." },
+  { text: "Red lorry, yellow lorry.", es: "(la 'r' y la 'l')", tip: "No las mezcles." },
+  { text: "The thirty-three thieves thought they thrilled the throne.", es: "(la 'th')", tip: "Saca la lengua para /θ/." },
+  { text: "I scream, you scream, we all scream for ice cream.", es: "(ritmo y enlace)", tip: "Enlaza las palabras." },
+  { text: "Could you, would you, should you?", es: "(modales débiles)", tip: "Pronuncia 'd' suave." },
+];
+
+export const SPEAKING_PACKS: SpeakingPack[] = [
+  {
+    id: "greetings",
+    title: "Greetings & small talk",
+    level: "B1",
+    blurb: "Break the ice and keep a casual chat going.",
+    phrases: [
+      ...getPhrases("social", "small-talk"),
+      ...getPhrases("social", "making-friends"),
+    ],
+  },
+  {
+    id: "travel",
+    title: "Travel essentials",
+    level: "A2",
+    blurb: "Airport, restaurant and getting around.",
+    phrases: [
+      ...getPhrases("travel", "airport"),
+      ...getPhrases("travel", "restaurant"),
+      ...getPhrases("travel", "directions"),
+    ],
+  },
+  {
+    id: "work",
+    title: "At work",
+    level: "B2",
+    blurb: "Interviews and meetings, said with confidence.",
+    phrases: [
+      ...getPhrases("work", "interviews"),
+      ...getPhrases("work", "meetings"),
+    ],
+  },
+  {
+    id: "sounds",
+    title: "Tricky sounds",
+    level: "B2",
+    blurb: "Drills for the sounds Spanish speakers find hardest.",
+    phrases: [...getPhrases("native", "pronunciation"), ...TONGUE_TWISTERS],
+  },
+  {
+    id: "idioms",
+    title: "Idioms",
+    level: "C1",
+    blurb: "Everyday expressions that make you sound native.",
+    phrases: getPhrases("native", "idioms"),
+  },
+];
+
+// "Learn" step for speaking: pronunciation & fluency tips.
+export interface SpeakingTip {
+  id: string;
+  title: string;
+  points: string[];
+}
+
+export const SPEAKING_TIPS: SpeakingTip[] = [
+  {
+    id: "th",
+    title: "The 'th' sound (think / this)",
+    points: [
+      "Put your tongue lightly between your teeth — don't say 's' or 'd'.",
+      "Voiceless /θ/: think, three, mouth.",
+      "Voiced /ð/: this, the, mother.",
+    ],
+  },
+  {
+    id: "connected-speech",
+    title: "Connected speech",
+    points: [
+      "Natives link words: 'What are you' → 'whaddaya'.",
+      "Final consonant joins the next vowel: 'an apple' → 'a-napple'.",
+      "Don't pronounce every word separately — let them flow.",
+    ],
+  },
+  {
+    id: "word-stress",
+    title: "Word & sentence stress",
+    points: [
+      "Stress the right syllable: PHOtograph vs phoTOgrapher.",
+      "Content words (nouns, verbs) are stressed; small words are weak.",
+      "Wrong stress is the #1 reason natives misunderstand learners.",
+    ],
+  },
+  {
+    id: "intonation",
+    title: "Intonation",
+    points: [
+      "Voice usually rises on yes/no questions, falls on statements and wh-questions.",
+      "Flat intonation can sound bored or rude — let it move.",
+      "Copy and imitate: listen, then repeat the melody, not just the words.",
+    ],
+  },
+];
