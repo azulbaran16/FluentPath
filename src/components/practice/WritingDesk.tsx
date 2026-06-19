@@ -21,7 +21,8 @@ export function WritingDesk({
 
   const storageKey = `fluentpath:writing:${prompt.id}`;
 
-  // load draft when switching prompt
+  // Reset the editor and load the saved draft when the active prompt changes.
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     setShowModel(false);
     setChecked({});
@@ -32,6 +33,7 @@ export function WritingDesk({
       setText("");
     }
   }, [storageKey]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const words = useMemo(
     () => (text.trim() ? text.trim().split(/\s+/).length : 0),

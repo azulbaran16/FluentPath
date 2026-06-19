@@ -91,11 +91,14 @@ export function useProgress() {
   const [ready, setReady] = useState(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Instant local hydrate.
+  // Instant local hydrate from localStorage after mount (SSR-safe: the server
+  // renders the empty state, then the client fills it in).
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     setState(readLocal());
     setReady(true);
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const putServer = useCallback((s: ProgressState) => {
     fetch("/api/progress", {

@@ -47,10 +47,12 @@ export function PronunciationLab({
   const isLast = i === phrases.length - 1;
 
   useEffect(() => {
+    // Feature-detect Web Speech on the client after mount (SSR-safe).
     const Ctor =
       typeof window !== "undefined"
         ? window.SpeechRecognition ?? window.webkitSpeechRecognition
         : undefined;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSupported(Boolean(Ctor));
   }, []);
 
