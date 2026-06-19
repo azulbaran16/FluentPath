@@ -41,6 +41,7 @@ export function PronunciationLab({
   const [result, setResult] = useState<Scored | null>(null);
   const [supported, setSupported] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [finished, setFinished] = useState(false);
   const recRef = useRef<SpeechRecognition | null>(null);
 
   const phrase = phrases[i];
@@ -101,6 +102,7 @@ export function PronunciationLab({
 
   const next = useCallback(() => {
     if (isLast) {
+      setFinished(true);
       onComplete?.();
       return;
     }
@@ -109,10 +111,43 @@ export function PronunciationLab({
     setError(null);
   }, [isLast, onComplete]);
 
+  const restart = useCallback(() => {
+    setFinished(false);
+    setI(0);
+    setResult(null);
+    setError(null);
+  }, []);
+
   const progressPct = useMemo(
     () => ((i + (result ? 1 : 0)) / phrases.length) * 100,
     [i, result, phrases.length],
   );
+
+  if (finished) {
+    return (
+      <div className="rounded-[var(--radius)] border border-line bg-card p-8 text-center shadow-[var(--shadow-soft)]">
+        <span
+          className="mx-auto grid h-14 w-14 place-items-center rounded-2xl text-paper"
+          style={{ background: accent }}
+        >
+          <Check className="h-7 w-7" strokeWidth={2.5} />
+        </span>
+        <h3 className="mt-4 font-display text-2xl font-semibold">
+          Warm-up complete!
+        </h3>
+        <p className="mx-auto mt-2 max-w-sm text-sm text-muted">
+          You practiced all {phrases.length} phrases out loud. Saved to your
+          progress — try the conversation next, or run it again.
+        </p>
+        <button
+          onClick={restart}
+          className="mt-6 inline-flex cursor-pointer items-center gap-2 rounded-xl border border-line-strong px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-paper-deep"
+        >
+          <RotateCcw className="h-4 w-4" strokeWidth={1.75} /> Practice again
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-[var(--radius)] border border-line bg-card p-6 shadow-[var(--shadow-soft)]">
@@ -228,11 +263,13 @@ export function PronunciationLab({
         </div>
       )}
 
-      <div className="mt-6 flex justify-end">
+      <div className="mt-6 flex items-center justify-between">
+        <span className="text-xs text-muted">
+          {result ? "" : "Speak it, or skip ahead anytime."}
+        </span>
         <button
           onClick={next}
-          disabled={!result && supported}
-          className="inline-flex items-center gap-1.5 rounded-xl px-5 py-2.5 text-sm font-semibold text-paper transition-transform enabled:hover:-translate-y-0.5 disabled:opacity-40"
+          className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl px-5 py-2.5 text-sm font-semibold text-paper transition-transform hover:-translate-y-0.5"
           style={{ background: "var(--ink)" }}
         >
           {isLast ? (
@@ -241,7 +278,7 @@ export function PronunciationLab({
             </>
           ) : (
             <>
-              Next <ChevronRight className="h-4 w-4" strokeWidth={2} />
+              {result ? "Next" : "Skip"} <ChevronRight className="h-4 w-4" strokeWidth={2} />
             </>
           )}
         </button>
