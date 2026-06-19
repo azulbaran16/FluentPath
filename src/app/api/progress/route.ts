@@ -39,9 +39,13 @@ export async function PUT(req: Request) {
       ? (progress as { level: string }).level
       : null;
 
-  await prisma.user.update({
+  // updateMany doesn't throw if the user no longer exists (e.g. stale cookie).
+  const { count } = await prisma.user.updateMany({
     where: { id: session.user.id },
     data: { progress: JSON.stringify(progress), level },
   });
+  if (count === 0) {
+    return NextResponse.json({ error: "Account not found" }, { status: 401 });
+  }
   return NextResponse.json({ ok: true });
 }
