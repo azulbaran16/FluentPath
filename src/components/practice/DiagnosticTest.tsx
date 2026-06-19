@@ -73,7 +73,7 @@ export function DiagnosticTest() {
             Start practicing →
           </Link>
           <Link
-            href="/"
+            href="/dashboard"
             className="rounded-xl border border-line-strong px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-paper-deep"
           >
             Back to dashboard

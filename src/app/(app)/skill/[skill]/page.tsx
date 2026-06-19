@@ -29,7 +29,7 @@ export default async function SkillPage({
 
   return (
     <div>
-      <Link href="/" className="text-sm text-muted hover:text-ink">
+      <Link href="/dashboard" className="text-sm text-muted hover:text-ink">
         ← Dashboard
       </Link>
 

@@ -48,6 +48,7 @@ Fuente de verdad: `src/lib/curriculum.ts`.
 | **F3 — Speaking por voz** | PronunciationLab con Web Speech (STT/TTS), scoring, integrado en escenarios | ✅ Hecho (sin API) |
 | **F4 — Reading + contenido** | ReadingRoom (textos graduados + comprensión + glosario), GrammarQuiz, WritingDesk | ✅ Hecho (sin API) |
 | **F5 — Motor + progreso** | Test de nivel, SRS, racha por días, dashboard con datos vivos | ✅ Hecho (sin API) |
+| **Cuentas + landing + persistencia real** | Auth.js (correo/contraseña + Google), Prisma/SQLite, landing page, sync de progreso por usuario en BD, guard de rutas | ✅ Hecho |
 | **F2 — Tutor de chat** | Conectar Claude API real en `/api/tutor`, system prompt de tutor, corrección | ⏳ Último — necesita API key |
 | **F6 — Nivel nativo** | Más contenido, voz premium, DB en la nube | Pendiente |
 

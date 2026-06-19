@@ -6,7 +6,7 @@ export const metadata = { title: "Review — FluentPath" };
 export default function ReviewPage() {
   return (
     <div className="mx-auto max-w-3xl">
-      <Link href="/" className="text-sm text-muted hover:text-ink">
+      <Link href="/dashboard" className="text-sm text-muted hover:text-ink">
         ← Dashboard
       </Link>
       <header className="mt-3 mb-6">

@@ -1,0 +1,27 @@
+// FluentPath data model.
+// Dev: SQLite (file). Prod: switch `provider` to "postgresql" and point
+// DATABASE_URL at Neon/Vercel Postgres — the models are portable.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String?
+  email        String   @unique
+  // null for OAuth-only accounts (e.g. Google)
+  passwordHash String?
+  image        String?
+  // estimated CEFR level from the placement test
+  level        String?
+  // serialized ProgressState (JSON string — portable across SQLite/Postgres)
+  progress     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

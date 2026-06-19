@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
-import { AppShell } from "@/components/AppShell";
+import { Providers } from "./providers";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -31,7 +31,7 @@ export default function RootLayout({
       className={`${fraunces.variable} ${hanken.variable} h-full`}
     >
       <body className="min-h-full">
-        <AppShell>{children}</AppShell>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

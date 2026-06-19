@@ -3,11 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { signOut } from "next-auth/react";
 import { WORLDS, SKILL_META, type Skill } from "@/lib/curriculum";
 import { WorldIcon, SkillIcon, NAV_ICONS } from "@/lib/icons";
-import { GraduationCap, RefreshCw } from "lucide-react";
+import { GraduationCap, RefreshCw, LogOut } from "lucide-react";
 
 const SKILLS = Object.keys(SKILL_META) as Skill[];
+
+export interface SidebarUser {
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+}
 
 function NavLink({
   href,
@@ -32,12 +39,11 @@ function NavLink({
   );
 }
 
-export function Sidebar() {
+export function Sidebar({ user }: { user?: SidebarUser }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const isActive = (href: string) => pathname.startsWith(href);
 
   return (
     <>
@@ -63,7 +69,7 @@ export function Sidebar() {
         </div>
 
         <nav className="mt-2 lg:mt-10 flex flex-col gap-1">
-          <NavLink href="/" active={isActive("/")}>
+          <NavLink href="/dashboard" active={isActive("/dashboard")}>
             <NAV_ICONS.dashboard className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
             Dashboard
           </NavLink>
@@ -112,6 +118,34 @@ export function Sidebar() {
             </NavLink>
           ))}
         </nav>
+
+        {user && (
+          <div className="mt-8 border-t border-line pt-4">
+            <div className="flex items-center gap-3 px-3">
+              <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full bg-paper-deep font-display text-sm font-semibold text-ink-soft">
+                {user.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={user.image} alt="" className="h-full w-full object-cover" />
+                ) : (
+                  (user.name ?? user.email ?? "?").charAt(0).toUpperCase()
+                )}
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold">
+                  {user.name ?? "Learner"}
+                </p>
+                <p className="truncate text-xs text-muted">{user.email}</p>
+              </div>
+            </div>
+            <button
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="mt-2 flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-sm text-ink-soft transition-colors hover:bg-paper-deep"
+            >
+              <LogOut className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
+              Sign out
+            </button>
+          </div>
+        )}
       </aside>
     </>
   );
@@ -119,7 +153,7 @@ export function Sidebar() {
 
 function Brand() {
   return (
-    <Link href="/" className="flex items-center gap-2">
+    <Link href="/dashboard" className="flex items-center gap-2">
       <span
         className="grid h-9 w-9 place-items-center rounded-xl text-paper"
         style={{ background: "var(--vermilion)" }}
