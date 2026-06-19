@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ReviewView } from "@/components/practice/ReviewView";
 
-export const metadata = { title: "Review — FluentPath" };
+export const metadata = { title: "Review" };
 
 export default function ReviewPage() {
   return (

@@ -26,17 +26,20 @@ export function DiagnosticTest() {
   const isLast = i === DIAGNOSTIC.length - 1;
   const answered = picked !== null;
 
+  // Selection can be changed freely until the learner advances.
   function pick(idx: number) {
-    if (answered) return;
     setPicked(idx);
-    if (idx === q.answer) {
-      setCorrectIds((prev) => new Set(prev).add(q.id));
-    }
   }
 
   function next() {
+    // Record correctness for the current question based on the final choice.
+    const updated = new Set(correctIds);
+    if (picked === q.answer) updated.add(q.id);
+    else updated.delete(q.id);
+    setCorrectIds(updated);
+
     if (isLast) {
-      const level = estimateLevel(correctIds);
+      const level = estimateLevel(updated);
       setResult(level);
       setLevel(level);
       return;
@@ -113,13 +116,10 @@ export function DiagnosticTest() {
           <button
             key={idx}
             onClick={() => pick(idx)}
-            disabled={answered}
-            className={`rounded-xl border px-4 py-3 text-left text-sm font-medium transition-colors ${
-              answered && idx === picked
+            className={`cursor-pointer rounded-xl border px-4 py-3 text-left text-sm font-medium transition-colors ${
+              idx === picked
                 ? "border-gold bg-[color-mix(in_srgb,var(--gold)_12%,transparent)]"
-                : answered
-                  ? "border-line opacity-60"
-                  : "border-line-strong hover:bg-paper-deep"
+                : "border-line-strong hover:bg-paper-deep"
             }`}
           >
             {opt}

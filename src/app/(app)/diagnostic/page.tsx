@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { DiagnosticTest } from "@/components/practice/DiagnosticTest";
 
-export const metadata = { title: "Placement test — FluentPath" };
+export const metadata = { title: "Placement test" };
 
 export default function DiagnosticPage() {
   return (
