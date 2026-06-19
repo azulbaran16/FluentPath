@@ -1,18 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { BookOpen, Puzzle } from "lucide-react";
 import { GRAMMAR_QUESTIONS } from "@/lib/content/grammar";
-import { GRAMMAR_LESSONS } from "@/lib/content/lessons";
+import { GRAMMAR_LESSONS, type GrammarLevel } from "@/lib/content/lessons";
 import { GrammarLessons } from "./GrammarLessons";
 import { GrammarQuiz } from "./GrammarQuiz";
 
 const ACCENT = "var(--plum)";
+const LEVELS: GrammarLevel[] = ["A2", "B1", "B2", "C1"];
 
 type Tab = "learn" | "practice";
+type Filter = "all" | GrammarLevel;
 
 export function GrammarWorkspace() {
   const [tab, setTab] = useState<Tab>("learn");
+  const [filter, setFilter] = useState<Filter>("all");
+
+  const questions = useMemo(
+    () =>
+      filter === "all"
+        ? GRAMMAR_QUESTIONS
+        : GRAMMAR_QUESTIONS.filter((q) => q.level === filter),
+    [filter],
+  );
 
   return (
     <div>
@@ -38,19 +49,43 @@ export function GrammarWorkspace() {
         />
       </div>
 
-      <p className="mt-3 text-sm text-muted">
-        {tab === "learn"
-          ? "Quick refreshers — open a topic, then switch to Practice to test yourself."
-          : "Answer in context — you'll get the rule and an explanation after each one."}
-      </p>
-
-      <div className="mt-4">
-        {tab === "learn" ? (
-          <GrammarLessons />
-        ) : (
-          <GrammarQuiz questions={GRAMMAR_QUESTIONS} accent={ACCENT} />
-        )}
-      </div>
+      {tab === "learn" ? (
+        <>
+          <p className="mt-3 text-sm text-muted">
+            {GRAMMAR_LESSONS.length} topics from A2 to C1 — open one, then switch
+            to Practice to test yourself.
+          </p>
+          <div className="mt-4">
+            <GrammarLessons />
+          </div>
+        </>
+      ) : (
+        <>
+          <p className="mt-3 text-sm text-muted">
+            Answer in context — you&apos;ll get the rule and an explanation after
+            each one.
+          </p>
+          {/* Level filter */}
+          <div className="mt-3 flex flex-wrap gap-2">
+            <FilterPill active={filter === "all"} onClick={() => setFilter("all")}>
+              All levels
+            </FilterPill>
+            {LEVELS.map((lv) => (
+              <FilterPill
+                key={lv}
+                active={filter === lv}
+                onClick={() => setFilter(lv)}
+              >
+                {lv}
+              </FilterPill>
+            ))}
+          </div>
+          <div className="mt-4">
+            {/* key forces a fresh quiz when the filter changes */}
+            <GrammarQuiz key={filter} questions={questions} accent={ACCENT} />
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -87,6 +122,30 @@ function TabButton({
       >
         {count}
       </span>
+    </button>
+  );
+}
+
+function FilterPill({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`cursor-pointer rounded-full border px-3 py-1 text-sm font-medium transition-colors ${
+        active
+          ? "border-transparent text-paper"
+          : "border-line-strong text-ink-soft hover:bg-paper-deep"
+      }`}
+      style={active ? { background: ACCENT } : undefined}
+    >
+      {children}
     </button>
   );
 }
