@@ -1,26 +1,97 @@
 @import "tailwindcss";
 
+/* ───────────────────────────────────────────────
+   FluentPath — "Traveler's Journal" design system
+   Warm manila paper · deep ink · vermilion accent
+   ─────────────────────────────────────────────── */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* surfaces */
+  --paper: #faf4e9;
+  --paper-deep: #f2e9d8;
+  --card: #fffdf8;
+  --ink: #211b14;
+  --ink-soft: #4a4136;
+  --muted: #8a7d6b;
+  --line: #e6dcc8;
+  --line-strong: #d8ccb2;
+
+  /* accents */
+  --vermilion: #e0492a;
+  --vermilion-deep: #b8351b;
+  --teal: #0e7c70;
+  --gold: #d9982f;
+  --plum: #7a3b6b;
+  --sky: #2f6f9e;
+  --moss: #5c7a35;
+
+  --shadow-soft: 0 1px 2px rgba(33, 27, 20, 0.04), 0 8px 24px rgba(33, 27, 20, 0.06);
+  --shadow-lift: 0 2px 4px rgba(33, 27, 20, 0.06), 0 18px 40px rgba(33, 27, 20, 0.12);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-vermilion: var(--vermilion);
+  --color-vermilion-deep: var(--vermilion-deep);
+  --color-teal: var(--teal);
+  --color-gold: var(--gold);
+  --color-plum: var(--plum);
+  --color-sky: var(--sky);
+  --color-moss: var(--moss);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-hanken);
+
+  --radius: 0.9rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--paper);
+  /* subtle paper grain + warm vignette */
+  background-image:
+    radial-gradient(circle at 18% -10%, rgba(224, 73, 42, 0.05), transparent 42%),
+    radial-gradient(circle at 92% 8%, rgba(14, 124, 112, 0.05), transparent 40%);
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* faint dotted "graph paper" texture overlay */
+.paper-grid {
+  background-image: radial-gradient(var(--line) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+::selection {
+  background: var(--vermilion);
+  color: #fff;
+}
+
+/* thin custom scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.rise {
+  animation: rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise { animation: none; }
 }
