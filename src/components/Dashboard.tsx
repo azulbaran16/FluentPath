@@ -4,15 +4,29 @@ import Link from "next/link";
 import { WORLDS, SKILL_META, TOTAL_SCENARIOS, type Skill } from "@/lib/curriculum";
 import { useProgress } from "@/lib/progress";
 import { SkillIcon } from "@/lib/icons";
+import { GRAMMAR_QUESTIONS } from "@/lib/content/grammar";
 import { WorldCard } from "./WorldCard";
 import { ProgressRing } from "./ProgressRing";
 import { Zap, Flame, GraduationCap, RefreshCw, ChevronRight, Target, type LucideIcon } from "lucide-react";
 
 const SKILLS = Object.keys(SKILL_META) as Skill[];
+const REVIEWABLE_IDS = new Set(GRAMMAR_QUESTIONS.map((q) => q.id));
 
 export function Dashboard() {
-  const { ready, state, worldProgress, completedCount, overallProgress, dueCount } =
+  const { ready, state, worldProgress, completedCount, overallProgress, dueReviewIds } =
     useProgress();
+
+  // Only count reviews that still exist in the current question bank, so the
+  // dashboard matches what the Review page actually shows.
+  const dueCount = ready
+    ? dueReviewIds().filter((id) => REVIEWABLE_IDS.has(id)).length
+    : 0;
+
+  // Recommend the next unfinished scenario (fallback: the first one).
+  const nextScenario =
+    WORLDS.flatMap((w) => w.scenarios.map((sc) => ({ w, sc }))).find(
+      ({ w, sc }) => !state.completed[`${w.slug}/${sc.slug}`],
+    ) ?? { w: WORLDS[0], sc: WORLDS[0].scenarios[0] };
 
   // per-skill completion: completed scenarios containing the skill / all that contain it
   const skillCompletion = (skill: Skill) => {
@@ -131,16 +145,17 @@ export function Dashboard() {
           <div>
             <h2 className="font-display text-lg font-semibold">Today&apos;s goal</h2>
             <p className="text-sm text-muted">
-              One short scenario keeps the streak alive — about 8 minutes.
+              One short scenario keeps the streak alive — about{" "}
+              {nextScenario.sc.minutes} minutes.
             </p>
           </div>
         </div>
         <Link
-          href="/world/social/small-talk"
-          className="rounded-xl bg-vermilion px-5 py-2.5 text-center text-sm font-semibold text-paper transition-transform hover:-translate-y-0.5"
+          href={`/world/${nextScenario.w.slug}/${nextScenario.sc.slug}`}
+          className="rounded-xl px-5 py-2.5 text-center text-sm font-semibold text-paper transition-transform hover:-translate-y-0.5"
           style={{ background: "var(--vermilion)" }}
         >
-          Start: Small talk
+          {completedCount > 0 ? "Continue" : "Start"}: {nextScenario.sc.title}
         </Link>
       </section>
 

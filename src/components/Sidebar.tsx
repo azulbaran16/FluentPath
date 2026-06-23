@@ -6,7 +6,7 @@ import { useState } from "react";
 import { signOut } from "next-auth/react";
 import { WORLDS, SKILL_META, type Skill } from "@/lib/curriculum";
 import { WorldIcon, SkillIcon, NAV_ICONS } from "@/lib/icons";
-import { GraduationCap, RefreshCw, LogOut } from "lucide-react";
+import { GraduationCap, RefreshCw, LogOut, Lightbulb } from "lucide-react";
 
 const SKILLS = Object.keys(SKILL_META) as Skill[];
 
@@ -84,6 +84,10 @@ export function Sidebar({ user }: { user?: SidebarUser }) {
           <NavLink href="/review" active={isActive("/review")}>
             <RefreshCw className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
             Review
+          </NavLink>
+          <NavLink href="/tips" active={isActive("/tips")}>
+            <Lightbulb className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
+            Learning tips
           </NavLink>
         </nav>
 

@@ -7,6 +7,7 @@ const SKILLS = Object.keys(SKILL_META) as Skill[];
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [
     { url: absoluteUrl("/"), changeFrequency: "weekly", priority: 1 },
+    { url: absoluteUrl("/tips"), changeFrequency: "monthly", priority: 0.7 },
     { url: absoluteUrl("/signup"), changeFrequency: "monthly", priority: 0.5 },
     { url: absoluteUrl("/login"), changeFrequency: "monthly", priority: 0.3 },
   ];

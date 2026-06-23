@@ -51,8 +51,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
       return true;
     },
-    async jwt({ token }) {
-      if (token.email) {
+    async jwt({ token, user }) {
+      // Credentials sign-in already returns our DB id.
+      if (user?.id) {
+        token.uid = user.id;
+      } else if (!token.uid && token.email) {
+        // First pass (e.g. OAuth): resolve the id once, then cache it on the
+        // token so later requests don't hit the database on every session read.
         const dbUser = await prisma.user.findUnique({
           where: { email: token.email.toLowerCase() },
         });
