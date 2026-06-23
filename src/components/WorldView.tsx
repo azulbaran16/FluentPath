@@ -18,29 +18,31 @@ export function WorldView({ world }: { world: World }) {
         ← Dashboard
       </Link>
 
-      <header className="rise mt-3 flex items-center justify-between gap-6 rounded-[var(--radius)] border border-line bg-card p-6 shadow-[var(--shadow-soft)]">
-        <div className="flex items-center gap-4">
+      <header className="rise mt-3 flex items-center justify-between gap-4 rounded-[var(--radius)] border border-line bg-card p-5 sm:gap-6 sm:p-6 shadow-[var(--shadow-soft)]">
+        <div className="flex min-w-0 items-center gap-3 sm:gap-4">
           <span
-            className="grid h-14 w-14 place-items-center rounded-2xl"
+            className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl sm:h-14 sm:w-14"
             style={{
               background: `color-mix(in srgb, ${accent} 14%, transparent)`,
               color: accent,
             }}
           >
-            <WorldIcon slug={world.slug} className="h-7 w-7" />
+            <WorldIcon slug={world.slug} className="h-6 w-6 sm:h-7 sm:w-7" />
           </span>
-          <div>
-            <h1 className="font-display text-2xl sm:text-3xl font-semibold">
+          <div className="min-w-0">
+            <h1 className="font-display text-xl font-semibold leading-tight sm:text-3xl">
               {world.title}
             </h1>
-            <p className="text-muted">{world.tagline}</p>
+            <p className="text-sm text-muted sm:text-base">{world.tagline}</p>
           </div>
         </div>
-        <ProgressRing
-          value={ready ? worldProgress(world.slug) : 0}
-          size={64}
-          color={accent}
-        />
+        <div className="shrink-0">
+          <ProgressRing
+            value={ready ? worldProgress(world.slug) : 0}
+            size={56}
+            color={accent}
+          />
+        </div>
       </header>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2">

@@ -56,9 +56,9 @@ export default async function SkillPage({
       </Link>
 
       <header className="rise mt-3 rounded-[var(--radius)] border border-line bg-card p-6 shadow-[var(--shadow-soft)]">
-        <div className="flex items-center gap-4">
+        <div className="flex items-start gap-4 sm:items-center">
           <span
-            className="grid h-14 w-14 place-items-center rounded-2xl"
+            className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl"
             style={{
               background: `color-mix(in srgb, var(${meta.color}) 14%, transparent)`,
               color: `var(${meta.color})`,
