@@ -40,6 +40,10 @@ npx auth secret
 - **SEO** — public, indexable scenario/skill catalog (great content funnel),
   per-page metadata, `sitemap.xml`, `robots.txt`, JSON-LD, and a generated
   Open Graph image. Private pages (dashboard, review…) are noindex.
+- **Monetization (freemium)** — Stripe subscription. Free covers all practice;
+  **Pro** ($5/mo) unlocks the AI tutor. Checkout, customer portal, and webhook
+  are wired (`/pro`, `/api/billing/*`, `/api/stripe/webhook`). Set the
+  `STRIPE_*` env vars to enable; until then everything stays open.
 
 ## Project layout
 

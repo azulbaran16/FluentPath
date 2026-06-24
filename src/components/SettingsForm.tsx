@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
-import { Loader2, Check, AlertTriangle } from "lucide-react";
+import { Loader2, Check, AlertTriangle, Sparkles } from "lucide-react";
 
 type Status = { kind: "idle" | "ok" | "error"; msg?: string };
 
@@ -10,13 +11,22 @@ export function SettingsForm({
   name: initialName,
   email,
   hasPassword,
+  billingEnabled,
+  isPro,
+  proUntil,
 }: {
   name: string;
   email: string;
   hasPassword: boolean;
+  billingEnabled: boolean;
+  isPro: boolean;
+  proUntil: string | null;
 }) {
   return (
     <div className="space-y-5">
+      {billingEnabled && (
+        <SubscriptionCard isPro={isPro} proUntil={proUntil} />
+      )}
       <ProfileCard initialName={initialName} email={email} />
       {hasPassword ? (
         <PasswordCard />
@@ -29,6 +39,68 @@ export function SettingsForm({
       )}
       <DangerCard />
     </div>
+  );
+}
+
+function SubscriptionCard({
+  isPro,
+  proUntil,
+}: {
+  isPro: boolean;
+  proUntil: string | null;
+}) {
+  const [loading, setLoading] = useState(false);
+  async function manage() {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/billing/portal", { method: "POST" });
+      const data = await res.json();
+      if (data.url) window.location.assign(data.url);
+      else setLoading(false);
+    } catch {
+      setLoading(false);
+    }
+  }
+  return (
+    <Card title="Subscription">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="flex items-center gap-2 font-semibold">
+            {isPro ? (
+              <>
+                <Sparkles className="h-4 w-4" style={{ color: "var(--vermilion)" }} strokeWidth={2} />
+                FluentPath Pro
+              </>
+            ) : (
+              "Free plan"
+            )}
+          </p>
+          <p className="text-sm text-muted">
+            {isPro
+              ? `Active${proUntil ? ` · renews ${proUntil}` : ""}.`
+              : "Upgrade to unlock the live AI tutor."}
+          </p>
+        </div>
+        {isPro ? (
+          <button
+            onClick={manage}
+            disabled={loading}
+            className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-line-strong px-4 py-2 text-sm font-semibold transition-colors hover:bg-paper-deep disabled:opacity-60"
+          >
+            {loading && <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2} />}
+            Manage
+          </button>
+        ) : (
+          <Link
+            href="/pro"
+            className="inline-flex cursor-pointer items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold text-paper transition-transform hover:-translate-y-0.5"
+            style={{ background: "var(--vermilion)" }}
+          >
+            <Sparkles className="h-4 w-4" strokeWidth={2} /> Upgrade
+          </Link>
+        )}
+      </div>
+    </Card>
   );
 }
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
+import { isPro, stripeEnabled } from "@/lib/stripe";
 import { SettingsForm } from "@/components/SettingsForm";
 
 export const metadata = { title: "Account settings" };
@@ -12,7 +13,7 @@ export default async function SettingsPage() {
 
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { name: true, email: true, passwordHash: true },
+    select: { name: true, email: true, passwordHash: true, proUntil: true },
   });
   if (!user) redirect("/login");
 
@@ -29,6 +30,9 @@ export default async function SettingsPage() {
         name={user.name ?? ""}
         email={user.email}
         hasPassword={Boolean(user.passwordHash)}
+        billingEnabled={stripeEnabled}
+        isPro={isPro(user)}
+        proUntil={user.proUntil ? user.proUntil.toLocaleDateString() : null}
       />
     </div>
   );

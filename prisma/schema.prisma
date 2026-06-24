@@ -25,6 +25,12 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  // Stripe subscription (freemium "Pro")
+  stripeCustomerId     String?  @unique
+  stripeSubscriptionId String?
+  stripeStatus         String?
+  proUntil             DateTime?
+
   resetTokens  PasswordResetToken[]
 }
 

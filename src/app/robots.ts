@@ -13,6 +13,7 @@ export default function robots(): MetadataRoute.Robots {
         "/diagnostic",
         "/tutor",
         "/achievements",
+        "/pro",
         "/settings",
         "/forgot-password",
         "/reset-password",
