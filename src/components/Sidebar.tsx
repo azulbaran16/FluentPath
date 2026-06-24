@@ -6,7 +6,7 @@ import { useState } from "react";
 import { signOut } from "next-auth/react";
 import { WORLDS, SKILL_META, type Skill } from "@/lib/curriculum";
 import { WorldIcon, SkillIcon, NAV_ICONS } from "@/lib/icons";
-import { GraduationCap, RefreshCw, LogOut, Lightbulb, Settings, Trophy } from "lucide-react";
+import { GraduationCap, RefreshCw, LogOut, Lightbulb, Settings, Trophy, Headphones, Layers } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 
 const SKILLS = Object.keys(SKILL_META) as Skill[];
@@ -130,6 +130,14 @@ export function Sidebar({ user }: { user?: SidebarUser }) {
               {SKILL_META[s].label}
             </NavLink>
           ))}
+          <NavLink href="/listening" active={isActive("/listening")}>
+            <Headphones className="h-[1.05rem] w-[1.05rem] shrink-0" strokeWidth={1.75} />
+            Listening
+          </NavLink>
+          <NavLink href="/vocabulary" active={isActive("/vocabulary")}>
+            <Layers className="h-[1.05rem] w-[1.05rem] shrink-0" strokeWidth={1.75} />
+            Vocabulary
+          </NavLink>
         </nav>
 
         {!user && (

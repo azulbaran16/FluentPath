@@ -28,6 +28,8 @@ export interface ProgressState {
   lastActive: string | null; // YYYY-MM-DD
   level: string | null;
   srs: Record<string, SrsItem>;
+  /** vocabulary flashcards marked as known, keyed by card id */
+  vocab: Record<string, true>;
 }
 
 const EMPTY: ProgressState = {
@@ -38,6 +40,7 @@ const EMPTY: ProgressState = {
   lastActive: null,
   level: null,
   srs: {},
+  vocab: {},
 };
 
 function today(): string {
@@ -225,6 +228,22 @@ export function useProgress() {
     [persist],
   );
 
+  // Mark a vocabulary card as known (or, when false, back to learning).
+  const markVocab = useCallback(
+    (id: string, known: boolean) => {
+      persist((s) => {
+        const vocab = { ...s.vocab };
+        if (known) vocab[id] = true;
+        else delete vocab[id];
+        const t = today();
+        const gap = s.lastActive ? daysBetween(s.lastActive, t) : null;
+        const streak = s.lastActive === t ? s.streak : gap === 1 ? s.streak + 1 : 1;
+        return { ...s, vocab, lastActive: t, streak };
+      });
+    },
+    [persist],
+  );
+
   const worldProgress = useCallback(
     (worldSlug: string) => {
       const world = WORLDS.find((w) => w.slug === worldSlug);
@@ -248,6 +267,7 @@ export function useProgress() {
   const overallProgress = (completedCount / TOTAL_SCENARIOS) * 100;
   const dueCount = dueReviewIds().length;
   const seenCount = Object.keys(state.srs).length;
+  const vocabKnownCount = Object.keys(state.vocab ?? {}).length;
 
   return {
     ready,
@@ -257,6 +277,7 @@ export function useProgress() {
     addSkillXp,
     setLevel,
     reviewItem,
+    markVocab,
     recordActivity,
     worldProgress,
     dueReviewIds,
@@ -264,5 +285,6 @@ export function useProgress() {
     overallProgress,
     dueCount,
     seenCount,
+    vocabKnownCount,
   };
 }
