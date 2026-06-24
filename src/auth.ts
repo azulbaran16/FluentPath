@@ -36,6 +36,8 @@ if (process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET) {
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers,
+  // Required when running behind a reverse proxy (Coolify/Traefik, etc.).
+  trustHost: true,
   session: { strategy: "jwt" },
   pages: { signIn: "/login" },
   callbacks: {

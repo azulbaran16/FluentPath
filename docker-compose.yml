@@ -1,0 +1,24 @@
+# Local Postgres for development (so dev matches the Coolify/Postgres prod).
+# Usage:
+#   docker compose up -d db
+#   # set DATABASE_URL in .env to the line below, then:
+#   npx prisma db push
+#   npm run dev
+#
+# DATABASE_URL="postgresql://fluentpath:fluentpath@localhost:5432/fluentpath"
+
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: fluentpath
+      POSTGRES_PASSWORD: fluentpath
+      POSTGRES_DB: fluentpath
+    ports:
+      - "5432:5432"
+    volumes:
+      - fluentpath_pgdata:/var/lib/postgresql/data
+
+volumes:
+  fluentpath_pgdata:
