@@ -8,6 +8,7 @@ import { GRAMMAR_QUESTIONS } from "@/lib/content/grammar";
 import { WorldCard } from "./WorldCard";
 import { ProgressRing } from "./ProgressRing";
 import { Zap, Flame, GraduationCap, RefreshCw, ChevronRight, Target, type LucideIcon } from "lucide-react";
+import { CountUp } from "./motion/CountUp";
 
 const SKILLS = Object.keys(SKILL_META) as Skill[];
 const REVIEWABLE_IDS = new Set(GRAMMAR_QUESTIONS.map((q) => q.id));
@@ -46,6 +47,7 @@ export function Dashboard() {
     <div>
       {/* Hero */}
       <section className="rise relative overflow-hidden rounded-[var(--radius)] border border-line bg-card p-6 sm:p-9 shadow-[var(--shadow-soft)]">
+        <div className="aurora" />
         <div className="paper-grid pointer-events-none absolute inset-0 opacity-40" />
         <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-xl">
@@ -242,7 +244,7 @@ function Stat({
         className="mt-1 font-display text-2xl font-semibold"
         style={{ color: `var(${color})` }}
       >
-        {value}
+        {typeof value === "number" ? <CountUp value={value} /> : value}
       </p>
     </div>
   );

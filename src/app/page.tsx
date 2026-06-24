@@ -13,6 +13,7 @@ import { WORLDS, SKILL_META, TOTAL_SCENARIOS, type Skill } from "@/lib/curriculu
 import { WorldIcon, SkillIcon } from "@/lib/icons";
 import { JsonLd } from "@/components/JsonLd";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Reveal } from "@/components/motion/Reveal";
 import { SITE, absoluteUrl } from "@/lib/site";
 
 const SKILLS = Object.keys(SKILL_META) as Skill[];
@@ -46,6 +47,7 @@ export default async function Landing() {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
+        <div className="aurora" />
         <div className="paper-grid pointer-events-none absolute inset-0 opacity-50" />
         <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:py-24">
           <div className="rise">
@@ -131,12 +133,13 @@ export default async function Landing() {
           </p>
         </div>
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {WORLDS.map((w) => {
+          {WORLDS.map((w, i) => {
             const accent = `var(${w.color})`;
             return (
-              <div
+              <Reveal
                 key={w.slug}
-                className="rounded-[var(--radius)] border border-line bg-card p-5 shadow-[var(--shadow-soft)]"
+                delay={(i % 3) * 80}
+                className="rounded-[var(--radius)] border border-line bg-card p-5 shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-1"
               >
                 <span
                   className="grid h-12 w-12 place-items-center rounded-2xl"
@@ -154,7 +157,7 @@ export default async function Landing() {
                 <p className="mt-3 text-xs font-semibold text-muted">
                   {w.scenarios.length} scenarios
                 </p>
-              </div>
+              </Reveal>
             );
           })}
         </div>

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Volume2, Mic, MicOff, RotateCcw, ChevronRight, Check } from "lucide-react";
 import type { Phrase } from "@/lib/content/phrases";
+import { celebrate } from "@/lib/confetti";
 
 function normalize(s: string) {
   return s
@@ -103,6 +104,7 @@ export function PronunciationLab({
   const next = useCallback(() => {
     if (isLast) {
       setFinished(true);
+      celebrate();
       onComplete?.();
       return;
     }
@@ -127,7 +129,7 @@ export function PronunciationLab({
     return (
       <div className="rounded-[var(--radius)] border border-line bg-card p-8 text-center shadow-[var(--shadow-soft)]">
         <span
-          className="mx-auto grid h-14 w-14 place-items-center rounded-2xl text-paper"
+          className="pop-in mx-auto grid h-14 w-14 place-items-center rounded-2xl text-paper"
           style={{ background: accent }}
         >
           <Check className="h-7 w-7" strokeWidth={2.5} />

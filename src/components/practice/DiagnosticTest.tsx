@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronRight, Sparkles } from "lucide-react";
 import { DIAGNOSTIC, estimateLevel, type Cefr } from "@/lib/content/diagnostic";
 import { useProgress } from "@/lib/progress";
+import { celebrate } from "@/lib/confetti";
 
 const ACCENT = "var(--gold)";
 
@@ -21,6 +22,10 @@ export function DiagnosticTest() {
   const [picked, setPicked] = useState<number | null>(null);
   const [correctIds, setCorrectIds] = useState<Set<string>>(new Set());
   const [result, setResult] = useState<Cefr | null>(null);
+
+  useEffect(() => {
+    if (result) celebrate();
+  }, [result]);
 
   const q = DIAGNOSTIC[i];
   const isLast = i === DIAGNOSTIC.length - 1;
@@ -52,7 +57,7 @@ export function DiagnosticTest() {
     return (
       <div className="rounded-[var(--radius)] border border-line bg-card p-8 text-center shadow-[var(--shadow-soft)]">
         <span
-          className="mx-auto grid h-14 w-14 place-items-center rounded-2xl"
+          className="pop-in mx-auto grid h-14 w-14 place-items-center rounded-2xl"
           style={{ background: `color-mix(in srgb, ${ACCENT} 16%, transparent)`, color: ACCENT }}
         >
           <Sparkles className="h-7 w-7" strokeWidth={1.75} />

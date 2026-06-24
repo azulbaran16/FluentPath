@@ -115,6 +115,66 @@ body {
   to { stroke-dashoffset: 0; }
 }
 
+/* ── Scroll reveal (driven by IntersectionObserver adding .is-visible) ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Aurora: a slow, soft moving glow behind hero sections ── */
+@keyframes aurora {
+  0%   { transform: translate3d(-8%, -6%, 0) scale(1); }
+  50%  { transform: translate3d(8%, 6%, 0) scale(1.15); }
+  100% { transform: translate3d(-8%, -6%, 0) scale(1); }
+}
+.aurora {
+  position: absolute;
+  inset: -40%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(closest-side, color-mix(in srgb, var(--vermilion) 22%, transparent), transparent),
+    radial-gradient(closest-side, color-mix(in srgb, var(--teal) 18%, transparent), transparent),
+    radial-gradient(closest-side, color-mix(in srgb, var(--gold) 16%, transparent), transparent);
+  background-size: 55% 55%, 50% 50%, 45% 45%;
+  background-position: 12% 20%, 80% 30%, 50% 80%;
+  background-repeat: no-repeat;
+  filter: blur(48px);
+  opacity: 0.6;
+  animation: aurora 18s ease-in-out infinite;
+}
+
+/* ── Shimmer (skeletons / shine) ── */
+@keyframes shimmer {
+  from { background-position: -150% 0; }
+  to { background-position: 150% 0; }
+}
+
+/* ── Soft pop for celebratory icons ── */
+@keyframes pop-in {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.pop-in {
+  animation: pop-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .rise { animation: none; }
+  .rise,
+  .pop-in { animation: none; }
+  .aurora { animation: none; }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
