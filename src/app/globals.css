@@ -168,6 +168,16 @@ body {
   animation: pop-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* ── Shake for wrong answers ── */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+.shake { animation: shake 0.4s ease-in-out; }
+
 /* ── Rumi the fox — mascot animations ── */
 @keyframes rumi-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
 @keyframes rumi-bounce { 0%, 100% { transform: translateY(0) scale(1); } 35% { transform: translateY(-8px) scale(1.03); } 70% { transform: translateY(0) scale(0.99); } }
@@ -199,6 +209,7 @@ body {
   .rise,
   .pop-in { animation: none; }
   .aurora { animation: none; }
+  .shake { animation: none; }
   .rumi *, .rumi { animation: none !important; }
   .reveal {
     opacity: 1;

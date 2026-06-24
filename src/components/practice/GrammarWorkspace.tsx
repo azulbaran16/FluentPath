@@ -2,17 +2,18 @@
 
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { BookOpen, Puzzle } from "lucide-react";
+import { BookOpen, Puzzle, Blocks } from "lucide-react";
 import { GRAMMAR_QUESTIONS } from "@/lib/content/grammar";
 import { GRAMMAR_LESSONS, type GrammarLevel } from "@/lib/content/lessons";
 import { useProgress } from "@/lib/progress";
 import { GrammarLessons } from "./GrammarLessons";
 import { GrammarQuiz } from "./GrammarQuiz";
+import { SentenceBuilder } from "./SentenceBuilder";
 
 const ACCENT = "var(--plum)";
 const LEVELS: GrammarLevel[] = ["A2", "B1", "B2", "C1"];
 
-type Tab = "learn" | "practice";
+type Tab = "learn" | "practice" | "build";
 type Filter = "all" | "weak" | GrammarLevel;
 
 export function GrammarWorkspace() {
@@ -58,9 +59,15 @@ export function GrammarWorkspace() {
           label="Practice"
           count={GRAMMAR_QUESTIONS.length}
         />
+        <TabButton
+          active={tab === "build"}
+          onClick={() => setTab("build")}
+          icon={<Blocks className="h-4 w-4" strokeWidth={1.75} />}
+          label="Build"
+        />
       </div>
 
-      {tab === "learn" ? (
+      {tab === "learn" && (
         <>
           <p className="mt-3 text-sm text-muted">
             {GRAMMAR_LESSONS.length} topics from A2 to C1 — open one, then switch
@@ -70,7 +77,15 @@ export function GrammarWorkspace() {
             <GrammarLessons />
           </div>
         </>
-      ) : (
+      )}
+
+      {tab === "build" && (
+        <div className="mt-3">
+          <SentenceBuilder accent={ACCENT} />
+        </div>
+      )}
+
+      {tab === "practice" && (
         <>
           <p className="mt-3 text-sm text-muted">
             Answer in context — you&apos;ll get the rule and an explanation after
@@ -117,7 +132,7 @@ function TabButton({
   onClick: () => void;
   icon: React.ReactNode;
   label: string;
-  count: number;
+  count?: number;
 }) {
   return (
     <button
@@ -131,13 +146,15 @@ function TabButton({
     >
       {icon}
       {label}
-      <span
-        className={`rounded-full px-1.5 text-xs font-semibold ${
-          active ? "bg-paper/20 text-paper" : "bg-paper-deep text-muted"
-        }`}
-      >
-        {count}
-      </span>
+      {count !== undefined && (
+        <span
+          className={`rounded-full px-1.5 text-xs font-semibold ${
+            active ? "bg-paper/20 text-paper" : "bg-paper-deep text-muted"
+          }`}
+        >
+          {count}
+        </span>
+      )}
     </button>
   );
 }
