@@ -6,7 +6,7 @@ import { useState } from "react";
 import { signOut } from "next-auth/react";
 import { WORLDS, SKILL_META, type Skill } from "@/lib/curriculum";
 import { WorldIcon, SkillIcon, NAV_ICONS } from "@/lib/icons";
-import { GraduationCap, RefreshCw, LogOut, Lightbulb, Settings, Trophy, Headphones, Layers, Sparkles, NotebookPen } from "lucide-react";
+import { GraduationCap, RefreshCw, LogOut, Lightbulb, Settings, Trophy, Headphones, Layers, Sparkles } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 
 const SKILLS = Object.keys(SKILL_META) as Skill[];
@@ -73,47 +73,24 @@ export function Sidebar({ user }: { user?: SidebarUser }) {
           <ThemeToggle />
         </div>
 
+        {/* Core, everyday actions only — kept short on purpose. */}
         <nav className="mt-2 lg:mt-10 flex flex-col gap-1">
           <NavLink href="/dashboard" active={isActive("/dashboard")}>
             <NAV_ICONS.dashboard className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
-            Dashboard
+            Home
           </NavLink>
           <NavLink href="/tutor" active={isActive("/tutor")}>
             <NAV_ICONS.tutor className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
             AI Tutor
           </NavLink>
-          <NavLink href="/diagnostic" active={isActive("/diagnostic")}>
-            <GraduationCap className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
-            Placement test
-          </NavLink>
-          <NavLink href="/review" active={isActive("/review")}>
+          <NavLink href="/review" active={isActive("/review") || isActive("/mistakes")}>
             <RefreshCw className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
             Review
-          </NavLink>
-          <NavLink href="/mistakes" active={isActive("/mistakes")}>
-            <NotebookPen className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
-            My mistakes
-          </NavLink>
-          <NavLink href="/achievements" active={isActive("/achievements")}>
-            <Trophy className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
-            Achievements
-          </NavLink>
-          <NavLink href="/tips" active={isActive("/tips")}>
-            <Lightbulb className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
-            Learning tips
-          </NavLink>
-          <NavLink href="/pro" active={isActive("/pro")}>
-            <Sparkles
-              className="h-[1.05rem] w-[1.05rem]"
-              strokeWidth={1.75}
-              style={{ color: "var(--vermilion)" }}
-            />
-            FluentPath Pro
           </NavLink>
         </nav>
 
         <p className="mt-7 px-3 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-muted">
-          Worlds
+          Scenarios
         </p>
         <nav className="mt-2 flex flex-col gap-1">
           {WORLDS.map((w) => (
@@ -149,6 +126,33 @@ export function Sidebar({ user }: { user?: SidebarUser }) {
           <NavLink href="/vocabulary" active={isActive("/vocabulary")}>
             <Layers className="h-[1.05rem] w-[1.05rem] shrink-0" strokeWidth={1.75} />
             Vocabulary
+          </NavLink>
+        </nav>
+
+        {/* Secondary, occasional actions — tucked out of the daily path. */}
+        <p className="mt-7 px-3 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-muted">
+          More
+        </p>
+        <nav className="mt-2 flex flex-col gap-1">
+          <NavLink href="/pro" active={isActive("/pro")}>
+            <Sparkles
+              className="h-[1.05rem] w-[1.05rem]"
+              strokeWidth={1.75}
+              style={{ color: "var(--vermilion)" }}
+            />
+            FluentPath Pro
+          </NavLink>
+          <NavLink href="/achievements" active={isActive("/achievements")}>
+            <Trophy className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
+            Achievements
+          </NavLink>
+          <NavLink href="/diagnostic" active={isActive("/diagnostic")}>
+            <GraduationCap className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
+            Placement test
+          </NavLink>
+          <NavLink href="/tips" active={isActive("/tips")}>
+            <Lightbulb className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
+            Learning tips
           </NavLink>
         </nav>
 

@@ -186,7 +186,7 @@ export function Dashboard() {
         <section className="mt-3 grid gap-3 sm:grid-cols-2">
           {weak.length > 0 && (
             <Link
-              href="/skill/grammar?focus=weak"
+              href="/review?tab=weak"
               className="group flex items-center gap-4 rounded-2xl border border-line bg-card p-4 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)]"
             >
               <span
@@ -206,7 +206,7 @@ export function Dashboard() {
           )}
           {openMistakeCount > 0 && (
             <Link
-              href="/mistakes"
+              href="/review?tab=mistakes"
               className="group flex items-center gap-4 rounded-2xl border border-line bg-card p-4 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)]"
             >
               <span

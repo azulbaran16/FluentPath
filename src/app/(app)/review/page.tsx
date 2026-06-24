@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ReviewView } from "@/components/practice/ReviewView";
+import { Suspense } from "react";
+import { ReviewHub } from "@/components/practice/ReviewHub";
 
 export const metadata = { title: "Review" };
 
@@ -10,13 +11,15 @@ export default function ReviewPage() {
         ← Dashboard
       </Link>
       <header className="mt-3 mb-6">
-        <h1 className="font-display text-3xl font-semibold">Daily review</h1>
+        <h1 className="font-display text-3xl font-semibold">Review &amp; reinforce</h1>
         <p className="mt-1 text-muted">
-          Spaced repetition brings back what you&apos;ve practiced, right before
-          you&apos;d forget it.
+          One place to practice exactly what you need — what&apos;s due, the
+          questions you missed, and your weak spots.
         </p>
       </header>
-      <ReviewView />
+      <Suspense>
+        <ReviewHub />
+      </Suspense>
     </div>
   );
 }
