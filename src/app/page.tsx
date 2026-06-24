@@ -12,6 +12,7 @@ import { auth } from "@/auth";
 import { WORLDS, SKILL_META, TOTAL_SCENARIOS, type Skill } from "@/lib/curriculum";
 import { WorldIcon, SkillIcon } from "@/lib/icons";
 import { JsonLd } from "@/components/JsonLd";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { SITE, absoluteUrl } from "@/lib/site";
 
 const SKILLS = Object.keys(SKILL_META) as Skill[];
@@ -229,6 +230,7 @@ function SiteHeader() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
         <Brand />
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           <Link
             href="/login"
             className="cursor-pointer rounded-xl px-4 py-2 text-sm font-semibold text-ink-soft transition-colors hover:bg-paper-deep"

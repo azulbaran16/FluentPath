@@ -29,6 +29,29 @@
   --shadow-lift: 0 2px 4px rgba(33, 27, 20, 0.06), 0 18px 40px rgba(33, 27, 20, 0.12);
 }
 
+/* Dark theme — "Traveler's Journal" at night. Toggled via .dark on <html>. */
+.dark {
+  --paper: #17130f;
+  --paper-deep: #211b15;
+  --card: #201a14;
+  --ink: #f4ecde;
+  --ink-soft: #cdc2b1;
+  --muted: #998c79;
+  --line: #322a20;
+  --line-strong: #443a2c;
+
+  --vermilion: #f0653f;
+  --vermilion-deep: #f0653f;
+  --teal: #2fa896;
+  --gold: #e7ac4a;
+  --plum: #c07aac;
+  --sky: #5fa0d0;
+  --moss: #8aac5a;
+
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.35), 0 18px 40px rgba(0, 0, 0, 0.5);
+}
+
 @theme inline {
   --color-paper: var(--paper);
   --color-paper-deep: var(--paper-deep);

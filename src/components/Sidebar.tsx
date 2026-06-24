@@ -6,7 +6,8 @@ import { useState } from "react";
 import { signOut } from "next-auth/react";
 import { WORLDS, SKILL_META, type Skill } from "@/lib/curriculum";
 import { WorldIcon, SkillIcon, NAV_ICONS } from "@/lib/icons";
-import { GraduationCap, RefreshCw, LogOut, Lightbulb, Settings } from "lucide-react";
+import { GraduationCap, RefreshCw, LogOut, Lightbulb, Settings, Trophy } from "lucide-react";
+import { ThemeToggle } from "./ThemeToggle";
 
 const SKILLS = Object.keys(SKILL_META) as Skill[];
 
@@ -50,13 +51,16 @@ export function Sidebar({ user }: { user?: SidebarUser }) {
       {/* mobile top bar */}
       <div className="sticky top-0 z-30 -mx-4 mb-4 flex items-center justify-between border-b border-line bg-paper/90 px-4 py-3 backdrop-blur lg:hidden">
         <Brand />
-        <button
-          onClick={() => setOpen((v) => !v)}
-          aria-label="Toggle menu"
-          className="rounded-lg border border-line-strong px-3 py-1.5 text-sm"
-        >
-          {open ? "Close" : "Menu"}
-        </button>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <button
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Toggle menu"
+            className="rounded-lg border border-line-strong px-3 py-1.5 text-sm"
+          >
+            {open ? "Close" : "Menu"}
+          </button>
+        </div>
       </div>
 
       <aside
@@ -64,8 +68,9 @@ export function Sidebar({ user }: { user?: SidebarUser }) {
           open ? "block" : "hidden"
         } lg:sticky lg:top-0 lg:block lg:h-screen lg:w-64 lg:shrink-0 lg:overflow-y-auto lg:py-10`}
       >
-        <div className="hidden lg:block">
+        <div className="hidden items-center justify-between lg:flex">
           <Brand />
+          <ThemeToggle />
         </div>
 
         <nav className="mt-2 lg:mt-10 flex flex-col gap-1">
@@ -84,6 +89,10 @@ export function Sidebar({ user }: { user?: SidebarUser }) {
           <NavLink href="/review" active={isActive("/review")}>
             <RefreshCw className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
             Review
+          </NavLink>
+          <NavLink href="/achievements" active={isActive("/achievements")}>
+            <Trophy className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
+            Achievements
           </NavLink>
           <NavLink href="/tips" active={isActive("/tips")}>
             <Lightbulb className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />

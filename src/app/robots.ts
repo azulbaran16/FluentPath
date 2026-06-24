@@ -12,6 +12,7 @@ export default function robots(): MetadataRoute.Robots {
         "/review",
         "/diagnostic",
         "/tutor",
+        "/achievements",
         "/settings",
         "/forgot-password",
         "/reset-password",

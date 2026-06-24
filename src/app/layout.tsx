@@ -64,7 +64,16 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${fraunces.variable} ${hanken.variable} h-full`}
+      suppressHydrationWarning
     >
+      <head>
+        {/* Apply the saved theme before paint to avoid a flash. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('fluentpath:theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;if(d)document.documentElement.classList.add('dark');}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="min-h-full">
         <Providers>{children}</Providers>
       </body>

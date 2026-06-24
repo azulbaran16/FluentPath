@@ -52,7 +52,8 @@ export function AuthForm({
         setLoading(false);
         return;
       }
-      router.push("/dashboard");
+      // New users start with the placement test; returning users go home.
+      router.push(isSignup ? "/diagnostic?welcome=1" : "/dashboard");
       router.refresh();
     } catch {
       setError("Something went wrong. Please try again.");
