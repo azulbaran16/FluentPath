@@ -26,7 +26,9 @@ npx auth secret
 
 ## What works today (no paid API needed)
 
-- **Accounts** — email + password (passwords hashed with bcrypt). Google
+- **Accounts** — email + password (passwords hashed with bcrypt), with account
+  settings (change name/password, delete account) and a password-reset flow
+  (emails via SMTP when configured; otherwise the reset link is logged). Google
   sign-in turns on automatically once you add its credentials.
 - **Real persistence** — progress is stored per user in the database, not just
   in the browser; anonymous local progress migrates to the account on first

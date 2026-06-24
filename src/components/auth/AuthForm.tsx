@@ -120,6 +120,17 @@ export function AuthForm({
             placeholder={isSignup ? "At least 8 characters" : "Your password"}
           />
 
+          {!isSignup && (
+            <div className="mt-2 text-right">
+              <Link
+                href="/forgot-password"
+                className="text-sm text-muted hover:text-ink hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
+          )}
+
           {error && (
             <p
               role="alert"

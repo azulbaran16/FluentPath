@@ -7,7 +7,16 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
       // Private, per-user areas — no SEO value, keep them out of the index.
-      disallow: ["/dashboard", "/review", "/diagnostic", "/tutor", "/api/"],
+      disallow: [
+        "/dashboard",
+        "/review",
+        "/diagnostic",
+        "/tutor",
+        "/settings",
+        "/forgot-password",
+        "/reset-password",
+        "/api/",
+      ],
     },
     sitemap: absoluteUrl("/sitemap.xml"),
   };

@@ -6,7 +6,7 @@ import { useState } from "react";
 import { signOut } from "next-auth/react";
 import { WORLDS, SKILL_META, type Skill } from "@/lib/curriculum";
 import { WorldIcon, SkillIcon, NAV_ICONS } from "@/lib/icons";
-import { GraduationCap, RefreshCw, LogOut, Lightbulb } from "lucide-react";
+import { GraduationCap, RefreshCw, LogOut, Lightbulb, Settings } from "lucide-react";
 
 const SKILLS = Object.keys(SKILL_META) as Skill[];
 
@@ -158,9 +158,16 @@ export function Sidebar({ user }: { user?: SidebarUser }) {
                 <p className="truncate text-xs text-muted">{user.email}</p>
               </div>
             </div>
+            <Link
+              href="/settings"
+              className="mt-2 flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-sm text-ink-soft transition-colors hover:bg-paper-deep"
+            >
+              <Settings className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
+              Settings
+            </Link>
             <button
               onClick={() => signOut({ callbackUrl: "/" })}
-              className="mt-2 flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-sm text-ink-soft transition-colors hover:bg-paper-deep"
+              className="flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-sm text-ink-soft transition-colors hover:bg-paper-deep"
             >
               <LogOut className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
               Sign out
