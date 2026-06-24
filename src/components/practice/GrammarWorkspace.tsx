@@ -1,9 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { BookOpen, Puzzle } from "lucide-react";
 import { GRAMMAR_QUESTIONS } from "@/lib/content/grammar";
 import { GRAMMAR_LESSONS, type GrammarLevel } from "@/lib/content/lessons";
+import { useProgress } from "@/lib/progress";
 import { GrammarLessons } from "./GrammarLessons";
 import { GrammarQuiz } from "./GrammarQuiz";
 
@@ -11,19 +13,28 @@ const ACCENT = "var(--plum)";
 const LEVELS: GrammarLevel[] = ["A2", "B1", "B2", "C1"];
 
 type Tab = "learn" | "practice";
-type Filter = "all" | GrammarLevel;
+type Filter = "all" | "weak" | GrammarLevel;
 
 export function GrammarWorkspace() {
-  const [tab, setTab] = useState<Tab>("learn");
-  const [filter, setFilter] = useState<Filter>("all");
+  const focusWeak = useSearchParams().get("focus") === "weak";
+  const { weakTopics } = useProgress();
+  const [tab, setTab] = useState<Tab>(focusWeak ? "practice" : "learn");
+  const [filter, setFilter] = useState<Filter>(focusWeak ? "weak" : "all");
 
-  const questions = useMemo(
-    () =>
-      filter === "all"
-        ? GRAMMAR_QUESTIONS
-        : GRAMMAR_QUESTIONS.filter((q) => q.level === filter),
-    [filter],
+  const weakSet = useMemo(
+    () => new Set(weakTopics().map((w) => w.topic)),
+    [weakTopics],
   );
+
+  const questions = useMemo(() => {
+    if (filter === "weak") {
+      const weak = GRAMMAR_QUESTIONS.filter((q) => weakSet.has(q.topic));
+      return weak.length ? weak : GRAMMAR_QUESTIONS;
+    }
+    return filter === "all"
+      ? GRAMMAR_QUESTIONS
+      : GRAMMAR_QUESTIONS.filter((q) => q.level === filter);
+  }, [filter, weakSet]);
 
   return (
     <div>
@@ -65,11 +76,16 @@ export function GrammarWorkspace() {
             Answer in context — you&apos;ll get the rule and an explanation after
             each one.
           </p>
-          {/* Level filter */}
+          {/* Level / weak-spot filter */}
           <div className="mt-3 flex flex-wrap gap-2">
             <FilterPill active={filter === "all"} onClick={() => setFilter("all")}>
               All levels
             </FilterPill>
+            {weakSet.size > 0 && (
+              <FilterPill active={filter === "weak"} onClick={() => setFilter("weak")}>
+                ⚡ Weak spots
+              </FilterPill>
+            )}
             {LEVELS.map((lv) => (
               <FilterPill
                 key={lv}

@@ -14,14 +14,28 @@ const SKILLS = Object.keys(SKILL_META) as Skill[];
 const REVIEWABLE_IDS = new Set(GRAMMAR_QUESTIONS.map((q) => q.id));
 
 export function Dashboard() {
-  const { ready, state, worldProgress, completedCount, overallProgress, dueReviewIds } =
-    useProgress();
+  const {
+    ready,
+    state,
+    worldProgress,
+    completedCount,
+    overallProgress,
+    dueReviewIds,
+    weakTopics,
+    todayXp,
+    goalXp,
+    dailyGoalPct,
+    goalMet,
+    openMistakeCount,
+  } = useProgress();
 
   // Only count reviews that still exist in the current question bank, so the
   // dashboard matches what the Review page actually shows.
   const dueCount = ready
     ? dueReviewIds().filter((id) => REVIEWABLE_IDS.has(id)).length
     : 0;
+
+  const weak = ready ? weakTopics().slice(0, 3) : [];
 
   // Recommend the next unfinished scenario (fallback: the first one).
   const nextScenario =
@@ -141,14 +155,20 @@ export function Dashboard() {
       {/* Daily goal */}
       <section className="mt-6 flex flex-col gap-4 rounded-[var(--radius)] border border-line bg-card p-5 shadow-[var(--shadow-soft)] sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
-          <span className="grid h-12 w-12 place-items-center rounded-2xl bg-paper-deep" style={{ color: "var(--vermilion)" }}>
-            <Target className="h-6 w-6" strokeWidth={1.75} />
-          </span>
+          <ProgressRing
+            value={ready ? dailyGoalPct : 0}
+            size={56}
+            color={goalMet ? "var(--teal)" : "var(--vermilion)"}
+            label={`${ready ? todayXp : 0}`}
+          />
           <div>
-            <h2 className="font-display text-lg font-semibold">Today&apos;s goal</h2>
+            <h2 className="font-display text-lg font-semibold">
+              {goalMet ? "Daily goal reached! 🎉" : "Today's goal"}
+            </h2>
             <p className="text-sm text-muted">
-              One short scenario keeps the streak alive — about{" "}
-              {nextScenario.sc.minutes} minutes.
+              {goalMet
+                ? `${todayXp} XP today — nice work. Keep the streak going.`
+                : `${todayXp} / ${goalXp} XP today · about ${nextScenario.sc.minutes} min for a scenario.`}
             </p>
           </div>
         </div>
@@ -160,6 +180,52 @@ export function Dashboard() {
           {completedCount > 0 ? "Continue" : "Start"}: {nextScenario.sc.title}
         </Link>
       </section>
+
+      {/* Weak spots & mistakes (adaptive) */}
+      {ready && (weak.length > 0 || openMistakeCount > 0) && (
+        <section className="mt-3 grid gap-3 sm:grid-cols-2">
+          {weak.length > 0 && (
+            <Link
+              href="/skill/grammar?focus=weak"
+              className="group flex items-center gap-4 rounded-2xl border border-line bg-card p-4 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)]"
+            >
+              <span
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl"
+                style={{ background: "color-mix(in srgb, var(--gold) 16%, transparent)", color: "var(--gold)" }}
+              >
+                <Zap className="h-5 w-5" strokeWidth={1.75} />
+              </span>
+              <div className="min-w-0 flex-1">
+                <h3 className="font-display text-base font-semibold">Focus on weak spots</h3>
+                <p className="truncate text-sm text-muted">
+                  {weak.map((w) => w.topic).join(" · ")}
+                </p>
+              </div>
+              <ChevronRight className="h-5 w-5 shrink-0 text-muted transition-transform group-hover:translate-x-0.5" strokeWidth={2} />
+            </Link>
+          )}
+          {openMistakeCount > 0 && (
+            <Link
+              href="/mistakes"
+              className="group flex items-center gap-4 rounded-2xl border border-line bg-card p-4 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)]"
+            >
+              <span
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl"
+                style={{ background: "color-mix(in srgb, var(--vermilion) 14%, transparent)", color: "var(--vermilion)" }}
+              >
+                <Target className="h-5 w-5" strokeWidth={1.75} />
+              </span>
+              <div className="min-w-0 flex-1">
+                <h3 className="font-display text-base font-semibold">
+                  {openMistakeCount} mistake{openMistakeCount > 1 ? "s" : ""} to master
+                </h3>
+                <p className="text-sm text-muted">Turn your errors into strengths.</p>
+              </div>
+              <ChevronRight className="h-5 w-5 shrink-0 text-muted transition-transform group-hover:translate-x-0.5" strokeWidth={2} />
+            </Link>
+          )}
+        </section>
+      )}
 
       {/* Worlds */}
       <section className="mt-10">

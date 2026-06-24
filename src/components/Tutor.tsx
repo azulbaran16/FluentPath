@@ -13,6 +13,7 @@ interface Msg {
 export function Tutor() {
   const params = useSearchParams();
   const scenarioParam = params.get("scenario") ?? undefined;
+  const askParam = params.get("q") ?? undefined;
   const scenarioInfo = scenarioParam
     ? getScenario(...(scenarioParam.split("/") as [string, string]))
     : undefined;
@@ -23,9 +24,10 @@ export function Tutor() {
   const [demo, setDemo] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Greeting on load
+  // On load: if arriving with a question (?q=), ask it; otherwise just greet.
   useEffect(() => {
-    void send("", true);
+    if (askParam) void send(askParam);
+    else void send("", true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Check, X, RotateCcw, ChevronRight } from "lucide-react";
+import { Check, X, RotateCcw, ChevronRight, MessagesSquare } from "lucide-react";
 import type { GrammarQuestion } from "@/lib/content/grammar";
 import { useProgress } from "@/lib/progress";
 
@@ -12,7 +13,7 @@ export function GrammarQuiz({
   questions: GrammarQuestion[];
   accent?: string;
 }) {
-  const { reviewItem, addSkillXp } = useProgress();
+  const { recordAttempt, addSkillXp } = useProgress();
   const [i, setI] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [correct, setCorrect] = useState(0);
@@ -32,7 +33,12 @@ export function GrammarQuiz({
     setPicked(idx);
     const isRight = idx === q.answer;
     if (isRight) setCorrect((c) => c + 1);
-    reviewItem(q.id, isRight); // schedule spaced repetition
+    // schedule spaced repetition + track stats for weak spots / mistake notebook
+    recordAttempt(q.id, isRight, {
+      topic: q.topic,
+      level: q.level,
+      chosen: idx,
+    });
     addSkillXp("grammar", isRight ? 10 : 2);
   }
 
@@ -139,9 +145,22 @@ export function GrammarQuiz({
       </div>
 
       {answered && (
-        <p className="mt-4 rounded-xl bg-paper-deep/60 px-4 py-3 text-sm text-ink-soft">
-          {q.explain}
-        </p>
+        <div className="mt-4 rounded-xl bg-paper-deep/60 px-4 py-3 text-sm text-ink-soft">
+          <p>{q.explain}</p>
+          <Link
+            href={`/tutor?q=${encodeURIComponent(
+              `I'm practicing English grammar (${q.topic}). In "${before}${q.options[q.answer]}${after}", why is "${q.options[q.answer]}" correct${
+                picked !== null && picked !== q.answer
+                  ? ` and not "${q.options[picked]}"`
+                  : ""
+              }? Explain simply with one more example.`,
+            )}`}
+            className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold hover:underline"
+            style={{ color: accent }}
+          >
+            <MessagesSquare className="h-3.5 w-3.5" strokeWidth={2} /> Ask the tutor why
+          </Link>
+        </div>
       )}
 
       <div className="mt-6 flex justify-end">

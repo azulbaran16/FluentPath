@@ -19,6 +19,17 @@ export interface SrsItem {
   due: string; // YYYY-MM-DD
 }
 
+/** Per-question performance, powering weak-spots & the mistake notebook. */
+export interface AttemptStat {
+  topic: string;
+  level?: string;
+  tries: number;
+  wrong: number;
+  resolved: boolean; // got it right on the most recent attempt
+  lastWrongOption?: number; // the option index last chosen incorrectly
+  updatedAt: string; // YYYY-MM-DD
+}
+
 export interface ProgressState {
   /** keys are `${worldSlug}/${scenarioSlug}` */
   completed: Record<string, true>;
@@ -30,6 +41,13 @@ export interface ProgressState {
   srs: Record<string, SrsItem>;
   /** vocabulary flashcards marked as known, keyed by card id */
   vocab: Record<string, true>;
+  /** per-question attempt stats (grammar), keyed by question id */
+  attempts: Record<string, AttemptStat>;
+  /** XP earned today (resets when the day changes) */
+  todayXp: number;
+  xpDay: string | null; // the day todayXp belongs to
+  /** daily XP goal */
+  goalXp: number;
 }
 
 const EMPTY: ProgressState = {
@@ -41,6 +59,10 @@ const EMPTY: ProgressState = {
   level: null,
   srs: {},
   vocab: {},
+  attempts: {},
+  todayXp: 0,
+  xpDay: null,
+  goalXp: 30,
 };
 
 function today(): string {
@@ -179,12 +201,15 @@ export function useProgress() {
         const t = today();
         const gap = s.lastActive ? daysBetween(s.lastActive, t) : null;
         const streak = s.lastActive === t ? s.streak : gap === 1 ? s.streak + 1 : 1;
+        const todayXp = (s.xpDay === t ? s.todayXp : 0) + xpGain;
         return {
           ...s,
           completed: { ...s.completed, [k]: true },
           xp: s.xp + xpGain,
           lastActive: t,
           streak,
+          todayXp,
+          xpDay: t,
         };
       });
     },
@@ -197,12 +222,15 @@ export function useProgress() {
         const t = today();
         const gap = s.lastActive ? daysBetween(s.lastActive, t) : null;
         const streak = s.lastActive === t ? s.streak : gap === 1 ? s.streak + 1 : 1;
+        const todayXp = (s.xpDay === t ? s.todayXp : 0) + amount;
         return {
           ...s,
           xp: s.xp + amount,
           skillXp: { ...s.skillXp, [skill]: (s.skillXp[skill] ?? 0) + amount },
           lastActive: t,
           streak,
+          todayXp,
+          xpDay: t,
         };
       });
     },
@@ -216,16 +244,49 @@ export function useProgress() {
     [persist],
   );
 
-  const reviewItem = useCallback(
-    (id: string, correct: boolean) => {
+  const setGoalXp = useCallback(
+    (goalXp: number) => {
+      persist((s) => ({ ...s, goalXp }));
+    },
+    [persist],
+  );
+
+  // Record a quiz attempt: schedules spaced repetition AND tracks per-question
+  // stats (for weak-spot detection and the mistake notebook).
+  const recordAttempt = useCallback(
+    (
+      id: string,
+      correct: boolean,
+      meta?: { topic?: string; level?: string; chosen?: number },
+    ) => {
       persist((s) => {
-        const prev = s.srs[id];
-        const box = correct ? Math.min((prev?.box ?? 0) + 1, BOX_DAYS.length - 1) : 0;
+        const prevSrs = s.srs[id];
+        const box = correct ? Math.min((prevSrs?.box ?? 0) + 1, BOX_DAYS.length - 1) : 0;
         const due = correct ? addDays(BOX_DAYS[box]) : today();
-        return { ...s, srs: { ...s.srs, [id]: { box, due } } };
+        const prev = s.attempts[id];
+        const stat: AttemptStat = {
+          topic: meta?.topic ?? prev?.topic ?? "General",
+          level: meta?.level ?? prev?.level,
+          tries: (prev?.tries ?? 0) + 1,
+          wrong: (prev?.wrong ?? 0) + (correct ? 0 : 1),
+          resolved: correct,
+          lastWrongOption: correct ? prev?.lastWrongOption : meta?.chosen,
+          updatedAt: today(),
+        };
+        return {
+          ...s,
+          srs: { ...s.srs, [id]: { box, due } },
+          attempts: { ...s.attempts, [id]: stat },
+        };
       });
     },
     [persist],
+  );
+
+  // Backwards-compatible thin wrapper.
+  const reviewItem = useCallback(
+    (id: string, correct: boolean) => recordAttempt(id, correct),
+    [recordAttempt],
   );
 
   // Mark a vocabulary card as known (or, when false, back to learning).
@@ -263,11 +324,46 @@ export function useProgress() {
       .map(([id]) => id);
   }, [state.srs]);
 
+  // Topics where the learner struggles, worst first.
+  const weakTopics = useCallback(() => {
+    const byTopic: Record<string, { tries: number; wrong: number }> = {};
+    for (const a of Object.values(state.attempts ?? {})) {
+      const t = (byTopic[a.topic] ??= { tries: 0, wrong: 0 });
+      t.tries += a.tries;
+      t.wrong += a.wrong;
+    }
+    return Object.entries(byTopic)
+      .filter(([, v]) => v.wrong > 0)
+      .map(([topic, v]) => ({
+        topic,
+        tries: v.tries,
+        wrong: v.wrong,
+        accuracy: v.tries ? Math.round(((v.tries - v.wrong) / v.tries) * 100) : 100,
+      }))
+      .sort((a, b) => b.wrong - a.wrong || a.accuracy - b.accuracy);
+  }, [state.attempts]);
+
+  // Question ids the learner got wrong and hasn't yet re-answered correctly.
+  const openMistakeIds = useCallback(
+    (): string[] =>
+      Object.entries(state.attempts ?? {})
+        .filter(([, a]) => a.wrong > 0 && !a.resolved)
+        .map(([id]) => id),
+    [state.attempts],
+  );
+
   const completedCount = Object.keys(state.completed).length;
   const overallProgress = (completedCount / TOTAL_SCENARIOS) * 100;
   const dueCount = dueReviewIds().length;
   const seenCount = Object.keys(state.srs).length;
   const vocabKnownCount = Object.keys(state.vocab ?? {}).length;
+
+  const goalXp = state.goalXp ?? 30;
+  const todayXp = state.xpDay === today() ? state.todayXp : 0;
+  const dailyGoalPct = goalXp ? Math.min(100, (todayXp / goalXp) * 100) : 0;
+  const goalMet = todayXp >= goalXp;
+  const weakCount = weakTopics().length;
+  const openMistakeCount = openMistakeIds().length;
 
   return {
     ready,
@@ -276,15 +372,25 @@ export function useProgress() {
     complete,
     addSkillXp,
     setLevel,
+    setGoalXp,
     reviewItem,
+    recordAttempt,
     markVocab,
     recordActivity,
     worldProgress,
     dueReviewIds,
+    weakTopics,
+    openMistakeIds,
     completedCount,
     overallProgress,
     dueCount,
     seenCount,
     vocabKnownCount,
+    todayXp,
+    goalXp,
+    dailyGoalPct,
+    goalMet,
+    weakCount,
+    openMistakeCount,
   };
 }
