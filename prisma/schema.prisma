@@ -34,6 +34,17 @@ model User {
   resetTokens  PasswordResetToken[]
 }
 
+model TutorUsage {
+  id     String @id @default(cuid())
+  userId String
+  // YYYY-MM-DD (UTC) — one row per user per day
+  day    String
+  count  Int    @default(0)
+
+  @@unique([userId, day])
+  @@index([userId])
+}
+
 model PasswordResetToken {
   id        String   @id @default(cuid())
   // sha256 hash of the token sent by email (never store the raw token)

@@ -86,7 +86,11 @@ prisma/schema.prisma      Data model (SQLite dev → Postgres prod)
 3. Set `AUTH_GOOGLE_ID` and `AUTH_GOOGLE_SECRET`. The Google button appears
    automatically.
 
-### Enable the AI tutor (final phase, optional)
+### Enable the AI tutor
 
 Set `ANTHROPIC_API_KEY` (from https://console.anthropic.com — pay-per-use,
-separate from Claude Pro/Max). Until then the tutor runs in demo mode.
+prepaid, separate from Claude Pro/Max). The tutor uses `claude-haiku-4-5`
+(cheap), is gated to Pro subscribers when Stripe is configured, and has a
+per-user daily message cap (`DAILY_CAP` in `src/app/api/tutor/route.ts`) so
+costs stay well under the subscription price. Without the key it runs in demo
+mode.
