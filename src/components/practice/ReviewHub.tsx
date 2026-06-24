@@ -3,12 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { RefreshCw, NotebookPen, Zap, CheckCircle2 } from "lucide-react";
+import { RefreshCw, NotebookPen, Zap } from "lucide-react";
 import { GRAMMAR_QUESTIONS } from "@/lib/content/grammar";
 import { useProgress } from "@/lib/progress";
 import { GrammarQuiz } from "./GrammarQuiz";
 import { ReviewView } from "./ReviewView";
 import { MistakesView } from "./MistakesView";
+import { Rumi } from "../mascot/Rumi";
 
 type Tab = "due" | "mistakes" | "weak";
 
@@ -80,13 +81,8 @@ function WeakSpots() {
   if (weak.length === 0) {
     return (
       <div className="rounded-[var(--radius)] border border-line bg-card p-8 text-center shadow-[var(--shadow-soft)]">
-        <span
-          className="mx-auto grid h-14 w-14 place-items-center rounded-2xl"
-          style={{ background: "color-mix(in srgb, var(--teal) 14%, transparent)", color: "var(--teal)" }}
-        >
-          <CheckCircle2 className="h-7 w-7" strokeWidth={1.75} />
-        </span>
-        <h2 className="mt-4 font-display text-xl font-semibold">No weak spots yet</h2>
+        <Rumi mood="happy" size={92} className="mx-auto" />
+        <h2 className="mt-2 font-display text-xl font-semibold">No weak spots yet</h2>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted">
           As you practice, the topics you struggle with show up here so you can
           drill them directly.

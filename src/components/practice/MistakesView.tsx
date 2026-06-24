@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { BookmarkCheck, Check, X, Dumbbell } from "lucide-react";
+import { Check, X, Dumbbell } from "lucide-react";
 import { GRAMMAR_QUESTIONS } from "@/lib/content/grammar";
 import { useProgress } from "@/lib/progress";
 import { GrammarQuiz } from "./GrammarQuiz";
+import { Rumi } from "../mascot/Rumi";
 
 export function MistakesView() {
   const { ready, state, openMistakeIds } = useProgress();
@@ -19,13 +20,8 @@ export function MistakesView() {
   if (mistakes.length === 0) {
     return (
       <div className="rounded-[var(--radius)] border border-line bg-card p-8 text-center shadow-[var(--shadow-soft)]">
-        <span
-          className="mx-auto grid h-14 w-14 place-items-center rounded-2xl"
-          style={{ background: "color-mix(in srgb, var(--teal) 14%, transparent)", color: "var(--teal)" }}
-        >
-          <BookmarkCheck className="h-7 w-7" strokeWidth={1.75} />
-        </span>
-        <h2 className="mt-4 font-display text-xl font-semibold">No open mistakes</h2>
+        <Rumi mood="happy" size={92} className="mx-auto" />
+        <h2 className="mt-2 font-display text-xl font-semibold">No open mistakes</h2>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted">
           When you miss a grammar question, it lands here so you can master it.
           Get it right again and it clears automatically.

@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { getScenario } from "@/lib/curriculum";
-import { Bot, Mic } from "lucide-react";
+import { Mic } from "lucide-react";
+import { Rumi } from "./mascot/Rumi";
 
 interface Msg {
   role: "user" | "assistant";
@@ -74,15 +75,12 @@ export function Tutor() {
     <div className="mx-auto flex h-[calc(100vh-3rem)] max-w-3xl flex-col lg:h-[calc(100vh-5rem)]">
       <header className="rise flex items-center justify-between gap-3 rounded-[var(--radius)] border border-line bg-card p-4 shadow-[var(--shadow-soft)]">
         <div className="flex items-center gap-3">
-          <span
-            className="grid h-11 w-11 place-items-center rounded-2xl bg-paper-deep"
-            style={{ color: "var(--vermilion)" }}
-          >
-            <Bot className="h-6 w-6" strokeWidth={1.75} />
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-paper-deep">
+            <Rumi mood={loading ? "thinking" : "idle"} size={40} />
           </span>
           <div>
             <h1 className="font-display text-lg font-semibold leading-tight">
-              AI Tutor
+              Rumi · your tutor
             </h1>
             <p className="text-xs text-muted">
               {scenarioInfo
@@ -154,7 +152,12 @@ function Bubble({
 }) {
   const isUser = role === "user";
   return (
-    <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
+    <div className={`flex items-end gap-2 ${isUser ? "justify-end" : "justify-start"}`}>
+      {!isUser && (
+        <span className="grid h-8 w-8 shrink-0 place-items-center self-end rounded-full bg-paper-deep">
+          <Rumi mood={pulse ? "thinking" : "idle"} size={26} />
+        </span>
+      )}
       <div
         className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
           isUser

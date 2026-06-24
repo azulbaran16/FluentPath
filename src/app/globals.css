@@ -168,10 +168,38 @@ body {
   animation: pop-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* ── Rumi the fox — mascot animations ── */
+@keyframes rumi-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes rumi-bounce { 0%, 100% { transform: translateY(0) scale(1); } 35% { transform: translateY(-8px) scale(1.03); } 70% { transform: translateY(0) scale(0.99); } }
+@keyframes rumi-wag { 0%, 100% { transform: rotate(-9deg); } 50% { transform: rotate(9deg); } }
+@keyframes rumi-wag-fast { 0%, 100% { transform: rotate(-16deg); } 50% { transform: rotate(16deg); } }
+@keyframes rumi-tilt { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+@keyframes rumi-blink { 0%, 92%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.1); } }
+@keyframes rumi-zfloat { 0% { opacity: 0; transform: translate(0, 2px); } 40% { opacity: 1; } 100% { opacity: 0; transform: translate(4px, -10px); } }
+
+.rumi { display: block; overflow: visible; }
+.rumi .rumi-body { animation: rumi-bob 3s ease-in-out infinite; transform-origin: 60px 70px; }
+.rumi .rumi-tail { animation: rumi-wag 1.7s ease-in-out infinite; transform-origin: 34px 92px; }
+.rumi .rumi-head { transform-origin: 62px 56px; }
+.rumi .rumi-eye { animation: rumi-blink 4s infinite; }
+
+.rumi[data-mood="happy"] .rumi-body { animation: rumi-bounce 0.9s ease-in-out infinite; }
+.rumi[data-mood="happy"] .rumi-tail { animation: rumi-wag-fast 0.5s ease-in-out infinite; }
+
+.rumi[data-mood="thinking"] .rumi-body { animation: rumi-bob 4.5s ease-in-out infinite; }
+.rumi[data-mood="thinking"] .rumi-head { animation: rumi-tilt 3.4s ease-in-out infinite; }
+.rumi[data-mood="thinking"] .rumi-tail { animation: rumi-wag 3.4s ease-in-out infinite; }
+
+.rumi[data-mood="sleeping"] .rumi-body { animation: rumi-bob 4.5s ease-in-out infinite; }
+.rumi[data-mood="sleeping"] .rumi-tail { animation: rumi-wag 3.6s ease-in-out infinite; }
+.rumi .rumi-z { animation: rumi-zfloat 2.6s ease-in-out infinite; }
+.rumi .rumi-z2 { animation-delay: 1.3s; }
+
 @media (prefers-reduced-motion: reduce) {
   .rise,
   .pop-in { animation: none; }
   .aurora { animation: none; }
+  .rumi *, .rumi { animation: none !important; }
   .reveal {
     opacity: 1;
     transform: none;

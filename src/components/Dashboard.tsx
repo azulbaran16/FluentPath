@@ -7,6 +7,7 @@ import { SkillIcon } from "@/lib/icons";
 import { GRAMMAR_QUESTIONS } from "@/lib/content/grammar";
 import { WorldCard } from "./WorldCard";
 import { ProgressRing } from "./ProgressRing";
+import { Rumi } from "./mascot/Rumi";
 import { Zap, Flame, GraduationCap, RefreshCw, ChevronRight, Target, type LucideIcon } from "lucide-react";
 import { CountUp } from "./motion/CountUp";
 
@@ -93,20 +94,30 @@ export function Dashboard() {
             </div>
           </div>
 
-          <div className="flex items-center gap-6 rounded-2xl border border-line bg-paper px-6 py-5">
-            <ProgressRing
-              value={ready ? overallProgress : 0}
-              size={88}
-              stroke={8}
-            />
-            <div className="text-sm">
-              <p className="font-display text-2xl font-semibold leading-none">
-                {ready ? completedCount : 0}
-                <span className="text-base font-normal text-muted">
-                  /{TOTAL_SCENARIOS}
-                </span>
+          <div className="flex flex-col items-center gap-4 rounded-2xl border border-line bg-paper px-6 py-5">
+            <div className="flex items-center gap-3">
+              <Rumi mood={goalMet ? "happy" : "idle"} size={76} />
+              <p className="relative max-w-[12rem] rounded-2xl rounded-bl-sm border border-line bg-card px-3 py-2 text-sm text-ink-soft">
+                {!ready
+                  ? "Hi! I'm Rumi."
+                  : goalMet
+                    ? "Goal smashed today — you're on fire! 🔥"
+                    : state.streak > 1
+                      ? `Day ${state.streak} streak — let's keep it alive!`
+                      : "Ready for today's practice?"}
               </p>
-              <p className="text-muted">scenarios mastered</p>
+            </div>
+            <div className="flex items-center gap-5">
+              <ProgressRing value={ready ? overallProgress : 0} size={80} stroke={8} />
+              <div className="text-sm">
+                <p className="font-display text-2xl font-semibold leading-none">
+                  {ready ? completedCount : 0}
+                  <span className="text-base font-normal text-muted">
+                    /{TOTAL_SCENARIOS}
+                  </span>
+                </p>
+                <p className="text-muted">scenarios mastered</p>
+              </div>
             </div>
           </div>
         </div>
