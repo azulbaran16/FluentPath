@@ -1,13 +1,14 @@
 // FluentPath data model.
-// Dev: SQLite (file). Prod: switch `provider` to "postgresql" and point
-// DATABASE_URL at Neon/Vercel Postgres — the models are portable.
+// Production: PostgreSQL (set DATABASE_URL to your Coolify Postgres).
+// For local dev, run the bundled Postgres: `docker compose up -d db`
+// with DATABASE_URL="postgresql://fluentpath:fluentpath@localhost:5432/fluentpath".
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
