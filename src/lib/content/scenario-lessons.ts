@@ -145,6 +145,186 @@ const LESSONS: Record<string, ScenarioLesson> = {
       "Same verb, many meanings: “get up / get on / get over”.",
     ],
   },
+  "social/parties": {
+    intro:
+      "Parties are about energy and quick connections, not deep talks — your job is to mingle, not to impress.",
+    tips: [
+      "An easy opener works anywhere: “So, how do you know the host?”",
+      "Leave a chat politely: “It was great talking — I'm going to grab a drink.”",
+      "As a host, keep introducing people: “Ana, this is Tom — he also loves climbing.”",
+    ],
+  },
+  "social/complaining": {
+    intro:
+      "Complaining well in English means being firm about the problem while staying polite with the person.",
+    tips: [
+      "Soften the opening, keep the point firm: “I'm sorry to bother you, but this isn't what I ordered.”",
+      "Describe the issue, not the person: “There seems to be a mistake” beats “You messed up.”",
+      "Ask for the fix clearly: “Could you replace it or refund me, please?”",
+    ],
+  },
+  "social/favors": {
+    intro:
+      "Asking for favors is all about register: the bigger the ask, the more polite and indirect you go.",
+    tips: [
+      "Small favor: “Can you…?” Bigger one: “Would you mind …ing?”",
+      "Give a reason — people say yes more often: “Could you cover for me? I have an appointment.”",
+      "Offering help sounds friendly: “Do you want a hand with that?”",
+    ],
+  },
+  "social/humor": {
+    intro:
+      "Humor and sarcasm rely on tone and timing — the words often mean the opposite of what's said.",
+    tips: [
+      "Sarcasm flips meaning: a flat “Oh, great” means it's not great at all.",
+      "Self-deprecating humor (gently laughing at yourself) is safe and likeable in English.",
+      "Not sure if they're joking? A light “Wait, are you serious?” keeps it friendly.",
+    ],
+  },
+  "work/presentations": {
+    intro:
+      "A good presentation guides the listener: tell them what's coming, say it, then remind them what you said.",
+    tips: [
+      "Signpost clearly: “First… / Moving on… / To sum up…”",
+      "Handle questions calmly: “Great question — let me come back to that.”",
+      "Close with a takeaway, not “that's it”: “So the key point is…”",
+    ],
+  },
+  "work/negotiating": {
+    intro:
+      "Negotiation language stays flexible and collaborative while protecting what matters to you.",
+    tips: [
+      "Trade, don't just concede: “If you can do X, then we could do Y.”",
+      "Push back politely: “I see your point, but that doesn't quite work for us.”",
+      "Aim for win-win wording: “Let's find something that works for both of us.”",
+    ],
+  },
+  "work/networking": {
+    intro:
+      "Networking is starting low-stakes professional chats and leaving a door open to talk again.",
+    tips: [
+      "Keep your pitch short: “I'm a [role] at [place], focused on [thing].”",
+      "Show interest first: “What are you working on these days?”",
+      "Follow up afterward: “Great to meet you — let's stay in touch on LinkedIn.”",
+    ],
+  },
+  "work/feedback": {
+    intro:
+      "Good feedback is specific and kind; receiving it well is about listening before defending.",
+    tips: [
+      "Be concrete: “The intro was strong; the data slide felt rushed.”",
+      "Use “I” framing: “I found it hard to follow” over “You were unclear.”",
+      "Taking feedback: “Thanks, that's helpful — could you give an example?”",
+    ],
+  },
+  "travel/hotel": {
+    intro:
+      "Hotel English is a small set of predictable requests — checking in, asking for things, and fixing problems.",
+    tips: [
+      "Check in: “I have a reservation under [name].”",
+      "Make requests: “Could I get an extra towel / a late checkout?”",
+      "Report problems: “The AC isn't working — could someone take a look?”",
+    ],
+  },
+  "travel/shopping": {
+    intro:
+      "Shopping conversations cover comparing, trying, paying and returning — mostly short, polite exchanges.",
+    tips: [
+      "“I'm just looking, thanks” politely ends the offer to help.",
+      "Ask about fit: “Do you have this in a medium?”",
+      "Returns: “I'd like to return this — here's the receipt.”",
+    ],
+  },
+  "academic/news": {
+    intro:
+      "Reading the news well means getting the gist fast and noticing the angle a writer takes.",
+    tips: [
+      "Headlines drop small words: “PM to meet leaders” = will meet.",
+      "Read the first paragraph for the who/what/when, then skim the rest.",
+      "Spot loaded words (“slammed”, “claims”) that signal opinion, not fact.",
+    ],
+  },
+  "academic/articles": {
+    intro:
+      "Long-form articles reward following the argument and inferring meaning you aren't told directly.",
+    tips: [
+      "Track the thread: each paragraph usually adds one new idea.",
+      "Guess new words from context before reaching for a dictionary.",
+      "Notice signposts — “however”, “in contrast”, “as a result” — that show the logic.",
+    ],
+  },
+  "academic/stories": {
+    intro:
+      "Short stories are about voice and subtext — what characters feel often sits between the lines.",
+    tips: [
+      "Don't stop at every word; keep the narrative moving and infer.",
+      "Watch the narrator's tone — it colors how you read events.",
+      "Dialogue carries character; note the natural phrasings you like.",
+    ],
+  },
+  "academic/summaries": {
+    intro:
+      "Summarizing is saying the main idea in your own words — shorter, clearer, and without the detail.",
+    tips: [
+      "Find the one sentence that captures the point, then build from it.",
+      "Use your words, not the author's — it proves you understood.",
+      "Cut examples and repetition; keep only what changes the meaning.",
+    ],
+  },
+  "academic/debate": {
+    intro:
+      "Debating in English is structured disagreement: state a claim, support it, and respond to the other side.",
+    tips: [
+      "Signal your move: “My main argument is… / On the other hand…”",
+      "Concede gracefully: “That's a fair point, but…”",
+      "Back claims with reasons or examples, not just stronger words.",
+    ],
+  },
+  "practical/housing": {
+    intro:
+      "Renting and moving involve viewings, lease questions and setting things up — practical, detail-heavy talk.",
+    tips: [
+      "Ask the key questions: “What's included in the rent? When's it available?”",
+      "Know the lease terms: deposit, notice period, utilities.",
+      "Set things up: “I'd like to set up electricity at this address.”",
+    ],
+  },
+  "practical/banking": {
+    intro:
+      "Banking English is a handful of clear requests about accounts, payments and problems.",
+    tips: [
+      "Opening: “I'd like to open a current account.”",
+      "Disputes: “I don't recognize this charge — can you check it?”",
+      "Bills: “Can I set up a direct debit?”",
+    ],
+  },
+  "practical/appointments": {
+    intro:
+      "Booking appointments is short and formulaic — a date, a time, and confirming.",
+    tips: [
+      "Ask availability: “Do you have anything on Tuesday morning?”",
+      "Confirm clearly: “So that's the 3rd at 10, right?”",
+      "Reschedule: “Could I move my appointment to next week?”",
+    ],
+  },
+  "native/register": {
+    intro:
+      "Register is the formality dial — the same idea sounds very different in a text vs. a contract.",
+    tips: [
+      "Casual ↔ formal: “Can you…?” becomes “Would you be able to…?”",
+      "Contractions and slang signal informal; full forms signal formal.",
+      "Mirror the other person's level — matching tone builds rapport.",
+    ],
+  },
+  "native/culture": {
+    intro:
+      "Cultural references — films, sayings, history — are the shortcuts natives drop without explaining.",
+    tips: [
+      "Catch common ones: “It's his Achilles' heel”, “That's so 2010.”",
+      "When you miss one, just ask: “Sorry, what's that a reference to?”",
+      "Notice references in shows and headlines — they repeat a lot.",
+    ],
+  },
 };
 
 const FALLBACK: ScenarioLesson = {
