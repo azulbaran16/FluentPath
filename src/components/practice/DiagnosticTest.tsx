@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ChevronRight, Sparkles } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { DIAGNOSTIC, estimateLevel, type Cefr } from "@/lib/content/diagnostic";
 import { useProgress } from "@/lib/progress";
 import { celebrate } from "@/lib/confetti";
+import { Rumi } from "../mascot/Rumi";
 
 const ACCENT = "var(--gold)";
 
@@ -56,13 +57,8 @@ export function DiagnosticTest() {
   if (result) {
     return (
       <div className="rounded-[var(--radius)] border border-line bg-card p-8 text-center shadow-[var(--shadow-soft)]">
-        <span
-          className="pop-in mx-auto grid h-14 w-14 place-items-center rounded-2xl"
-          style={{ background: `color-mix(in srgb, ${ACCENT} 16%, transparent)`, color: ACCENT }}
-        >
-          <Sparkles className="h-7 w-7" strokeWidth={1.75} />
-        </span>
-        <p className="mt-4 text-sm uppercase tracking-wider text-muted">
+        <Rumi mood="happy" size={96} className="pop-in mx-auto" />
+        <p className="mt-2 text-sm uppercase tracking-wider text-muted">
           Your estimated level
         </p>
         <p className="mt-1 font-display text-6xl font-semibold" style={{ color: ACCENT }}>

@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { WORLDS, SKILL_META, TOTAL_SCENARIOS, type Skill } from "@/lib/curriculum";
 import { useProgress } from "@/lib/progress";
 import { SkillIcon } from "@/lib/icons";
 import { GRAMMAR_QUESTIONS } from "@/lib/content/grammar";
+import { celebrate } from "@/lib/confetti";
 import { WorldCard } from "./WorldCard";
 import { ProgressRing } from "./ProgressRing";
 import { Rumi } from "./mascot/Rumi";
@@ -37,6 +39,20 @@ export function Dashboard() {
     : 0;
 
   const weak = ready ? weakTopics().slice(0, 3) : [];
+
+  // Celebrate reaching the daily goal — once per day, the first time we see it.
+  useEffect(() => {
+    if (!ready || !goalMet) return;
+    const today = new Date().toISOString().slice(0, 10);
+    const key = "fluentpath:goalCelebrated";
+    try {
+      if (localStorage.getItem(key) === today) return;
+      localStorage.setItem(key, today);
+    } catch {
+      /* ignore storage errors */
+    }
+    celebrate(90);
+  }, [ready, goalMet]);
 
   // Recommend the next unfinished scenario (fallback: the first one).
   const nextScenario =
@@ -126,7 +142,7 @@ export function Dashboard() {
       {/* Stats */}
       <section className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Stat label="XP earned" value={ready ? state.xp : 0} icon={Zap} color="--gold" />
-        <Stat label="Day streak" value={ready ? state.streak : 0} icon={Flame} color="--vermilion" />
+        <Stat label="Day streak" value={ready ? state.streak : 0} icon={Flame} color="--vermilion" pulse={ready && state.streak > 0} />
         <Stat label="Level" value={ready ? (state.level ?? "—") : "—"} icon={GraduationCap} color="--teal" />
         <Stat label="Reviews due" value={ready ? dueCount : 0} icon={RefreshCw} color="--plum" />
       </section>
@@ -305,17 +321,23 @@ function Stat({
   value,
   icon: Icon,
   color,
+  pulse,
 }: {
   label: string;
   value: number | string;
   icon: LucideIcon;
   color: string;
+  pulse?: boolean;
 }) {
   return (
     <div className="rounded-2xl border border-line bg-card p-4 shadow-[var(--shadow-soft)]">
       <div className="flex items-center justify-between">
         <span className="text-xs text-muted">{label}</span>
-        <Icon className="h-4 w-4" style={{ color: `var(${color})` }} strokeWidth={1.75} />
+        <Icon
+          className={`h-4 w-4 ${pulse ? "flame-pulse" : ""}`}
+          style={{ color: `var(${color})` }}
+          strokeWidth={1.75}
+        />
       </div>
       <p
         className="mt-1 font-display text-2xl font-semibold"

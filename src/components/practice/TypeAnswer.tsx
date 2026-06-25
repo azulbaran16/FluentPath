@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { Check, X, RotateCcw, ChevronRight, MessagesSquare, CornerDownLeft } from "lucide-react";
 import type { GrammarQuestion } from "@/lib/content/grammar";
 import { useProgress } from "@/lib/progress";
+import { XpFloat } from "../motion/XpFloat";
 
 const norm = (s: string) =>
   s
@@ -91,7 +92,10 @@ export function TypeAnswer({
   const wrong = checked === false;
 
   return (
-    <div className="rounded-[var(--radius)] border border-line bg-card p-6 shadow-[var(--shadow-soft)]">
+    <div className="relative rounded-[var(--radius)] border border-line bg-card p-6 shadow-[var(--shadow-soft)]">
+      {checked === true && (
+        <XpFloat key={i} amount={10} className="absolute right-5 top-4 z-10" />
+      )}
       <div className="mb-5 h-1.5 w-full overflow-hidden rounded-full bg-line">
         <div
           className="h-full rounded-full transition-all"
