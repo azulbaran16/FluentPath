@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { sendEmail, passwordResetEmail } from "@/lib/email";
 import { absoluteUrl } from "@/lib/site";
+import { rateLimit, clientIp } from "@/lib/rate-limit";
 
 const schema = z.object({ email: z.string().email() });
 
@@ -12,6 +13,11 @@ const sha256 = (s: string) => createHash("sha256").update(s).digest("hex");
 // Request a password reset. Always responds 200 so the endpoint never reveals
 // whether an email is registered.
 export async function POST(req: Request) {
+  // Throttle reset requests per IP (anti-spam / anti-enumeration).
+  if (!rateLimit(`forgot:${clientIp(req)}`, 5, 15 * 60_000).ok) {
+    return NextResponse.json({ ok: true });
+  }
+
   const parsed = schema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json({ ok: true });

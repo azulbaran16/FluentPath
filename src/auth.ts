@@ -4,6 +4,7 @@ import Google from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
+import { rateLimit } from "@/lib/rate-limit";
 
 const credentialsSchema = z.object({
   email: z.string().email(),
@@ -20,6 +21,9 @@ const providers: NextAuthConfig["providers"] = [
       const parsed = credentialsSchema.safeParse(raw);
       if (!parsed.success) return null;
       const email = parsed.data.email.toLowerCase();
+      // Throttle login attempts per email to blunt brute-force / credential
+      // stuffing. 12 tries per 10 min is generous for a human, tight for a bot.
+      if (!rateLimit(`login:${email}`, 12, 10 * 60_000).ok) return null;
       const user = await prisma.user.findUnique({ where: { email } });
       if (!user?.passwordHash) return null;
       const ok = await bcrypt.compare(parsed.data.password, user.passwordHash);
