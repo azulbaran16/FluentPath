@@ -2,18 +2,19 @@
 
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { BookOpen, Puzzle, Blocks } from "lucide-react";
+import { BookOpen, Puzzle, Blocks, PencilLine } from "lucide-react";
 import { GRAMMAR_QUESTIONS } from "@/lib/content/grammar";
 import { GRAMMAR_LESSONS, type GrammarLevel } from "@/lib/content/lessons";
 import { useProgress } from "@/lib/progress";
 import { GrammarLessons } from "./GrammarLessons";
 import { GrammarQuiz } from "./GrammarQuiz";
 import { SentenceBuilder } from "./SentenceBuilder";
+import { TypeAnswer } from "./TypeAnswer";
 
 const ACCENT = "var(--plum)";
 const LEVELS: GrammarLevel[] = ["A2", "B1", "B2", "C1"];
 
-type Tab = "learn" | "practice" | "build";
+type Tab = "learn" | "practice" | "build" | "fill";
 type Filter = "all" | "weak" | GrammarLevel;
 
 export function GrammarWorkspace() {
@@ -39,11 +40,11 @@ export function GrammarWorkspace() {
 
   return (
     <div>
-      {/* Segmented Learn / Practice control */}
+      {/* Segmented mode control — scrolls horizontally on small screens */}
       <div
         role="tablist"
         aria-label="Grammar mode"
-        className="inline-flex rounded-xl border border-line bg-card p-1 shadow-[var(--shadow-soft)]"
+        className="inline-flex max-w-full overflow-x-auto rounded-xl border border-line bg-card p-1 shadow-[var(--shadow-soft)]"
       >
         <TabButton
           active={tab === "learn"}
@@ -65,6 +66,12 @@ export function GrammarWorkspace() {
           icon={<Blocks className="h-4 w-4" strokeWidth={1.75} />}
           label="Build"
         />
+        <TabButton
+          active={tab === "fill"}
+          onClick={() => setTab("fill")}
+          icon={<PencilLine className="h-4 w-4" strokeWidth={1.75} />}
+          label="Fill"
+        />
       </div>
 
       {tab === "learn" && (
@@ -85,11 +92,12 @@ export function GrammarWorkspace() {
         </div>
       )}
 
-      {tab === "practice" && (
+      {(tab === "practice" || tab === "fill") && (
         <>
           <p className="mt-3 text-sm text-muted">
-            Answer in context — you&apos;ll get the rule and an explanation after
-            each one.
+            {tab === "fill"
+              ? "Type the missing word — no options to pick from, just like real life."
+              : "Answer in context — you'll get the rule and an explanation after each one."}
           </p>
           {/* Level / weak-spot filter */}
           <div className="mt-3 flex flex-wrap gap-2">
@@ -112,8 +120,12 @@ export function GrammarWorkspace() {
             ))}
           </div>
           <div className="mt-4">
-            {/* key forces a fresh quiz when the filter changes */}
-            <GrammarQuiz key={filter} questions={questions} accent={ACCENT} />
+            {/* key forces a fresh run when the filter or mode changes */}
+            {tab === "fill" ? (
+              <TypeAnswer key={`fill-${filter}`} questions={questions} accent={ACCENT} />
+            ) : (
+              <GrammarQuiz key={filter} questions={questions} accent={ACCENT} />
+            )}
           </div>
         </>
       )}
