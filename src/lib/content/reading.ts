@@ -432,4 +432,118 @@ export const PASSAGES: Passage[] = [
       },
     ],
   },
+
+  // ───────────── B1 (more) ─────────────
+  {
+    id: "lost-phone",
+    title: "The Lost Phone",
+    level: "B1",
+    minutes: 3,
+    body: [
+      "Last week, Sara lost her phone on the bus. She didn't notice until she got home and reached into an empty pocket. At first she panicked, but then she remembered that the bus company had a lost-and-found office.",
+      "She called them the next morning. A kind man said a passenger had handed in a phone that matched her description. Relieved, Sara took the bus back to the station and collected it. Now she always keeps her phone in her bag, not her pocket.",
+    ],
+    glossary: [
+      { word: "panicked", meaning: "suddenly felt very afraid or worried" },
+      { word: "lost-and-found", meaning: "a place that keeps items people leave behind" },
+    ],
+    questions: [
+      { q: "Where did Sara lose her phone?", options: ["At home", "On the bus", "At the office"], answer: 1 },
+      { q: "How did she get it back?", options: ["A passenger handed it in", "She bought a new one", "The police found it"], answer: 0 },
+    ],
+  },
+  {
+    id: "learning-cook",
+    title: "Learning to Cook",
+    level: "B1",
+    minutes: 3,
+    body: [
+      "When Daniel moved into his own flat, he couldn't cook at all. For the first month he lived on sandwiches and takeaway food. He soon felt tired and missed home-cooked meals.",
+      "So he started small: one new recipe every weekend. At first the results were terrible, but slowly he improved. A year later, cooking has become his favourite way to relax after work.",
+    ],
+    glossary: [
+      { word: "takeaway", meaning: "food you buy to eat somewhere else, often at home" },
+      { word: "recipe", meaning: "instructions for making a particular dish" },
+    ],
+    questions: [
+      { q: "What did Daniel eat at first?", options: ["Home-cooked meals", "Sandwiches and takeaway", "Nothing"], answer: 1 },
+      { q: "How did he learn to cook?", options: ["He took a class", "One new recipe each weekend", "He watched TV"], answer: 1 },
+    ],
+  },
+
+  // ───────────── B2 (more) ─────────────
+  {
+    id: "four-day-week",
+    title: "The Four-Day Week",
+    level: "B2",
+    minutes: 4,
+    body: [
+      "Several companies have begun testing a four-day working week, paying staff the same salary for fewer hours. Supporters argue that well-rested employees are more focused and waste less time, so output stays the same or even rises.",
+      "Critics, however, point out that not every industry can adapt easily. A hospital or a shop cannot simply close for an extra day. Still, early trials suggest that where it does fit, both productivity and happiness tend to improve.",
+    ],
+    glossary: [
+      { word: "output", meaning: "the amount of work that is produced" },
+      { word: "trial", meaning: "a test to see whether something works" },
+    ],
+    questions: [
+      { q: "What do supporters of the four-day week claim?", options: ["Rested staff are more focused", "It is always cheaper", "Everyone prefers it"], answer: 0 },
+      { q: "What problem do critics raise?", options: ["Workers get bored", "Some industries can't adapt", "Salaries must fall"], answer: 1 },
+    ],
+  },
+  {
+    id: "bee-language",
+    title: "The Language of Bees",
+    level: "B2",
+    minutes: 4,
+    body: [
+      "Bees cannot speak, yet they share remarkably precise information. When a bee finds flowers, it returns to the hive and performs a 'waggle dance', moving in a figure-eight pattern. The angle and length of the dance tell other bees exactly where to fly.",
+      "Scientists were astonished to discover that this simple movement can communicate both distance and direction. It is one of the few examples in nature of an animal describing a place it has visited to others who have not.",
+    ],
+    glossary: [
+      { word: "hive", meaning: "the structure where a colony of bees lives" },
+      { word: "astonished", meaning: "very surprised" },
+    ],
+    questions: [
+      { q: "What does the waggle dance communicate?", options: ["Only danger", "Distance and direction to flowers", "The time of day"], answer: 1 },
+      { q: "Why do scientists find it remarkable?", options: ["Bees can talk", "An animal describes a place others haven't seen", "It is very loud"], answer: 1 },
+    ],
+  },
+
+  // ───────────── C1 (more) ─────────────
+  {
+    id: "paradox-choice",
+    title: "The Paradox of Choice",
+    level: "C1",
+    minutes: 5,
+    body: [
+      "We tend to assume that more options make us happier, yet research suggests the opposite can be true. When shoppers face a wall of nearly identical products, many feel overwhelmed and end up buying nothing — or second-guessing whatever they finally choose.",
+      "This 'paradox of choice' has practical implications. Some companies now deliberately limit their range, betting that a curated handful of options will convert more browsers into buyers than an exhausting catalogue ever could.",
+    ],
+    glossary: [
+      { word: "second-guess", meaning: "to doubt a decision after you have made it" },
+      { word: "curated", meaning: "carefully chosen and organised" },
+    ],
+    questions: [
+      { q: "What can too much choice cause?", options: ["Faster decisions", "Feeling overwhelmed and buying nothing", "Higher prices"], answer: 1 },
+      { q: "How do some companies respond?", options: ["They add more products", "They deliberately limit options", "They raise prices"], answer: 1 },
+    ],
+  },
+  {
+    id: "ship-theseus",
+    title: "The Ship of Theseus",
+    level: "C1",
+    minutes: 5,
+    body: [
+      "Imagine a wooden ship whose planks are replaced, one by one, as they rot. Eventually, not a single original piece remains. Is it still the same ship? This ancient puzzle, known as the Ship of Theseus, has troubled philosophers for over two thousand years.",
+      "The question is more than a game. It forces us to ask what 'identity' really means — for objects, and even for ourselves. After all, the cells in your body are gradually replaced, yet you still consider yourself the same person you were as a child.",
+    ],
+    glossary: [
+      { word: "plank", meaning: "a long, flat piece of wood" },
+      { word: "identity", meaning: "the qualities that make something what it is" },
+    ],
+    questions: [
+      { q: "What gradually changes in the ship?", options: ["Its colour", "The planks, one by one", "Its name"], answer: 1 },
+      { q: "Why does the puzzle still matter?", options: ["It questions what identity means", "It teaches sailing", "It is about money"], answer: 0 },
+    ],
+  },
 ];

@@ -197,4 +197,113 @@ export const CLIPS: Clip[] = [
       },
     ],
   },
+
+  // ── A2 (more) ──
+  {
+    id: "weather-forecast",
+    title: "The weather forecast",
+    level: "A2",
+    lines: [
+      "Good morning! Here's today's weather.",
+      "It will be sunny in the morning, with a high of 22 degrees.",
+      "In the afternoon, expect some clouds and a light wind.",
+      "Don't forget your sunglasses!",
+    ],
+    questions: [
+      { q: "What's the weather like in the morning?", options: ["Rainy", "Sunny", "Snowy"], answer: 1 },
+      { q: "What is the high temperature?", options: ["12 degrees", "22 degrees", "32 degrees"], answer: 1 },
+      { q: "What does the speaker suggest bringing?", options: ["An umbrella", "Sunglasses", "A coat"], answer: 1 },
+    ],
+  },
+  {
+    id: "train-announcement",
+    title: "A train announcement",
+    level: "A2",
+    lines: [
+      "Attention, please. The train to Manchester will leave from platform four.",
+      "It is now boarding and will depart in five minutes.",
+      "Please have your tickets ready.",
+      "We wish you a pleasant journey.",
+    ],
+    questions: [
+      { q: "Which platform does the train leave from?", options: ["Platform two", "Platform four", "Platform fourteen"], answer: 1 },
+      { q: "When does it depart?", options: ["In five minutes", "In fifteen minutes", "At four o'clock"], answer: 0 },
+      { q: "What should passengers have ready?", options: ["Their passports", "Their tickets", "Their luggage"], answer: 1 },
+    ],
+  },
+
+  // ── B1 (more) ──
+  {
+    id: "restaurant-booking",
+    title: "Booking a table",
+    level: "B1",
+    lines: [
+      "A: Good evening, Bella Cucina, how can I help?",
+      "B: Hi, I'd like to book a table for four, please.",
+      "A: Of course. What day were you thinking of?",
+      "B: Saturday, around eight, if possible.",
+      "A: Eight is fully booked, I'm afraid, but I could do half past eight.",
+      "B: That works. Thank you!",
+    ],
+    questions: [
+      { q: "How many people is the table for?", options: ["Two", "Four", "Eight"], answer: 1 },
+      { q: "What time do they finally agree on?", options: ["8:00", "8:30", "9:00"], answer: 1 },
+      { q: "Why not eight o'clock?", options: ["It's too early", "It's fully booked", "The kitchen is closed"], answer: 1 },
+    ],
+  },
+  {
+    id: "gym-cancel",
+    title: "Cancelling a membership",
+    level: "B1",
+    lines: [
+      "A: Hello, I'd like to cancel my gym membership.",
+      "B: I'm sorry to hear that. May I ask why?",
+      "A: I'm moving to another city next month.",
+      "B: I understand. There's a 30-day notice period, so it ends in November.",
+      "A: That's fine. Do I need to do anything else?",
+      "B: No, that's all. You'll get a confirmation email.",
+    ],
+    questions: [
+      { q: "Why is the customer cancelling?", options: ["It's too expensive", "She's moving city", "She's unhappy with it"], answer: 1 },
+      { q: "When will the membership end?", options: ["Immediately", "In November", "Next year"], answer: 1 },
+      { q: "What will the customer receive?", options: ["A refund", "A confirmation email", "A phone call"], answer: 1 },
+    ],
+  },
+
+  // ── B2 (more) ──
+  {
+    id: "sleep-podcast",
+    title: "A podcast on sleep",
+    level: "B2",
+    lines: [
+      "Welcome back to the show. Today we're talking about sleep.",
+      "Most adults need between seven and nine hours, but it's not just about quantity.",
+      "The timing matters too: going to bed at roughly the same time each night helps your body settle into a rhythm.",
+      "So if you're always tired, look at your schedule before reaching for more coffee.",
+    ],
+    questions: [
+      { q: "How many hours do most adults need?", options: ["Five to six", "Seven to nine", "Ten to twelve"], answer: 1 },
+      { q: "What else matters besides quantity?", options: ["The room temperature", "Consistent timing", "The mattress brand"], answer: 1 },
+      { q: "What does the speaker suggest checking first?", options: ["Your schedule", "Your diet", "Your phone"], answer: 0 },
+    ],
+  },
+
+  // ── C1 (more) ──
+  {
+    id: "interview-weakness",
+    title: "An interview answer",
+    level: "C1",
+    lines: [
+      "A: So, what would you say is your biggest weakness?",
+      "B: Honestly, I used to take on too much and struggle to delegate.",
+      "A: And how have you addressed that?",
+      "B: I've learned to trust my team and hand over tasks earlier, which has actually made the whole project run more smoothly.",
+      "A: That's a thoughtful answer. Thank you.",
+    ],
+    questions: [
+      { q: "What was the candidate's weakness?", options: ["Being late", "Taking on too much and not delegating", "Poor communication"], answer: 1 },
+      { q: "How did they address it?", options: ["By working longer hours", "By trusting the team and delegating earlier", "By changing jobs"], answer: 1 },
+      { q: "What was the result?", options: ["The project ran more smoothly", "They got promoted", "Nothing changed"], answer: 0 },
+    ],
+  },
 ];
