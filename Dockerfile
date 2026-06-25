@@ -8,7 +8,10 @@ RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY prisma ./prisma
-RUN npm ci
+# --legacy-peer-deps: nodemailer (patched for security) is a newer major than
+# @auth/core's optional peer range. We use nodemailer directly (not @auth/core's
+# Email provider), so the mismatch is benign; tolerate it during install.
+RUN npm ci --legacy-peer-deps
 
 # 2. Build the app (Next.js standalone output)
 FROM node:20-slim AS builder
