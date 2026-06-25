@@ -32,6 +32,11 @@ model User {
   stripeStatus         String?
   proUntil             DateTime?
 
+  // Referrals: each user gets a shareable code; referredById points at the
+  // referrer who brought them in.
+  referralCode String? @unique
+  referredById String?
+
   resetTokens  PasswordResetToken[]
 }
 

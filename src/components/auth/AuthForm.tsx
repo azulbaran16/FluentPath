@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { ArrowRight, Loader2 } from "lucide-react";
@@ -17,6 +17,7 @@ export function AuthForm({
   googleEnabled: boolean;
 }) {
   const router = useRouter();
+  const ref = useSearchParams().get("ref") ?? undefined;
   const isSignup = mode === "signup";
 
   const [name, setName] = useState("");
@@ -34,7 +35,7 @@ export function AuthForm({
         const res = await fetch("/api/signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, password }),
+          body: JSON.stringify({ name, email, password, ref }),
         });
         if (!res.ok) {
           const data = await res.json().catch(() => ({}));

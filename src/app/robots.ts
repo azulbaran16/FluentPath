@@ -11,6 +11,7 @@ export default function robots(): MetadataRoute.Robots {
         "/dashboard",
         "/review",
         "/mistakes",
+        "/invite",
         "/diagnostic",
         "/tutor",
         "/achievements",

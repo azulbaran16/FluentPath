@@ -6,7 +6,7 @@ import { useState } from "react";
 import { signOut } from "next-auth/react";
 import { WORLDS, SKILL_META, type Skill } from "@/lib/curriculum";
 import { WorldIcon, SkillIcon, NAV_ICONS } from "@/lib/icons";
-import { GraduationCap, RefreshCw, LogOut, Lightbulb, Settings, Trophy, Headphones, Layers, Sparkles } from "lucide-react";
+import { GraduationCap, RefreshCw, LogOut, Lightbulb, Settings, Trophy, Headphones, Layers, Sparkles, Gift } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 
 const SKILLS = Object.keys(SKILL_META) as Skill[];
@@ -141,6 +141,10 @@ export function Sidebar({ user }: { user?: SidebarUser }) {
               style={{ color: "var(--vermilion)" }}
             />
             FluentPath Pro
+          </NavLink>
+          <NavLink href="/invite" active={isActive("/invite")}>
+            <Gift className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
+            Invite friends
           </NavLink>
           <NavLink href="/achievements" active={isActive("/achievements")}>
             <Trophy className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
