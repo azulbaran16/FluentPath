@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { ArrowRight, Loader2 } from "lucide-react";
+import { trackSignup } from "@/lib/analytics";
 
 type Mode = "login" | "signup";
 
@@ -41,6 +42,7 @@ export function AuthForm({
           setLoading(false);
           return;
         }
+        trackSignup(); // GA4 + Meta Pixel conversion
       }
       const result = await signIn("credentials", {
         email,

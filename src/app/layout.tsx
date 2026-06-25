@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { Analytics } from "@/components/analytics/Analytics";
 import { SITE, absoluteUrl } from "@/lib/site";
 
 const fraunces = Fraunces({
@@ -76,6 +77,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full">
         <Providers>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   );

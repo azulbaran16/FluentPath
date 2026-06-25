@@ -5,13 +5,16 @@ import type { NextConfig } from "next";
 // External scripts are still blocked — only same-origin code runs. Stripe
 // Checkout/Portal are full-page redirects (not framed), so no stripe.com
 // allowances are needed here. Avatars (e.g. Google) load over https.
+// Analytics domains (Google Analytics 4 + Meta Pixel) are allow-listed so the
+// tags work without weakening the rest of the policy. img-src already allows
+// https: for tracking pixels and avatars.
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https:",
   "font-src 'self' data:",
-  "connect-src 'self'",
+  "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://connect.facebook.net",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
