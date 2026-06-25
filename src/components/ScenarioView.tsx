@@ -102,9 +102,9 @@ export function ScenarioView({
         </h2>
         <div className="rounded-[var(--radius)] border border-line bg-card p-6 shadow-[var(--shadow-soft)]">
           <p className="text-sm text-ink-soft">
-            Rehearse the full conversation with the AI Tutor. Live, in-character
-            role-play with grammar &amp; pronunciation feedback unlocks in the
-            final phase (needs the API key).
+            Rehearse the full conversation with Rumi, your AI Tutor — live,
+            in-character role-play with gentle grammar &amp; word-choice
+            corrections as you go.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link

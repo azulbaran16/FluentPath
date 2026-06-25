@@ -72,7 +72,7 @@ export function Tutor() {
   }
 
   return (
-    <div className="mx-auto flex h-[calc(100vh-3rem)] max-w-3xl flex-col lg:h-[calc(100vh-5rem)]">
+    <div className="mx-auto flex h-[calc(100dvh-8.5rem)] max-w-3xl flex-col lg:h-[calc(100dvh-5rem)]">
       <header className="rise flex items-center justify-between gap-3 rounded-[var(--radius)] border border-line bg-card p-4 shadow-[var(--shadow-soft)]">
         <div className="flex items-center gap-3">
           <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-paper-deep">

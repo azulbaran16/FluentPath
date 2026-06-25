@@ -156,8 +156,8 @@ export function WritingDesk({
           )}
 
           <p className="mt-4 text-xs text-muted">
-            ✍️ Detailed AI correction of your own text arrives with the tutor
-            (final phase).
+            ✍️ Want detailed feedback on your own text? Paste it to Rumi, your AI
+            Tutor, for line-by-line corrections.
           </p>
         </div>
       </div>
