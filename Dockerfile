@@ -47,4 +47,7 @@ COPY --from=builder /app/public ./public
 EXPOSE 3000
 
 # Sync the schema to the database, then start the server.
-CMD ["sh", "-c", "prisma db push --skip-generate && node server.js"]
+# --accept-data-loss: non-interactive db push needs this to apply additive
+# changes like new unique constraints (otherwise it refuses and the container
+# never starts). Safe here — schema changes are additive.
+CMD ["sh", "-c", "prisma db push --skip-generate --accept-data-loss && node server.js"]
