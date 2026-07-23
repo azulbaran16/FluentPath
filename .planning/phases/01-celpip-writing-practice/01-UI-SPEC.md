@@ -121,6 +121,14 @@ Additional required copy (prescriptive — not covered by the single-CTA templat
 
 ---
 
+## Visual Hierarchy (focal points)
+
+Added 2026-07-23 per checker Dimension 2 recommendation. One primary visual anchor per key screen:
+
+- **`/celpip` landing**: primary anchor is the Task 1 / Task 2 card grid — the page hero (what CELPIP is) stays compact so the cards sit above the fold; "coming soon" tabs are visually secondary (muted, no accent).
+- **Simulator (`/celpip/writing/[taskId]`, writing state)**: primary anchor is the editor; the countdown timer is the strongest secondary element (fixed position, top of the writing column) so it's always visible without competing with the writing surface. Word counter is tertiary, attached to the editor's bottom edge.
+- **Simulator (results state)**: primary anchor is the side-by-side comparison (user text | model answer); the rubric checklist follows directly below as the natural next action; attempt metrics are a compact tertiary strip.
+
 ## UI Considerations
 
 Applicable state considerations resolved: 14 covered, 1 backstop, 0 unresolved.
