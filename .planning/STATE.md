@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 1
-current_phase_name: Server-Side Progress
-status: planning
-stopped_at: Roadmap + state initialized; Phase 1 ready to plan (`/gsd-plan-phase 1`)
+current_phase_name: CELPIP Writing Practice
+status: ready-to-execute
+stopped_at: Phase 1 planned (6 plans, checker-approved); next `/gsd-execute-phase 1`
 last_updated: "2026-07-23T21:27:25.193Z"
 last_activity: 2026-07-23
 last_activity_desc: "Milestone \\\"Completar producto\\\" initialized (doc ingest + codebase map + roadmap)"
@@ -25,8 +25,8 @@ See: .planning/PROJECT.md (updated 2026-07-23)
 ## Current Position
 
 Phase: 1 of 5 (CELPIP Writing Practice)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
+Plan: 0 of 6 in current phase
+Status: Ready to execute
 Last activity: 2026-07-23 — Milestone "Completar producto" initialized (doc ingest + codebase map + roadmap)
 
 Progress: [░░░░░░░░░░] 0%
