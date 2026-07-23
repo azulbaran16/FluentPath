@@ -49,3 +49,6 @@ next-env.d.ts
 .playwright-mcp/
 *.local.png
 .env*.local
+
+# Third-party study material (not for distribution)
+Celpip.zip
