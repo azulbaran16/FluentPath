@@ -14,9 +14,9 @@ Requirements for this milestone. Each maps to exactly one roadmap phase.
 Added 2026-07-23 from approved design `docs/plans/2026-07-23-celpip-writing-design.md`. All content original — third-party study material used only as format reference, never copied.
 
 - [ ] **CELPIP-01**: Original task bank in `src/lib/celpip.ts` — ~8 Writing Task 1 (formal email: scenario + 3 bullets) and ~8 Task 2 (survey: scenario + 2 options) with model answers and rewritten strategy tips
-- [ ] **CELPIP-02**: Exam simulator at `/celpip/writing/[taskId]` — real exam countdown (27 min T1 / 26 min T2, pausable in practice mode), 150–200 word counter, plain-text editor, draft autosave; timer expiry locks the editor and offers submit-as-is or untimed continue
-- [ ] **CELPIP-03**: Post-submit results — learner's text beside the original model answer, interactive self-evaluation checklist derived (in our own words) from CELPIP level descriptors, attempt metrics (time, words)
-- [ ] **CELPIP-04**: Attempt history stored local-first under its own namespace following the `progress.ts` pattern, shaped for later Postgres migration
+- [x] **CELPIP-02**: Exam simulator at `/celpip/writing/[taskId]` — real exam countdown (27 min T1 / 26 min T2, pausable in practice mode), 150–200 word counter, plain-text editor, draft autosave; timer expiry locks the editor and offers submit-as-is or untimed continue
+- [x] **CELPIP-03**: Post-submit results — learner's text beside the original model answer, interactive self-evaluation checklist derived (in our own words) from CELPIP level descriptors, attempt metrics (time, words)
+- [x] **CELPIP-04**: Attempt history stored local-first under its own namespace following the `progress.ts` pattern, shaped for later Postgres migration
 - [ ] **CELPIP-05**: `/celpip` landing free for all users — Task 1/Task 2 libraries with attempt status; Speaking/Reading/Listening shown as "coming soon"
 
 ### Progress (server-side persistence)
@@ -86,9 +86,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | CELPIP-01 | Phase 1 | Pending |
-| CELPIP-02 | Phase 1 | Pending |
-| CELPIP-03 | Phase 1 | Pending |
-| CELPIP-04 | Phase 1 | Pending |
+| CELPIP-02 | Phase 1 | Complete |
+| CELPIP-03 | Phase 1 | Complete |
+| CELPIP-04 | Phase 1 | Complete |
 | CELPIP-05 | Phase 1 | Pending |
 | PROG-01 | Phase 2 | Pending |
 | PROG-02 | Phase 2 | Pending |
@@ -107,6 +107,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TUTOR-05 | Phase 5 | Pending |
 
 **Coverage:**
+
 - v1 requirements: 20 total
 - Mapped to phases: 20
 - Unmapped: 0 ✓

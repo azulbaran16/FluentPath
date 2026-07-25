@@ -2,15 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 1
-current_phase_name: CELPIP Writing Practice
-status: ready-to-execute
-stopped_at: Phase 1 planned (6 plans, checker-approved); next `/gsd-execute-phase 1`
-last_updated: "2026-07-23T21:27:25.193Z"
-last_activity: 2026-07-23
-last_activity_desc: "Milestone \\\"Completar producto\\\" initialized (doc ingest + codebase map + roadmap)"
+current_phase: 01
+current_phase_name: celpip-writing-practice
+status: executing
+stopped_at: Completed 01-01-PLAN.md (tracer)
+last_updated: "2026-07-25T17:36:58.328Z"
+last_activity: 2026-07-25
+last_activity_desc: Phase 01 execution started
 progress:
-  percent: 0
+  total_phases: 1
+  completed_phases: 0
+  total_plans: 6
+  completed_plans: 1
 ---
 
 # Project State
@@ -20,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-23)
 
 **Core value:** A learner can practice any real-life English scenario end-to-end — with an AI tutor that corrects them in context — and their progress is never lost.
-**Current focus:** Phase 1 — CELPIP Writing Practice
+**Current focus:** Phase 01 — celpip-writing-practice
 
 ## Current Position
 
-Phase: 1 of 5 (CELPIP Writing Practice)
-Plan: 0 of 6 in current phase
+Phase: 01 (celpip-writing-practice) — EXECUTING
+Plan: 2 of 6
 Status: Ready to execute
-Last activity: 2026-07-23 — Milestone "Completar producto" initialized (doc ingest + codebase map + roadmap)
+Last activity: 2026-07-25 — Phase 01 execution started
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 17%
 
 ## Performance Metrics
 
@@ -46,6 +49,11 @@ Progress: [░░░░░░░░░░] 0%
 | - | - | - | - |
 
 *Updated after each plan completion*
+**Per-Plan Metrics:**
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| Phase 01 P01 | ~15min | 1 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -57,6 +65,8 @@ Recent decisions affecting current work:
 - 2026-06-19 (user, informal — design doc): free features first, paid AI tutor last → tutor is Phase 5
 - 2026-07-23 (user, brainstorming + approved spec docs/plans/2026-07-23-celpip-writing-design.md): CELPIP Writing prep as product feature, self-eval v1 (no AI), free, inserted as Phase 1
 - 2026-07-23 (user): milestone focus is "Completar producto" — tutor + content + server-side progress; commercial-launch items deferred to a later milestone
+- [Phase ?]: 01-01: Modeled the pre-start screen via mode === null (not a third phase value) to keep phase: 'compose'|'results' per the plan's type contract while supporting the two-button start screen.
+- [Phase ?]: 01-01: Results view ships Retry / Back to tasks only (no 'Next task' yet) — deferred to plan 05 once catalog navigation exists.
 
 ### Pending Todos
 
@@ -86,6 +96,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-23
-Stopped at: Roadmap + state initialized; Phase 1 ready to plan (`/gsd-plan-phase 1`)
+Last session: 2026-07-25T17:36:58.313Z
+Stopped at: Completed 01-01-PLAN.md (tracer)
 Resume file: None
