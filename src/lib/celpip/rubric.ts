@@ -2,7 +2,8 @@ import type { CelpipRubric } from "../celpip";
 
 // Self-evaluation rubric, rewritten in our own words from the CELPIP Writing
 // level descriptors (task fulfillment, organization, vocabulary, grammar &
-// format). This is a real seed rubric for this plan; plan 04 enriches it.
+// format). Every word here is original — no descriptor text or third-party
+// study material is reproduced anywhere in this file.
 export const CELPIP_RUBRIC: CelpipRubric = {
   email: [
     {
@@ -50,6 +51,18 @@ export const CELPIP_RUBRIC: CelpipRubric = {
           text: "Did you use specific, precise words instead of repeating the prompt's own wording?",
           explanation:
             "Reusing the prompt's exact phrases suggests limited vocabulary; paraphrasing shows you can express the same idea another way.",
+        },
+        {
+          id: "email-synonyms",
+          text: "When you mentioned the same idea more than once, did you switch to a different word or phrase each time?",
+          explanation:
+            "Repeating the identical word for a recurring idea reads as a narrow range; a synonym or reworded phrase signals a wider vocabulary.",
+        },
+        {
+          id: "email-tone-register",
+          text: "Do your word choices stay formal throughout, with no casual slang or contractions?",
+          explanation:
+            "A single casual word (like 'gonna' or 'stuff') breaks the formal register a workplace or official email needs from start to finish.",
         },
       ],
     },
@@ -118,6 +131,18 @@ export const CELPIP_RUBRIC: CelpipRubric = {
           text: "Did you use specific, precise words instead of repeating the prompt's own wording?",
           explanation:
             "Reusing the prompt's exact phrases suggests limited vocabulary; paraphrasing shows you can express the same idea another way.",
+        },
+        {
+          id: "survey-synonyms",
+          text: "When you mentioned the same idea more than once, did you switch to a different word or phrase each time?",
+          explanation:
+            "Repeating the identical word for a recurring idea reads as a narrow range; a synonym or reworded phrase signals a wider vocabulary.",
+        },
+        {
+          id: "survey-opinion-language",
+          text: "Did you use clear opinion language (I believe, in my view, this makes more sense because) rather than flat statements?",
+          explanation:
+            "Explicit opinion phrasing makes your stance and reasoning easy to follow, rather than leaving the reader to infer whether a sentence is fact or argument.",
         },
       ],
     },
