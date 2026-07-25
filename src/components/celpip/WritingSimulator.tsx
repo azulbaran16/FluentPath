@@ -1,23 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import type { CelpipWritingTask } from "@/lib/celpip";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { CELPIP_RUBRIC, type CelpipWritingTask } from "@/lib/celpip";
 import { useCelpipProgress } from "@/lib/celpip-progress";
+import { RubricChecklist } from "./RubricChecklist";
 import { Timer } from "./Timer";
 
 type Phase = "compose" | "results";
 type Mode = "timed" | "practice" | null;
 type WordState = "under" | "in-range" | "over";
 
+const AUTOSAVE_DEBOUNCE_MS = 3000;
+
 export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
-  const { addAttempt } = useCelpipProgress();
+  const { addAttempt, saveDraft, draftFor, ready } = useCelpipProgress();
   const [phase, setPhase] = useState<Phase>("compose");
   const [mode, setMode] = useState<Mode>(null);
   const [text, setText] = useState("");
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [expired, setExpired] = useState(false);
   const [locked, setLocked] = useState(false);
+  const [autosaveWarning, setAutosaveWarning] = useState(false);
+  const [checkedRubric, setCheckedRubric] = useState<Record<string, boolean>>({});
+  const hydratedRef = useRef(false);
+  const submittedDurationRef = useRef(0);
+  const finalizedRef = useRef(false);
 
   const { min, max } = task.wordRange;
   const words = useMemo(
@@ -30,6 +38,30 @@ export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
   // The countdown runs whenever a mode is active and composing hasn't
   // already expired once — expiry is one-way (never re-arms mid-attempt).
   const timerRunning = mode !== null && phase === "compose" && !expired;
+
+  // Restore a previously autosaved draft once the local store has hydrated
+  // from localStorage (client-only; SSR renders the empty default).
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    if (!ready || hydratedRef.current) return;
+    hydratedRef.current = true;
+    const draft = draftFor(task.id);
+    if (draft) setText(draft);
+  }, [ready, draftFor, task.id]);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  // Debounced autosave while composing: a few seconds after the learner
+  // stops typing, persist the draft. A setItem failure surfaces a visible
+  // warning instead of being silently dropped — the in-memory text is
+  // never touched either way.
+  useEffect(() => {
+    if (!mode || phase !== "compose") return;
+    const id = setTimeout(() => {
+      const ok = saveDraft(task.id, text);
+      setAutosaveWarning(!ok);
+    }, AUTOSAVE_DEBOUNCE_MS);
+    return () => clearTimeout(id);
+  }, [mode, phase, saveDraft, task.id, text]);
 
   function start(selected: "timed" | "practice") {
     setMode(selected);
@@ -46,28 +78,42 @@ export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
   }
 
   function submit() {
-    const durationSeconds = startedAt
+    submittedDurationRef.current = startedAt
       ? Math.round((Date.now() - startedAt) / 1000)
       : 0;
+    finalizedRef.current = false;
+    setPhase("results");
+  }
+
+  // The attempt is recorded once, holding the local rubric self-check state
+  // so a partial (or empty) check-in is still a valid, persisted result.
+  // Called on every results-view exit path (Retry / Back to tasks) so
+  // whatever the learner last checked is what lands in history.
+  function finalizeAttempt() {
+    if (finalizedRef.current) return;
+    finalizedRef.current = true;
     addAttempt(task.id, {
       taskId: task.id,
       taskType: task.taskType,
       date: new Date().toISOString(),
-      durationSeconds,
+      durationSeconds: submittedDurationRef.current,
       wordCount: words,
       text,
-      checkedRubric: {},
+      checkedRubric,
       outOfTime: expired,
     });
-    setPhase("results");
   }
 
   function retry() {
+    finalizeAttempt();
     setText("");
     setMode(null);
     setStartedAt(null);
     setExpired(false);
     setLocked(false);
+    setCheckedRubric({});
+    setAutosaveWarning(false);
+    finalizedRef.current = false;
     setPhase("compose");
   }
 
@@ -92,7 +138,20 @@ export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
           </div>
         </div>
 
-        {/* Expansion seam: RubricChecklist ("Self-check against the descriptors") goes here — plan 04 */}
+        <div className="mt-6 rounded-[var(--radius)] border border-line bg-card p-6 shadow-[var(--shadow-soft)]">
+          <h2 className="font-display text-lg font-semibold">
+            Self-check against the descriptors
+          </h2>
+          <div className="mt-4">
+            <RubricChecklist
+              rubric={CELPIP_RUBRIC[task.taskType]}
+              checked={checkedRubric}
+              onToggle={(itemId, value) =>
+                setCheckedRubric((c) => ({ ...c, [itemId]: value }))
+              }
+            />
+          </div>
+        </div>
 
         <div className="mt-6 flex flex-wrap gap-3">
           <button
@@ -104,6 +163,7 @@ export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
           </button>
           <Link
             href="/celpip"
+            onClick={finalizeAttempt}
             className="rounded-xl border border-line-strong px-4 py-2 text-sm font-semibold transition-colors hover:bg-paper-deep"
           >
             Back to tasks
@@ -228,7 +288,17 @@ export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
         }`}
       />
 
-      {/* Expansion seam: autosave-interval (saveDraft every few seconds) goes here — plan 04 */}
+      {autosaveWarning && (
+        <p
+          className="mt-2 text-xs font-semibold"
+          style={{ color: "var(--vermilion)" }}
+          role="alert"
+        >
+          We couldn&apos;t save your draft just now. Keep writing — we&apos;ll keep
+          trying, but copy your text somewhere safe if you&apos;re about to close
+          this tab.
+        </p>
+      )}
 
       <div className="mt-2 flex flex-wrap items-center justify-between gap-3 text-xs">
         <span

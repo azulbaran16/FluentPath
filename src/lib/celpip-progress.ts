@@ -44,11 +44,15 @@ function readLocal(): CelpipProgressState {
   }
 }
 
-function writeLocal(s: CelpipProgressState) {
+/** Returns true on a successful write, false if setItem throws (quota
+ * exceeded, private browsing, etc). Callers use this to surface a visible
+ * warning instead of silently losing the write. */
+function writeLocal(s: CelpipProgressState): boolean {
   try {
     window.localStorage.setItem(KEY, JSON.stringify(s));
+    return true;
   } catch {
-    /* storage unavailable — caller keeps the in-memory text, nothing lost */
+    return false;
   }
 }
 
@@ -66,12 +70,14 @@ export function useCelpipProgress() {
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const persist = useCallback(
-    (updater: (s: CelpipProgressState) => CelpipProgressState) => {
+    (updater: (s: CelpipProgressState) => CelpipProgressState): boolean => {
+      let ok = true;
       setState((prev) => {
         const next = updater(prev);
-        writeLocal(next);
+        ok = writeLocal(next);
         return next;
       });
+      return ok;
     },
     [],
   );
@@ -89,13 +95,14 @@ export function useCelpipProgress() {
     [persist],
   );
 
+  /** Returns true on a successful save, false if the underlying localStorage
+   * write threw — callers surface a visible warning on false. */
   const saveDraft = useCallback(
-    (taskId: string, text: string) => {
+    (taskId: string, text: string): boolean =>
       persist((s) => ({
         ...s,
         drafts: { ...s.drafts, [taskId]: text },
-      }));
-    },
+      })),
     [persist],
   );
 
