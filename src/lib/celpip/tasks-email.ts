@@ -159,4 +159,97 @@ Wei Zhang`,
       "Close a rescheduling request by explicitly asking for confirmation, so nothing is left assumed.",
     ],
   },
+  {
+    id: "email-06",
+    taskType: "email",
+    title: "Email to your landlord about a furnace repair",
+    scenario:
+      "You rent a house in Winnipeg, and the furnace has been making a loud banging noise for the past four days and is no longer heating the upstairs bedrooms properly. Write an email to your landlord, Mrs. Novak.",
+    bullets: [
+      "Describe the problem with the furnace and how long it has been happening",
+      "Explain the impact this is having on you and your family",
+      "Ask when a repair technician can come and request an update",
+    ],
+    timeLimitMinutes: 27,
+    wordRange: { min: 150, max: 200 },
+    modelAnswer: `Dear Mrs. Novak,
+
+I am writing to let you know about a problem with the furnace at 214 Elm Street. For the past four days, it has been making a loud banging noise every time it turns on, and the upstairs bedrooms are no longer heating properly, even when the thermostat is set well above normal.
+
+This has been especially difficult for my family, since my two children sleep upstairs and the rooms have been quite cold overnight. We have been using space heaters as a temporary solution, but I am concerned about running them for long periods, both for safety and for the extra electricity cost.
+
+Given the dropping temperatures this week, could you please arrange for a technician to look at the furnace as soon as possible? I am home most days after 4 p.m. and all day on weekends, so any of those times would work for access. Please let me know when I should expect someone.
+
+Thank you in advance for your quick attention to this.
+
+Yours sincerely,
+Aleksander Kowalski`,
+    strategyTips: [
+      "Describe the problem with concrete sensory detail (the noise, the temperature) — it makes urgency believable, not just claimed.",
+      "Explain real impact on people, not just the object, so the reader understands why a quick fix matters.",
+      "Mention your availability for access — it removes one common reason repairs get delayed.",
+    ],
+  },
+  {
+    id: "email-07",
+    taskType: "email",
+    title: "Email to the condo board about a parking dispute",
+    scenario:
+      "You live in a condominium in Ottawa, and for the past month another resident has been consistently parking in your assigned spot, forcing you to park on the street. Write an email to the condo board's property manager, Ms. Tremblay.",
+    bullets: [
+      "Explain the problem and how often it has happened",
+      "Describe any steps you have already taken to resolve it",
+      "Ask the board to take action and say what outcome you would like",
+    ],
+    timeLimitMinutes: 27,
+    wordRange: { min: 150, max: 200 },
+    modelAnswer: `Dear Ms. Tremblay,
+
+I am writing about an ongoing parking issue at 88 Rideau Court. For the past month, a vehicle I do not recognize has been parked in my assigned spot, number 14, at least three or four times a week, which has forced me to park on the street instead.
+
+I left a polite note on the vehicle two weeks ago asking the owner to stop, and I also mentioned the issue to the building superintendent in person, but the parking has continued regardless. I would rather not confront the driver directly, since I do not know who they are.
+
+Could the board please look into who owns the vehicle and send a formal reminder about the building's parking rules? I would also appreciate knowing whether a fine or a follow-up policy applies in cases like this, since street parking is not always available in the evenings. I am happy to share photos of the vehicle and licence plate if that would help.
+
+Thank you for addressing this matter.
+
+Yours sincerely,
+Renata Silva`,
+    strategyTips: [
+      "Show a pattern (frequency, duration) rather than a single incident — it makes the request for action more credible.",
+      "Mention the informal steps you already tried; it proves you're not escalating without reason.",
+      "Ask what specific outcome you want (investigation, reminder, policy clarification) instead of a vague 'please help.'",
+    ],
+  },
+  {
+    id: "email-08",
+    taskType: "email",
+    title: "Email to your child's teacher requesting a meeting",
+    scenario:
+      "Your ten-year-old daughter has been struggling with her math homework over the past month, and her teacher, Mr. Whitfield, mentioned briefly at pickup that her grades have started to slip. Write an email to Mr. Whitfield.",
+    bullets: [
+      "Explain your concern and what you have noticed at home",
+      "Ask for a meeting to discuss how she is doing in class",
+      "Suggest a few times that could work for you",
+    ],
+    timeLimitMinutes: 27,
+    wordRange: { min: 150, max: 200 },
+    modelAnswer: `Dear Mr. Whitfield,
+
+I am writing because I would like to talk with you about my daughter Emily's progress in math class. Over the past month, I have noticed that she often seems frustrated with her homework and takes much longer to finish it than she used to, and you mentioned recently that her grades have started to slip as well.
+
+I would really appreciate the chance to meet and discuss what might be going on, both at school and at home, so we can support her together. It would help me to understand which topics she is finding difficult and whether there are any resources or extra practice you would recommend.
+
+I am generally free on Tuesday or Thursday afternoons after 3:30, or any morning before 8:45 if that works better for your schedule. Please let me know which time suits you, or suggest another if none of these are convenient, and I will make sure to be there.
+
+Thank you very much for reaching out and for your support this year.
+
+Yours sincerely,
+Carla Mendoza`,
+    strategyTips: [
+      "Combine what you've observed at home with what the reader told you — it shows you're building on their information, not ignoring it.",
+      "Frame the meeting as collaborative ('so we can support her together') rather than as a complaint — it keeps the tone constructive.",
+      "Offer a small set of specific time windows rather than 'whenever works' — it's easier for a busy reader to confirm.",
+    ],
+  },
 ];
