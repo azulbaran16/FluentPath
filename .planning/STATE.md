@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 01
 current_phase_name: celpip-writing-practice
 status: executing
-stopped_at: Completed 01-01-PLAN.md (tracer)
-last_updated: "2026-07-25T17:36:58.328Z"
+stopped_at: Completed 01-02-PLAN.md
+last_updated: "2026-07-25T17:45:47.099Z"
 last_activity: 2026-07-25
 last_activity_desc: Phase 01 execution started
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 6
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-07-23)
 ## Current Position
 
 Phase: 01 (celpip-writing-practice) — EXECUTING
-Plan: 2 of 6
+Plan: 3 of 6
 Status: Ready to execute
 Last activity: 2026-07-25 — Phase 01 execution started
 
-Progress: [██░░░░░░░░] 17%
+Progress: [███░░░░░░░] 33%
 
 ## Performance Metrics
 
@@ -54,6 +54,7 @@ Progress: [██░░░░░░░░] 17%
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | Phase 01 P01 | ~15min | 1 tasks | 8 files |
+| Phase 01 P02 | ~10min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -67,6 +68,7 @@ Recent decisions affecting current work:
 - 2026-07-23 (user): milestone focus is "Completar producto" — tutor + content + server-side progress; commercial-launch items deferred to a later milestone
 - [Phase ?]: 01-01: Modeled the pre-start screen via mode === null (not a third phase value) to keep phase: 'compose'|'results' per the plan's type contract while supporting the two-button start screen.
 - [Phase ?]: 01-01: Results view ships Retry / Back to tasks only (no 'Next task' yet) — deferred to plan 05 once catalog navigation exists.
+- [Phase ?]: 01-02: Split two authoring tasks into two atomic commits by staging an intermediate file state, preserving one-commit-per-task even though both tasks modify the same file.
 
 ### Pending Todos
 
@@ -96,6 +98,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-25T17:36:58.313Z
-Stopped at: Completed 01-01-PLAN.md (tracer)
+Last session: 2026-07-25T17:45:47.082Z
+Stopped at: Completed 01-02-PLAN.md
 Resume file: None
