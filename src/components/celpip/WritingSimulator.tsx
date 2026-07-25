@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { CelpipWritingTask } from "@/lib/celpip";
 import { useCelpipProgress } from "@/lib/celpip-progress";
+import { Timer } from "./Timer";
 
 type Phase = "compose" | "results";
 type Mode = "timed" | "practice" | null;
@@ -15,6 +16,8 @@ export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
   const [mode, setMode] = useState<Mode>(null);
   const [text, setText] = useState("");
   const [startedAt, setStartedAt] = useState<number | null>(null);
+  const [expired, setExpired] = useState(false);
+  const [locked, setLocked] = useState(false);
 
   const { min, max } = task.wordRange;
   const words = useMemo(
@@ -24,9 +27,22 @@ export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
   const wordState: WordState =
     words < min ? "under" : words > max ? "over" : "in-range";
 
+  // The countdown runs whenever a mode is active and composing hasn't
+  // already expired once — expiry is one-way (never re-arms mid-attempt).
+  const timerRunning = mode !== null && phase === "compose" && !expired;
+
   function start(selected: "timed" | "practice") {
     setMode(selected);
     setStartedAt(Date.now());
+  }
+
+  function handleExpire() {
+    setExpired(true);
+    setLocked(true);
+  }
+
+  function continueUntimed() {
+    setLocked(false);
   }
 
   function submit() {
@@ -41,7 +57,7 @@ export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
       wordCount: words,
       text,
       checkedRubric: {},
-      outOfTime: false,
+      outOfTime: expired,
     });
     setPhase("results");
   }
@@ -50,6 +66,8 @@ export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
     setText("");
     setMode(null);
     setStartedAt(null);
+    setExpired(false);
+    setLocked(false);
     setPhase("compose");
   }
 
@@ -140,7 +158,47 @@ export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
-      {/* Expansion seam: Timer (countdown, pausable in practice mode) goes here — plan 04 */}
+      <div className="sticky top-4 z-10 mb-4 flex items-center justify-between rounded-xl border border-line bg-card/95 px-4 py-3 shadow-[var(--shadow-soft)] backdrop-blur">
+        <Timer
+          totalSeconds={task.timeLimitMinutes * 60}
+          running={timerRunning}
+          mode={mode}
+          onExpire={handleExpire}
+        />
+      </div>
+
+      {locked && (
+        <div
+          className="mb-4 rounded-xl border p-4"
+          style={{
+            borderColor: "var(--vermilion)",
+            background: "color-mix(in srgb, var(--vermilion) 10%, transparent)",
+          }}
+        >
+          <h2 className="font-display text-lg font-semibold" style={{ color: "var(--vermilion)" }}>
+            Time&apos;s up
+          </h2>
+          <p className="mt-1 text-sm text-ink-soft">
+            The editor is locked, but your text is safe. Submit what you have, or keep
+            writing in untimed mode — it&apos;ll be marked as over time.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-3">
+            <button
+              onClick={submit}
+              className="rounded-xl px-4 py-2 text-sm font-semibold text-paper transition-colors"
+              style={{ background: "var(--sky)" }}
+            >
+              Submit as-is
+            </button>
+            <button
+              onClick={continueUntimed}
+              className="rounded-xl border border-line-strong px-4 py-2 text-sm font-semibold transition-colors hover:bg-paper-deep"
+            >
+              Continue untimed
+            </button>
+          </div>
+        </div>
+      )}
 
       <h1 className="font-display text-2xl font-semibold">{task.title}</h1>
       <p className="mt-3 text-base leading-relaxed text-ink-soft">{task.scenario}</p>
@@ -162,9 +220,12 @@ export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
+        readOnly={locked}
         placeholder="Write your answer here…"
         rows={14}
-        className="mt-4 w-full resize-y rounded-xl border border-line-strong bg-paper p-3 text-base leading-relaxed outline-none transition-colors focus:border-sky"
+        className={`mt-4 w-full resize-y rounded-xl border border-line-strong bg-paper p-3 text-base leading-relaxed outline-none transition-colors focus:border-sky ${
+          locked ? "opacity-70" : ""
+        }`}
       />
 
       {/* Expansion seam: autosave-interval (saveDraft every few seconds) goes here — plan 04 */}
@@ -183,13 +244,15 @@ export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
             ? `${words} words · in range ✓`
             : `${words} / ${min}–${max} words`}
         </span>
-        <button
-          onClick={submit}
-          className="rounded-lg px-4 py-2 text-sm font-semibold text-paper transition-colors"
-          style={{ background: "var(--sky)" }}
-        >
-          Submit
-        </button>
+        {!locked && (
+          <button
+            onClick={submit}
+            className="rounded-lg px-4 py-2 text-sm font-semibold text-paper transition-colors"
+            style={{ background: "var(--sky)" }}
+          >
+            Submit
+          </button>
+        )}
       </div>
     </div>
   );
