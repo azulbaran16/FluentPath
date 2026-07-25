@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 01
 current_phase_name: celpip-writing-practice
 status: executing
-stopped_at: Completed 01-03-PLAN.md
-last_updated: "2026-07-25T17:53:12.211Z"
+stopped_at: Completed 01-04-PLAN.md
+last_updated: "2026-07-25T18:07:47.996Z"
 last_activity: 2026-07-25
 last_activity_desc: Phase 01 execution started
 progress:
   total_phases: 1
   completed_phases: 0
   total_plans: 6
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-07-23)
 ## Current Position
 
 Phase: 01 (celpip-writing-practice) — EXECUTING
-Plan: 4 of 6
+Plan: 5 of 6
 Status: Ready to execute
 Last activity: 2026-07-25 — Phase 01 execution started
 
-Progress: [█████░░░░░] 50%
+Progress: [███████░░░] 67%
 
 ## Performance Metrics
 
@@ -56,6 +56,7 @@ Progress: [█████░░░░░] 50%
 | Phase 01 P01 | ~15min | 1 tasks | 8 files |
 | Phase 01 P02 | ~10min | 2 tasks | 1 files |
 | Phase 01 P03 | ~15min | 2 tasks | 1 files |
+| Phase 01 P04 | ~15min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -71,6 +72,8 @@ Recent decisions affecting current work:
 - [Phase ?]: 01-01: Results view ships Retry / Back to tasks only (no 'Next task' yet) — deferred to plan 05 once catalog navigation exists.
 - [Phase ?]: 01-02: Split two authoring tasks into two atomic commits by staging an intermediate file state, preserving one-commit-per-task even though both tasks modify the same file.
 - [Phase ?]: 01-03: SURVEY_TASKS landed at 9 total (seed + 8) rather than exactly 8, since the plan's target was '~8' with an explicit 7-9 acceptance range.
+- [Phase ?]: 01-04: Deferred addAttempt from submit-time to results-view-exit-time (Retry / Back to tasks) since the store's addAttempt only appends — persisting once at exit captures the learner's final rubric self-check without duplicate attempts.
+- [Phase ?]: 01-04: Extended celpip-progress.ts's writeLocal/saveDraft to return a success boolean (was silently swallowing setItem failures) so the autosave-failure warning truth can actually surface to the UI.
 
 ### Pending Todos
 
@@ -100,6 +103,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-25T17:53:12.195Z
-Stopped at: Completed 01-03-PLAN.md
+Last session: 2026-07-25T18:07:47.980Z
+Stopped at: Completed 01-04-PLAN.md
 Resume file: None

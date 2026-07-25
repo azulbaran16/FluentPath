@@ -32,13 +32,13 @@ FluentPath is live but incomplete: practice modes, accounts, and billing exist, 
   4. Attempt history (per task: date, duration, word count, text, checklist) persists locally across sessions and is shaped for later DB migration
   5. No text from the third-party study material or official PDFs appears in the app — verified during review
 
-**Plans**: 3/6 plans executed
+**Plans**: 4/6 plans executed
 Plans:
 
 - [x] 01-01-PLAN.md — Tracer: end-to-end writing slice (data → storage → route → simulator → results → persist)
 - [x] 01-02-PLAN.md — Task 1 email bank (~8 original formal-email tasks + model answers + tips)
 - [x] 01-03-PLAN.md — Task 2 survey bank (~8 original opinion tasks + model answers + tips)
-- [ ] 01-04-PLAN.md — Simulator: countdown timer + expiry lock + autosave + descriptor self-eval rubric
+- [x] 01-04-PLAN.md — Simulator: countdown timer + expiry lock + autosave + descriptor self-eval rubric
 - [ ] 01-05-PLAN.md — Free /celpip landing: tabs, task cards, attempt history, mobile notice
 - [ ] 01-06-PLAN.md — Human verification gate (5 success criteria + no-third-party-text)
 
@@ -115,7 +115,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. CELPIP Writing Practice | 3/6 | In Progress|  |
+| 1. CELPIP Writing Practice | 4/6 | In Progress|  |
 | 2. Server-Side Progress | 0/TBD | Not started | - |
 | 3. Every Scenario Practicable | 0/TBD | Not started | - |
 | 4. Full Curriculum Expansion | 0/TBD | Not started | - |
