@@ -114,4 +114,92 @@ Given that the neighbourhood's fitness needs are already reasonably well met, I 
       "Open your conclusion with 'Given that...' to summarize your strongest reason before restating your choice.",
     ],
   },
+  {
+    id: "survey-06",
+    taskType: "survey",
+    title: "Workplace schedule survey: four-day week or flexible hours",
+    scenario:
+      "Your company's management is considering a new work-schedule policy and wants employee input before deciding: switching to a four-day work week with longer daily hours, or keeping five days but allowing flexible start and end times each day. Write a response giving your opinion.",
+    options: ["Switch to a four-day work week", "Keep five days with flexible hours"],
+    timeLimitMinutes: 26,
+    wordRange: { min: 150, max: 200 },
+    modelAnswer: `Given the choice between a four-day work week and flexible daily hours, I believe keeping five days with flexible start and end times is the better policy for our company.
+
+The main advantage of flexible hours is that they accommodate very different personal situations without asking everyone to fit the same schedule. A parent might start early to be home for school pickup, while someone who commutes against traffic might prefer to start later; a four-day week with longer hours would actually make some of these situations harder, not easier, since the days themselves become less predictable in length.
+
+Flexible hours also spread work more evenly across the week rather than compressing it, which matters for client-facing roles where someone needs to be reachable most days. My own team, for example, handles requests from clients in different time zones, and a four-day schedule would leave us without coverage on the fifth day entirely.
+
+For these reasons, I would recommend that management adopt flexible hours rather than a four-day week, since it better fits the range of needs across our workforce.`,
+    strategyTips: [
+      "When a policy affects a whole team differently, mention at least two different personal situations to show the option's flexibility.",
+      "If your workplace has an operational constraint (client coverage, shift needs), use it as your concrete example instead of a generic one.",
+      "End with a comparative sentence ('rather than...') that keeps both options visible in your final line.",
+    ],
+  },
+  {
+    id: "survey-07",
+    taskType: "survey",
+    title: "Grocery store survey: self-checkout or staffed lanes",
+    scenario:
+      "Your local grocery store is redesigning its checkout area and is surveying customers on their preference: adding more self-checkout kiosks, or keeping more staffed checkout lanes with cashiers. Write a response giving your opinion.",
+    options: ["Add more self-checkout kiosks", "Keep more staffed checkout lanes"],
+    timeLimitMinutes: 26,
+    wordRange: { min: 150, max: 200 },
+    modelAnswer: `When deciding between more self-checkout kiosks and more staffed checkout lanes, I believe the store should prioritize keeping staffed lanes.
+
+To start, staffed checkouts serve customers who self-checkout often leaves behind, including elderly shoppers, people with mobility issues, and anyone buying a large order that is slow and frustrating to scan alone. A cashier can also catch pricing errors or help with coupons far more quickly than a kiosk's touchscreen menus usually allow.
+
+Staffed lanes additionally provide jobs in the community, and cashiers offer a small but meaningful moment of human interaction that many regular customers, especially older residents living alone, genuinely value during their day. I have watched my own grandmother avoid self-checkout entirely because she finds the machines confusing and prefers a quick chat with someone she recognizes at the till.
+
+While self-checkout can be convenient for a few quick items, I believe the store should keep most of its lanes staffed, since it serves a much wider range of customers well rather than favouring only the fastest, simplest transactions.`,
+    strategyTips: [
+      "Name specific customer groups (elderly, mobility issues, large orders) who are disadvantaged by the option you reject — it's a strong, concrete idea → explain step.",
+      "A brief, real-feeling personal example (a family member's habit) works well as your example step without needing invented statistics.",
+      "Acknowledge one genuine advantage of the option you didn't choose before restating your position — it shows balanced reasoning.",
+    ],
+  },
+  {
+    id: "survey-08",
+    taskType: "survey",
+    title: "Professional development survey: online or in-person training",
+    scenario:
+      "Your employer is setting up a new professional development program and asking staff which format they prefer: online, self-paced courses that can be completed anytime, or in-person classroom training held during work hours. Write a response giving your opinion.",
+    options: ["Online, self-paced courses", "In-person classroom training"],
+    timeLimitMinutes: 26,
+    wordRange: { min: 150, max: 200 },
+    modelAnswer: `Asked to choose between online self-paced courses and in-person classroom training, I believe in-person training would benefit our staff more.
+
+One important reason is that classroom sessions create a fixed time and place that actually gets completed, whereas self-paced online courses are easy to postpone indefinitely once daily work tasks take priority. Many colleagues who signed up for optional online modules in the past never finished them, simply because nothing on the calendar forced them to sit down and focus.
+
+In-person training also allows for real discussion and immediate questions, which online videos generally cannot replicate. When our team attended a short in-person workshop last year, several useful ideas came directly from a group discussion partway through, something that would not have happened watching a recorded lesson alone at a desk.
+
+Although online courses offer more flexibility on paper, I believe the structure and interaction of in-person training would lead to far better completion rates and deeper learning for our team, which matters more than convenience alone.`,
+    strategyTips: [
+      "If your chosen option solves a practical problem (things not getting finished), state that problem plainly before explaining your solution.",
+      "A specific memory from a past training or meeting makes a stronger example step than a hypothetical one.",
+      "Concede the other option's one clear strength (flexibility) before your final sentence — it shows you weighed both sides fairly.",
+    ],
+  },
+  {
+    id: "survey-09",
+    taskType: "survey",
+    title: "Workplace technology survey: scheduling app or paper sign-up",
+    scenario:
+      "Your workplace is deciding whether to adopt a new scheduling app for all staff, and management wants employee opinions first: switching everyone to the new app, or continuing to use the current paper sign-up sheets in the break room. Write a response giving your opinion.",
+    options: ["Switch to the new scheduling app", "Continue using paper sign-up sheets"],
+    timeLimitMinutes: 26,
+    wordRange: { min: 150, max: 200 },
+    modelAnswer: `When considering whether to adopt the new scheduling app or continue with paper sign-up sheets, I believe switching to the app is the better choice for our workplace.
+
+The clearest advantage is that everyone could check and update the schedule from their phone, rather than needing to be physically in the break room to see it. This matters especially for staff who work across different shifts and rarely overlap in person, since a shared paper sheet often goes unseen by half the team until it is too late to request a change.
+
+The app would also reduce simple mistakes, such as two people accidentally signing up for the same shift or a sheet going missing entirely, both of which have happened more than once with the current system. Digital records stay available and searchable, which paper cannot easily offer once a page is replaced each week.
+
+For a team spread across many shifts, I believe the scheduling app would prevent more problems than it creates, and the workplace should move forward with adopting it.`,
+    strategyTips: [
+      "When arguing for new technology, name a concrete failure of the current system (missing sheets, double-booking) rather than only praising the new option.",
+      "Consider who is disadvantaged by the status quo (staff on different shifts) as your idea → explain reasoning.",
+      "Close with a forward-looking recommendation ('should move forward with...') to keep the tone persuasive rather than purely descriptive.",
+    ],
+  },
 ];
