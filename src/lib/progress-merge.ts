@@ -66,7 +66,13 @@
 // relative imports, so `node --experimental-strip-types` can load it directly.
 // The type-only import below erases at compile time.
 
-import type { AttemptStat, ProgressState, SrsItem } from "./progress-schema";
+import type {
+  AttemptStat,
+  CelpipAttempt,
+  CelpipProgressState,
+  ProgressState,
+  SrsItem,
+} from "./progress-schema";
 
 // Deliberately a SECOND declaration of the empty state. The contract module's
 // EMPTY cannot be imported as a value here without giving this file a runtime
@@ -606,4 +612,209 @@ export function mergeProgress(a: unknown, b: unknown): ProgressState {
  * that keeps a quiet page load from writing. */
 export function progressEqual(a: unknown, b: unknown): boolean {
   return canonical(coerce(a)) === canonical(coerce(b));
+}
+
+/* ================================================================== *
+ * The CELPIP join (D-04, D-05).
+ *
+ * A second, much smaller domain merge over the SAME primitives above,
+ * deliberately kept as its own function rather than folded into a
+ * general-purpose object merger. The two states share no field shapes,
+ * so a general merger would have to carry per-field policy anyway — and
+ * it would bury the two carve-outs that are the whole point of this
+ * file.
+ * ================================================================== */
+
+// The same deliberate second declaration, for the same reason as MERGE_EMPTY:
+// importing the contract module's CELPIP_EMPTY as a VALUE would give this file
+// a runtime relative import and break its standalone-load property.
+// `scripts/verify-merge.mts` asserts the two literals field-for-field.
+export const MERGE_CELPIP_EMPTY: CelpipProgressState = {
+  attempts: {},
+  drafts: {},
+  updatedAt: null,
+};
+
+function stringRecord(v: unknown): Record<string, string> {
+  if (!isPlainObject(v)) return {};
+  const out: Record<string, string> = {};
+  for (const k of Object.keys(v)) {
+    const s = str(v[k]);
+    if (s !== null) out[k] = s;
+  }
+  return out;
+}
+
+function boolRecord(v: unknown): Record<string, boolean> {
+  if (!isPlainObject(v)) return {};
+  const out: Record<string, boolean> = {};
+  for (const k of Object.keys(v)) {
+    if (typeof v[k] === "boolean") out[k] = v[k];
+  }
+  return out;
+}
+
+/**
+ * One attempt, normalised. An entry that cannot supply BOTH a task id and a
+ * submission timestamp is dropped rather than repaired — those two fields are
+ * its natural key (see attemptKey), and an entry with no identity cannot be
+ * de-duplicated, so it would be appended again on every reconcile. An
+ * unrecognised `taskType` is dropped for the same reason 02-02 drops
+ * half-formed queue entries: a fabricated one would show the learner the wrong
+ * task in their history.
+ */
+function celpipAttemptEntry(v: unknown): CelpipAttempt | null {
+  if (!isPlainObject(v)) return null;
+  const taskId = str(v.taskId);
+  const date = str(v.date);
+  const taskType = v.taskType;
+  if (taskId === null || taskId === "" || date === null || date === "") return null;
+  if (taskType !== "email" && taskType !== "survey") return null;
+  const seconds = num(v.durationSeconds, 0);
+  const words = num(v.wordCount, 0);
+  return {
+    taskId,
+    taskType,
+    date,
+    durationSeconds: seconds < 0 ? 0 : seconds,
+    wordCount: words < 0 ? 0 : words,
+    text: str(v.text) ?? "",
+    checkedRubric: boolRecord(v.checkedRubric),
+    outOfTime: Boolean(v.outOfTime),
+  };
+}
+
+/**
+ * The natural key of an attempt: the task it answers and the instant it was
+ * submitted. The record carries no id of its own, and `date` is a
+ * millisecond ISO instant, so a collision needs two submissions of the same
+ * task in the same millisecond.
+ *
+ * The two halves are joined on a literal NUL — the same canonical separator
+ * pickVocabSide uses, and invisible in most editors, so it is called out here.
+ * A printable separator would be ambiguous: a task id containing it could
+ * forge another task's key.
+ */
+function attemptKey(e: CelpipAttempt): string {
+  return `${e.taskId} ${e.date}`;
+}
+
+/**
+ * De-duplicates on the natural key and sorts ascending by submission time.
+ *
+ * THE SORT IS A CORRECTNESS REQUIREMENT, NOT COSMETICS. Two arrays holding the
+ * same attempts in a different order are the same value, but they do not
+ * SERIALIZE the same — and D-02 reconciles on every authenticated load, so
+ * without one canonical order the reconcile would find a difference, write it
+ * back, and do it again on the next page view. The second rung (the entry's own
+ * canonical form) is there so the order is total even when two different tasks
+ * were submitted in the same millisecond, and it doubles as the tie-break when
+ * two records share a natural key but differ in content: an arbitrary winner
+ * chosen by a total order, which is what keeps the join commutative.
+ */
+function canonicalAttempts(list: CelpipAttempt[]): CelpipAttempt[] {
+  const byKey = new Map<string, { entry: CelpipAttempt; form: string }>();
+  for (const entry of list) {
+    const key = attemptKey(entry);
+    const form = canonical(entry);
+    const held = byKey.get(key);
+    if (held === undefined || form > held.form) byKey.set(key, { entry, form });
+  }
+  return [...byKey.values()]
+    .sort((p, q) => {
+      if (p.entry.date !== q.entry.date) return p.entry.date < q.entry.date ? -1 : 1;
+      return p.form < q.form ? -1 : p.form > q.form ? 1 : 0;
+    })
+    .map((held) => held.entry);
+}
+
+function celpipAttemptRecord(v: unknown): Record<string, CelpipAttempt[]> {
+  if (!isPlainObject(v)) return {};
+  const out: Record<string, CelpipAttempt[]> = {};
+  for (const k of Object.keys(v)) {
+    const list = v[k];
+    if (!Array.isArray(list)) continue;
+    const entries: CelpipAttempt[] = [];
+    for (const raw of list) {
+      const entry = celpipAttemptEntry(raw);
+      if (entry !== null) entries.push(entry);
+    }
+    // Canonicalised HERE as well as in the join, so that coerce is the
+    // canonical form: merge(a, a) then equals coerce(a) exactly, and a stored
+    // history that happens to be out of order does not produce a write on
+    // every load until it has been rewritten once.
+    out[k] = canonicalAttempts(entries);
+  }
+  return out;
+}
+
+function celpipCoerce(v: unknown): CelpipProgressState {
+  if (!isPlainObject(v)) return { ...MERGE_CELPIP_EMPTY };
+  return {
+    attempts: celpipAttemptRecord(v.attempts),
+    drafts: stringRecord(v.drafts),
+    updatedAt: str(v.updatedAt),
+  };
+}
+
+/**
+ * Which side supplies the WHOLE drafts map. Returns > 0 when x's map wins.
+ *
+ *   1. Different instants — the later one wins, and a side holding an instant
+ *      beats a side holding none.
+ *   2. Equal instants (in practice: both absent, i.e. two blobs written before
+ *      this phase and untouched since) — values only: the map with more keys,
+ *      then the greater canonical serialization.
+ *
+ * WHY THERE IS NO KEY UNION HERE, AND WHY SIZE IS ONLY THE LAST RUNG. This map
+ * is the one field in this state with a real delete site: submitting an attempt
+ * drops the saved draft so the next timed run starts from a blank editor. A key
+ * union would bring that draft straight back, and so would a rule that reached
+ * for the larger map before the instant — the device that cleared is by
+ * definition the one holding FEWER keys. Either shape pre-fills the next timed
+ * attempt with the answer the learner just submitted, which is the defect Phase
+ * 1 found and fixed in fca41b7. The instant is what makes rung 1 decide it: the
+ * clearing device stamps on the way out, so it always carries the later one,
+ * and the two events being seconds apart on the same calendar day — which they
+ * always are — no longer ties.
+ *
+ * Rung 2 compares the whole canonical map, not just its key list: drafts hold
+ * learner text, so two maps can share every key and still differ, and ranking
+ * those equal would leave both sides preferring their own copy forever.
+ */
+function pickDraftsSide(x: CelpipProgressState, y: CelpipProgressState): number {
+  if (x.updatedAt !== y.updatedAt) {
+    if (x.updatedAt === null) return -1;
+    if (y.updatedAt === null) return 1;
+    return x.updatedAt > y.updatedAt ? 1 : -1;
+  }
+  const kx = Object.keys(x.drafts);
+  const ky = Object.keys(y.drafts);
+  if (kx.length !== ky.length) return kx.length > ky.length ? 1 : -1;
+  const cx = canonical(x.drafts);
+  const cy = canonical(y.drafts);
+  return cx > cy ? 1 : cx < cy ? -1 : 0;
+}
+
+export function mergeCelpip(a: unknown, b: unknown): CelpipProgressState {
+  const x = celpipCoerce(a);
+  const y = celpipCoerce(b);
+  return {
+    // Append-only and union-safe: an attempt is never edited or deleted, so
+    // the two histories combine and the natural key removes what both sides
+    // hold. The per-key rule reads only the two arrays it is given.
+    attempts: unionRecord(x.attempts, y.attempts, (p, q) => canonicalAttempts([...p, ...q])),
+    drafts: pickDraftsSide(x, y) >= 0 ? { ...x.drafts } : { ...y.drafts },
+    // The later of the two, never a fresh one: a stamp here would make every
+    // merged copy outrank every unmerged one, and the reconcile would then
+    // decide the drafts map by which device loaded the app last.
+    updatedAt: laterInstant(x.updatedAt, y.updatedAt),
+  };
+}
+
+/** The CELPIP twin of `progressEqual`: canonical, key-order-insensitive, and
+ * inclusive of the instant, so the reconcile can skip a write-back that would
+ * change nothing. */
+export function celpipEqual(a: unknown, b: unknown): boolean {
+  return canonical(celpipCoerce(a)) === canonical(celpipCoerce(b));
 }

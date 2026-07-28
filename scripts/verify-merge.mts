@@ -13,13 +13,19 @@
 // never weaken the assertion.
 
 import {
+  MERGE_CELPIP_EMPTY,
   MERGE_EMPTY,
+  celpipEqual,
+  mergeCelpip,
   mergeProgress,
   progressEqual,
 } from "../src/lib/progress-merge.ts";
 import {
+  CELPIP_EMPTY,
   EMPTY,
   type AttemptStat,
+  type CelpipAttempt,
+  type CelpipProgressState,
   type ProgressState,
   type SrsItem,
 } from "../src/lib/progress-schema.ts";
@@ -1016,6 +1022,376 @@ group("rejected per-entry rules (evidence)");
     "and order-independent across the other bracketing too",
     mergeProgress(mergeProgress(t1, t3), t2).attempts.k,
     mergeProgress(mergeProgress(t2, t3), t1).attempts.k,
+  );
+}
+
+/* ================================================================== *
+ * 20-25. The CELPIP domain (02-05).
+ *
+ * A second, much smaller join over the same primitives. Two rules, and
+ * each one exists to prevent a named defect:
+ *
+ *   attempts  a key-unioned map of ARRAYS. Entries are de-duplicated on
+ *             their natural key and sorted into a canonical order,
+ *             because without one the merge is not idempotent and D-02's
+ *             per-load reconcile writes on every single page view.
+ *   drafts    taken WHOLE from the side with the later D-01b instant.
+ *             No key union, and no map-size tie-break ahead of the
+ *             instant: `clearDraft` really deletes, and either of those
+ *             would pre-fill the next timed attempt with the answer the
+ *             learner just submitted — the Phase 1 defect fixed in
+ *             fca41b7.
+ * ================================================================== */
+
+function mkCelpip(patch: Partial<CelpipProgressState>): CelpipProgressState {
+  return { ...CELPIP_EMPTY, ...patch };
+}
+
+function att(taskId: string, date: string, patch: Partial<CelpipAttempt> = {}): CelpipAttempt {
+  return {
+    taskId,
+    taskType: taskId.startsWith("survey") ? "survey" : "email",
+    date,
+    durationSeconds: 1500,
+    wordCount: 170,
+    text: `an answer submitted at ${date}`,
+    checkedRubric: { "content-1": true, "tone-2": false },
+    outOfTime: false,
+    ...patch,
+  };
+}
+
+// a2 is the SHARED attempt: it was synced to both devices, so it arrives on
+// both sides of the merge and must come out once.
+const a1 = att("email-neighbour", "2026-07-20T10:00:00.000Z");
+const a2 = att("email-neighbour", "2026-07-24T16:30:00.000Z");
+const a3 = att("email-neighbour", "2026-07-27T09:05:00.000Z");
+const s1 = att("survey-transit", "2026-07-22T11:00:00.000Z");
+
+const laptop = mkCelpip({
+  attempts: { "email-neighbour": [a1, a2] },
+  drafts: { "survey-transit": "a draft still open on the laptop" },
+  updatedAt: "2026-07-24T16:30:00.000Z",
+});
+const phoneCelpip = mkCelpip({
+  attempts: { "email-neighbour": [a2, a3], "survey-transit": [s1] },
+  drafts: {},
+  updatedAt: "2026-07-27T09:05:00.000Z",
+});
+
+/* ---- the draft carve-out, all four ways round ---- */
+
+// The device where the learner is still writing. Same calendar day as the
+// submission below, which is the whole point: a day-shaped marker ties here.
+const beforeSubmit = mkCelpip({
+  drafts: { "email-neighbour": "Dear Mr Alvarez, I am writing to" },
+  updatedAt: "2026-07-28T10:00:00.000Z",
+});
+// The same device seconds later: the attempt was submitted, so clearDraft
+// deleted the draft. Its map is now the SMALLER of the two, and it must still
+// win — on the instant, never on size.
+const afterSubmit = mkCelpip({
+  attempts: { "email-neighbour": [att("email-neighbour", "2026-07-28T10:04:59.000Z")] },
+  drafts: {},
+  updatedAt: "2026-07-28T10:05:00.000Z",
+});
+// The mirror: identical maps, instants SWAPPED. If the rule were "the smaller
+// map wins" the assertion above would pass here too — this is what stops it.
+const draftIsTheNewerOne = mkCelpip({
+  drafts: { "email-neighbour": "Dear Mr Alvarez, I am writing to" },
+  updatedAt: "2026-07-28T10:05:00.000Z",
+});
+const clearedIsTheOlderOne = mkCelpip({
+  attempts: { "email-neighbour": [att("email-neighbour", "2026-07-28T09:59:00.000Z")] },
+  drafts: {},
+  updatedAt: "2026-07-28T10:00:00.000Z",
+});
+// A Phase 1 blob, never touched since: no instant at all.
+const legacyWithDraft = mkCelpip({
+  attempts: { "survey-transit": [s1] },
+  drafts: { "email-neighbour": "an old draft from a device that has not synced" },
+});
+const legacyBiggerDrafts = mkCelpip({
+  drafts: { "email-neighbour": "one", "survey-transit": "two" },
+});
+const legacySmallerDrafts = mkCelpip({
+  drafts: { "survey-transit": "a different answer, same key count as nothing else" },
+});
+
+const celpipStates: Array<[string, CelpipProgressState]> = [
+  ["CELPIP_EMPTY", CELPIP_EMPTY],
+  ["laptop", laptop],
+  ["phoneCelpip", phoneCelpip],
+  ["beforeSubmit", beforeSubmit],
+  ["afterSubmit", afterSubmit],
+  ["draftIsTheNewerOne", draftIsTheNewerOne],
+  ["clearedIsTheOlderOne", clearedIsTheOlderOne],
+  ["legacyWithDraft", legacyWithDraft],
+  ["legacyBiggerDrafts", legacyBiggerDrafts],
+  ["legacySmallerDrafts", legacySmallerDrafts],
+];
+
+group("CELPIP algebra — idempotent, commutative, associative");
+for (const [na, a] of celpipStates) {
+  for (const [nb, b] of celpipStates) {
+    const once = mergeCelpip(a, b);
+    deepEqual(`celpip idempotent: merge(${na}, merge(${na}, ${nb}))`, mergeCelpip(a, once), once);
+    deepEqual(`celpip commutative: ${na} <-> ${nb}`, mergeCelpip(b, a), once);
+    for (const [nc, c] of celpipStates) {
+      deepEqual(
+        `celpip associative: (${na}·${nb})·${nc}`,
+        mergeCelpip(mergeCelpip(a, b), c),
+        mergeCelpip(a, mergeCelpip(b, c)),
+      );
+    }
+  }
+}
+
+group("CELPIP attempts — de-duplicated, and in a canonical order");
+{
+  const merged = mergeCelpip(laptop, phoneCelpip);
+  deepEqual(
+    "the two devices' histories combine, and the shared attempt appears once",
+    merged.attempts["email-neighbour"],
+    [a1, a2, a3],
+  );
+  ok(
+    "no duplicate survives the union",
+    merged.attempts["email-neighbour"].length === 3,
+    `length ${merged.attempts["email-neighbour"].length}`,
+  );
+  deepEqual("a task present on only one side is carried over whole", merged.attempts["survey-transit"], [s1]);
+  const dates = merged.attempts["email-neighbour"].map((e) => e.date);
+  deepEqual("the result is sorted ascending by submission timestamp", dates, [...dates].sort());
+
+  // Without a canonical order the array identity differs on each pass, and
+  // D-02's per-load reconcile would write on every page view.
+  ok(
+    "merging twice yields an identical array — the reconcile settles",
+    celpipEqual(mergeCelpip(merged, laptop), merged) &&
+      celpipEqual(mergeCelpip(merged, phoneCelpip), merged),
+  );
+  ok("a quiet reconcile writes nothing back", celpipEqual(mergeCelpip(laptop, laptop), laptop));
+
+  const shuffled = mkCelpip({ attempts: { "email-neighbour": [a3, a1, a2] } });
+  deepEqual(
+    "an out-of-order stored history is canonicalised rather than re-shuffled",
+    mergeCelpip(shuffled, CELPIP_EMPTY).attempts["email-neighbour"],
+    [a1, a2, a3],
+  );
+
+  // Two records sharing the natural key (same task, same millisecond) but
+  // differing in content: whichever way round they arrive, the same one wins.
+  const twinA = mkCelpip({ attempts: { "email-neighbour": [att("email-neighbour", a2.date, { wordCount: 12 })] } });
+  const twinB = mkCelpip({ attempts: { "email-neighbour": [att("email-neighbour", a2.date, { wordCount: 99 })] } });
+  const clash = mergeCelpip(twinA, twinB);
+  ok("a natural-key collision collapses to one entry", clash.attempts["email-neighbour"].length === 1);
+  deepEqual("and it collapses to the same one in either order", mergeCelpip(twinB, twinA), clash);
+
+  // Same submission instant, different tasks: still one entry each, still a
+  // total order.
+  const twoTasks = mergeCelpip(
+    mkCelpip({ attempts: { "email-neighbour": [att("email-neighbour", "2026-07-29T08:00:00.000Z")] } }),
+    mkCelpip({ attempts: { "survey-transit": [att("survey-transit", "2026-07-29T08:00:00.000Z")] } }),
+  );
+  ok(
+    "two tasks submitted in the same millisecond keep one entry each",
+    twoTasks.attempts["email-neighbour"].length === 1 &&
+      twoTasks.attempts["survey-transit"].length === 1,
+  );
+}
+
+group("CELPIP drafts — a cleared draft is never resurrected");
+{
+  const merged = mergeCelpip(beforeSubmit, afterSubmit);
+  deepEqual(
+    "the later-instant side supplies the whole map, even though it is the smaller one",
+    merged.drafts,
+    {},
+  );
+  ok(
+    "the submitted answer does not pre-fill the next timed attempt",
+    !("email-neighbour" in merged.drafts),
+  );
+  ok(
+    "and the two instants are the same calendar day, so no day marker could have decided this",
+    String(beforeSubmit.updatedAt).slice(0, 10) === String(afterSubmit.updatedAt).slice(0, 10),
+  );
+  deepEqual("commutative", mergeCelpip(afterSubmit, beforeSubmit), merged);
+  ok(
+    "still cleared after a second reconcile",
+    !("email-neighbour" in mergeCelpip(merged, beforeSubmit).drafts),
+  );
+
+  // The mirror. Same two maps, instants swapped — the draft must now SURVIVE,
+  // which is what proves the rule is not "the smaller map always wins".
+  const mirrored = mergeCelpip(draftIsTheNewerOne, clearedIsTheOlderOne);
+  deepEqual(
+    "with the instants swapped the newer draft survives",
+    mirrored.drafts,
+    { "email-neighbour": "Dear Mr Alvarez, I am writing to" },
+  );
+  ok("the attempt history is unioned regardless of which side won the drafts",
+    mirrored.attempts["email-neighbour"].length === 1);
+
+  // One-sided instant: only the device that cleared the draft has one.
+  const oneSided = mergeCelpip(legacyWithDraft, afterSubmit);
+  deepEqual("a side carrying an instant outranks a side carrying none", oneSided.drafts, {});
+  deepEqual("commutative", mergeCelpip(afterSubmit, legacyWithDraft), oneSided);
+  deepEqual(
+    "and the legacy side's attempt history is still unioned in",
+    oneSided.attempts["survey-transit"],
+    [s1],
+  );
+
+  // The reverse role, so the rule above is not "the empty map always wins":
+  // the instant-carrying side is the one HOLDING a draft.
+  const holdsTheInstant = mergeCelpip(mkCelpip({ drafts: {} }), draftIsTheNewerOne);
+  deepEqual(
+    "an instant-carrying side that holds a draft supplies it",
+    holdsTheInstant.drafts,
+    { "email-neighbour": "Dear Mr Alvarez, I am writing to" },
+  );
+
+  // Neither side carries an instant: two pre-Phase-2 blobs. Values only, and
+  // the order has to be TOTAL or the two sides keep picking their own copy.
+  const legacyTie = mergeCelpip(legacyBiggerDrafts, legacySmallerDrafts);
+  deepEqual("with no instant on either side the larger map wins", legacyTie.drafts, legacyBiggerDrafts.drafts);
+  ok("no instant is fabricated", legacyTie.updatedAt === null);
+  const sameKeysDifferentText = mergeCelpip(
+    mkCelpip({ drafts: { "email-neighbour": "aaa" } }),
+    mkCelpip({ drafts: { "email-neighbour": "zzz" } }),
+  );
+  ok(
+    "two maps with identical keys but different text are still ranked, and the same way both ways round",
+    celpipEqual(
+      sameKeysDifferentText,
+      mergeCelpip(
+        mkCelpip({ drafts: { "email-neighbour": "zzz" } }),
+        mkCelpip({ drafts: { "email-neighbour": "aaa" } }),
+      ),
+    ) && Object.keys(sameKeysDifferentText.drafts).length === 1,
+  );
+  // No key union anywhere near drafts: the losing side's exclusive key does
+  // not survive, even though nothing about it conflicts with the winner's.
+  const exclusiveEarlier = mkCelpip({
+    drafts: { "email-neighbour": "only on the older device" },
+    updatedAt: "2026-07-28T10:00:00.000Z",
+  });
+  const exclusiveLater = mkCelpip({
+    drafts: { "survey-transit": "only on the newer device" },
+    updatedAt: "2026-07-28T11:00:00.000Z",
+  });
+  deepEqual(
+    "no key union near drafts: the losing side's exclusive key is gone",
+    mergeCelpip(exclusiveEarlier, exclusiveLater).drafts,
+    { "survey-transit": "only on the newer device" },
+  );
+}
+
+group("CELPIP instant — the later of the two, never a fresh one");
+{
+  const merged = mergeCelpip(laptop, phoneCelpip);
+  ok(
+    "the merged instant is the later INPUT instant",
+    merged.updatedAt === phoneCelpip.updatedAt,
+    `updatedAt = ${String(merged.updatedAt)}`,
+  );
+  ok(
+    "a merge of two instant-free blobs stays instant-free",
+    mergeCelpip(legacyBiggerDrafts, legacySmallerDrafts).updatedAt === null,
+  );
+  ok(
+    "the instant is one of the two inputs and never generated",
+    mergeCelpip(beforeSubmit, afterSubmit).updatedAt === afterSubmit.updatedAt,
+  );
+}
+
+group("CELPIP empty-literal parity");
+deepEqual("progress-merge MERGE_CELPIP_EMPTY === progress-schema CELPIP_EMPTY", MERGE_CELPIP_EMPTY, CELPIP_EMPTY);
+deepEqual(
+  "field-for-field key parity",
+  Object.keys(MERGE_CELPIP_EMPTY).sort(),
+  Object.keys(CELPIP_EMPTY).sort(),
+);
+
+group("CELPIP totality — garbage on either side never throws");
+{
+  const celpipJunk: unknown[] = [
+    null,
+    undefined,
+    "garbage",
+    42,
+    true,
+    [1, 2, 3],
+    {},
+    { attempts: "nope", drafts: 7, updatedAt: 0 },
+    { attempts: { "email-neighbour": "not an array" }, drafts: { k: 9 } },
+    { attempts: { "email-neighbour": [null, 3, { taskId: "x" }] }, drafts: null },
+  ];
+  for (const j of celpipJunk) {
+    let merged: CelpipProgressState;
+    try {
+      merged = mergeCelpip(j, laptop);
+    } catch (err) {
+      ok(`mergeCelpip(${canon(j)}, laptop) does not throw`, false, String(err));
+      continue;
+    }
+    ok(`mergeCelpip(${canon(j)}, laptop) does not throw`, true);
+    deepEqual(
+      `mergeCelpip(${canon(j)}, laptop) has exactly the contract's fields`,
+      Object.keys(merged).sort(),
+      Object.keys(CELPIP_EMPTY).sort(),
+    );
+    deepEqual(
+      `mergeCelpip(${canon(j)}, laptop) preserves the readable side's history`,
+      merged.attempts["email-neighbour"],
+      [a1, a2],
+    );
+    deepEqual(
+      `mergeCelpip(laptop, ${canon(j)}) is commutative with garbage too`,
+      mergeCelpip(laptop, j),
+      merged,
+    );
+  }
+  // An attempt carrying a usable task type but NO identity — no submission
+  // timestamp, or no task id. It has to be dropped rather than stored: the
+  // de-duplication key is exactly that pair, so an entry without one cannot be
+  // recognised as already present and would be appended again on every
+  // reconcile, growing the column forever.
+  const identityless = {
+    attempts: {
+      "email-neighbour": [
+        { ...a1, date: "" },
+        { ...a1, taskId: "" },
+        { taskType: "email", text: "no id and no date" },
+        a1,
+      ],
+    },
+  };
+  const kept = mergeCelpip(identityless, CELPIP_EMPTY);
+  deepEqual(
+    "an attempt with no natural key is dropped, not stored",
+    kept.attempts["email-neighbour"],
+    [a1],
+  );
+  ok(
+    "so a repeat merge cannot append a second copy of it",
+    mergeCelpip(kept, identityless).attempts["email-neighbour"].length === 1,
+  );
+
+  deepEqual("mergeCelpip({}, {}) is the CELPIP empty state", mergeCelpip({}, {}), CELPIP_EMPTY);
+  ok(
+    "celpipEqual treats an absent field as its default",
+    celpipEqual(CELPIP_EMPTY, {}) && celpipEqual(CELPIP_EMPTY, null),
+  );
+  ok("celpipEqual still detects a real difference", !celpipEqual(laptop, phoneCelpip));
+  ok(
+    "celpipEqual ignores record key insertion order",
+    celpipEqual(
+      mkCelpip({ drafts: { a: "1", b: "2" } }),
+      mkCelpip({ drafts: { b: "2", a: "1" } }),
+    ),
   );
 }
 
