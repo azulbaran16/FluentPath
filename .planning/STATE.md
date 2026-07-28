@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02
 current_phase_name: server-side-progress
 status: in-progress
-stopped_at: Completed 02-03-PLAN.md
-last_updated: "2026-07-28T23:00:41.899Z"
+stopped_at: Completed 02-04-PLAN.md
+last_updated: "2026-07-28T23:29:54.224Z"
 last_activity: 2026-07-28
 last_activity_desc: "02-01 executed: shared store, pure merge, merge-on-write PUT"
 progress:
   total_phases: 2
   completed_phases: 1
   total_plans: 13
-  completed_plans: 9
+  completed_plans: 10
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-07-23)
 ## Current Position
 
 Phase: 02 (server-side-progress) — IN PROGRESS
-Plan: 4 of 7
+Plan: 5 of 7
 Status: 02-01 (tracer) complete on branch `phase-02-server-side-progress`; next action is executing 02-02
 Last activity: 2026-07-28 — 02-01 executed: shared store, pure merge, merge-on-write PUT
 
-Progress: [███████░░░] 69% (1 of 5 phases)
+Progress: [████████░░] 77% (1 of 5 phases)
 
 ## Performance Metrics
 
@@ -62,6 +62,7 @@ Progress: [███████░░░] 69% (1 of 5 phases)
 | Phase 02 P01 | 47min | 2 tasks | 8 files |
 | Phase 02 P02 | ~20min | 2 tasks | 2 files |
 | Phase 02 P03 | 25min | 2 tasks | 4 files |
+| Phase 02 P04 | 40min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -91,6 +92,9 @@ Recent decisions affecting current work:
 - [Phase ?]: 02-02: todayXp/xpDay are keyed on xpDay alone, never lastActive; a selection key must travel with the value it selects
 - [Phase ?]: 02-03: the D-01b instant is accepted only at millisecond precision — laterInstant compares lexically, so a second-precision instant would sort ABOVE a millisecond one and invert the whole-field ordering
 - [Phase ?]: 02-03: zod on the client costs +284,752 bytes in one new chunk (isolated by a before/after build); accepted as the price of the client and server sharing one contract
+- [Phase ?]: 02-04: classifyFailure defaults to retry; only 401/403 stop and only an explicitly permanent 4xx drops — the never-lose direction for PROG-04
+- [Phase ?]: 02-04: a connectivity hint resets the backoff but NOT the consecutive-failure count; only a real success clears the D-06 indicator
+- [Phase ?]: 02-04: the sync queue is a transport, not a mutation site — it forwards the D-01b instant unmodified, keeping nowInstant() authored in exactly one place
 
 ### Pending Todos
 
@@ -123,6 +127,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-28T23:00:29.296Z
-Stopped at: Completed 02-03-PLAN.md
+Last session: 2026-07-28T23:29:40.412Z
+Stopped at: Completed 02-04-PLAN.md
 Resume file: None
