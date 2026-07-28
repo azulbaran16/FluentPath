@@ -4,16 +4,16 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 01
 current_phase_name: celpip-writing-practice
-status: executing
-stopped_at: Completed 01-05-PLAN.md
-last_updated: "2026-07-25T18:17:32.869Z"
-last_activity: 2026-07-25
-last_activity_desc: Phase 01 execution started
+status: phase-complete
+stopped_at: Completed 01-06-PLAN.md (verification gate)
+last_updated: "2026-07-28T20:50:00.000Z"
+last_activity: 2026-07-28
+last_activity_desc: Phase 01 verified and closed — 2 defects found and fixed
 progress:
-  total_phases: 1
-  completed_phases: 0
+  total_phases: 5
+  completed_phases: 1
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-23)
 
 **Core value:** A learner can practice any real-life English scenario end-to-end — with an AI tutor that corrects them in context — and their progress is never lost.
-**Current focus:** Phase 01 — celpip-writing-practice
+**Current focus:** Phase 02 — server-side-progress (not yet planned)
 
 ## Current Position
 
-Phase: 01 (celpip-writing-practice) — EXECUTING
+Phase: 01 (celpip-writing-practice) — COMPLETE
 Plan: 6 of 6
-Status: Ready to execute
-Last activity: 2026-07-25 — Phase 01 execution started
+Status: Phase verified and closed; next action is planning Phase 02
+Last activity: 2026-07-28 — Phase 01 verification gate passed
 
-Progress: [████████░░] 83%
+Progress: [██░░░░░░░░] 20% (1 of 5 phases)
 
 ## Performance Metrics
 
@@ -58,6 +58,7 @@ Progress: [████████░░] 83%
 | Phase 01 P03 | ~15min | 2 tasks | 1 files |
 | Phase 01 P04 | ~15min | 3 tasks | 5 files |
 | Phase 01 P05 | ~15min | 3 tasks | 4 files |
+| Phase 01 P06 | ~20min | 2 tasks | 3 files (2 defect fixes) |
 
 ## Accumulated Context
 
@@ -76,11 +77,16 @@ Recent decisions affecting current work:
 - [Phase ?]: 01-04: Deferred addAttempt from submit-time to results-view-exit-time (Retry / Back to tasks) since the store's addAttempt only appends — persisting once at exit captures the learner's final rubric self-check without duplicate attempts.
 - [Phase ?]: 01-04: Extended celpip-progress.ts's writeLocal/saveDraft to return a success boolean (was silently swallowing setItem failures) so the autosave-failure warning truth can actually surface to the UI.
 - [Phase ?]: 01-05: Task-card 'in progress' status computed from a non-empty saved draft (not attempts), since completedTasks already covers any attempted task under the current store shape.
+- [Phase ?]: 01-06: Verification gate was driven by an agent through a real browser (Playwright) because the user had no time for hands-on UAT; timer expiry was reached by overriding Date.now() in the page rather than waiting 27 minutes.
+- [Phase ?]: 01-06: formatDuration moved from CelpipLanding into celpip-progress so the results metrics strip and history rows format durations identically.
 - [Phase ?]: 01-05: Attempt-history rows link to /celpip/writing/[taskId] (not a deep-linked historical result view) since WritingSimulator has no mechanism to render an arbitrary past attempt and is out of this plan's file scope.
 
 ### Pending Todos
 
-None yet.
+- Phase 01 was signed off by an agent-driven browser session, not by a human.
+  Subjective quality (rubric wording, model-answer naturalness, exam feel) and a
+  full real-time 27-minute timer run are still unconfirmed — worth a pass from
+  the beta user before her exam. See 01-06-SUMMARY.md "Caveats".
 
 ### Blockers/Concerns
 
