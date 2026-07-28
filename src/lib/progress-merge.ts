@@ -29,12 +29,38 @@
 //     when NEITHER side has an instant, which is what keeps the rule
 //     associative (a merged state's `lastActive` is the max of both sides and
 //     may not belong to the side whose map won).
-//   • `srs` and `attempts` are key-unioned but their per-entry rules are
-//     deliberately coarse here — 02-02 refines them.
-//   • The `streak`/`todayXp`/`xpDay`/`goalXp` group is taken as a unit; 02-02
-//     replaces the grouping with per-field rules (and keeps the goalXp
-//     tie-break, which is asymmetric on purpose: a learner who deliberately
-//     lowered a daily goal must never have it raised back by a merge).
+//
+// WHAT THIS DELIBERATELY GIVES UP — three costs, named here so a later reader
+// does not file any of them as a defect.
+//
+//   1. XP DOES NOT SUM ACROSS DEVICES. `xp` and every `skillXp` bucket take a
+//      max, so a learner who earns 40 XP offline on a laptop and 30 XP offline
+//      on a phone ends the merge with 40, not 70. This is unavoidable rather
+//      than chosen: `addSkillXp` (progress.ts) keeps no per-event record to
+//      reconstruct a sum from, so the merge has nothing to add up. And a sum
+//      could not be used even if it did — summing is not idempotent, and D-02
+//      re-runs this merge on every authenticated load, so the total would
+//      inflate on every page view. Max is the only rule that survives a
+//      reconcile that repeats forever.
+//
+//   2. A STREAK MAY NOT COMPOUND ACROSS DEVICES. The `streak`/`lastActive`
+//      pair moves as a unit from the later day (see mergeStreakPair), with no
+//      case for days that happen to be adjacent. A learner who practised on
+//      the laptop on Monday and only on the phone on Tuesday can therefore end
+//      up with the phone's streak of 1 rather than a compounded 2. D-01c chose
+//      this cost explicitly over order-dependence: the rejected adjacent-day
+//      rule is not associative, so two devices plus the server would disagree
+//      about the number depending on which pair synced first.
+//
+//   3. `goalXp` IS ASYMMETRIC ON A SAME-DAY TIE — the lower value wins. It is
+//      the one field whose writer does not touch `lastActive` at all
+//      (`setGoalXp` at progress.ts:288 sets the value and nothing else), so two
+//      devices that both changed the goal today are genuinely indistinguishable
+//      and the rule has to pick a direction. A learner who raises the goal on
+//      two devices on the same day therefore keeps the lower number. That is
+//      the safe direction on purpose: a goal silently raised is a goal the
+//      learner cannot meet, while a goal left low is visible and one tap from
+//      being raised again.
 //
 // This module is pure: no react, no next, no `@/` aliases and no runtime
 // relative imports, so `node --experimental-strip-types` can load it directly.
@@ -239,18 +265,8 @@ function pickWholeEntry<V>(x: V, y: V): V {
   return canonical(x) >= canonical(y) ? x : y;
 }
 
-/** The `streak` / `todayXp` / `xpDay` / `goalXp` group, taken as a unit. */
-interface DailyGroup {
-  streak: number;
-  todayXp: number;
-  xpDay: string | null;
-  goalXp: number;
-}
-
-function dailyOf(s: MergeState): DailyGroup {
-  return { streak: s.streak, todayXp: s.todayXp, xpDay: s.xpDay, goalXp: s.goalXp };
-}
-
+/** Three-way form of `laterDay`, so a rule can name the winning SIDE and not
+ * just the winning day. Same lexical comparison, same "null always loses". */
 function compareDay(a: string | null, b: string | null): number {
   if (a === b) return 0;
   if (a === null) return -1;
@@ -258,20 +274,94 @@ function compareDay(a: string | null, b: string | null): number {
   return a > b ? 1 : -1;
 }
 
-function pickDaily(x: MergeState, y: MergeState): DailyGroup {
+/** `streak` + `lastActive` — D-01a's second row, as amended by D-01c. */
+interface StreakPair {
+  lastActive: string | null;
+  streak: number;
+}
+
+/**
+ * The pair moves as a unit, and there are exactly two branches:
+ *
+ *   1. Different `lastActive`, by ANY distance — the later day supplies both
+ *      the day and its OWN streak.
+ *   2. Equal `lastActive` — that day, and the larger of the two streaks.
+ *
+ * This is a plain lexicographic max over the total order (`lastActive` first,
+ * `streak` second), which is why it is idempotent, commutative and associative,
+ * and why the state-level `lastActive` this pair reports always agrees with the
+ * max of both sides.
+ *
+ * WHY THERE IS NO ADJACENT-DAY CASE. The obvious third branch — "the two days
+ * are exactly one apart, so the learner practised on consecutive days; take the
+ * later day AND the larger streak" — was considered and REJECTED by D-01c on
+ * two independent grounds.
+ *
+ *   • It is not associative. Take (Jan 10, streak 30), (Jan 11, streak 1) and
+ *     (Jan 12, streak 1). Merging the first two under that rule gives
+ *     (Jan 11, 30), which is again adjacent to Jan 12, so the result is
+ *     (Jan 12, 30). Merging the last two first gives (Jan 12, 1), which is two
+ *     days from Jan 10, so the result is (Jan 12, 1). Two devices plus the
+ *     server would then disagree about the streak depending on which pair
+ *     synced first — and, worse, each disagreement is written back, so the
+ *     reconcile never settles.
+ *   • On the adjacent path it is literally `max(lastActive)` paired with
+ *     `max(streak)`, the exact shape D-01a names as forbidden: it credits a
+ *     run out of two partial ones, and the fabricated number STICKS, because
+ *     `recordActivity` recomputes the next streak from `lastActive` and never
+ *     re-derives it from history.
+ *
+ * ACCEPTED COST: practising on two devices on consecutive days may not compound
+ * the streak — the later device's own number stands. The user chose correctness
+ * and order-independence over streak generosity.
+ *
+ * Note what is NOT here: no day-distance arithmetic of any kind. That is not an
+ * accident of style — a distance is the only way to express the rejected rule,
+ * so its absence is mechanically checkable, and this plan gates on it.
+ */
+function mergeStreakPair(x: MergeState, y: MergeState): StreakPair {
   const d = compareDay(x.lastActive, y.lastActive);
-  if (d > 0) return dailyOf(x);
-  if (d < 0) return dailyOf(y);
-  // Equal-day tie. D-01c dropped the consecutive-day carve-out, so this is the
-  // only tie rule: larger streak and todayXp, later xpDay, and the LOWER
-  // goalXp — a learner who deliberately lowered a daily goal must never have it
-  // raised back by a merge.
-  return {
-    streak: maxNum(x.streak, y.streak),
-    todayXp: maxNum(x.todayXp, y.todayXp),
-    xpDay: laterDay(x.xpDay, y.xpDay),
-    goalXp: x.goalXp < y.goalXp ? x.goalXp : y.goalXp,
-  };
+  if (d > 0) return { lastActive: x.lastActive, streak: x.streak };
+  if (d < 0) return { lastActive: y.lastActive, streak: y.streak };
+  return { lastActive: x.lastActive, streak: maxNum(x.streak, y.streak) };
+}
+
+/** `todayXp` + `xpDay` — the XP ring, which is a per-day counter. */
+interface DailyXp {
+  todayXp: number;
+  xpDay: string | null;
+}
+
+/**
+ * The tuple moves together and is decided by `xpDay` ALONE — deliberately not
+ * by `lastActive`, which can name a different day. Mixing the two fields is the
+ * defect this rule exists to prevent: today's ring showing yesterday's total.
+ * A null `xpDay` loses outright, so a state that never earned XP cannot donate
+ * its `todayXp` to a state that did. Lexicographic max over (`xpDay`,
+ * `todayXp`), hence associative.
+ */
+function mergeDailyXp(x: MergeState, y: MergeState): DailyXp {
+  const d = compareDay(x.xpDay, y.xpDay);
+  if (d > 0) return { todayXp: x.todayXp, xpDay: x.xpDay };
+  if (d < 0) return { todayXp: y.todayXp, xpDay: y.xpDay };
+  return { todayXp: maxNum(x.todayXp, y.todayXp), xpDay: x.xpDay };
+}
+
+/**
+ * `goalXp` — a learner preference, never a max (D-01a's fourth row). The side
+ * with the later `lastActive` supplies it; on a same-day tie the LOWER value
+ * wins. See give-up 3 in the header for why the tie is asymmetric on purpose.
+ *
+ * Associative for the same reason the streak pair is: the winner is the side
+ * holding the max `lastActive`, so the merged state's key is the winner's key
+ * — this is a lexicographic max over (`lastActive` ascending, `goalXp`
+ * descending), which is still a total order.
+ */
+function pickGoalXp(x: MergeState, y: MergeState): number {
+  const d = compareDay(x.lastActive, y.lastActive);
+  if (d > 0) return x.goalXp;
+  if (d < 0) return y.goalXp;
+  return x.goalXp < y.goalXp ? x.goalXp : y.goalXp;
 }
 
 /**
@@ -319,21 +409,24 @@ function pickVocabSide(x: MergeState, y: MergeState): number {
 export function mergeProgress(a: unknown, b: unknown): ProgressState {
   const x = coerce(a);
   const y = coerce(b);
-  const daily = pickDaily(x, y);
+  // The streak pair and the XP ring are separate rules on purpose: they are
+  // keyed on different days (`lastActive` and `xpDay`), which can disagree.
+  const run = mergeStreakPair(x, y);
+  const ring = mergeDailyXp(x, y);
 
   return {
     completed: unionRecord(x.completed, y.completed, (p) => p),
     xp: maxNum(x.xp, y.xp),
     skillXp: unionRecord(x.skillXp, y.skillXp, maxNum) as ProgressState["skillXp"],
-    streak: daily.streak,
-    lastActive: laterDay(x.lastActive, y.lastActive),
+    streak: run.streak,
+    lastActive: run.lastActive,
     level: higherLevel(x.level, y.level),
     srs: unionRecord(x.srs, y.srs, pickWholeEntry),
     vocab: pickVocabSide(x, y) >= 0 ? { ...x.vocab } : { ...y.vocab },
     attempts: unionRecord(x.attempts, y.attempts, pickWholeEntry),
-    todayXp: daily.todayXp,
-    xpDay: daily.xpDay,
-    goalXp: daily.goalXp,
+    todayXp: ring.todayXp,
+    xpDay: ring.xpDay,
+    goalXp: pickGoalXp(x, y),
     // A plain max over a total order, so the join stays commutative and
     // associative. Never freshly generated: neither the reconcile's commit nor
     // the route handler may author an instant of its own.

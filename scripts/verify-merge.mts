@@ -151,12 +151,59 @@ const legacy = mk({
   goalXp: 40,
 });
 
+/* ---- 02-02 Task 1 fixtures: the streak pair, the daily-XP tuple, goalXp ---- */
+
+// The fabrication case D-01a exists to prevent: a long run abandoned in January
+// on one side, a fresh one-day run today on the other.
+const abandonedRun = mk({
+  lastActive: "2026-01-15",
+  streak: 30,
+  todayXp: 200,
+  xpDay: "2026-01-15",
+  goalXp: 60,
+});
+const freshToday = mk({
+  lastActive: "2026-07-28",
+  streak: 1,
+  todayXp: 5,
+  xpDay: "2026-07-28",
+  goalXp: 30,
+});
+
+// The three-state trio from the plan — the exact case the rejected adjacent-day
+// carve-out failed.
+const jan10 = mk({ lastActive: "2026-01-10", streak: 30 });
+const jan11 = mk({ lastActive: "2026-01-11", streak: 1 });
+const jan12 = mk({ lastActive: "2026-01-12", streak: 1 });
+
+// The daily-XP tuple must be decided by `xpDay`, NOT by `lastActive`: these two
+// disagree about which side is "newer" on purpose.
+const lateDayOldXpRing = mk({
+  lastActive: "2026-07-30",
+  streak: 9,
+  xpDay: "2026-07-20",
+  todayXp: 1,
+  goalXp: 25,
+});
+const earlyDayNewXpRing = mk({
+  lastActive: "2026-07-25",
+  streak: 2,
+  xpDay: "2026-07-28",
+  todayXp: 7,
+  goalXp: 45,
+});
+
 const states: Array<[string, ProgressState]> = [
   ["account", account],
   ["anonymous", anonymous],
   ["phone", phone],
   ["legacy", legacy],
   ["EMPTY", EMPTY],
+  ["abandonedRun", abandonedRun],
+  ["freshToday", freshToday],
+  ["jan10", jan10],
+  ["lateDayOldXpRing", lateDayOldXpRing],
+  ["earlyDayNewXpRing", earlyDayNewXpRing],
 ];
 
 /* ------------------------------------------------------------------ *
@@ -454,6 +501,154 @@ group("goalXp tie-break");
   ok(
     "the later day still supplies the whole daily group",
     mergeProgress(lowered, laterDayHigher).goalXp === 50,
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * 12. The streak pair (D-01a as amended by D-01c). `streak` and
+ *     `lastActive` move together from the side with the later day; an
+ *     equal day takes the larger streak. There is no adjacent-day case.
+ * ------------------------------------------------------------------ */
+
+group("streak pair (D-01c)");
+{
+  const merged = mergeProgress(abandonedRun, freshToday);
+  ok(
+    "a 30-day run abandoned in January does not fabricate a streak today",
+    merged.streak === 1,
+  );
+  ok("the day travels with it", merged.lastActive === "2026-07-28");
+  deepEqual(
+    "the streak pair is commutative",
+    mergeProgress(freshToday, abandonedRun),
+    merged,
+  );
+  ok(
+    "re-merging does not grow the streak (idempotent)",
+    mergeProgress(merged, abandonedRun).streak === 1 &&
+      mergeProgress(mergeProgress(merged, abandonedRun), freshToday).streak === 1,
+  );
+
+  // Equal day: the larger streak wins the tie, and the day is that day.
+  const sameDaySmallStreak = mk({ lastActive: "2026-07-28", streak: 3 });
+  const sameDayBigStreak = mk({ lastActive: "2026-07-28", streak: 11 });
+  const tie = mergeProgress(sameDaySmallStreak, sameDayBigStreak);
+  ok("an equal-day tie keeps the larger streak", tie.streak === 11);
+  ok("and that day", tie.lastActive === "2026-07-28");
+
+  // The rule that was REJECTED (D-01c): "days exactly one apart -> later day
+  // plus the larger streak". These three states are one day apart in sequence,
+  // so that rule would read (Jan 12, 30) here — and, worse, would read it only
+  // under some bracketings. Both bracketings must give (Jan 12, 1).
+  const trio: Array<[string, ProgressState]> = [
+    ["jan10", jan10],
+    ["jan11", jan11],
+    ["jan12", jan12],
+  ];
+  for (const [na, a] of trio) {
+    for (const [nb, b] of trio) {
+      for (const [nc, c] of trio) {
+        const left = mergeProgress(mergeProgress(a, b), c);
+        const right = mergeProgress(a, mergeProgress(b, c));
+        deepEqual(
+          `three consecutive days: (${na}·${nb})·${nc} = ${na}·(${nb}·${nc})`,
+          left,
+          right,
+        );
+        ok(
+          `three consecutive days: (${na}·${nb})·${nc} never compounds the streak`,
+          left.streak === 1 || left.streak === 30,
+        );
+      }
+    }
+  }
+  const abc = mergeProgress(mergeProgress(jan10, jan11), jan12);
+  const aBc = mergeProgress(jan10, mergeProgress(jan11, jan12));
+  ok("(jan10·jan11)·jan12 = (Jan 12, streak 1)", abc.lastActive === "2026-01-12" && abc.streak === 1);
+  ok("jan10·(jan11·jan12) = (Jan 12, streak 1)", aBc.lastActive === "2026-01-12" && aBc.streak === 1);
+}
+
+/* ------------------------------------------------------------------ *
+ * 13. The daily-XP tuple. `todayXp` and `xpDay` move as a pair, decided
+ *     by `xpDay` alone — never by `lastActive`, or today's ring shows
+ *     yesterday's total.
+ * ------------------------------------------------------------------ */
+
+group("daily XP tuple");
+{
+  const yesterdayBig = mk({ lastActive: "2026-07-27", xpDay: "2026-07-27", todayXp: 500 });
+  const todaySmall = mk({ lastActive: "2026-07-28", xpDay: "2026-07-28", todayXp: 5 });
+  const merged = mergeProgress(yesterdayBig, todaySmall);
+  ok("today's ring never shows yesterday's total", merged.todayXp === 5);
+  ok("and it belongs to today", merged.xpDay === "2026-07-28");
+  deepEqual("the tuple is commutative", mergeProgress(todaySmall, yesterdayBig), merged);
+
+  const sameDayLow = mk({ xpDay: "2026-07-28", todayXp: 10 });
+  const sameDayHigh = mk({ xpDay: "2026-07-28", todayXp: 40 });
+  const tie = mergeProgress(sameDayLow, sameDayHigh);
+  ok("an equal xpDay takes the larger todayXp", tie.todayXp === 40);
+  ok("and keeps that day", tie.xpDay === "2026-07-28");
+
+  const noDay = mk({ xpDay: null, todayXp: 999 });
+  const withDay = mk({ xpDay: "2026-07-28", todayXp: 5 });
+  const nulled = mergeProgress(noDay, withDay);
+  ok("a null xpDay loses the pair outright", nulled.todayXp === 5 && nulled.xpDay === "2026-07-28");
+  deepEqual("null-xpDay is commutative", mergeProgress(withDay, noDay), nulled);
+
+  // The tuple is decided independently of the streak pair.
+  const split = mergeProgress(lateDayOldXpRing, earlyDayNewXpRing);
+  ok("the streak pair follows lastActive", split.streak === 9 && split.lastActive === "2026-07-30");
+  ok("while the XP ring follows xpDay", split.todayXp === 7 && split.xpDay === "2026-07-28");
+}
+
+/* ------------------------------------------------------------------ *
+ * 14. goalXp is a preference. The later `lastActive` supplies it; on a
+ *     same-day tie the LOWER value wins, because `setGoalXp` writes the
+ *     value alone and never touches `lastActive`, so two same-day writes
+ *     are indistinguishable and only one direction is safe.
+ * ------------------------------------------------------------------ */
+
+group("goalXp on the newer side");
+{
+  const loweredNewer = mk({ lastActive: "2026-07-29", goalXp: 15 });
+  const higherOlder = mk({ lastActive: "2026-07-28", goalXp: 60 });
+  const merged = mergeProgress(loweredNewer, higherOlder);
+  ok("a goal lowered on the newer side survives a higher older value", merged.goalXp === 15);
+  deepEqual("and it is commutative", mergeProgress(higherOlder, loweredNewer), merged);
+
+  const raisedNewer = mk({ lastActive: "2026-07-29", goalXp: 90 });
+  const lowerOlder = mk({ lastActive: "2026-07-28", goalXp: 20 });
+  ok(
+    "goalXp is not a max: a raise on the newer side also wins",
+    mergeProgress(raisedNewer, lowerOlder).goalXp === 90,
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * 15. vocab: a card un-marked on one device stays un-marked, INCLUDING
+ *     when both sides carry the same calendar day (the common path, since
+ *     D-02 reconciles on every load).
+ * ------------------------------------------------------------------ */
+
+group("same-day vocab non-resurrection");
+{
+  const beforeUnmark = mk({
+    lastActive: "2026-07-28",
+    updatedAt: "2026-07-28T09:00:00.000Z",
+    vocab: { "card-1": true, "card-2": true },
+  });
+  const afterUnmark = mk({
+    lastActive: "2026-07-28",
+    updatedAt: "2026-07-28T21:00:00.000Z",
+    vocab: { "card-1": true },
+  });
+  const merged = mergeProgress(beforeUnmark, afterUnmark);
+  ok("identical lastActive on both sides", beforeUnmark.lastActive === afterUnmark.lastActive);
+  ok("the un-marked card does not come back", !("card-2" in merged.vocab));
+  deepEqual("the newer map is taken whole", merged.vocab, { "card-1": true });
+  ok(
+    "and it stays gone after a second reconcile",
+    !("card-2" in mergeProgress(merged, beforeUnmark).vocab),
   );
 }
 
