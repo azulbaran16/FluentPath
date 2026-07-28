@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CELPIP_RUBRIC, type CelpipWritingTask } from "@/lib/celpip";
-import { useCelpipProgress } from "@/lib/celpip-progress";
+import { formatDuration, useCelpipProgress } from "@/lib/celpip-progress";
 import { RubricChecklist } from "./RubricChecklist";
 import { Timer } from "./Timer";
 
@@ -24,7 +24,8 @@ export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
   const [autosaveWarning, setAutosaveWarning] = useState(false);
   const [checkedRubric, setCheckedRubric] = useState<Record<string, boolean>>({});
   const hydratedRef = useRef(false);
-  const submittedDurationRef = useRef(0);
+  // Held in state, not a ref: the results view renders it in the metrics strip.
+  const [submittedDuration, setSubmittedDuration] = useState(0);
   const finalizedRef = useRef(false);
 
   const { min, max } = task.wordRange;
@@ -78,9 +79,9 @@ export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
   }
 
   function submit() {
-    submittedDurationRef.current = startedAt
-      ? Math.round((Date.now() - startedAt) / 1000)
-      : 0;
+    setSubmittedDuration(
+      startedAt ? Math.round((Date.now() - startedAt) / 1000) : 0,
+    );
     finalizedRef.current = false;
     setPhase("results");
   }
@@ -101,7 +102,7 @@ export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
       taskId: task.id,
       taskType: task.taskType,
       date: new Date().toISOString(),
-      durationSeconds: submittedDurationRef.current,
+      durationSeconds: submittedDuration,
       wordCount: words,
       text,
       checkedRubric,
@@ -117,6 +118,7 @@ export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
     setExpired(false);
     setLocked(false);
     setCheckedRubric({});
+    setSubmittedDuration(0);
     setAutosaveWarning(false);
     finalizedRef.current = false;
     setPhase("compose");
@@ -127,6 +129,18 @@ export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
       <div className="mx-auto max-w-5xl px-4 py-10">
         <h1 className="font-display text-3xl font-semibold">Attempt complete</h1>
         <p className="mt-2 text-ink-soft">{task.title}</p>
+
+        {/* Compact tertiary metrics strip — states the attempt's facts without
+            competing with the side-by-side comparison below. */}
+        <p className="mt-3 text-xs text-muted">
+          {formatDuration(submittedDuration)} used · {words} words ·{" "}
+          {min}–{max} target
+          {expired && (
+            <span className="ml-1 font-semibold" style={{ color: "var(--vermilion)" }}>
+              · ran out of time
+            </span>
+          )}
+        </p>
 
         <div className="mt-6 grid gap-5 lg:grid-cols-2">
           <div className="rounded-[var(--radius)] border border-line bg-card p-6 shadow-[var(--shadow-soft)]">

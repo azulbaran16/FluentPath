@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { getTask, getTasksByType, type CelpipTaskType } from "@/lib/celpip";
-import { useCelpipProgress } from "@/lib/celpip-progress";
+import { formatDuration, useCelpipProgress } from "@/lib/celpip-progress";
 import { CelpipTabs } from "./CelpipTabs";
 import { TaskCard, type TaskAttemptStatus } from "./TaskCard";
 
@@ -13,12 +13,6 @@ function formatDate(iso: string): string {
     month: "short",
     day: "numeric",
   });
-}
-
-function formatDuration(totalSeconds: number): string {
-  const m = Math.floor(totalSeconds / 60);
-  const s = totalSeconds % 60;
-  return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
 function attemptsLabel(n: number): string {

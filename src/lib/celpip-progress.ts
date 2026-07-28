@@ -29,6 +29,14 @@ export interface CelpipProgressState {
   drafts: Record<string, string>;
 }
 
+/** Renders an attempt's durationSeconds as m:ss — shared by the results
+ * metrics strip and the landing's attempt-history rows so both read the same. */
+export function formatDuration(totalSeconds: number): string {
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  return `${m}:${s.toString().padStart(2, "0")}`;
+}
+
 export const CELPIP_EMPTY: CelpipProgressState = {
   attempts: {},
   drafts: {},
