@@ -1,33 +1,27 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { CelpipTaskType } from "./celpip";
+import {
+  CELPIP_EMPTY,
+  type CelpipAttempt,
+  type CelpipProgressState,
+} from "./progress-schema";
 
 // Local-first CELPIP attempt store. Mirrors progress.ts's defensive
 // read/write pattern but has NO server sync in this phase — Phase 2
 // migrates this namespace to Postgres once server-side progress exists.
 // Shape is deliberately flat and serializable (no functions/class
 // instances) — this is the Phase 2 migration contract.
+//
+// The shapes themselves now live in progress-schema.ts, beside their zod
+// contract, so the client store, the route handler and the verification
+// scripts read one definition. They are re-exported here unchanged so every
+// existing importer keeps resolving.
 
 const KEY = "fluentpath.celpip.v1";
 
-export interface CelpipAttempt {
-  taskId: string;
-  taskType: CelpipTaskType;
-  /** ISO timestamp of submission. */
-  date: string;
-  durationSeconds: number;
-  wordCount: number;
-  text: string;
-  /** Rubric item id -> checked state for this attempt. */
-  checkedRubric: Record<string, boolean>;
-  outOfTime: boolean;
-}
-
-export interface CelpipProgressState {
-  attempts: Record<string, CelpipAttempt[]>;
-  drafts: Record<string, string>;
-}
+export { CELPIP_EMPTY };
+export type { CelpipAttempt, CelpipProgressState };
 
 /** Renders an attempt's durationSeconds as m:ss — shared by the results
  * metrics strip and the landing's attempt-history rows so both read the same. */
@@ -36,11 +30,6 @@ export function formatDuration(totalSeconds: number): string {
   const s = totalSeconds % 60;
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
-
-export const CELPIP_EMPTY: CelpipProgressState = {
-  attempts: {},
-  drafts: {},
-};
 
 function readLocal(): CelpipProgressState {
   if (typeof window === "undefined") return CELPIP_EMPTY;

@@ -19,11 +19,18 @@
 
 import { z } from "zod";
 import {
+  CELPIP_EMPTY,
+  CELPIP_MAX_TEXT,
+  CELPIP_SCHEMA_MATCHES_STATE,
   EMPTY,
   SCHEMA_MATCHES_STATE,
+  celpipProgressSchema,
   progressSchema,
+  safeReadCelpip,
   safeReadProgress,
   sanitizedRecord,
+  type CelpipAttempt,
+  type CelpipProgressState,
   type ProgressState,
 } from "../src/lib/progress-schema.ts";
 
@@ -392,6 +399,283 @@ group("drift guard");
 {
   ok("the schema output type is asserted identical to ProgressState", SCHEMA_MATCHES_STATE === true);
   deepEqual("EMPTY itself satisfies the schema unchanged", progressSchema.parse(EMPTY), EMPTY);
+}
+
+/* ================================================================== *
+ * 10-16. The CELPIP domain (D-04, D-05).
+ *
+ * The same contract, applied to the store Phase 1 built in the browser
+ * and this phase moves into its own Postgres column. Two shapes differ
+ * from the progress side and both are proven below: attempts are an
+ * ARRAY per task (so one malformed attempt must cost only itself, not
+ * the task's history), and the payload is the only one carrying
+ * free-form learner prose (so it is the only one that needs a length
+ * bound).
+ * ================================================================== */
+
+/** An attempt exactly as WritingSimulator records it. */
+const attempt: CelpipAttempt = {
+  taskId: "email-neighbour",
+  taskType: "email",
+  date: "2026-07-27T18:04:11.000Z",
+  durationSeconds: 1500,
+  wordCount: 168,
+  text: "Dear Mr Alvarez, I am writing about the noise from the building work.",
+  checkedRubric: { "content-1": true, "tone-2": false },
+  outOfTime: false,
+};
+
+const olderAttempt: CelpipAttempt = {
+  ...attempt,
+  date: "2026-07-25T08:30:00.000Z",
+  durationSeconds: 1800,
+  wordCount: 151,
+  text: "Dear Mr Alvarez, I would like to raise the matter of the noise.",
+  outOfTime: true,
+};
+
+const surveyAttempt: CelpipAttempt = {
+  taskId: "survey-transit",
+  taskType: "survey",
+  date: "2026-07-26T12:00:00.000Z",
+  durationSeconds: 1620,
+  wordCount: 190,
+  text: "I believe the city should invest in the bus network first.",
+  checkedRubric: {},
+  outOfTime: false,
+};
+
+const celpipFull: CelpipProgressState = {
+  attempts: {
+    "email-neighbour": [olderAttempt, attempt],
+    "survey-transit": [surveyAttempt],
+  },
+  drafts: { "survey-transit": "In my opinion the current schedule is" },
+  updatedAt: INSTANT,
+};
+
+/** Parses through the CELPIP write-path schema, failing the run rather than
+ * throwing when a payload that should have been accepted was not. */
+function acceptCelpip(label: string, payload: unknown): CelpipProgressState {
+  const parsed = celpipProgressSchema.safeParse(payload);
+  ok(`${label} — accepted`, parsed.success);
+  return parsed.success ? parsed.data : CELPIP_EMPTY;
+}
+
+group("CELPIP D-08 — unknown fields are stripped, known fields are saved");
+{
+  const parsed = acceptCelpip("a CELPIP payload carrying an unknown field", {
+    ...celpipFull,
+    // The shape a browser on a cached older bundle would send.
+    lastActive: "2026-07-27",
+    experiment: { nested: [1, 2, 3] },
+  });
+  deepEqual("every known CELPIP field survives untouched", parsed, celpipFull);
+  deepEqual(
+    "the accepted key set is exactly the CELPIP contract",
+    Object.keys(parsed).sort(),
+    Object.keys(CELPIP_EMPTY).sort(),
+  );
+  ok(
+    "an unknown field inside an attempt is stripped too",
+    !(
+      "score" in
+      (acceptCelpip("an attempt with an extra field", {
+        ...celpipFull,
+        attempts: { "email-neighbour": [{ ...attempt, score: 9 }] },
+      }).attempts["email-neighbour"][0] as unknown as Record<string, unknown>)
+    ),
+  );
+}
+
+group("CELPIP attempts — one malformed attempt costs only itself");
+{
+  const parsed = acceptCelpip("a task array holding one good and three bad attempts", {
+    ...celpipFull,
+    attempts: {
+      "email-neighbour": [
+        attempt,
+        { ...attempt, taskType: "essay" }, // not a CELPIP writing task type
+        { ...attempt, date: 1_753_000_000_000 }, // a number where the ISO date belongs
+        "nope",
+      ],
+      "survey-transit": [surveyAttempt],
+    },
+  });
+  deepEqual(
+    "the well-formed attempt survives alone",
+    parsed.attempts["email-neighbour"],
+    [attempt],
+  );
+  ok(
+    "the rest of the task's history is untouched",
+    canon(parsed.attempts["survey-transit"]) === canon([surveyAttempt]),
+  );
+  ok(
+    "no placeholder attempt is fabricated for a dropped entry",
+    parsed.attempts["email-neighbour"].length === 1,
+  );
+
+  const notAnArray = acceptCelpip("a task whose attempts value is not an array", {
+    ...celpipFull,
+    attempts: { "email-neighbour": { 0: attempt }, "survey-transit": [surveyAttempt] },
+  });
+  ok(
+    "a non-array task value is dropped rather than coerced to an empty history",
+    !("email-neighbour" in notAnArray.attempts),
+  );
+  deepEqual("its sibling survives", notAnArray.attempts["survey-transit"], [surveyAttempt]);
+
+  const junkMap = acceptCelpip("an attempts field that is not an object at all", {
+    ...celpipFull,
+    attempts: "everything",
+  });
+  deepEqual("the whole map falls back to empty", junkMap.attempts, {});
+  deepEqual("and its neighbours are untouched", junkMap.drafts, celpipFull.drafts);
+
+  const poisoned = acceptCelpip("poisoned keys in the CELPIP records", {
+    ...celpipFull,
+    attempts: JSON.parse(
+      `{"__proto__":[],"constructor":[],"survey-transit":${JSON.stringify([surveyAttempt])}}`,
+    ) as Record<string, unknown>,
+    drafts: JSON.parse('{"__proto__":"x","survey-transit":"ok"}') as Record<string, unknown>,
+  });
+  deepEqual("poisoned attempt keys are dropped", Object.keys(poisoned.attempts).sort(), [
+    "survey-transit",
+  ]);
+  deepEqual("poisoned draft keys are dropped", Object.keys(poisoned.drafts).sort(), [
+    "survey-transit",
+  ]);
+}
+
+group("CELPIP bounds — free-form prose cannot grow the column without bound");
+{
+  const huge = "x".repeat(CELPIP_MAX_TEXT + 1);
+  const parsed = acceptCelpip("an attempt whose essay text exceeds the cap", {
+    ...celpipFull,
+    attempts: { "email-neighbour": [attempt, { ...attempt, date: "2026-07-28T00:00:00.000Z", text: huge }] },
+  });
+  deepEqual(
+    "the over-length attempt is rejected as an entry, not stored",
+    parsed.attempts["email-neighbour"],
+    [attempt],
+  );
+
+  const atTheCap = acceptCelpip("an attempt exactly at the cap", {
+    ...celpipFull,
+    attempts: {
+      "email-neighbour": [{ ...attempt, text: "y".repeat(CELPIP_MAX_TEXT) }],
+    },
+  });
+  ok(
+    "an essay exactly at the cap is still accepted",
+    atTheCap.attempts["email-neighbour"].length === 1,
+  );
+
+  const draft = acceptCelpip("a draft exceeding the cap", {
+    ...celpipFull,
+    drafts: { "survey-transit": huge, "email-neighbour": "short enough" },
+  });
+  deepEqual("the over-length draft is dropped, its neighbour survives", draft.drafts, {
+    "email-neighbour": "short enough",
+  });
+}
+
+group("CELPIP PROG-03 — a corrupt stored blob loads as the empty state");
+{
+  const corrupt = ["{not json at all", "", "null", "42", '"a string"', "[]", '{"attempts":', " "];
+  for (const raw of corrupt) {
+    let threw = false;
+    let out: CelpipProgressState = celpipFull;
+    try {
+      out = safeReadCelpip(raw);
+    } catch {
+      threw = true;
+    }
+    ok(`safeReadCelpip never throws on ${JSON.stringify(raw).slice(0, 24)}`, !threw);
+    deepEqual(
+      `safeReadCelpip yields the empty state for ${JSON.stringify(raw).slice(0, 24)}`,
+      out,
+      CELPIP_EMPTY,
+    );
+  }
+  deepEqual("an absent CELPIP blob reads as the empty state", safeReadCelpip(null), CELPIP_EMPTY);
+  deepEqual(
+    "an undefined CELPIP blob reads as the empty state",
+    safeReadCelpip(undefined),
+    CELPIP_EMPTY,
+  );
+  deepEqual(
+    "a well-formed CELPIP blob round-trips",
+    safeReadCelpip(JSON.stringify(celpipFull)),
+    celpipFull,
+  );
+  deepEqual(
+    "a partially-corrupt CELPIP blob keeps everything it can",
+    safeReadCelpip(
+      JSON.stringify({
+        ...celpipFull,
+        drafts: 7,
+        attempts: { "email-neighbour": [attempt, null], "survey-transit": [surveyAttempt] },
+      }),
+    ),
+    {
+      attempts: { "email-neighbour": [attempt], "survey-transit": [surveyAttempt] },
+      drafts: {},
+      updatedAt: INSTANT,
+    },
+  );
+}
+
+group("CELPIP D-01b — the millisecond instant round-trips");
+{
+  ok(
+    "a well-formed instant survives the strip",
+    acceptCelpip("a well-formed CELPIP instant", celpipFull).updatedAt === INSTANT,
+  );
+  for (const bad of ["2026-07-28", "2026-07-28T09:15:42Z", "not a date", 42]) {
+    ok(
+      `a malformed CELPIP instant falls back to null: ${canon(bad)}`,
+      acceptCelpip("a malformed CELPIP instant", { ...celpipFull, updatedAt: bad }).updatedAt ===
+        null,
+    );
+  }
+  // The Phase 1 shape, exactly as it sits in localStorage today: two maps and
+  // no instant at all. It must PARSE (not fail) and read as null, which the
+  // merge ranks below any side that carries one.
+  const phase1Blob = { attempts: { "survey-transit": [surveyAttempt] }, drafts: {} };
+  const parsed = acceptCelpip("a Phase 1 blob with no instant at all", phase1Blob);
+  ok("it parses to a null instant rather than failing", parsed.updatedAt === null);
+  deepEqual("and its history is preserved", parsed.attempts, phase1Blob.attempts);
+  ok(
+    "a Phase 1 blob read through the safe helper behaves the same",
+    safeReadCelpip(JSON.stringify(phase1Blob)).updatedAt === null,
+  );
+}
+
+group("CELPIP rejection and drift guard");
+{
+  for (const bad of [42, "celpip", null, undefined, true, [], [1, 2, 3]]) {
+    ok(`CELPIP rejected: ${canon(bad)}`, !celpipProgressSchema.safeParse(bad).success);
+  }
+  ok(
+    "an empty object is ACCEPTED and fills in from the defaults",
+    celpipProgressSchema.safeParse({}).success,
+  );
+  deepEqual(
+    "an empty object parses to the CELPIP empty state",
+    celpipProgressSchema.parse({}),
+    CELPIP_EMPTY,
+  );
+  ok(
+    "the CELPIP schema output type is asserted identical to CelpipProgressState",
+    CELPIP_SCHEMA_MATCHES_STATE === true,
+  );
+  deepEqual(
+    "CELPIP_EMPTY itself satisfies the schema unchanged",
+    celpipProgressSchema.parse(CELPIP_EMPTY),
+    CELPIP_EMPTY,
+  );
 }
 
 /* ------------------------------------------------------------------ *

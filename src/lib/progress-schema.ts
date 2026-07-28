@@ -103,6 +103,75 @@ export function nowInstant(): string {
   return new Date().toISOString();
 }
 
+/* ------------------------------------------------------------------ *
+ * The CELPIP domain (D-04, D-05).
+ *
+ * Phase 1 built this store in the browser under the
+ * `fluentpath.celpip.v1` localStorage key and deliberately shaped it
+ * flat and serializable as the migration contract. The shapes below are
+ * that contract, moved here so the client store, the route handler and
+ * the verification scripts all read one definition; D-05 gives them
+ * their own `User.celpipProgress` column rather than a corner of the
+ * progress blob.
+ * ------------------------------------------------------------------ */
+
+/**
+ * The CELPIP writing task-type union, taken by REFERENCE rather than by an
+ * import statement.
+ *
+ * `src/lib/celpip.ts` re-exports the whole task bank, so importing it here at
+ * runtime would drag every prompt into the client bundle and into any plain
+ * node script that loads this module. An `import(...)` type annotation is
+ * erased entirely, which keeps this module's only runtime import zod — and it
+ * still BINDS the two: if that union ever gains a third task type, the drift
+ * guard at the bottom of this file stops compiling until the schema's literal
+ * pair below is updated to match.
+ */
+type CelpipTaskType = import("./celpip").CelpipTaskType;
+
+export interface CelpipAttempt {
+  taskId: string;
+  taskType: CelpipTaskType;
+  /** ISO timestamp of submission. */
+  date: string;
+  durationSeconds: number;
+  wordCount: number;
+  text: string;
+  /** Rubric item id -> checked state for this attempt. */
+  checkedRubric: Record<string, boolean>;
+  outOfTime: boolean;
+}
+
+export interface CelpipProgressState {
+  attempts: Record<string, CelpipAttempt[]>;
+  drafts: Record<string, string>;
+  /**
+   * The same D-01b activity instant `ProgressState.updatedAt` carries, and for
+   * a sharper reason: `drafts` is this store's one field with a real delete
+   * site (`clearDraft` runs the moment an attempt is submitted, so the next
+   * timed run starts from a blank editor). D-01a selects that map WHOLE from
+   * the side with the later activity, and this store has no other activity
+   * marker at all — no `lastActive`, no day string, nothing.
+   *
+   * It has to be an instant rather than a day: submit-then-reconcile happens
+   * inside one calendar day every single time, so a day marker would leave the
+   * carve-out decided by a tie-break instead of by the rule, and the tie-break
+   * would hand the merge back to the larger map — pre-filling the next timed
+   * attempt with the submitted answer, which is exactly the defect Phase 1
+   * fixed in fca41b7.
+   *
+   * null on every blob written before Phase 2; the merge ranks null below any
+   * side that carries one.
+   */
+  updatedAt: string | null;
+}
+
+export const CELPIP_EMPTY: CelpipProgressState = {
+  attempts: {},
+  drafts: {},
+  updatedAt: null,
+};
+
 /* ================================================================== *
  * The runtime contract (D-08, PROG-03).
  *
@@ -298,4 +367,108 @@ type Identical<A, B> =
 export const SCHEMA_MATCHES_STATE: Identical<
   z.output<typeof progressSchema>,
   ProgressState
+> = true;
+
+/* ================================================================== *
+ * The CELPIP runtime contract.
+ *
+ * Same policy as the progress one — strip what we do not know, recover
+ * a known field we cannot read, drop a single malformed entry rather
+ * than the payload — with two differences the shape forces:
+ *
+ *   • Attempts are an ARRAY per task, not a record, so the entry-level
+ *     rule needs an array sanitiser: one malformed attempt costs only
+ *     itself and the rest of that task's history survives.
+ *   • This is the only payload in either domain carrying free-form
+ *     learner prose, so it is the only one that needs a length bound.
+ *     An essay and a draft are both capped, and an over-length entry is
+ *     REJECTED as an entry rather than truncated: a silently truncated
+ *     essay would read as the learner's own work.
+ * ================================================================== */
+
+/**
+ * The ceiling on one essay and on one saved draft.
+ *
+ * A CELPIP Writing response is 150-200 words, so roughly 1,200 characters;
+ * this leaves two orders of magnitude of headroom for a learner who pastes
+ * notes in, while still bounding what a hostile or broken client can store.
+ */
+export const CELPIP_MAX_TEXT = 20_000;
+
+const celpipText = z.string().max(CELPIP_MAX_TEXT);
+
+/** Validates each element and keeps the survivors, dropping the rest — the
+ * array form of `sanitizedRecord`, and the reason a single unreadable attempt
+ * cannot cost a task its whole history. A value that is not an array FAILS
+ * here rather than becoming an empty one, so the enclosing record drops that
+ * key instead of inventing a task with no attempts. */
+export function sanitizedArray<T>(item: z.ZodType<T>) {
+  return z.array(z.unknown()).transform((raw) => {
+    const out: T[] = [];
+    for (const value of raw) {
+      const parsed = item.safeParse(value);
+      if (parsed.success) out.push(parsed.data);
+    }
+    return out;
+  });
+}
+
+/**
+ * One recorded attempt. Every field is required: an attempt missing its task
+ * id or its submission timestamp has no identity, and identity is what the
+ * merge de-duplicates on — an attempt without one would be re-appended on
+ * every reconcile.
+ *
+ * `taskType` is declared as a local literal pair rather than by importing the
+ * content module's union, for the bundle reason given at the type alias near
+ * the top of this file. The drift guard below is what keeps the pair honest.
+ */
+export const celpipAttemptSchema = z.object({
+  taskId: z.string().max(200),
+  taskType: z.enum(["email", "survey"]),
+  date: z.string().max(64),
+  durationSeconds: z.number().int().min(0).max(MAX_COUNT),
+  wordCount: z.number().int().min(0).max(MAX_COUNT),
+  text: celpipText,
+  checkedRubric: sanitizedRecord(z.boolean()),
+  outOfTime: z.boolean(),
+});
+
+export const celpipProgressSchema = z.object({
+  attempts: sanitizedRecord(sanitizedArray(celpipAttemptSchema)),
+  drafts: sanitizedRecord(celpipText),
+  // Load-bearing for the same reason `updatedAt` is on the progress schema,
+  // and more so here: the plain object constructor strips what it does not
+  // declare, so an undeclared instant would be deleted by the server on every
+  // write and the whole-map draft rule would fall through to its value
+  // tie-break — handing a cleared draft back to the stale device.
+  updatedAt: instantOrNull,
+});
+
+/** The CELPIP twin of `safeReadProgress`: reads stored data — the Postgres
+ * column and the localStorage cache — without ever throwing. */
+export function safeReadCelpip(
+  raw: string | null | undefined,
+): CelpipProgressState {
+  if (!raw) return CELPIP_EMPTY;
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return CELPIP_EMPTY;
+  }
+  const result = celpipProgressSchema.safeParse(parsed);
+  return result.success ? result.data : CELPIP_EMPTY;
+}
+
+/**
+ * Fails `npx tsc --noEmit` on drift between the CELPIP schema and its
+ * interface — and, because `CelpipAttempt.taskType` is typed from the content
+ * module's own union while the schema declares a literal pair, it fails just
+ * as loudly if a third CELPIP writing task type is ever added there and not
+ * here.
+ */
+export const CELPIP_SCHEMA_MATCHES_STATE: Identical<
+  z.output<typeof celpipProgressSchema>,
+  CelpipProgressState
 > = true;
