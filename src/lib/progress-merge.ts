@@ -176,11 +176,70 @@ function numberRecord(v: unknown): Record<string, number> {
   return out;
 }
 
-function entryRecord<V>(v: unknown): Record<string, V> {
+function optNum(v: unknown): number | null {
+  return typeof v === "number" && Number.isFinite(v) ? v : null;
+}
+
+/**
+ * `srs` entries, normalised. An entry that cannot supply BOTH a finite `box`
+ * and a non-empty `due` is dropped rather than repaired: a fabricated due date
+ * would enter the review queue as a real one, and a fabricated box would change
+ * the interval the next correct answer schedules. Dropping is safe because
+ * coercion runs on both sides independently — a readable entry on either side
+ * still survives the union untouched.
+ */
+function srsRecord(v: unknown): Record<string, SrsItem> {
   if (!isPlainObject(v)) return {};
-  const out: Record<string, V> = {};
+  const out: Record<string, SrsItem> = {};
   for (const k of Object.keys(v)) {
-    if (isPlainObject(v[k])) out[k] = v[k] as V;
+    const e = v[k];
+    if (!isPlainObject(e)) continue;
+    const box = optNum(e.box);
+    const due = str(e.due);
+    if (box === null || due === null || due === "") continue;
+    out[k] = { box: box < 0 ? 0 : box, due };
+  }
+  return out;
+}
+
+/**
+ * `attempts` entries, normalised. Same drop rule: no usable `updatedAt` day or
+ * no usable `tries` count means the entry cannot take part in a point-in-time
+ * comparison at all, so it is dropped rather than given an invented timestamp.
+ *
+ * The `wrong <= tries` invariant is enforced HERE, not in the merge. That is
+ * what lets both counters merge as a plain max: if every input satisfies it,
+ * then max(wrong) belongs to some side whose own tries is at most max(tries),
+ * so the merged pair satisfies it too — no clamping in the join, and therefore
+ * nothing in the join that could break associativity.
+ */
+function attemptRecord(v: unknown): Record<string, AttemptStat> {
+  if (!isPlainObject(v)) return {};
+  const out: Record<string, AttemptStat> = {};
+  for (const k of Object.keys(v)) {
+    const e = v[k];
+    if (!isPlainObject(e)) continue;
+    const updatedAt = str(e.updatedAt);
+    const rawTries = optNum(e.tries);
+    if (updatedAt === null || updatedAt === "" || rawTries === null) continue;
+    const tries = rawTries < 0 ? 0 : rawTries;
+    const rawWrong = optNum(e.wrong) ?? 0;
+    const wrong = rawWrong < 0 ? 0 : rawWrong > tries ? tries : rawWrong;
+    const stat: AttemptStat = {
+      topic: str(e.topic) ?? "General",
+      tries,
+      wrong,
+      resolved: Boolean(e.resolved),
+      updatedAt,
+    };
+    // Optional fields are assigned only when present, never as `undefined`:
+    // an explicit undefined-valued key would change the canonical form and
+    // make coercion non-idempotent.
+    const level = str(e.level);
+    if (level !== null) stat.level = level;
+    const chosen = optNum(e.lastWrongOption);
+    if (chosen !== null) stat.lastWrongOption = chosen;
+    out[k] = stat;
   }
   return out;
 }
@@ -201,9 +260,9 @@ function coerce(v: unknown): MergeState {
     streak: num(v.streak, 0),
     lastActive: str(v.lastActive),
     level: str(v.level),
-    srs: entryRecord<SrsItem>(v.srs),
+    srs: srsRecord(v.srs),
     vocab: flagRecord(v.vocab),
-    attempts: entryRecord<AttemptStat>(v.attempts),
+    attempts: attemptRecord(v.attempts),
     todayXp: num(v.todayXp, 0),
     xpDay: str(v.xpDay),
     goalXp: num(v.goalXp, MERGE_EMPTY.goalXp),
@@ -246,23 +305,126 @@ function higherLevel(a: string | null, b: string | null): string | null {
   return a >= b ? a : b;
 }
 
-/**
- * Whole-entry selection for the key-unioned `srs` / `attempts` maps.
+/* ------------------------------------------------------------------ *
+ * Per-entry rules for the key-unioned `attempts` and `srs` maps.
  *
- * DEVIATION, documented deliberately: 02-01's action text picks the entry "from
- * the side whose `lastActive` is later". That rule is NOT associative for a
- * key-unioned field, and 02-01 Task 2 asserts associativity. Counterexample —
- * a has key k (day 1), b lacks k (day 3), c has k (day 2):
- *   merge(a,b) keeps a's k and inherits day 3, then beats c  -> a's entry
- *   merge(b,c) keeps c's k and inherits day 3, then beats a  -> c's entry
- * The state-level day travels with the merge but the entry's provenance does
- * not. So the pick is value-only: the entry whose canonical serialization is
- * lexicographically greater. Arbitrary, but a genuine total order — hence
- * commutative, associative and idempotent — and it never mixes sub-fields
- * across sides. 02-02 replaces it with meaningful per-entry rules.
+ * THE CONSTRAINT THAT SHAPES BOTH. A per-entry rule may depend ONLY on
+ * the two entries it is given. It may not consult anything that lives at
+ * state level (`lastActive`, the D-01b instant) and it may not consult
+ * the paired entry in the OTHER map, because a key union destroys the
+ * provenance such a rule would need. 02-01 proved this with a
+ * counterexample that applies verbatim to any cross-referenced key:
+ * a holds key k, b does NOT hold k but carries a later timestamp for it,
+ * c holds k with a middling timestamp.
+ *   merge(a,b) keeps a's entry and inherits b's later timestamp, then
+ *              outranks c                                  -> a's entry
+ *   merge(b,c) keeps c's entry and inherits the same timestamp, then
+ *              outranks a                                  -> c's entry
+ * The timestamp travels with the merge; the entry's provenance does not.
+ * Two devices plus the server would disagree, and each disagreement is
+ * written back, so the reconcile would never settle.
+ * `scripts/verify-merge.mts` group 19 executes both rejected rules and
+ * asserts that they diverge, so this is evidence and not an assertion.
+ * ------------------------------------------------------------------ */
+
+/**
+ * The point-in-time group of an attempt stat: the fields that describe the
+ * learner's state at one moment and must therefore move together. Serialized
+ * with a fixed key set so the comparison is stable and total.
  */
-function pickWholeEntry<V>(x: V, y: V): V {
-  return canonical(x) >= canonical(y) ? x : y;
+function pointInTime(e: AttemptStat): string {
+  return canonical({
+    resolved: e.resolved,
+    topic: e.topic,
+    level: e.level,
+    lastWrongOption: e.lastWrongOption,
+  });
+}
+
+/** Returns > 0 when x's point-in-time group wins. Later `updatedAt` first,
+ * then the lexicographically greater `topic`, then the group's own canonical
+ * form so the order is total. Every rung reads a field that TRAVELS WITH THE
+ * GROUP — deliberately not `tries`, see mergeAttemptStat. */
+function pickAttemptSide(x: AttemptStat, y: AttemptStat): number {
+  const d = compareDay(x.updatedAt, y.updatedAt);
+  if (d !== 0) return d;
+  if (x.topic !== y.topic) return x.topic > y.topic ? 1 : -1;
+  const cx = pointInTime(x);
+  const cy = pointInTime(y);
+  return cx > cy ? 1 : cx < cy ? -1 : 0;
+}
+
+/**
+ * `attempts[id]` — the mistake notebook (D-01a row 1: the map is append-only
+ * and union-safe; this rule decides only a key present on both sides).
+ *
+ *   • `tries` and `wrong` take the larger of the two. The invariant that wrong
+ *     never exceeds tries is upheld by attemptRecord, not here.
+ *   • `updatedAt` takes the later day.
+ *   • `resolved`, `lastWrongOption`, `topic` and `level` come as a GROUP from
+ *     the later-`updatedAt` side. Never OR'd, never maxed field by field: a
+ *     question the learner just got wrong must not be flipped to resolved by an
+ *     older record, and a stale option index must not stick to a resolved stat.
+ *
+ * DEVIATION from the plan text, on associativity grounds. The plan breaks a
+ * same-day tie on "the side with more `tries`". That rung cannot be used: the
+ * merged entry's `tries` is the MAX of both sides, so a merged entry carries a
+ * counter that its own winning group never had, and the inflated counter then
+ * wins a comparison the original would have lost. Counterexample, all three on
+ * the same day: e1 = (tries 1, topic "aaa"), e2 = (an earlier day, tries 9,
+ * topic "xxx"), e3 = (tries 5, topic "ccc").
+ *   (e1·e2) takes e1's group by date and inherits tries 9, then beats e3 on
+ *           the inflated count                                 -> "aaa"
+ *   (e1·e3) ties on date and e3 wins on tries, then beats e2 by date -> "ccc"
+ * `topic` is kept as the tie rung in its place because it belongs to the group
+ * being selected and so cannot be inflated the same way.
+ */
+function mergeAttemptStat(x: AttemptStat, y: AttemptStat): AttemptStat {
+  const win = pickAttemptSide(x, y) >= 0 ? x : y;
+  const out: AttemptStat = {
+    topic: win.topic,
+    tries: maxNum(x.tries, y.tries),
+    wrong: maxNum(x.wrong, y.wrong),
+    resolved: win.resolved,
+    // Identical to `win.updatedAt` by construction — the winner is chosen on
+    // this comparison first — but written as the max so the field reads as the
+    // rule it is.
+    updatedAt: laterDay(x.updatedAt, y.updatedAt) ?? win.updatedAt,
+  };
+  if (win.level !== undefined) out.level = win.level;
+  if (win.lastWrongOption !== undefined) out.lastWrongOption = win.lastWrongOption;
+  return out;
+}
+
+/**
+ * `srs[id]` — the review queue. The `{box, due}` entry moves as a UNIT, so a
+ * box from one side is never paired with a due date from the other: the two are
+ * computed together by `recordAttempt` and only mean anything together.
+ *
+ *   • The earlier `due` wins.
+ *   • Equal `due` takes the lower `box`.
+ *
+ * Both tiebreaks fail safe for learning: the worst case is one extra review,
+ * against a worst case of hiding an item the learner just got wrong for up to
+ * thirty days. And they are exactly right on the case that matters — an
+ * incorrect answer writes box 0 with `due` = today, the smallest possible pair,
+ * so a just-failed item beats any stale success outright.
+ *
+ * DEVIATION from the plan text, on associativity grounds. The plan selects the
+ * entry "from the side whose paired `attempts[id].updatedAt` is later", with
+ * these two rungs as a fallback. The paired-timestamp rule is exactly the
+ * cross-map reference the block comment above rules out — `attempts[id]` can
+ * exist on a side that has no `srs[id]`, and after one merge the surviving
+ * entry has silently inherited that side's timestamp. The plan's own fallback
+ * is therefore promoted to the whole rule. Its ordering-hazard safeguard
+ * ("read the same unmerged input pair") is satisfied a stronger way: this
+ * picker is never handed `attempts` at all, so no later refactor can introduce
+ * the hazard.
+ */
+function mergeSrsItem(x: SrsItem, y: SrsItem): SrsItem {
+  const d = compareDay(x.due, y.due);
+  if (d !== 0) return d < 0 ? x : y;
+  return x.box <= y.box ? x : y;
 }
 
 /** Three-way form of `laterDay`, so a rule can name the winning SIDE and not
@@ -421,9 +583,13 @@ export function mergeProgress(a: unknown, b: unknown): ProgressState {
     streak: run.streak,
     lastActive: run.lastActive,
     level: higherLevel(x.level, y.level),
-    srs: unionRecord(x.srs, y.srs, pickWholeEntry),
+    // Both unions read the coerced INPUT pair, never each other's output, and
+    // mergeSrsItem takes no `attempts` argument at all — so the hazard of
+    // comparing an already-merged timestamp cannot be reintroduced by a later
+    // refactor, because there is no parameter through which to reintroduce it.
+    srs: unionRecord(x.srs, y.srs, mergeSrsItem),
     vocab: pickVocabSide(x, y) >= 0 ? { ...x.vocab } : { ...y.vocab },
-    attempts: unionRecord(x.attempts, y.attempts, pickWholeEntry),
+    attempts: unionRecord(x.attempts, y.attempts, mergeAttemptStat),
     todayXp: ring.todayXp,
     xpDay: ring.xpDay,
     goalXp: pickGoalXp(x, y),

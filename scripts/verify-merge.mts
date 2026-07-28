@@ -17,7 +17,12 @@ import {
   mergeProgress,
   progressEqual,
 } from "../src/lib/progress-merge.ts";
-import { EMPTY, type ProgressState } from "../src/lib/progress-schema.ts";
+import {
+  EMPTY,
+  type AttemptStat,
+  type ProgressState,
+  type SrsItem,
+} from "../src/lib/progress-schema.ts";
 
 /* ------------------------------------------------------------------ *
  * Harness
@@ -193,6 +198,52 @@ const earlyDayNewXpRing = mk({
   goalXp: 45,
 });
 
+/* ---- 02-02 Task 2 fixtures: the review queue and the mistake notebook ---- */
+
+// The learner just got q-7 wrong on this device: recordAttempt writes box 0 and
+// due today, and marks the stat unresolved. Both maps are written together.
+const justGotItWrong = mk({
+  lastActive: "2026-07-28",
+  updatedAt: "2026-07-28T19:00:00.000Z",
+  srs: { "q-7": { box: 0, due: "2026-07-28" } },
+  attempts: {
+    "q-7": {
+      topic: "Conditionals",
+      level: "B2",
+      tries: 5,
+      wrong: 3,
+      resolved: false,
+      lastWrongOption: 2,
+      updatedAt: "2026-07-28",
+    },
+  },
+});
+
+// The other device still holds the older record, where q-7 was answered right:
+// box 4, due nearly a month out, resolved and with no lastWrongOption at all.
+const staleResolved = mk({
+  lastActive: "2026-07-20",
+  updatedAt: "2026-07-20T08:00:00.000Z",
+  srs: { "q-7": { box: 4, due: "2026-08-19" } },
+  attempts: {
+    "q-7": {
+      topic: "Conditionals",
+      level: "B2",
+      tries: 4,
+      wrong: 2,
+      resolved: true,
+      updatedAt: "2026-07-20",
+    },
+  },
+});
+
+// An entry that exists only in srs, with no paired stat at all — the fallback
+// path, and the shape a key union can always produce.
+const srsWithoutStat = mk({
+  lastActive: "2026-07-22",
+  srs: { "q-7": { box: 2, due: "2026-08-02" }, "q-solo": { box: 3, due: "2026-08-10" } },
+});
+
 const states: Array<[string, ProgressState]> = [
   ["account", account],
   ["anonymous", anonymous],
@@ -204,6 +255,9 @@ const states: Array<[string, ProgressState]> = [
   ["jan10", jan10],
   ["lateDayOldXpRing", lateDayOldXpRing],
   ["earlyDayNewXpRing", earlyDayNewXpRing],
+  ["justGotItWrong", justGotItWrong],
+  ["staleResolved", staleResolved],
+  ["srsWithoutStat", srsWithoutStat],
 ];
 
 /* ------------------------------------------------------------------ *
@@ -649,6 +703,319 @@ group("same-day vocab non-resurrection");
   ok(
     "and it stays gone after a second reconcile",
     !("card-2" in mergeProgress(merged, beforeUnmark).vocab),
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * 16. attempts[id] — the mistake notebook. Counters take a max; the
+ *     point-in-time group travels together from the later `updatedAt`
+ *     side, so a stale record can never mark an open mistake resolved.
+ * ------------------------------------------------------------------ */
+
+group("attempts per-entry rules");
+{
+  const merged = mergeProgress(justGotItWrong, staleResolved).attempts["q-7"];
+  ok("a just-failed question is not resolved by an older resolved record", merged.resolved === false);
+  ok("tries takes the max", merged.tries === 5);
+  ok("wrong takes the max", merged.wrong === 3);
+  ok("updatedAt takes the later day", merged.updatedAt === "2026-07-28");
+  ok("lastWrongOption travels WITH the group", merged.lastWrongOption === 2);
+  ok("topic travels with the group", merged.topic === "Conditionals");
+  deepEqual(
+    "the entry merge is commutative",
+    mergeProgress(staleResolved, justGotItWrong).attempts["q-7"],
+    merged,
+  );
+  deepEqual(
+    "and idempotent — merging the same pair twice changes nothing",
+    mergeProgress(mergeProgress(justGotItWrong, staleResolved), staleResolved).attempts["q-7"],
+    merged,
+  );
+
+  // The mirror: now the NEWER record is the resolved one, and it carries no
+  // lastWrongOption. If the group were merged field-by-field, the older
+  // record's option index would leak through onto a resolved stat.
+  const resolvedNewer = mk({
+    attempts: {
+      "q-8": { topic: "Articles", tries: 6, wrong: 2, resolved: true, updatedAt: "2026-07-28" },
+    },
+  });
+  const openOlder = mk({
+    attempts: {
+      "q-8": {
+        topic: "Articles",
+        tries: 3,
+        wrong: 3,
+        resolved: false,
+        lastWrongOption: 1,
+        updatedAt: "2026-07-01",
+      },
+    },
+  });
+  const mirror = mergeProgress(resolvedNewer, openOlder).attempts["q-8"];
+  ok("mirror: the newer resolved record wins", mirror.resolved === true);
+  ok("mirror: counters still take the max", mirror.tries === 6 && mirror.wrong === 3);
+  ok(
+    "mirror: the older lastWrongOption does NOT leak onto the winning group",
+    !("lastWrongOption" in mirror),
+  );
+
+  // The invariant, over every pair of fixtures: wrong never exceeds tries.
+  for (const [na, a] of states) {
+    for (const [nb, b] of states) {
+      const m = mergeProgress(a, b);
+      for (const [id, stat] of Object.entries(m.attempts)) {
+        ok(
+          `invariant wrong <= tries for ${id} in ${na}·${nb}`,
+          stat.wrong <= stat.tries,
+          `tries ${stat.tries}, wrong ${stat.wrong}`,
+        );
+      }
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * 17. srs[id] — the review queue. The {box, due} entry moves as a UNIT
+ *     and is chosen on the entry's own values: the earlier due wins, then
+ *     the lower box. Both tiebreaks bias toward reviewing sooner.
+ * ------------------------------------------------------------------ */
+
+group("srs per-entry rules");
+{
+  const merged = mergeProgress(justGotItWrong, staleResolved).srs["q-7"];
+  deepEqual(
+    "the just-failed entry wins whole: box 0 with ITS due date",
+    merged,
+    { box: 0, due: "2026-07-28" },
+  );
+  ok(
+    "box and due are never mixed across sides",
+    canon(merged) === canon(justGotItWrong.srs["q-7"]) ||
+      canon(merged) === canon(staleResolved.srs["q-7"]),
+  );
+  deepEqual(
+    "srs selection is commutative",
+    mergeProgress(staleResolved, justGotItWrong).srs["q-7"],
+    merged,
+  );
+
+  // Same due on both sides → the lower box wins (review sooner, and the box is
+  // the conservative one).
+  const sameDueHighBox = mk({ srs: { "q-2": { box: 5, due: "2026-08-01" } } });
+  const sameDueLowBox = mk({ srs: { "q-2": { box: 1, due: "2026-08-01" } } });
+  deepEqual(
+    "an equal due date takes the lower box",
+    mergeProgress(sameDueHighBox, sameDueLowBox).srs["q-2"],
+    { box: 1, due: "2026-08-01" },
+  );
+
+  // No paired stat anywhere → still decided by the entry alone.
+  const soloEarlier = mk({ srs: { "q-solo": { box: 1, due: "2026-08-03" } } });
+  deepEqual(
+    "with no paired stat the earlier due still wins",
+    mergeProgress(soloEarlier, srsWithoutStat).srs["q-solo"],
+    { box: 1, due: "2026-08-03" },
+  );
+
+  // A key present on one side only is carried through untouched.
+  deepEqual(
+    "a key present on one side only survives the union unchanged",
+    mergeProgress(srsWithoutStat, EMPTY).srs["q-solo"],
+    { box: 3, due: "2026-08-10" },
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * 18. Malformed entries: one bad side yields the other unchanged, two
+ *     bad sides drop the key rather than fabricate one.
+ * ------------------------------------------------------------------ */
+
+group("malformed entries");
+{
+  const junkEntries: unknown = {
+    ...EMPTY,
+    srs: {
+      "q-7": { box: "two", due: 7 },
+      "q-null": null,
+      // Readable due, unusable box — the half-formed case, which must be
+      // dropped rather than completed with an invented box.
+      "q-half": { box: "two", due: "2026-08-05" },
+      "q-ok": { box: 1, due: "2026-08-01" },
+    },
+    attempts: {
+      "q-7": "not an object",
+      "q-null": { topic: "T" },
+      // Readable timestamp, no usable tries count — same half-formed case.
+      "q-half": { topic: "T", resolved: true, updatedAt: "2026-08-05" },
+      // Violates the wrong <= tries invariant on input, and a negative
+      // counter: both must be repaired at coercion, before any merge.
+      "q-inv": { topic: "T", tries: 2, wrong: 9, resolved: false, updatedAt: "2026-08-05" },
+      "q-neg": { topic: "T", tries: -4, wrong: -1, resolved: false, updatedAt: "2026-08-05" },
+      "q-ok": { topic: "T", tries: 2, wrong: 0, resolved: true, updatedAt: "2026-08-01" },
+    },
+  };
+
+  const withGood = mergeProgress(junkEntries, justGotItWrong);
+  deepEqual(
+    "a malformed srs entry yields the other side's entry unchanged",
+    withGood.srs["q-7"],
+    { box: 0, due: "2026-07-28" },
+  );
+  deepEqual(
+    "a malformed attempt entry yields the other side's entry unchanged",
+    withGood.attempts["q-7"],
+    justGotItWrong.attempts["q-7"],
+  );
+  ok("the readable junk entries still survive", canon(withGood.srs["q-ok"]) === canon({ box: 1, due: "2026-08-01" }));
+
+  const bothBad = mergeProgress(junkEntries, junkEntries);
+  ok("malformed on both sides: the srs key is dropped, not fabricated", !("q-7" in bothBad.srs));
+  ok("malformed on both sides: the attempts key is dropped too", !("q-7" in bothBad.attempts));
+  ok("an entry missing required fields is dropped as well", !("q-null" in bothBad.attempts));
+  ok(
+    "an srs entry with a readable due but no usable box is dropped, not half-built",
+    !("q-half" in bothBad.srs),
+    `got ${canon(bothBad.srs["q-half"])}`,
+  );
+  ok(
+    "an attempt with a timestamp but no usable tries count is dropped too",
+    !("q-half" in bothBad.attempts),
+    `got ${canon(bothBad.attempts["q-half"])}`,
+  );
+  for (const [id, item] of Object.entries(bothBad.srs)) {
+    ok(
+      `surviving srs entry ${id} is fully formed`,
+      typeof item.box === "number" && Number.isFinite(item.box) && typeof item.due === "string" && item.due !== "",
+      canon(item),
+    );
+  }
+  ok(
+    "wrong is clamped to tries at coercion, so the invariant holds before any merge",
+    bothBad.attempts["q-inv"].wrong === 2 && bothBad.attempts["q-inv"].tries === 2,
+    canon(bothBad.attempts["q-inv"]),
+  );
+  ok(
+    "negative counters are repaired to zero",
+    bothBad.attempts["q-neg"].tries === 0 && bothBad.attempts["q-neg"].wrong === 0,
+    canon(bothBad.attempts["q-neg"]),
+  );
+  for (const [id, stat] of Object.entries(bothBad.attempts)) {
+    ok(
+      `surviving attempt ${id} keeps wrong <= tries`,
+      stat.wrong <= stat.tries && stat.tries >= 0,
+      canon(stat),
+    );
+    ok(
+      `surviving attempt ${id} is fully formed`,
+      typeof stat.tries === "number" && Number.isFinite(stat.tries) && typeof stat.updatedAt === "string" && stat.updatedAt !== "",
+      canon(stat),
+    );
+  }
+  ok("readable siblings are untouched by a dropped key", "q-ok" in bothBad.srs && "q-ok" in bothBad.attempts);
+  deepEqual("dropping is idempotent", mergeProgress(bothBad, junkEntries), bothBad);
+}
+
+/* ------------------------------------------------------------------ *
+ * 19. The two per-entry rules that were REJECTED, kept as executable
+ *     evidence. Both are non-associative for a key-unioned field, which
+ *     is the property 02-01 established and this plan's own acceptance
+ *     criteria require. If a later reader is tempted to "restore" either
+ *     rule from the plan text, this group is the answer.
+ * ------------------------------------------------------------------ */
+
+group("rejected per-entry rules (evidence)");
+{
+  type Pair = { srs: Record<string, SrsItem>; attempts: Record<string, AttemptStat> };
+  const stat = (updatedAt: string, tries: number, topic: string): AttemptStat => ({
+    topic,
+    tries,
+    wrong: 0,
+    resolved: true,
+    updatedAt,
+  });
+
+  /* --- Rejected rule A: "srs[id] comes from the side whose paired
+         attempts[id].updatedAt is later". --- */
+  function rejectedA(x: Pair, y: Pair): Pair {
+    const srs: Record<string, SrsItem> = { ...x.srs };
+    for (const k of Object.keys(y.srs)) {
+      if (!(k in srs)) {
+        srs[k] = y.srs[k];
+        continue;
+      }
+      const ux = x.attempts[k]?.updatedAt ?? "";
+      const uy = y.attempts[k]?.updatedAt ?? "";
+      srs[k] = ux >= uy ? srs[k] : y.srs[k];
+    }
+    const attempts: Record<string, AttemptStat> = { ...x.attempts };
+    for (const k of Object.keys(y.attempts)) {
+      const a = attempts[k];
+      const b = y.attempts[k];
+      attempts[k] = a === undefined ? b : a.updatedAt >= b.updatedAt ? a : b;
+    }
+    return { srs, attempts };
+  }
+
+  // 02-01's counterexample shape: A holds the key with an old stat, B holds the
+  // stat but NOT the srs entry, C holds both with a middling stat. B's newer
+  // timestamp is inherited by whichever entry it merges with first.
+  const A: Pair = { srs: { k: { box: 1, due: "2026-08-01" } }, attempts: { k: stat("2026-07-01", 1, "t") } };
+  const B: Pair = { srs: {}, attempts: { k: stat("2026-07-03", 1, "t") } };
+  const C: Pair = { srs: { k: { box: 9, due: "2026-09-09" } }, attempts: { k: stat("2026-07-02", 1, "t") } };
+
+  const leftA = rejectedA(rejectedA(A, B), C).srs.k;
+  const rightA = rejectedA(A, rejectedA(B, C)).srs.k;
+  ok(
+    "rejected rule A (srs follows the paired attempt timestamp) is NOT associative",
+    canon(leftA) !== canon(rightA),
+    `left ${canon(leftA)} right ${canon(rightA)}`,
+  );
+
+  // The shipped rule agrees under both bracketings on the very same states.
+  const sA = mk({ srs: A.srs, attempts: A.attempts });
+  const sB = mk({ srs: B.srs, attempts: B.attempts });
+  const sC = mk({ srs: C.srs, attempts: C.attempts });
+  deepEqual(
+    "the shipped entry-only rule IS associative on the same three states",
+    mergeProgress(mergeProgress(sA, sB), sC).srs.k,
+    mergeProgress(sA, mergeProgress(sB, sC)).srs.k,
+  );
+
+  /* --- Rejected rule B: "on an equal updatedAt, the side with more tries
+         wins the point-in-time group". `tries` is itself merged with a max,
+         so the winner's key is inflated by the loser's counter. --- */
+  function rejectedB(x: AttemptStat, y: AttemptStat): AttemptStat {
+    const tries = Math.max(x.tries, y.tries);
+    let win = x;
+    if (y.updatedAt > x.updatedAt) win = y;
+    else if (y.updatedAt === x.updatedAt && y.tries > x.tries) win = y;
+    return { ...win, tries, wrong: Math.max(x.wrong, y.wrong), updatedAt: x.updatedAt > y.updatedAt ? x.updatedAt : y.updatedAt };
+  }
+
+  const e1 = stat("2026-07-03", 1, "aaa");
+  const e2 = stat("2026-07-01", 9, "xxx");
+  const e3 = stat("2026-07-03", 5, "ccc");
+  const leftB = rejectedB(rejectedB(e1, e2), e3).topic;
+  const rightB = rejectedB(rejectedB(e1, e3), e2).topic;
+  ok(
+    "rejected rule B (tries breaks the updatedAt tie) is NOT associative",
+    leftB !== rightB,
+    `left ${leftB} right ${rightB}`,
+  );
+
+  const t1 = mk({ attempts: { k: e1 } });
+  const t2 = mk({ attempts: { k: e2 } });
+  const t3 = mk({ attempts: { k: e3 } });
+  deepEqual(
+    "the shipped group rule IS associative on the same three entries",
+    mergeProgress(mergeProgress(t1, t2), t3).attempts.k,
+    mergeProgress(t1, mergeProgress(t2, t3)).attempts.k,
+  );
+  deepEqual(
+    "and order-independent across the other bracketing too",
+    mergeProgress(mergeProgress(t1, t3), t2).attempts.k,
+    mergeProgress(mergeProgress(t2, t3), t1).attempts.k,
   );
 }
 
