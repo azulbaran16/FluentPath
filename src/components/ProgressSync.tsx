@@ -3,6 +3,7 @@
 import { useEffect, useEffectEvent } from "react";
 import { useSession } from "next-auth/react";
 import { useProgressSync } from "@/lib/progress";
+import { useCelpipSync } from "@/lib/celpip-progress";
 import { flushQueue, nextAttemptAt, resetBackoff, subscribeStatus } from "@/lib/sync-queue";
 import { SyncIndicator } from "./SyncIndicator";
 
@@ -20,6 +21,11 @@ export function ProgressSync() {
   const authed = status === "authenticated";
 
   useProgressSync();
+  // The CELPIP domain reconciles here too, and only here. Each reconcile
+  // drains the queue before it fetches — the established flush-before-reconcile
+  // ordering — and the queue's single-flight hands the second caller the same
+  // promise, so two domains do not mean two drains.
+  useCelpipSync();
   useFlushTriggers(authed);
 
   return <SyncIndicator authed={authed} />;
