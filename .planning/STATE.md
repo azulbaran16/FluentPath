@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02
 current_phase_name: server-side-progress
 status: in-progress
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-07-28T22:36:34.010Z"
+stopped_at: Completed 02-03-PLAN.md
+last_updated: "2026-07-28T23:00:41.899Z"
 last_activity: 2026-07-28
 last_activity_desc: "02-01 executed: shared store, pure merge, merge-on-write PUT"
 progress:
   total_phases: 2
   completed_phases: 1
   total_plans: 13
-  completed_plans: 7
+  completed_plans: 9
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-07-23)
 ## Current Position
 
 Phase: 02 (server-side-progress) — IN PROGRESS
-Plan: 2 of 7
+Plan: 4 of 7
 Status: 02-01 (tracer) complete on branch `phase-02-server-side-progress`; next action is executing 02-02
 Last activity: 2026-07-28 — 02-01 executed: shared store, pure merge, merge-on-write PUT
 
-Progress: [█████░░░░░] 54% (1 of 5 phases)
+Progress: [███████░░░] 69% (1 of 5 phases)
 
 ## Performance Metrics
 
@@ -60,6 +60,8 @@ Progress: [█████░░░░░] 54% (1 of 5 phases)
 | Phase 01 P05 | ~15min | 3 tasks | 4 files |
 | Phase 01 P06 | ~20min | 2 tasks | 3 files (2 defect fixes) |
 | Phase 02 P01 | 47min | 2 tasks | 8 files |
+| Phase 02 P02 | ~20min | 2 tasks | 2 files |
+| Phase 02 P03 | 25min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -84,6 +86,11 @@ Recent decisions affecting current work:
 - [Phase ?]: 02-01: srs/attempts per-entry selection is value-only (canonical max), not 'side with the later lastActive' — the plan's rule is provably non-associative for a key-unioned field; 02-02's refined rules must stay entry-only
 - [Phase ?]: 02-01: the D-01b vocab ladder consults lastActive ONLY when neither side carries an instant; two equal non-null instants fall through to the value rungs, which is what keeps the ladder associative
 - [Phase ?]: 02-01: GET /api/progress returns the empty state rather than null for an absent or corrupt blob
+- [Phase ?]: 02-02: srs[id] merges entry-only (earlier due, then lower box) — the plan's paired-attempts-updatedAt rule is 02-01's non-associativity counterexample applied to a cross-map reference
+- [Phase ?]: 02-02: the attempts same-day tie breaks on topic, not tries — tries is independently maxed, so it inflates the winner's own comparison key
+- [Phase ?]: 02-02: todayXp/xpDay are keyed on xpDay alone, never lastActive; a selection key must travel with the value it selects
+- [Phase ?]: 02-03: the D-01b instant is accepted only at millisecond precision — laterInstant compares lexically, so a second-precision instant would sort ABOVE a millisecond one and invert the whole-field ordering
+- [Phase ?]: 02-03: zod on the client costs +284,752 bytes in one new chunk (isolated by a before/after build); accepted as the price of the client and server sharing one contract
 
 ### Pending Todos
 
@@ -116,6 +123,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-28T22:36:33.991Z
-Stopped at: Completed 02-01-PLAN.md
+Last session: 2026-07-28T23:00:29.296Z
+Stopped at: Completed 02-03-PLAN.md
 Resume file: None

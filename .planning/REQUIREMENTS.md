@@ -23,7 +23,7 @@ Added 2026-07-23 from approved design `docs/plans/2026-07-23-celpip-writing-desi
 
 - [x] **PROG-01**: Signed-in learner's progress (completions, XP, streak, CEFR level, SRS queue, attempts) is persisted in Postgres as the authoritative copy, with localStorage acting as cache/offline buffer
 - [x] **PROG-02**: Learner logs in from a different browser or device and sees identical progress
-- [ ] **PROG-03**: Progress API validates payloads against the ProgressState schema; malformed writes are rejected without corrupting stored data, and corrupted stored data loads as a safe default instead of crashing
+- [x] **PROG-03**: Progress API validates payloads against the ProgressState schema; malformed writes are rejected without corrupting stored data, and corrupted stored data loads as a safe default instead of crashing
 - [ ] **PROG-04**: Progress writes that fail (offline, flaky network, server error) are retried automatically — no silent data loss
 - [x] **PROG-05**: Anonymous local progress migrates into the account on first sign-in without loss
 
@@ -92,7 +92,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CELPIP-05 | Phase 1 | Complete |
 | PROG-01 | Phase 2 | Complete |
 | PROG-02 | Phase 2 | Complete |
-| PROG-03 | Phase 2 | Pending |
+| PROG-03 | Phase 2 | Complete |
 | PROG-04 | Phase 2 | Pending |
 | PROG-05 | Phase 2 | Complete |
 | CONT-01 | Phase 3 | Pending |
