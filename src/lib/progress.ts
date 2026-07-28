@@ -15,6 +15,7 @@ import {
   type SrsItem,
 } from "./progress-schema";
 import { mergeProgress, progressEqual } from "./progress-merge";
+import { enqueue, flushQueue } from "./sync-queue";
 
 // Local-first progress store + learning engine.
 // - Anonymous users: persisted to localStorage (cache).
@@ -132,14 +133,25 @@ let saveTimer: ReturnType<typeof setTimeout> | null = null;
 // authenticated session, no matter how many consumers are mounted.
 let reconciled = false;
 
+/** Hands the snapshot to the durable queue (D-07) and asks it to drain now.
+ *
+ * It used to fire a fetch whose result nobody read, so a write that failed
+ * while the learner was offline — or in the seconds before they closed the tab
+ * — was simply gone. PROG-04 forbids exactly that. The queue persists the
+ * snapshot to localStorage first, so the write outlives the failure, the tab
+ * and the reboot; every opportunity to drain it is wired once in
+ * src/components/ProgressSync.tsx.
+ *
+ * The snapshot goes in EXACTLY as persist() produced it, D-01b instant
+ * included and unmodified. The queue is a transport, not a mutation site:
+ * re-stamping at flush time would let a snapshot that had been sitting in the
+ * queue since yesterday claim to be the freshest state on the account.
+ *
+ * The flush is deliberately not awaited. The learner never waits on the
+ * network — the local write already happened, synchronously, in persist(). */
 function putServer(s: ProgressState) {
-  fetch("/api/progress", {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ progress: s }),
-  }).catch(() => {
-    /* offline — local cache still holds the data */
-  });
+  enqueue("progress", s);
+  void flushQueue();
 }
 
 function scheduleServerWrite(next: ProgressState) {
@@ -194,6 +206,12 @@ export function useProgressSync() {
     let cancelled = false;
     (async () => {
       try {
+        // Drain first, reconcile second. A queued snapshot means the server's
+        // copy is known-stale, and merging against it would join with data the
+        // queue is about to overwrite anyway. Awaited rather than fired: the
+        // ordering is the whole point, and nothing renders on this path.
+        await flushQueue();
+        if (cancelled) return;
         const res = await fetch("/api/progress");
         if (!res.ok || cancelled) return;
         const { progress } = (await res.json()) as {
