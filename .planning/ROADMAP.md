@@ -57,10 +57,10 @@ Plans:
   3. A malformed progress write is rejected by the server without corrupting stored data, and corrupted stored progress loads as a safe default instead of crashing the app
   4. Progress recorded while the network is down reaches the server automatically once the connection returns — no silent loss
 
-**Plans**: 7 plans
+**Plans**: 1/7 plans executed
 Plans:
 
-- [ ] 02-01-PLAN.md — Tracer: one shared store, one reconcile per load, merge-on-write end to end
+- [x] 02-01-PLAN.md — Tracer: one shared store, one reconcile per load, merge-on-write end to end
 - [ ] 02-02-PLAN.md — Complete the D-01a merge: streak pair, daily-XP tuple, SRS/attempt per-entry rules
 - [ ] 02-03-PLAN.md — Shared zod contract: strip-and-save validation, safe reads, bounded payload
 - [ ] 02-04-PLAN.md — Persisted retry queue, flush triggers, and the discreet not-synced indicator
@@ -125,7 +125,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. CELPIP Writing Practice | 6/6 | Complete | 2026-07-28 |
-| 2. Server-Side Progress | 0/7 | Not started | - |
+| 2. Server-Side Progress | 1/7 | In Progress|  |
 | 3. Every Scenario Practicable | 0/TBD | Not started | - |
 | 4. Full Curriculum Expansion | 0/TBD | Not started | - |
 | 5. AI Tutor End-to-End | 0/TBD | Not started | - |

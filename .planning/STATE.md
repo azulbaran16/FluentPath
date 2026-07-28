@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 01
-current_phase_name: celpip-writing-practice
-status: phase-complete
-stopped_at: Phase 02 context gathered
-last_updated: "2026-07-28T20:56:57.824Z"
+current_phase: 02
+current_phase_name: server-side-progress
+status: in-progress
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-07-28T22:36:34.010Z"
 last_activity: 2026-07-28
-last_activity_desc: Phase 01 verification gate passed
+last_activity_desc: "02-01 executed: shared store, pure merge, merge-on-write PUT"
 progress:
   total_phases: 2
   completed_phases: 1
-  total_plans: 6
-  completed_plans: 6
+  total_plans: 13
+  completed_plans: 7
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-23)
 
 **Core value:** A learner can practice any real-life English scenario end-to-end — with an AI tutor that corrects them in context — and their progress is never lost.
-**Current focus:** Phase 02 — server-side-progress (not yet planned)
+**Current focus:** Phase 02 — server-side-progress (executing, plan 01 of 07 complete)
 
 ## Current Position
 
-Phase: 01 (celpip-writing-practice) — COMPLETE
-Plan: 6 of 6
-Status: Phase verified and closed; next action is planning Phase 02
-Last activity: 2026-07-28 — Phase 01 verification gate passed
+Phase: 02 (server-side-progress) — IN PROGRESS
+Plan: 2 of 7
+Status: 02-01 (tracer) complete on branch `phase-02-server-side-progress`; next action is executing 02-02
+Last activity: 2026-07-28 — 02-01 executed: shared store, pure merge, merge-on-write PUT
 
-Progress: [██░░░░░░░░] 20% (1 of 5 phases)
+Progress: [█████░░░░░] 54% (1 of 5 phases)
 
 ## Performance Metrics
 
@@ -59,6 +59,7 @@ Progress: [██░░░░░░░░] 20% (1 of 5 phases)
 | Phase 01 P04 | ~15min | 3 tasks | 5 files |
 | Phase 01 P05 | ~15min | 3 tasks | 4 files |
 | Phase 01 P06 | ~20min | 2 tasks | 3 files (2 defect fixes) |
+| Phase 02 P01 | 47min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -80,6 +81,9 @@ Recent decisions affecting current work:
 - [Phase ?]: 01-06: Verification gate was driven by an agent through a real browser (Playwright) because the user had no time for hands-on UAT; timer expiry was reached by overriding Date.now() in the page rather than waiting 27 minutes.
 - [Phase ?]: 01-06: formatDuration moved from CelpipLanding into celpip-progress so the results metrics strip and history rows format durations identically.
 - [Phase ?]: 01-05: Attempt-history rows link to /celpip/writing/[taskId] (not a deep-linked historical result view) since WritingSimulator has no mechanism to render an arbitrary past attempt and is out of this plan's file scope.
+- [Phase ?]: 02-01: srs/attempts per-entry selection is value-only (canonical max), not 'side with the later lastActive' — the plan's rule is provably non-associative for a key-unioned field; 02-02's refined rules must stay entry-only
+- [Phase ?]: 02-01: the D-01b vocab ladder consults lastActive ONLY when neither side carries an instant; two equal non-null instants fall through to the value rungs, which is what keeps the ladder associative
+- [Phase ?]: 02-01: GET /api/progress returns the empty state rather than null for an absent or corrupt blob
 
 ### Pending Todos
 
@@ -112,6 +116,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-28T20:56:57.805Z
-Stopped at: Phase 02 context gathered
-Resume file: .planning/phases/02-server-side-progress/02-CONTEXT.md
+Last session: 2026-07-28T22:36:33.991Z
+Stopped at: Completed 02-01-PLAN.md
+Resume file: None
