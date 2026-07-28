@@ -1,9 +1,33 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/db";
+import { EMPTY, type ProgressState } from "@/lib/progress-schema";
+import { mergeProgress } from "@/lib/progress-merge";
 
-// Per-user progress, stored as a JSON string. Mirrors the client
-// ProgressState shape; the client merges this with any local cache.
+// Per-user progress, stored as a JSON string. Mirrors the client ProgressState
+// shape.
+//
+// The write is a MERGE, not an overwrite: the incoming snapshot is joined into
+// the stored blob with the same mergeProgress the client runs, so a stale,
+// duplicated or out-of-order snapshot can no longer regress the stored row.
+// That is what makes a replayed write harmless — the property the retry queue
+// in 02-04 depends on.
+//
+// This handler must never author a D-01b `updatedAt` instant of its own: the
+// stored value is whatever the merge selected from the two snapshots. A
+// server-side stamp would make every stored row newer than every client and
+// invert the rule.
+
+/** Reads the stored blob without ever throwing — a corrupt row yields the empty
+ * state instead of a permanent 500 for that account (PROG-03). */
+function readStored(raw: string | null | undefined): ProgressState {
+  if (!raw) return EMPTY;
+  try {
+    return JSON.parse(raw) as ProgressState;
+  } catch {
+    return EMPTY;
+  }
+}
 
 export async function GET() {
   const session = await auth();
@@ -14,8 +38,7 @@ export async function GET() {
     where: { id: session.user.id },
     select: { progress: true },
   });
-  const progress = user?.progress ? JSON.parse(user.progress) : null;
-  return NextResponse.json({ progress });
+  return NextResponse.json({ progress: readStored(user?.progress) });
 }
 
 export async function PUT(req: Request) {
@@ -29,20 +52,26 @@ export async function PUT(req: Request) {
   } catch {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 });
   }
-  const progress = (body as { progress?: unknown }).progress;
-  if (typeof progress !== "object" || progress === null) {
+  const incoming = (body as { progress?: unknown }).progress;
+  if (typeof incoming !== "object" || incoming === null) {
     return NextResponse.json({ error: "Invalid progress" }, { status: 400 });
   }
 
-  const level =
-    typeof (progress as { level?: unknown }).level === "string"
-      ? (progress as { level: string }).level
-      : null;
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { progress: true },
+  });
+  const merged = mergeProgress(readStored(user?.progress), incoming);
 
-  // updateMany doesn't throw if the user no longer exists (e.g. stale cookie).
+  // Denormalized out of the blob into User.level — recomputed from the MERGED
+  // state, never from the incoming payload.
+  const level = typeof merged.level === "string" ? merged.level : null;
+
+  // Deliberately not `update`: this form doesn't throw if the user no longer
+  // exists (e.g. a stale cookie), so the handler answers 401 instead of 500.
   const { count } = await prisma.user.updateMany({
     where: { id: session.user.id },
-    data: { progress: JSON.stringify(progress), level },
+    data: { progress: JSON.stringify(merged), level },
   });
   if (count === 0) {
     return NextResponse.json({ error: "Account not found" }, { status: 401 });
