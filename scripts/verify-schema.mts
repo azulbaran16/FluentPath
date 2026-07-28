@@ -376,7 +376,8 @@ group("D-01b — the millisecond instant survives the schema");
     "2026-07-28T09:15:42Z" > "2026-07-28T09:15:42.500Z",
   );
 
-  const { updatedAt: _dropped, ...withoutInstant } = full;
+  const withoutInstant: Record<string, unknown> = { ...full };
+  delete withoutInstant.updatedAt;
   ok(
     "a payload written before this phase parses with a null instant",
     accept("a payload with no instant at all", withoutInstant).updatedAt === null,
