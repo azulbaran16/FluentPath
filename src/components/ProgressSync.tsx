@@ -4,14 +4,16 @@ import { useEffect, useEffectEvent } from "react";
 import { useSession } from "next-auth/react";
 import { useProgressSync } from "@/lib/progress";
 import { flushQueue, nextAttemptAt, resetBackoff, subscribeStatus } from "@/lib/sync-queue";
+import { SyncIndicator } from "./SyncIndicator";
 
 /**
- * The single app-wide mount point for D-02's per-load reconcile and for every
- * sync-queue flush trigger.
+ * The single app-wide mount point for D-02's per-load reconcile, for every
+ * sync-queue flush trigger, and for the D-06 indicator.
  *
- * It exists so both run once per tab, with session context, no matter how many
- * useProgress() consumers a page mounts — /review alone mounts four. Rendered
- * from src/app/providers.tsx inside <SessionProvider>.
+ * It exists so all three run once per tab, with session context, no matter how
+ * many useProgress() consumers a page mounts — /review alone mounts four.
+ * Rendered from src/app/providers.tsx inside <SessionProvider>, which is also
+ * why the indicator needs no mount point of its own and cannot be duplicated.
  */
 export function ProgressSync() {
   const { status } = useSession();
@@ -20,7 +22,7 @@ export function ProgressSync() {
   useProgressSync();
   useFlushTriggers(authed);
 
-  return null;
+  return <SyncIndicator authed={authed} />;
 }
 
 /**
