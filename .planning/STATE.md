@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02
 current_phase_name: server-side-progress
 status: in-progress
-stopped_at: Completed 02-04-PLAN.md
-last_updated: "2026-07-28T23:29:54.224Z"
+stopped_at: Completed 02-05-PLAN.md
+last_updated: "2026-07-28T23:31:21.938Z"
 last_activity: 2026-07-28
 last_activity_desc: "02-01 executed: shared store, pure merge, merge-on-write PUT"
 progress:
   total_phases: 2
   completed_phases: 1
   total_plans: 13
-  completed_plans: 10
+  completed_plans: 11
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-07-23)
 ## Current Position
 
 Phase: 02 (server-side-progress) — IN PROGRESS
-Plan: 5 of 7
+Plan: 6 of 7
 Status: 02-01 (tracer) complete on branch `phase-02-server-side-progress`; next action is executing 02-02
 Last activity: 2026-07-28 — 02-01 executed: shared store, pure merge, merge-on-write PUT
 
-Progress: [████████░░] 77% (1 of 5 phases)
+Progress: [█████████░] 85% (1 of 5 phases)
 
 ## Performance Metrics
 
@@ -63,6 +63,7 @@ Progress: [████████░░] 77% (1 of 5 phases)
 | Phase 02 P02 | ~20min | 2 tasks | 2 files |
 | Phase 02 P03 | 25min | 2 tasks | 4 files |
 | Phase 02 P04 | 40min | 3 tasks | 5 files |
+| Phase 02 P05 | 38min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -95,6 +96,9 @@ Recent decisions affecting current work:
 - [Phase ?]: 02-04: classifyFailure defaults to retry; only 401/403 stop and only an explicitly permanent 4xx drops — the never-lose direction for PROG-04
 - [Phase ?]: 02-04: a connectivity hint resets the backoff but NOT the consecutive-failure count; only a real success clears the D-06 indicator
 - [Phase ?]: 02-04: the sync queue is a transport, not a mutation site — it forwards the D-01b instant unmodified, keeping nowInstant() authored in exactly one place
+- [Phase ?]: 02-05: CelpipProgressState carries one marker — the D-01b millisecond instant — and nothing day-shaped; the drafts carve-out is decided by it, never by map size
+- [Phase ?]: 02-05: a CELPIP attempt with no natural key (task id + submission instant) is dropped at coercion — an entry that cannot be de-duplicated is re-appended on every reconcile
+- [Phase ?]: 02-05: the CELPIP task-type union is bound by an import(...) type annotation, not an import statement, so the drift guard fires without pulling the task bank into the bundle
 
 ### Pending Todos
 
@@ -127,6 +131,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-28T23:29:40.412Z
-Stopped at: Completed 02-04-PLAN.md
+Last session: 2026-07-28T23:31:21.919Z
+Stopped at: Completed 02-05-PLAN.md
 Resume file: None
