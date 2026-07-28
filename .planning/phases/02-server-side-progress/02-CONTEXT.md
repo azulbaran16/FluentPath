@@ -53,6 +53,35 @@ any new learning content, and the AI tutor's progress credit (Phase 5).
   resurrection was rejected outright.
   — **Reversibility:** costly — the rule set becomes the merge contract for all stored data.
 
+- **D-01b (amendment, 2026-07-28, after plan review):** D-01a's whole-field rule
+  ("the side with the later activity wins") is **under-determined at day granularity**.
+  `lastActive` is a `YYYY-MM-DD` string (`progress.ts:41`), and D-02 reconciles on every
+  load, so within a single day both sides always tie — meaning the tie-break, not the
+  rule, decides nearly every real merge. The plan's tie-break ("prefer the map with more
+  keys") therefore resurrects deletions on the common path: un-mark a vocab card, reload,
+  it returns; submit a CELPIP attempt, reload, the cleared draft pre-fills the next timed
+  run — exactly the Phase 1 defect fixed in `fca41b7`.
+
+  **Resolution:** both `ProgressState` and `CelpipProgressState` gain a millisecond-
+  precision ISO `updatedAt` instant, stamped on every mutation. The whole-field group
+  (`vocab`, CELPIP drafts) is selected on that instant, falling back to `lastActive` when
+  it is absent (pre-existing blobs). Additive, value-only, commutative. The reconcile's
+  own commit must NOT stamp it, or every page load would trigger a write-back.
+
+  Rejected: "smaller map wins on tie" (inverts the bug — loses a same-day addition from
+  another device) and tombstones (already rejected for size).
+  — **Reversibility:** costly — `updatedAt` becomes part of the stored shape.
+
+- **D-01c (amendment, 2026-07-28, after plan review):** The planner's consecutive-day
+  streak carve-out ("`lastActive` exactly one day apart → take the later day and the
+  larger streak") is **dropped**. It is not associative — with three states the result
+  depends on merge order (30 vs 1) — and it is literally `max(lastActive)` + `max(streak)`,
+  the shape D-01a names as forbidden. The plain rule stands: the pair goes to whichever
+  side has the later `lastActive`; on an equal-day tie, the larger streak.
+
+  Accepted cost: practising on two devices on consecutive days may not compound the
+  streak. The user chose correctness and order-independence over streak generosity.
+
 - **D-03:** No user-facing merge dialog. The merge is automatic and silent — the user
   rejected asking the learner to choose between two progress sets as confusing.
 
