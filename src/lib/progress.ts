@@ -8,6 +8,7 @@ import {
   addDays,
   daysBetween,
   nowInstant,
+  safeReadProgress,
   today,
   type AttemptStat,
   type ProgressState,
@@ -36,14 +37,18 @@ const KEY = "fluentpath:progress:v2";
 /** Leitner-style review intervals in days, indexed by box. */
 const BOX_DAYS = [0, 1, 3, 7, 16, 30];
 
+/** The cache is read through the SAME contract the server reads its blob with,
+ * so a corrupted localStorage entry degrades to the empty state exactly the way
+ * a corrupted Postgres row does, instead of throwing on hydrate. The try/catch
+ * stays because `getItem` itself throws in some privacy modes — that is a
+ * different failure from unreadable contents, which safeReadProgress owns. */
 function readLocal(): ProgressState {
   if (typeof window === "undefined") return EMPTY;
   try {
-    const raw = window.localStorage.getItem(KEY);
-    if (raw) return { ...EMPTY, ...JSON.parse(raw) };
-    const v1 = window.localStorage.getItem("fluentpath:progress:v1");
-    if (v1) return { ...EMPTY, ...JSON.parse(v1) };
-    return EMPTY;
+    const raw =
+      window.localStorage.getItem(KEY) ??
+      window.localStorage.getItem("fluentpath:progress:v1");
+    return safeReadProgress(raw);
   } catch {
     return EMPTY;
   }
