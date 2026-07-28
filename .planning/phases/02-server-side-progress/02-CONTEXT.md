@@ -39,6 +39,20 @@ any new learning content, and the AI tutor's progress credit (Phase 5).
   offline work, which is what the ROADMAP's "same progress in a different browser"
   criterion actually requires.
 
+- **D-01a (refinement, 2026-07-28, after research):** The merge rule is per-field, not
+  one global `max()`. Research showed a blanket union/max is wrong for three fields:
+
+  | Field group | Rule | Why |
+  |---|---|---|
+  | `completed`, `srs`, `attempts`, `xp`, `skillXp`, `level` | union / `max()` / highest | Append-only and idempotent — safe to re-merge on every load (D-02) |
+  | `streak` + `lastActive` | Take the pair from whichever side has the later `lastActive`; never `max(streak)` | `max(streak)` + `max(lastActive)` fabricates a streak the learner never had, and it *sticks*, because `recordActivity` recomputes from `lastActive` |
+  | `vocab`, CELPIP drafts | Whole-field: take the side with the later activity. No key union | These are the only fields with real deletions — `markVocab(id,false)` deletes at `progress.ts:298` and `clearDraft()` deletes at `celpip-progress.ts:125`. Unioning resurrects them, re-introducing the exact defect Phase 1 fixed in `fca41b7` |
+  | `goalXp` | Most recent setting wins, never `max()` | It is a learner *preference* (daily goal, default 30 at `progress.ts:65`, set at `progress.ts:248`), not an achievement. `max()` would undo a deliberate lowering |
+
+  Tombstones were considered and rejected as too large for this phase. Accepting
+  resurrection was rejected outright.
+  — **Reversibility:** costly — the rule set becomes the merge contract for all stored data.
+
 - **D-03:** No user-facing merge dialog. The merge is automatic and silent — the user
   rejected asking the learner to choose between two progress sets as confusing.
 
