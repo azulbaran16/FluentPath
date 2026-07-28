@@ -106,6 +106,20 @@ export function useCelpipProgress() {
     [persist],
   );
 
+  /** Drops a task's saved draft. Called once an attempt is recorded so the
+   * next attempt starts from a blank editor under real exam conditions —
+   * a submitted answer must never pre-fill the next timed run. */
+  const clearDraft = useCallback(
+    (taskId: string) =>
+      persist((s) => {
+        if (!(taskId in s.drafts)) return s;
+        const drafts = { ...s.drafts };
+        delete drafts[taskId];
+        return { ...s, drafts };
+      }),
+    [persist],
+  );
+
   const draftFor = useCallback(
     (taskId: string) => state.drafts[taskId] ?? "",
     [state.drafts],
@@ -133,6 +147,7 @@ export function useCelpipProgress() {
     state,
     addAttempt,
     saveDraft,
+    clearDraft,
     draftFor,
     attemptsForTask,
     lastAttempt,

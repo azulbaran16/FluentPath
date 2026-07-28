@@ -14,7 +14,7 @@ type WordState = "under" | "in-range" | "over";
 const AUTOSAVE_DEBOUNCE_MS = 3000;
 
 export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
-  const { addAttempt, saveDraft, draftFor, ready } = useCelpipProgress();
+  const { addAttempt, saveDraft, clearDraft, draftFor, ready } = useCelpipProgress();
   const [phase, setPhase] = useState<Phase>("compose");
   const [mode, setMode] = useState<Mode>(null);
   const [text, setText] = useState("");
@@ -89,9 +89,14 @@ export function WritingSimulator({ task }: { task: CelpipWritingTask }) {
   // so a partial (or empty) check-in is still a valid, persisted result.
   // Called on every results-view exit path (Retry / Back to tasks) so
   // whatever the learner last checked is what lands in history.
+  //
+  // The draft is dropped in the same step: the text now lives in the attempt
+  // record, so keeping it would pre-fill the next timed run with the previous
+  // answer instead of starting under real exam conditions.
   function finalizeAttempt() {
     if (finalizedRef.current) return;
     finalizedRef.current = true;
+    clearDraft(task.id);
     addAttempt(task.id, {
       taskId: task.id,
       taskType: task.taskType,
