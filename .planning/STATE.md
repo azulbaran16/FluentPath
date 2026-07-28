@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02
 current_phase_name: server-side-progress
 status: in-progress
-stopped_at: Completed 02-05-PLAN.md
-last_updated: "2026-07-28T23:31:21.938Z"
+stopped_at: Completed 02-06-PLAN.md
+last_updated: "2026-07-28T23:55:19.881Z"
 last_activity: 2026-07-28
 last_activity_desc: "02-01 executed: shared store, pure merge, merge-on-write PUT"
 progress:
   total_phases: 2
   completed_phases: 1
   total_plans: 13
-  completed_plans: 11
+  completed_plans: 12
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-07-23)
 ## Current Position
 
 Phase: 02 (server-side-progress) — IN PROGRESS
-Plan: 6 of 7
+Plan: 7 of 7
 Status: 02-01 (tracer) complete on branch `phase-02-server-side-progress`; next action is executing 02-02
 Last activity: 2026-07-28 — 02-01 executed: shared store, pure merge, merge-on-write PUT
 
-Progress: [█████████░] 85% (1 of 5 phases)
+Progress: [█████████░] 92% (1 of 5 phases)
 
 ## Performance Metrics
 
@@ -64,6 +64,7 @@ Progress: [█████████░] 85% (1 of 5 phases)
 | Phase 02 P03 | 25min | 2 tasks | 4 files |
 | Phase 02 P04 | 40min | 3 tasks | 5 files |
 | Phase 02 P05 | 38min | 3 tasks | 6 files |
+| Phase 02 P06 | 55min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -99,6 +100,9 @@ Recent decisions affecting current work:
 - [Phase ?]: 02-05: CelpipProgressState carries one marker — the D-01b millisecond instant — and nothing day-shaped; the drafts carve-out is decided by it, never by map size
 - [Phase ?]: 02-05: a CELPIP attempt with no natural key (task id + submission instant) is dropped at coercion — an entry that cannot be de-duplicated is re-appended on every reconcile
 - [Phase ?]: 02-05: the CELPIP task-type union is bound by an import(...) type annotation, not an import statement, so the drift guard fires without pulling the task bank into the bundle
+- [Phase ?]: 02-06: readLocal() in the CELPIP store reads through safeReadCelpip — after the hoist that value is merged and uploaded, not just rendered, so an unvalidated updatedAt would enter the join
+- [Phase ?]: 02-06: /api/celpip-progress gets its OWN 2 MiB cap and its own rate-limit bucket — the sibling's bounds are per-handler and a 20,000-char entry cap bounds one essay, not the number of attempts
+- [Phase ?]: 02-06: a count-based grep gate on a stamping helper does not pin WHERE the stamp lives; mutation X3 moves it into the reconcile with the count unchanged, so the gate now extracts the persist body and asserts inside=1 outside=0
 
 ### Pending Todos
 
@@ -131,6 +135,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-28T23:31:21.919Z
-Stopped at: Completed 02-05-PLAN.md
+Last session: 2026-07-28T23:55:19.862Z
+Stopped at: Completed 02-06-PLAN.md
 Resume file: None
