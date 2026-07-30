@@ -52,3 +52,6 @@ next-env.d.ts
 
 # Third-party study material (not for distribution)
 Celpip.zip
+
+# Local-only compose overrides (machine-specific port remaps, etc.)
+docker-compose.override.yml
