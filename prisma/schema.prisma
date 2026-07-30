@@ -13,21 +13,28 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  name         String?
-  email        String   @unique
+  id             String   @id @default(cuid())
+  name           String?
+  email          String   @unique
   // null for OAuth-only accounts (e.g. Google)
-  passwordHash String?
-  image        String?
+  passwordHash   String?
+  image          String?
   // estimated CEFR level from the placement test
-  level        String?
+  level          String?
   // serialized ProgressState (JSON string — portable across SQLite/Postgres)
-  progress     String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  progress       String?
+  // serialized CelpipProgressState — the server home of the client's
+  // `fluentpath.celpip.v1` store (D-05). Deliberately its own column rather
+  // than a key inside the progress blob: the two domains stay decoupled and a
+  // routine XP save does not re-upload every essay text. A JSON string for the
+  // same engine-portability reason as `progress` above, and nullable with no
+  // default so the container's start-up schema push stays purely additive.
+  celpipProgress String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   // Stripe subscription (freemium "Pro")
-  stripeCustomerId     String?  @unique
+  stripeCustomerId     String?   @unique
   stripeSubscriptionId String?
   stripeStatus         String?
   proUntil             DateTime?
@@ -37,7 +44,7 @@ model User {
   referralCode String? @unique
   referredById String?
 
-  resetTokens  PasswordResetToken[]
+  resetTokens PasswordResetToken[]
 }
 
 model TutorUsage {

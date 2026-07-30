@@ -1,180 +1,250 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useSyncExternalStore } from "react";
 import { useSession } from "next-auth/react";
 import { WORLDS, TOTAL_SCENARIOS, type Skill } from "./curriculum";
+import {
+  EMPTY,
+  addDays,
+  daysBetween,
+  nowInstant,
+  safeReadProgress,
+  today,
+  type AttemptStat,
+  type ProgressState,
+  type SrsItem,
+} from "./progress-schema";
+import { mergeProgress, progressEqual } from "./progress-merge";
+import { enqueue, flushQueue } from "./sync-queue";
 
 // Local-first progress store + learning engine.
 // - Anonymous users: persisted to localStorage (cache).
 // - Signed-in users: synced to the server (/api/progress) so progress
 //   follows the account across devices, not just one browser.
+//
+// The state lives in ONE module-level snapshot behind useSyncExternalStore, not
+// in per-hook React state: useProgress() has ~17 call sites and /review mounts
+// four at once, so a per-hook copy meant four caches of one localStorage key and
+// (under D-02) four reconciles per load. Every consumer now reads the same
+// object and a mutation in one is visible in all of them on the next render.
+
+// The shape, the empty default and the day helpers live in the framework-free
+// contract module so the server can import them too. Re-exported here because
+// components and src/lib/achievements.ts import the types from this path.
+export type { ProgressState, SrsItem, AttemptStat };
 
 const KEY = "fluentpath:progress:v2";
 
 /** Leitner-style review intervals in days, indexed by box. */
 const BOX_DAYS = [0, 1, 3, 7, 16, 30];
 
-export interface SrsItem {
-  box: number;
-  due: string; // YYYY-MM-DD
-}
-
-/** Per-question performance, powering weak-spots & the mistake notebook. */
-export interface AttemptStat {
-  topic: string;
-  level?: string;
-  tries: number;
-  wrong: number;
-  resolved: boolean; // got it right on the most recent attempt
-  lastWrongOption?: number; // the option index last chosen incorrectly
-  updatedAt: string; // YYYY-MM-DD
-}
-
-export interface ProgressState {
-  /** keys are `${worldSlug}/${scenarioSlug}` */
-  completed: Record<string, true>;
-  xp: number;
-  skillXp: Partial<Record<Skill, number>>;
-  streak: number;
-  lastActive: string | null; // YYYY-MM-DD
-  level: string | null;
-  srs: Record<string, SrsItem>;
-  /** vocabulary flashcards marked as known, keyed by card id */
-  vocab: Record<string, true>;
-  /** per-question attempt stats (grammar), keyed by question id */
-  attempts: Record<string, AttemptStat>;
-  /** XP earned today (resets when the day changes) */
-  todayXp: number;
-  xpDay: string | null; // the day todayXp belongs to
-  /** daily XP goal */
-  goalXp: number;
-}
-
-const EMPTY: ProgressState = {
-  completed: {},
-  xp: 0,
-  skillXp: {},
-  streak: 0,
-  lastActive: null,
-  level: null,
-  srs: {},
-  vocab: {},
-  attempts: {},
-  todayXp: 0,
-  xpDay: null,
-  goalXp: 30,
-};
-
-function today(): string {
-  return new Date().toISOString().slice(0, 10);
-}
-function addDays(days: number): string {
-  const d = new Date();
-  d.setDate(d.getDate() + days);
-  return d.toISOString().slice(0, 10);
-}
-function daysBetween(a: string, b: string): number {
-  return Math.round((Date.parse(b) - Date.parse(a)) / 86_400_000);
-}
-
+/** The cache is read through the SAME contract the server reads its blob with,
+ * so a corrupted localStorage entry degrades to the empty state exactly the way
+ * a corrupted Postgres row does, instead of throwing on hydrate. The try/catch
+ * stays because `getItem` itself throws in some privacy modes — that is a
+ * different failure from unreadable contents, which safeReadProgress owns. */
 function readLocal(): ProgressState {
   if (typeof window === "undefined") return EMPTY;
   try {
-    const raw = window.localStorage.getItem(KEY);
-    if (raw) return { ...EMPTY, ...JSON.parse(raw) };
-    const v1 = window.localStorage.getItem("fluentpath:progress:v1");
-    if (v1) return { ...EMPTY, ...JSON.parse(v1) };
-    return EMPTY;
+    const raw =
+      window.localStorage.getItem(KEY) ??
+      window.localStorage.getItem("fluentpath:progress:v1");
+    return safeReadProgress(raw);
   } catch {
     return EMPTY;
-  }
-}
-function writeLocal(s: ProgressState) {
-  try {
-    window.localStorage.setItem(KEY, JSON.stringify(s));
-  } catch {
-    /* storage unavailable */
   }
 }
 
-function hasData(s: ProgressState): boolean {
-  return (
-    Object.keys(s.completed).length > 0 ||
-    s.xp > 0 ||
-    s.level !== null ||
-    Object.keys(s.srs).length > 0
-  );
+/** Returns true on a successful write, false if setItem throws (quota
+ * exceeded, private browsing, etc). Matches celpip-progress.ts; the retry queue
+ * in 02-04 must know whether its own write actually persisted. */
+function writeLocal(s: ProgressState): boolean {
+  try {
+    window.localStorage.setItem(KEY, JSON.stringify(s));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Module-level store.
+ * ------------------------------------------------------------------ */
+
+interface Snapshot {
+  state: ProgressState;
+  ready: boolean;
+}
+
+// A stable singleton: getServerSnapshot must return the same reference on every
+// call so SSR and hydration agree, and getSnapshot must return a cached
+// reference or React throws "The result of getSnapshot should be cached".
+const EMPTY_SNAPSHOT: Snapshot = { state: EMPTY, ready: false };
+
+let snapshot: Snapshot = EMPTY_SNAPSHOT;
+let hydrated = false;
+const listeners = new Set<() => void>();
+
+function emit() {
+  for (const l of listeners) l();
+}
+
+// Hydrating lazily here (rather than in a mount effect that calls setState)
+// is what let the react-hooks/set-state-in-effect escape hatch be deleted.
+function ensureHydrated() {
+  if (hydrated) return;
+  hydrated = true;
+  snapshot = { state: readLocal(), ready: true };
+}
+
+function subscribe(listener: () => void): () => void {
+  ensureHydrated();
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+function getSnapshot(): Snapshot {
+  return snapshot;
+}
+
+function getServerSnapshot(): Snapshot {
+  return EMPTY_SNAPSHOT;
+}
+
+/** Publishes a new state to every consumer. Deliberately does NOT touch the
+ * D-01b instant — only the mutation funnel stamps. */
+function commit(next: ProgressState) {
+  hydrated = true;
+  snapshot = { state: next, ready: true };
+  emit();
+}
+
+/* ------------------------------------------------------------------ *
+ * Server sync.
+ * ------------------------------------------------------------------ */
+
+// Mirrors useSession().status; owned by useProgressSync, which is mounted
+// exactly once (src/components/ProgressSync.tsx).
+let authed = false;
+let saveTimer: ReturnType<typeof setTimeout> | null = null;
+// Guards D-02's per-load reconcile so it runs at most once per tab per
+// authenticated session, no matter how many consumers are mounted.
+let reconciled = false;
+
+/** Hands the snapshot to the durable queue (D-07) and asks it to drain now.
+ *
+ * It used to fire a fetch whose result nobody read, so a write that failed
+ * while the learner was offline — or in the seconds before they closed the tab
+ * — was simply gone. PROG-04 forbids exactly that. The queue persists the
+ * snapshot to localStorage first, so the write outlives the failure, the tab
+ * and the reboot; every opportunity to drain it is wired once in
+ * src/components/ProgressSync.tsx.
+ *
+ * The snapshot goes in EXACTLY as persist() produced it, D-01b instant
+ * included and unmodified. The queue is a transport, not a mutation site:
+ * re-stamping at flush time would let a snapshot that had been sitting in the
+ * queue since yesterday claim to be the freshest state on the account.
+ *
+ * The flush is deliberately not awaited. The learner never waits on the
+ * network — the local write already happened, synchronously, in persist(). */
+function putServer(s: ProgressState) {
+  enqueue("progress", s);
+  void flushQueue();
+}
+
+function scheduleServerWrite(next: ProgressState) {
+  if (!authed) return;
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => putServer(next), 600);
+}
+
+/* ------------------------------------------------------------------ *
+ * The single mutation funnel.
+ * ------------------------------------------------------------------ */
+
+// Every mutation — complete, addSkillXp, recordAttempt, markVocab, setGoalXp,
+// setLevel, recordActivity — passes through persist, which is why the D-01b
+// activity instant is authored here and in exactly one place in this file. The
+// reconcile's own commit must never stamp: reconciling is not learner activity,
+// and a stamp there would make the local copy newer than the server on every
+// page load, force a write-back every time, and hand vocab to whichever side
+// merely loaded the app last.
+function persist(updater: (s: ProgressState) => ProgressState): boolean {
+  ensureHydrated();
+  const prev = snapshot.state;
+  const produced = updater(prev);
+  if (produced === prev) return true;
+  const next = { ...produced, updatedAt: nowInstant() };
+  const ok = writeLocal(next);
+  commit(next);
+  scheduleServerWrite(next);
+  return ok;
 }
 
 const key = (worldSlug: string, scenarioSlug: string) =>
   `${worldSlug}/${scenarioSlug}`;
 
-export function useProgress() {
+/* ------------------------------------------------------------------ *
+ * D-02 / D-03: reconcile once per authenticated load, silently.
+ * ------------------------------------------------------------------ */
+
+export function useProgressSync() {
   const { status } = useSession();
-  const authed = status === "authenticated";
-  const [state, setState] = useState<ProgressState>(EMPTY);
-  const [ready, setReady] = useState(false);
-  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Instant local hydrate from localStorage after mount (SSR-safe: the server
-  // renders the empty state, then the client fills it in).
-  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
-    setState(readLocal());
-    setReady(true);
-  }, []);
-  /* eslint-enable react-hooks/set-state-in-effect */
+    authed = status === "authenticated";
+    if (!authed) {
+      // Re-arm so a later sign-in reconciles again.
+      reconciled = false;
+      return;
+    }
+    if (reconciled) return;
+    reconciled = true;
 
-  const putServer = useCallback((s: ProgressState) => {
-    fetch("/api/progress", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ progress: s }),
-    }).catch(() => {
-      /* offline — local cache still holds the data */
-    });
-  }, []);
-
-  // On sign-in, reconcile local cache with the server copy.
-  useEffect(() => {
-    if (status !== "authenticated") return;
     let cancelled = false;
     (async () => {
       try {
+        // Drain first, reconcile second. A queued snapshot means the server's
+        // copy is known-stale, and merging against it would join with data the
+        // queue is about to overwrite anyway. Awaited rather than fired: the
+        // ordering is the whole point, and nothing renders on this path.
+        await flushQueue();
+        if (cancelled) return;
         const res = await fetch("/api/progress");
         if (!res.ok || cancelled) return;
-        const { progress } = (await res.json()) as { progress: ProgressState | null };
-        const local = readLocal();
-        if (progress && hasData(progress)) {
-          const merged = { ...EMPTY, ...progress };
-          setState(merged);
-          writeLocal(merged);
-        } else if (hasData(local)) {
-          // First sign-in with anonymous progress → migrate it up.
-          putServer(local);
-        }
+        const { progress } = (await res.json()) as {
+          progress: ProgressState | null;
+        };
+        // Read the cache directly rather than through a React closure: the
+        // store may have advanced since this effect was created.
+        const merged = mergeProgress(readLocal(), progress);
+        writeLocal(merged);
+        commit(merged);
+        // Write back only when the merge actually moved the server's copy.
+        // A quiet load leaves both sides equal, so nothing is sent.
+        if (!progressEqual(merged, progress)) putServer(merged);
       } catch {
-        /* keep local */
+        /* a failed reconcile must never degrade the local session */
       }
     })();
+
     return () => {
       cancelled = true;
     };
-  }, [status, putServer]);
+  }, [status]);
+}
 
-  const persist = useCallback(
-    (updater: (s: ProgressState) => ProgressState) => {
-      setState((prev) => {
-        const next = updater(prev);
-        writeLocal(next);
-        if (authed) {
-          if (saveTimer.current) clearTimeout(saveTimer.current);
-          saveTimer.current = setTimeout(() => putServer(next), 600);
-        }
-        return next;
-      });
-    },
-    [authed, putServer],
+/* ------------------------------------------------------------------ *
+ * Public hook — same keys and semantics as before the hoist.
+ * ------------------------------------------------------------------ */
+
+export function useProgress() {
+  const { state, ready } = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
   );
 
   const recordActivity = useCallback(() => {
@@ -185,7 +255,7 @@ export function useProgress() {
       const streak = gap === 1 ? s.streak + 1 : 1;
       return { ...s, lastActive: t, streak };
     });
-  }, [persist]);
+  }, []);
 
   const isDone = useCallback(
     (worldSlug: string, scenarioSlug: string) =>
@@ -213,43 +283,34 @@ export function useProgress() {
         };
       });
     },
-    [persist],
+    [],
   );
 
-  const addSkillXp = useCallback(
-    (skill: Skill, amount: number) => {
-      persist((s) => {
-        const t = today();
-        const gap = s.lastActive ? daysBetween(s.lastActive, t) : null;
-        const streak = s.lastActive === t ? s.streak : gap === 1 ? s.streak + 1 : 1;
-        const todayXp = (s.xpDay === t ? s.todayXp : 0) + amount;
-        return {
-          ...s,
-          xp: s.xp + amount,
-          skillXp: { ...s.skillXp, [skill]: (s.skillXp[skill] ?? 0) + amount },
-          lastActive: t,
-          streak,
-          todayXp,
-          xpDay: t,
-        };
-      });
-    },
-    [persist],
-  );
+  const addSkillXp = useCallback((skill: Skill, amount: number) => {
+    persist((s) => {
+      const t = today();
+      const gap = s.lastActive ? daysBetween(s.lastActive, t) : null;
+      const streak = s.lastActive === t ? s.streak : gap === 1 ? s.streak + 1 : 1;
+      const todayXp = (s.xpDay === t ? s.todayXp : 0) + amount;
+      return {
+        ...s,
+        xp: s.xp + amount,
+        skillXp: { ...s.skillXp, [skill]: (s.skillXp[skill] ?? 0) + amount },
+        lastActive: t,
+        streak,
+        todayXp,
+        xpDay: t,
+      };
+    });
+  }, []);
 
-  const setLevel = useCallback(
-    (level: string) => {
-      persist((s) => ({ ...s, level }));
-    },
-    [persist],
-  );
+  const setLevel = useCallback((level: string) => {
+    persist((s) => ({ ...s, level }));
+  }, []);
 
-  const setGoalXp = useCallback(
-    (goalXp: number) => {
-      persist((s) => ({ ...s, goalXp }));
-    },
-    [persist],
-  );
+  const setGoalXp = useCallback((goalXp: number) => {
+    persist((s) => ({ ...s, goalXp }));
+  }, []);
 
   // Record a quiz attempt: schedules spaced repetition AND tracks per-question
   // stats (for weak-spot detection and the mistake notebook).
@@ -280,7 +341,7 @@ export function useProgress() {
         };
       });
     },
-    [persist],
+    [],
   );
 
   // Backwards-compatible thin wrapper.
@@ -290,20 +351,17 @@ export function useProgress() {
   );
 
   // Mark a vocabulary card as known (or, when false, back to learning).
-  const markVocab = useCallback(
-    (id: string, known: boolean) => {
-      persist((s) => {
-        const vocab = { ...s.vocab };
-        if (known) vocab[id] = true;
-        else delete vocab[id];
-        const t = today();
-        const gap = s.lastActive ? daysBetween(s.lastActive, t) : null;
-        const streak = s.lastActive === t ? s.streak : gap === 1 ? s.streak + 1 : 1;
-        return { ...s, vocab, lastActive: t, streak };
-      });
-    },
-    [persist],
-  );
+  const markVocab = useCallback((id: string, known: boolean) => {
+    persist((s) => {
+      const vocab = { ...s.vocab };
+      if (known) vocab[id] = true;
+      else delete vocab[id];
+      const t = today();
+      const gap = s.lastActive ? daysBetween(s.lastActive, t) : null;
+      const streak = s.lastActive === t ? s.streak : gap === 1 ? s.streak + 1 : 1;
+      return { ...s, vocab, lastActive: t, streak };
+    });
+  }, []);
 
   const worldProgress = useCallback(
     (worldSlug: string) => {

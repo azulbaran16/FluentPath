@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 01
-current_phase_name: celpip-writing-practice
-status: phase-complete
-stopped_at: Phase 02 context gathered
-last_updated: "2026-07-28T20:56:57.824Z"
+current_phase: 02
+current_phase_name: server-side-progress
+status: in-progress
+stopped_at: Completed 02-06-PLAN.md
+last_updated: "2026-07-28T23:55:19.881Z"
 last_activity: 2026-07-28
-last_activity_desc: Phase 01 verification gate passed
+last_activity_desc: "02-01 executed: shared store, pure merge, merge-on-write PUT"
 progress:
   total_phases: 2
   completed_phases: 1
-  total_plans: 6
-  completed_plans: 6
+  total_plans: 13
+  completed_plans: 12
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-23)
 
 **Core value:** A learner can practice any real-life English scenario end-to-end — with an AI tutor that corrects them in context — and their progress is never lost.
-**Current focus:** Phase 02 — server-side-progress (not yet planned)
+**Current focus:** Phase 02 — server-side-progress (executing, plan 01 of 07 complete)
 
 ## Current Position
 
-Phase: 01 (celpip-writing-practice) — COMPLETE
-Plan: 6 of 6
-Status: Phase verified and closed; next action is planning Phase 02
-Last activity: 2026-07-28 — Phase 01 verification gate passed
+Phase: 02 (server-side-progress) — IN PROGRESS
+Plan: 7 of 7
+Status: 02-01 (tracer) complete on branch `phase-02-server-side-progress`; next action is executing 02-02
+Last activity: 2026-07-28 — 02-01 executed: shared store, pure merge, merge-on-write PUT
 
-Progress: [██░░░░░░░░] 20% (1 of 5 phases)
+Progress: [█████████░] 92% (1 of 5 phases)
 
 ## Performance Metrics
 
@@ -59,6 +59,12 @@ Progress: [██░░░░░░░░] 20% (1 of 5 phases)
 | Phase 01 P04 | ~15min | 3 tasks | 5 files |
 | Phase 01 P05 | ~15min | 3 tasks | 4 files |
 | Phase 01 P06 | ~20min | 2 tasks | 3 files (2 defect fixes) |
+| Phase 02 P01 | 47min | 2 tasks | 8 files |
+| Phase 02 P02 | ~20min | 2 tasks | 2 files |
+| Phase 02 P03 | 25min | 2 tasks | 4 files |
+| Phase 02 P04 | 40min | 3 tasks | 5 files |
+| Phase 02 P05 | 38min | 3 tasks | 6 files |
+| Phase 02 P06 | 55min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -80,6 +86,23 @@ Recent decisions affecting current work:
 - [Phase ?]: 01-06: Verification gate was driven by an agent through a real browser (Playwright) because the user had no time for hands-on UAT; timer expiry was reached by overriding Date.now() in the page rather than waiting 27 minutes.
 - [Phase ?]: 01-06: formatDuration moved from CelpipLanding into celpip-progress so the results metrics strip and history rows format durations identically.
 - [Phase ?]: 01-05: Attempt-history rows link to /celpip/writing/[taskId] (not a deep-linked historical result view) since WritingSimulator has no mechanism to render an arbitrary past attempt and is out of this plan's file scope.
+- [Phase ?]: 02-01: srs/attempts per-entry selection is value-only (canonical max), not 'side with the later lastActive' — the plan's rule is provably non-associative for a key-unioned field; 02-02's refined rules must stay entry-only
+- [Phase ?]: 02-01: the D-01b vocab ladder consults lastActive ONLY when neither side carries an instant; two equal non-null instants fall through to the value rungs, which is what keeps the ladder associative
+- [Phase ?]: 02-01: GET /api/progress returns the empty state rather than null for an absent or corrupt blob
+- [Phase ?]: 02-02: srs[id] merges entry-only (earlier due, then lower box) — the plan's paired-attempts-updatedAt rule is 02-01's non-associativity counterexample applied to a cross-map reference
+- [Phase ?]: 02-02: the attempts same-day tie breaks on topic, not tries — tries is independently maxed, so it inflates the winner's own comparison key
+- [Phase ?]: 02-02: todayXp/xpDay are keyed on xpDay alone, never lastActive; a selection key must travel with the value it selects
+- [Phase ?]: 02-03: the D-01b instant is accepted only at millisecond precision — laterInstant compares lexically, so a second-precision instant would sort ABOVE a millisecond one and invert the whole-field ordering
+- [Phase ?]: 02-03: zod on the client costs +284,752 bytes in one new chunk (isolated by a before/after build); accepted as the price of the client and server sharing one contract
+- [Phase ?]: 02-04: classifyFailure defaults to retry; only 401/403 stop and only an explicitly permanent 4xx drops — the never-lose direction for PROG-04
+- [Phase ?]: 02-04: a connectivity hint resets the backoff but NOT the consecutive-failure count; only a real success clears the D-06 indicator
+- [Phase ?]: 02-04: the sync queue is a transport, not a mutation site — it forwards the D-01b instant unmodified, keeping nowInstant() authored in exactly one place
+- [Phase ?]: 02-05: CelpipProgressState carries one marker — the D-01b millisecond instant — and nothing day-shaped; the drafts carve-out is decided by it, never by map size
+- [Phase ?]: 02-05: a CELPIP attempt with no natural key (task id + submission instant) is dropped at coercion — an entry that cannot be de-duplicated is re-appended on every reconcile
+- [Phase ?]: 02-05: the CELPIP task-type union is bound by an import(...) type annotation, not an import statement, so the drift guard fires without pulling the task bank into the bundle
+- [Phase ?]: 02-06: readLocal() in the CELPIP store reads through safeReadCelpip — after the hoist that value is merged and uploaded, not just rendered, so an unvalidated updatedAt would enter the join
+- [Phase ?]: 02-06: /api/celpip-progress gets its OWN 2 MiB cap and its own rate-limit bucket — the sibling's bounds are per-handler and a 20,000-char entry cap bounds one essay, not the number of attempts
+- [Phase ?]: 02-06: a count-based grep gate on a stamping helper does not pin WHERE the stamp lives; mutation X3 moves it into the reconcile with the count unchanged, so the gate now extracts the persist body and asserts inside=1 outside=0
 
 ### Pending Todos
 
@@ -112,6 +135,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-28T20:56:57.805Z
-Stopped at: Phase 02 context gathered
-Resume file: .planning/phases/02-server-side-progress/02-CONTEXT.md
+Last session: 2026-07-28T23:55:19.862Z
+Stopped at: Completed 02-06-PLAN.md
+Resume file: None

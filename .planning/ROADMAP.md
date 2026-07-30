@@ -57,15 +57,15 @@ Plans:
   3. A malformed progress write is rejected by the server without corrupting stored data, and corrupted stored progress loads as a safe default instead of crashing the app
   4. Progress recorded while the network is down reaches the server automatically once the connection returns — no silent loss
 
-**Plans**: 7 plans
+**Plans**: 6/7 plans executed
 Plans:
 
-- [ ] 02-01-PLAN.md — Tracer: one shared store, one reconcile per load, merge-on-write end to end
-- [ ] 02-02-PLAN.md — Complete the D-01a merge: streak pair, daily-XP tuple, SRS/attempt per-entry rules
-- [ ] 02-03-PLAN.md — Shared zod contract: strip-and-save validation, safe reads, bounded payload
-- [ ] 02-04-PLAN.md — Persisted retry queue, flush triggers, and the discreet not-synced indicator
-- [ ] 02-05-PLAN.md — CELPIP persistence contract: additive column, zod shape, de-duplicating merge
-- [ ] 02-06-PLAN.md — CELPIP sync: merge-on-write route, module store, per-load reconcile
+- [x] 02-01-PLAN.md — Tracer: one shared store, one reconcile per load, merge-on-write end to end
+- [x] 02-02-PLAN.md — Complete the D-01a merge: streak pair, daily-XP tuple, SRS/attempt per-entry rules
+- [x] 02-03-PLAN.md — Shared zod contract: strip-and-save validation, safe reads, bounded payload
+- [x] 02-04-PLAN.md — Persisted retry queue, flush triggers, and the discreet not-synced indicator
+- [x] 02-05-PLAN.md — CELPIP persistence contract: additive column, zod shape, de-duplicating merge
+- [x] 02-06-PLAN.md — CELPIP sync: merge-on-write route, module store, per-load reconcile
 - [ ] 02-07-PLAN.md — Live-data safety audit + full gate + human verification of the 4 criteria
 
 ### Phase 3: Every Scenario Practicable
@@ -125,7 +125,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. CELPIP Writing Practice | 6/6 | Complete | 2026-07-28 |
-| 2. Server-Side Progress | 0/7 | Not started | - |
+| 2. Server-Side Progress | 6/7 | In Progress|  |
 | 3. Every Scenario Practicable | 0/TBD | Not started | - |
 | 4. Full Curriculum Expansion | 0/TBD | Not started | - |
 | 5. AI Tutor End-to-End | 0/TBD | Not started | - |

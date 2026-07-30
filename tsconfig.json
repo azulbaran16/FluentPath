@@ -7,6 +7,10 @@
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
+    // scripts/verify-*.mts run under `node --experimental-strip-types`, where
+    // `@/` aliases don't resolve, so they import the pure lib modules with
+    // explicit .ts extensions. Safe here: the project is already noEmit.
+    "allowImportingTsExtensions": true,
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
