@@ -149,6 +149,26 @@ export async function PUT(req: Request) {
     where: { id: session.user.id },
     select: { progress: true },
   });
+
+  // Refuse to overwrite a row we could not read. Without this, an unreadable
+  // blob reads as EMPTY and merge-on-write replaces it with EMPTY merged into
+  // whatever this browser happens to hold — the learner's history, gone, with
+  // the server log as the only surviving copy. Freezing the row instead keeps
+  // it recoverable: the client's local cache is untouched, the sync indicator
+  // surfaces, and once a human repairs the row the next retry succeeds on its
+  // own. 409 is classified as retryable in sync-queue for exactly that reason.
+  if (user?.progress && isUnreadable(user.progress)) {
+    console.error(
+      `[progress] refusing to overwrite an unreadable stored blob for user ` +
+        `${session.user.id} — the row is frozen until it is repaired. ` +
+        `Full contents: ${user.progress}`,
+    );
+    return NextResponse.json(
+      { error: "Stored progress is unreadable; refusing to overwrite it" },
+      { status: 409 },
+    );
+  }
+
   const merged = mergeProgress(
     readStored(user?.progress, session.user.id),
     parsed.data,

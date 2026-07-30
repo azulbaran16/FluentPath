@@ -243,6 +243,15 @@ eq("502 is retried", classifyFailure(502), "retry");
 eq("503 is retried", classifyFailure(503), "retry");
 eq("429 is retried — the route's own rate limit, not a rejection", classifyFailure(429), "retry");
 eq("408 request timeout is retried", classifyFailure(408), "retry");
+// 409 is the frozen-row guard: the server could not read the stored blob and
+// refused to overwrite it. The body is valid, so dropping it would discard the
+// learner's write for a condition that a repair fixes. It must NOT fall into
+// the generic 4xx drop rule below.
+eq(
+  "409 is retried — the row is frozen, not the payload rejected",
+  classifyFailure(409),
+  "retry",
+);
 eq("401 stops the loop — the session is gone", classifyFailure(401), "stop");
 eq("403 stops the loop for the same reason", classifyFailure(403), "stop");
 eq("400 is permanent for this body", classifyFailure(400), "drop");

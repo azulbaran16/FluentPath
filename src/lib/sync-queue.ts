@@ -296,6 +296,11 @@ export function classifyFailure(status: number | null): FailureDisposition {
   // Rate limited (02-03 answers 429 with Retry-After), request timeout, early
   // hints replay — all worth trying again.
   if (status === 429 || status === 408 || status === 425) return "retry";
+  // 409 means the server refused to overwrite a stored blob it could not read.
+  // The body is fine; the row is frozen. Keep the write queued so a repaired
+  // row heals on the next attempt instead of needing the learner to redo work,
+  // and let the failure count raise the not-synced indicator meanwhile.
+  if (status === 409) return "retry";
   // 400 and 413 are permanent for THIS body: under D-08 the route answers 400
   // only for a body that is not an object at all, and 413 only above 1 MiB.
   // The same bytes will fail forever, so retrying is a spin, not a rescue.

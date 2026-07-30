@@ -178,6 +178,22 @@ export async function PUT(req: Request) {
     where: { id: session.user.id },
     select: { celpipProgress: true },
   });
+  // Refuse to overwrite a row we could not read — same reasoning as the
+  // progress route. Here the stakes are the learner's own essay prose, which
+  // exists nowhere else once the row is replaced. Freezing keeps it
+  // recoverable; 409 is retryable, so a repaired row heals without a redeploy.
+  if (user?.celpipProgress && isUnreadable(user.celpipProgress)) {
+    console.error(
+      `[celpip] refusing to overwrite an unreadable stored blob for user ` +
+        `${session.user.id} — the row is frozen until it is repaired. ` +
+        `Full contents: ${user.celpipProgress}`,
+    );
+    return NextResponse.json(
+      { error: "Stored CELPIP progress is unreadable; refusing to overwrite it" },
+      { status: 409 },
+    );
+  }
+
   const merged = mergeCelpip(
     readStored(user?.celpipProgress, session.user.id),
     parsed.data,
