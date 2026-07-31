@@ -19,6 +19,18 @@ Added 2026-07-23 from approved design `docs/plans/2026-07-23-celpip-writing-desi
 - [x] **CELPIP-04**: Attempt history stored local-first under its own namespace following the `progress.ts` pattern, shaped for later Postgres migration
 - [x] **CELPIP-05**: `/celpip` landing free for all users — Task 1/Task 2 libraries with attempt status; Speaking/Reading/Listening shown as "coming soon"
 
+### CELPIP (exam prep — remaining skills)
+
+Added 2026-07-30. The beta user's exam is under three weeks away, so scope is deliberately
+uneven: Reading and Listening are built to depth, Speaking to a usable minimum. Same IP
+constraint as v1 — **all content original**, third-party material is format reference only.
+
+- [ ] **CELPIP-06**: Original Reading bank covering the exam's four parts (correspondence, diagram, information, viewpoints) — passages with matching question types, answer key, and per-question explanations
+- [ ] **CELPIP-07**: Original Listening bank read aloud through the Web Speech API already used elsewhere in the app — scripts the learner hears (not reads), note-taking space, questions revealed after playback, answer key with explanations
+- [ ] **CELPIP-08**: Speaking practice — timed prompts matching the real task shapes, in-browser recording so the learner can hear herself back, and a descriptor-based self-evaluation checklist. No automated scoring
+- [ ] **CELPIP-09**: Attempts for all three new sections persist under the Phase 2 server-side contract — same account, every device, offline-safe
+- [ ] **CELPIP-10**: `/celpip` landing exposes Reading, Listening and Speaking as real sections — the "coming soon" badges are gone for what ships and honest about what does not
+
 ### Progress (server-side persistence)
 
 - [x] **PROG-01**: Signed-in learner's progress (completions, XP, streak, CEFR level, SRS queue, attempts) is persisted in Postgres as the authoritative copy, with localStorage acting as cache/offline buffer
@@ -90,6 +102,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CELPIP-03 | Phase 1 | Complete |
 | CELPIP-04 | Phase 1 | Complete |
 | CELPIP-05 | Phase 1 | Complete |
+| CELPIP-06 | Phase 2.1 | Pending |
+| CELPIP-07 | Phase 2.1 | Pending |
+| CELPIP-08 | Phase 2.1 | Pending |
+| CELPIP-09 | Phase 2.1 | Pending |
+| CELPIP-10 | Phase 2.1 | Pending |
 | PROG-01 | Phase 2 | Complete |
 | PROG-02 | Phase 2 | Complete |
 | PROG-03 | Phase 2 | Complete |

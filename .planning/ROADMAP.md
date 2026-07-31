@@ -13,6 +13,7 @@ FluentPath is live but incomplete: practice modes, accounts, and billing exist, 
 
 - [x] **Phase 1: CELPIP Writing Practice** - Free exam-prep section at `/celpip`: original Task 1/Task 2 bank, real-exam simulator (timer, word count), model answers + descriptor-based self-evaluation
 - [x] **Phase 2: Server-Side Progress** - Postgres becomes the authoritative, validated, retry-safe home of learner progress across devices
+- [ ] **Phase 2.1: CELPIP Remaining Skills** (INSERTED 2026-07-30, URGENT) - Reading and Listening built to depth, Speaking to a usable minimum, before the beta user's exam
 - [ ] **Phase 3: Every Scenario Practicable** - Audit and fill content so all existing scenarios offer real practice in every applicable skill, feeding SRS and weak topics
 - [ ] **Phase 4: Full Curriculum Expansion** - Expand the 6 worlds to their complete designed topic coverage with graduated B1–C1 and native-level content
 - [ ] **Phase 5: AI Tutor End-to-End** - Real Claude tutor live in production: scenario role-play, gentle correction, graceful gating/errors, progress credit
@@ -68,6 +69,29 @@ Plans:
 - [x] 02-06-PLAN.md — CELPIP sync: merge-on-write route, module store, per-load reconcile
 - [x] 02-07-PLAN.md — Live-data safety audit + full gate + human verification of the 4 criteria
 
+### Phase 2.1: CELPIP Remaining Skills (INSERTED — URGENT)
+
+**Goal**: The beta user can practise CELPIP Reading and Listening in the real exam's shape, and rehearse Speaking with her own recording, before her exam
+**Depends on**: Phase 2 (attempts persist through the server-side contract shipped there)
+**Requirements**: CELPIP-06, CELPIP-07, CELPIP-08, CELPIP-09, CELPIP-10
+**Inserted**: 2026-07-30 — the beta user's exam is under three weeks away and the app only covers Writing
+**Success Criteria** (what must be TRUE):
+
+  1. A learner opens `/celpip`, picks a Reading set, works through passages covering the exam's four parts under a timer, submits, and sees which answers were wrong and why
+  2. A learner starts a Listening set, hears an original script read aloud (never reads it), takes notes, answers questions revealed only after playback, and sees an explained answer key
+  3. A learner records a timed Speaking response in the browser, plays it back, and self-evaluates it against a descriptor checklist
+  4. Attempts in all three sections appear in her account from any device, exactly like Writing attempts
+  5. The `/celpip` landing offers the shipped sections as real, and is honest about anything still missing
+  6. No text from third-party study material appears anywhere — verified during review
+
+**Scope decisions (user, 2026-07-30):**
+- Uneven by design: **Reading and Listening to depth, Speaking to a usable minimum** — no automated scoring anywhere
+- **Listening audio uses the Web Speech API** already in the app, not recorded files. Accepted cost: it sounds more robotic than the real exam. Accepted benefit: it ships now, at no cost, and still trains note-taking and pacing
+- All content original (same IP constraint as Phase 1)
+
+**Plans**: TBD
+**UI hint**: yes
+
 ### Phase 3: Every Scenario Practicable
 
 **Goal**: Every existing scenario in all 6 worlds is deeply practicable — real content in each applicable skill, with vocabulary and mistakes flowing into the review loop
@@ -120,12 +144,13 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
+Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. CELPIP Writing Practice | 6/6 | Complete | 2026-07-28 |
 | 2. Server-Side Progress | 7/7 | Complete | 2026-07-30 |
+| 2.1 CELPIP Remaining Skills | 0/TBD | Not started | - |
 | 3. Every Scenario Practicable | 0/TBD | Not started | - |
 | 4. Full Curriculum Expansion | 0/TBD | Not started | - |
 | 5. AI Tutor End-to-End | 0/TBD | Not started | - |
