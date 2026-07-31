@@ -943,23 +943,236 @@ const INFORMATION_PART: CelpipListeningPart = {
   ],
 };
 
+/**
+ * Part 6 shape: Listening to Viewpoints.
+ *
+ * The longest script in the set and the FEWEST items on it — five questions
+ * across roughly four hundred and fifty words. That ratio is not an oversight in
+ * the exam's design, it is the difficulty: there is no rhythm of question after
+ * question to keep attention up, and a listener who drifts for twenty seconds
+ * has no way of knowing whether the thing she missed was one of the five.
+ *
+ * One speaker, several positions. What this part tests is not what was said but
+ * WHO HOLDS IT and IN WHAT WAY — a counted measurement, a position attributed to
+ * a named person, a position attributed to a group that turns out to be divided,
+ * a claim the speaker explicitly declines to endorse, and finally the speaker's
+ * own view, which she flags as a view. Four of the five questions turn on that
+ * distinction rather than on recall, because a viewpoints part answered entirely
+ * by looking up stated facts is the wrong part shape wearing the right label.
+ *
+ * The speaker signposts the distinction out loud — "some of what I am going to
+ * tell you was measured, some of it is what people believe" — which is what a
+ * talk has to do and what an article does not, because a reader can go back and
+ * a listener cannot. That signposting is also the trap: she says it once, near
+ * the start, and everything afterwards depends on having believed her.
+ */
+const VIEWPOINTS_PART: CelpipListeningPart = {
+  id: "ls1-viewpoints",
+  kind: "viewpoints",
+  title: "The street that stopped taking cars",
+  segments: [
+    {
+      id: "ls1-viewpoints-seg-1",
+      turns: [
+        {
+          speaker: "Constance Ilesanmi",
+          text: "Good evening. Ferren Street has been closed to cars for eighteen months, and in March the council votes on making that permanent.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "I have spent six weeks talking to people, and tonight I want to be careful about which is which.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "Some of what I am about to tell you was measured. Some of it is what people believe. Those are different things.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "Start with the measurement. The transport office counted foot traffic on the street every Saturday for a year.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "Saturday footfall is up thirty-four per cent on the year before the closure. That figure is a count, not an argument.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "What it does not tell you is whether those people spent money. Nobody has measured that, and I will not pretend otherwise.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "Now the positions. The shopkeepers' association wants the street reopened, and its chair has said so at three public meetings.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "His case is deliveries. He says his members are unloading forty metres from their own doors, in all weather.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "But the association is not the same thing as the shopkeepers. It surveyed its own members and they split almost evenly.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "Nineteen wanted the cars back. Seventeen wanted the street left as it is. Four did not answer at all.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "So when you hear that the shopkeepers want the street reopened, that is one man's position and a very narrow majority.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "The café owners at the north end want the closure kept, and they are the loudest voice in favour of it.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "They also have eleven pavement tables that did not exist two years ago.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "The residents of Wendle Road and Ashcombe Lane have a different complaint, and it is the one I find most persuasive.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "The cars did not disappear. They park on those two streets now, and the people living there did not vote for that.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "That is a real cost, carried by people who get none of the benefit, and nobody at the council has answered it.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "One more claim, and this is the one I would like you to be careful with.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "You will hear that the closure has cut emissions across the town. It may have done. Nobody has measured it here.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "That number comes from other towns, and other towns are not this one. Treat it as a belief until somebody counts something.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "Here is my own view, and I will say plainly that it is a view and not a finding.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "Keep Ferren Street closed. It has made the middle of this town a better place to stand in, and that matters.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "But not in March. Not before the parking on Wendle and Ashcombe has been dealt with properly.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "Moving a problem two streets over is not a policy. It is a postponement.",
+        },
+        {
+          speaker: "Constance Ilesanmi",
+          text: "You will hear tonight's numbers again before the vote. Ask each time whether somebody counted it, or somebody believes it.",
+        },
+      ],
+    },
+  ],
+  questions: [
+    {
+      id: "ls1-viewpoints-q1",
+      segmentId: "ls1-viewpoints-seg-1",
+      stem: "What is the council due to decide in March?",
+      options: [
+        "Whether to close Ferren Street to cars for a trial period",
+        "Whether to make the closure of Ferren Street permanent",
+        "Whether to bring in parking permits on Wendle Road and Ashcombe Lane",
+        "Whether the cafés may keep their tables on the pavement",
+      ],
+      answer: 1,
+      explanation:
+        "The closure has already run for eighteen months as a trial; March is the vote on making it permanent. This is the only straightforwardly factual question in this part, and it is deliberately the first — in a talk this long the opening sentence is the one you are most likely to hear properly, and the one you are most likely to have stopped holding on to by the end.",
+    },
+    {
+      id: "ls1-viewpoints-q2",
+      segmentId: "ls1-viewpoints-seg-1",
+      stem: "Which of these does the speaker present as something that was actually measured?",
+      options: [
+        "That the closure has reduced emissions across the town",
+        "That the street is a better place to stand in than it was",
+        "That Saturday foot traffic rose by thirty-four per cent",
+        "That shoppers on the street are spending more than they used to",
+      ],
+      answer: 2,
+      explanation:
+        "Only the footfall was counted, every Saturday for a year, and she says of it that a figure is a count and not an argument. Each wrong option is something the talk really does contain: emissions she explicitly refuses to endorse, the street being pleasant to stand in is her own stated view, and spending she names as the thing nobody has measured. Hearing a number is not the same as hearing that it was counted here — and in this part that is the whole difference.",
+    },
+    {
+      id: "ls1-viewpoints-q3",
+      segmentId: "ls1-viewpoints-seg-1",
+      stem: "What does she say about the shopkeepers' position?",
+      options: [
+        "The shopkeepers are united in wanting the cars back",
+        "The association's chair wants the cars back, but its members are close to evenly split",
+        "The shopkeepers have refused to give the association any position at all",
+        "The shopkeepers now agree with the café owners at the north end",
+      ],
+      answer: 1,
+      explanation:
+        "Nineteen to seventeen with four silent, against a chair who has argued for reopening at three public meetings. She then does the work for you — \"that is one man's position and a very narrow majority\" — which is the sentence to be listening for. A group is named as holding a view and then shown to be divided about it, and telling the two apart is the skill this part exists to test.",
+    },
+    {
+      id: "ls1-viewpoints-q4",
+      segmentId: "ls1-viewpoints-seg-1",
+      stem: "How does she treat the claim that the closure has cut the town's emissions?",
+      options: [
+        "She accepts it, because it has been measured in other towns",
+        "She rejects it as untrue",
+        "She says it may be true, but that nobody has measured it here",
+        "She says the transport office is measuring it at the moment",
+      ],
+      answer: 2,
+      explanation:
+        "\"It may have done. Nobody has measured it here.\" She neither accepts nor rejects it — she reclassifies it, from a finding to a belief, and asks you to hold it that way until someone counts something. Rejecting it outright is the tempting misreading, because she warns you about the claim before she states it; but a warning to be careful with something is not a denial of it, and this part will punish the difference.",
+    },
+    {
+      id: "ls1-viewpoints-q5",
+      segmentId: "ls1-viewpoints-seg-1",
+      stem: "What is the speaker's own position?",
+      options: [
+        "Reopen the street, because the residents' complaint outweighs the benefit",
+        "Keep the street closed, and vote for it in March",
+        "Keep the street closed, but not until the displaced parking has been dealt with",
+        "Take no position until somebody has counted what shoppers spend",
+      ],
+      answer: 2,
+      explanation:
+        "She is for the closure and against the timing: keep the street closed, but not in March, and not before Wendle and Ashcombe are sorted out. The second option is the trap, and it is a good one — she does say keep it closed, and it takes the next sentence to learn that she would vote against it in March anyway. A position with a condition attached is still one position, and dropping the condition changes it into a different answer.",
+    },
+  ],
+};
+
 /** Words in one turn, counted the same way the content harness counts them. */
 function words(text: string): number {
   return text.trim().split(/\s+/).length;
 }
 
 /**
- * How long the whole set should take: the audio at the app's own speaking rate,
- * plus a minute per question to answer it.
+ * How long the whole set should take, and WHERE THE NUMBER COMES FROM.
  *
- * DERIVED rather than written down, so that appending a part moves the number by
- * itself. PROVISIONAL while the set is incomplete: not every one of the exam's
- * six part shapes is authored yet, and this figure grows as the rest arrive.
- * The exam gives roughly 47-55 minutes for all six parts and 37 items.
+ * Two terms, both derived from the parts themselves:
  *
- * No count of what exists is written into this comment on purpose. Coverage is
- * derived from `SET_1_PARTS` everywhere it is reported — the landing, the
- * harness summary — and a number repeated in prose is the one that goes stale.
+ *   1. The audio. Every turn in every segment of every part, totalled, divided
+ *      by the app's actual speaking rate — a nominal 150 words per minute at the
+ *      rate 0.95 that `celpip-speech.ts` sets, so about 142 words a minute.
+ *   2. The answering. One minute per question, across every part.
+ *
+ * The sum is rounded up. Nothing here is typed in by hand, which is the point:
+ * a limit shorter than the audio would run the clock out on a learner who is
+ * still listening and has not yet been shown a question, and that is a defect no
+ * assertion can find because the two numbers would both look reasonable.
+ *
+ * PROVISIONAL while the set is incomplete, and it MOVES ON ITS OWN the moment a
+ * part is appended or removed — including the exam part shapes this set does not
+ * carry yet. No count of what exists is written into this comment on purpose:
+ * coverage is derived from `SET_1_PARTS` everywhere it is reported, on the
+ * landing and in the harness summary, and a number repeated in prose is the one
+ * that goes stale. The real exam gives roughly 47-55 minutes for all six parts.
  */
 function estimatedMinutes(parts: CelpipListeningPart[]): number {
   const spoken = parts
@@ -982,6 +1195,7 @@ const SET_1_PARTS: CelpipListeningPart[] = [
   DAILY_CONVERSATION_PART,
   INFORMATION_PART,
   NEWS_ITEM_PART,
+  VIEWPOINTS_PART,
 ];
 
 export const LISTENING_SET_1: CelpipListeningSet = {
