@@ -100,7 +100,7 @@ tasks 5 and 6, 30/60 for the rest. Only structure was taken from those documents
 in full. Speaking task 3 ships a written scene description rather than an image — an open
 content dependency, stated on the landing.
 
-**Plans**: 7/12 plans executed
+**Plans**: 8/12 plans executed
 of them and the learner still gains something usable
 Plans:
 
@@ -114,7 +114,7 @@ Plans:
 - [ ] 02.1-08-PLAN.md — Reading plumbing + runner + the fill-in-the-blank control
 - [ ] 02.1-09-PLAN.md — Reading set 1: correspondence and information parts, reading harness group
 - [ ] 02.1-10-PLAN.md — Reading set 1: diagram and viewpoints parts (set complete at 38 items / 39 min)
-- [ ] 02.1-11-PLAN.md — Listening set 1: the three-speaker discussion part (8 items)
+- [x] 02.1-11-PLAN.md — Listening set 1: the three-speaker discussion part (8 items)
 - [ ] 02.1-12-PLAN.md — Phase gate: IP grep, full suite, production-header CSP check, browser + phone UAT
 
 **UI hint**: yes
@@ -177,7 +177,7 @@ Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. CELPIP Writing Practice | 6/6 | Complete | 2026-07-28 |
 | 2. Server-Side Progress | 7/7 | Complete | 2026-07-30 |
-| 2.1 CELPIP Remaining Skills | 7/12 | In Progress|  |
+| 2.1 CELPIP Remaining Skills | 8/12 | In Progress|  |
 | 3. Every Scenario Practicable | 0/TBD | Not started | - |
 | 4. Full Curriculum Expansion | 0/TBD | Not started | - |
 | 5. AI Tutor End-to-End | 0/TBD | Not started | - |
