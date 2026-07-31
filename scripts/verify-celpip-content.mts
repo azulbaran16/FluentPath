@@ -404,6 +404,33 @@ const LISTENING_ITEM_COUNT: Record<CelpipListeningPartKind, number> = {
 };
 
 /**
+ * The FEWEST distinct speakers each part shape needs to be that part shape.
+ *
+ * Added by plan 02.1-11, because the discussion part is the first with three
+ * speakers and nothing committed defended the number. A `discussion` whose
+ * three voices collapsed into two would still pass every other assertion in this
+ * file — right kind, right item count, right place in the exam order — while
+ * quietly becoming a different part shape. It matters more here than anywhere
+ * else in the bank: six of that part's eight questions ask WHO said something,
+ * and merging two speakers does not make those questions hard, it makes them
+ * unanswerable.
+ *
+ * A MINIMUM rather than an exact count, on purpose. A conversation is allowed a
+ * third voice — someone answering a phone, a passer-by — without the part
+ * changing shape, and an exact count would fail that and be relaxed rather than
+ * respected. The single-speaker shapes are listed explicitly at 1 so that adding
+ * a seventh part kind fails to compile here rather than defaulting to unchecked.
+ */
+const LISTENING_MIN_SPEAKERS: Record<CelpipListeningPartKind, number> = {
+  "problem-solving": 2,
+  "daily-conversation": 2,
+  information: 1,
+  "news-item": 1,
+  discussion: 3,
+  viewpoints: 1,
+};
+
+/**
  * THE CEILING THAT KEEPS PLAYBACK ALIVE.
  *
  * Chrome truncates a single utterance at roughly fifteen seconds with no error
@@ -516,6 +543,13 @@ for (const part of allListeningParts) {
     `${part.id}: carries the exam's item count for a "${part.kind}" part`,
     part.questions.length === LISTENING_ITEM_COUNT[part.kind],
     `${part.questions.length} questions, exam uses ${LISTENING_ITEM_COUNT[part.kind]}`,
+  );
+
+  const speakers = new Set(part.segments.flatMap((s) => s.turns).map((t) => t.speaker));
+  ok(
+    `${part.id}: carries the ${LISTENING_MIN_SPEAKERS[part.kind]} or more distinct speakers a "${part.kind}" part needs`,
+    speakers.size >= LISTENING_MIN_SPEAKERS[part.kind],
+    `${speakers.size} distinct: ${[...speakers].join(", ")}`,
   );
 
   const ownSegmentIds = new Set(part.segments.map((s) => s.id));
