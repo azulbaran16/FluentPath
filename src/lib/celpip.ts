@@ -365,7 +365,12 @@ export const CELPIP_SECTIONS: CelpipSection[] = [
     "Speaking",
     "Timed prompts with a silent preparation window, in-browser recording, and a self-evaluation.",
     speakingSource(),
-    "Your recording plays back in this browser and is never uploaded — only the timings and your own self-check are saved to your account.",
+    // Two limitations, both stated rather than hidden. The first is the
+    // deliberate product compromise (D-01, "Speaking to a usable minimum"):
+    // exam Task 3 shows a photograph and this app has no original image, so
+    // the scene is written out. She will meet that shape as a picture, so she
+    // has to know that in advance rather than discover it on the day.
+    "Task 3 is a picture-description task in the real exam. This app has no original photograph to show you, so that one prompt writes the scene out for you to read and then describe. Recordings play back in this browser and are never uploaded — only the timings and your own self-check are saved to your account.",
   ),
 ];
 
