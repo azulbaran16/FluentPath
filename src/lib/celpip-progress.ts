@@ -9,6 +9,7 @@ import {
   type CelpipAttempt,
   type CelpipListeningAttempt,
   type CelpipProgressState,
+  type CelpipReadingAttempt,
   type CelpipSpeakingAttempt,
 } from "./progress-schema";
 import { celpipEqual, mergeCelpip } from "./progress-merge";
@@ -45,6 +46,7 @@ export type {
   CelpipAttempt,
   CelpipListeningAttempt,
   CelpipProgressState,
+  CelpipReadingAttempt,
   CelpipSpeakingAttempt,
 };
 
@@ -326,6 +328,32 @@ export function useCelpipProgress() {
     [],
   );
 
+  /** The Reading twin: append-only into a per-set array, through `persist` like
+   * every other mutation here, for the same reason.
+   *
+   * NO IN-PROGRESS ANSWER SHEET REACHES HERE, AND NONE EVER SHOULD. The
+   * runner's working answers are React state and die with the set; only a
+   * submitted result is stored. A persisted in-progress sheet would need a
+   * delete site (it has to clear on submit, or a finished attempt pre-fills the
+   * next timed run), and a second deletable map riding the one `updatedAt` this
+   * state carries would fight `drafts` for it — bringing back a cleared writing
+   * draft, the fca41b7 defect. See the comment on `CelpipReadingAttempt`.
+   *
+   * `answers` holds question ids AND drop-down blank ids in one map, so the two
+   * item types must not share an id within a set. */
+  const addReadingAttempt = useCallback(
+    (setId: string, attempt: CelpipReadingAttempt) => {
+      persist((s) => ({
+        ...s,
+        readingAttempts: {
+          ...s.readingAttempts,
+          [setId]: [...(s.readingAttempts[setId] ?? []), attempt],
+        },
+      }));
+    },
+    [],
+  );
+
   /** Returns true on a successful save, false if the underlying localStorage
    * write threw — callers surface a visible warning on false. */
   const saveDraft = useCallback(
@@ -371,6 +399,11 @@ export function useCelpipProgress() {
     [state.listeningAttempts],
   );
 
+  const readingAttemptsForSet = useCallback(
+    (setId: string) => state.readingAttempts[setId] ?? [],
+    [state.readingAttempts],
+  );
+
   const lastAttempt = useCallback(
     (taskId: string) => {
       const list = state.attempts[taskId];
@@ -389,12 +422,14 @@ export function useCelpipProgress() {
     addAttempt,
     addSpeakingAttempt,
     addListeningAttempt,
+    addReadingAttempt,
     saveDraft,
     clearDraft,
     draftFor,
     attemptsForTask,
     speakingAttemptsForPrompt,
     listeningAttemptsForSet,
+    readingAttemptsForSet,
     lastAttempt,
     completedTasks,
   };

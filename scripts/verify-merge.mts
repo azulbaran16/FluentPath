@@ -29,6 +29,7 @@ import {
   type CelpipAttempt,
   type CelpipListeningAttempt,
   type CelpipProgressState,
+  type CelpipReadingAttempt,
   type CelpipSpeakingAttempt,
   type ProgressState,
   type SrsItem,
@@ -1310,6 +1311,82 @@ const legacyNoListeningField = {
   updatedAt: "2026-07-27T12:00:00.000Z",
 } as unknown as CelpipProgressState;
 
+/* ---- Reading sittings (02.1-08) ---- */
+
+function rdg(
+  setId: string,
+  date: string,
+  patch: Partial<CelpipReadingAttempt> = {},
+): CelpipReadingAttempt {
+  return {
+    setId,
+    date,
+    durationSeconds: 2_340,
+    // BOTH kinds of item id in ONE map, which is the point of this shape: `q`
+    // ids are comprehension questions and `b` ids are drop-down blanks, and the
+    // merge must not be able to tell them apart.
+    answers: { "r1-q1": 2, "r1-b3": 0, "r4-b7": 1 },
+    correct: 30,
+    total: 38,
+    outOfTime: false,
+    ...patch,
+  };
+}
+
+const RSET1 = "reading-set-settling-in";
+
+// g2 is the SHARED sitting, on both devices, and must come out once.
+const g1 = rdg(RSET1, "2026-07-27T10:00:00.000Z", { correct: 22 });
+const g2 = rdg(RSET1, "2026-07-29T11:30:00.000Z", { correct: 27 });
+const g3 = rdg(RSET1, "2026-07-31T07:45:00.000Z", { correct: 33, outOfTime: true });
+// The valid abandoned sheet: she ran out of time on part 1 and answered nothing.
+// Nothing here is gated on a quality signal — submission is never blocked on
+// completeness — so a zero-everything result has to survive the merge like any
+// other rather than being read as junk.
+const gBlank = rdg(RSET1, "2026-07-31T12:00:00.000Z", {
+  answers: {},
+  correct: 0,
+  outOfTime: true,
+});
+// A set id this build does not know, because the set was cut from the phase for
+// the calendar. The same regression guard the speaking `shape` and the
+// listening set id carry: nothing in the reading rule may mirror a list of ids.
+const gCutSet = rdg("reading-set-that-was-cut", "2026-07-31T13:00:00.000Z");
+
+const readingOnly = mkCelpip({
+  readingAttempts: { [RSET1]: [g1, g2] },
+  updatedAt: "2026-07-29T11:30:00.000Z",
+});
+const allFourSkills = mkCelpip({
+  attempts: { "email-neighbour": [a2, a3] },
+  drafts: { "survey-transit": "a draft left open on the day she did a reading set" },
+  speakingAttempts: { [WINTER]: [r2, r3] },
+  listeningAttempts: { [SET1]: [h2, h3] },
+  readingAttempts: { [RSET1]: [g2, g3], "reading-set-that-was-cut": [gCutSet] },
+  updatedAt: "2026-07-31T07:45:00.000Z",
+});
+// Two sittings sharing a natural key (same set, same millisecond) but differing
+// in content: the tie-break must pick the same one either way round.
+const readingTwins = mkCelpip({
+  readingAttempts: {
+    [RSET1]: [rdg(RSET1, g2.date, { correct: 9 }), rdg(RSET1, g2.date, { correct: 35 })],
+  },
+});
+const readingBlankOnly = mkCelpip({
+  readingAttempts: { [RSET1]: [gBlank] },
+  updatedAt: "2026-07-31T12:00:00.000Z",
+});
+// The row shape as it sits in Postgres between 02.1-04 and this plan: writing,
+// speaking and listening present, reading ABSENT rather than empty. Distinct
+// from both legacy states above, which are missing more.
+const legacyNoReadingField = {
+  attempts: { "email-neighbour": [a1] },
+  drafts: {},
+  speakingAttempts: { [WINTER]: [r1] },
+  listeningAttempts: { [SET1]: [h1] },
+  updatedAt: "2026-07-29T12:00:00.000Z",
+} as unknown as CelpipProgressState;
+
 const celpipStates: Array<[string, CelpipProgressState]> = [
   ["CELPIP_EMPTY", CELPIP_EMPTY],
   ["laptop", laptop],
@@ -1336,6 +1413,14 @@ const celpipStates: Array<[string, CelpipProgressState]> = [
   ["listeningTwins", listeningTwins],
   ["listeningDeafOnly", listeningDeafOnly],
   ["legacyNoListeningField", legacyNoListeningField],
+  // Added by 02.1-08. Same payoff a third time: the O(n^3) sweep below exercises
+  // each of these against every other state under both bracketings, which is
+  // why a fixture here is worth more than a one-off assertion.
+  ["readingOnly", readingOnly],
+  ["allFourSkills", allFourSkills],
+  ["readingTwins", readingTwins],
+  ["readingBlankOnly", readingBlankOnly],
+  ["legacyNoReadingField", legacyNoReadingField],
 ];
 
 group("CELPIP algebra — idempotent, commutative, associative");
@@ -1835,6 +1920,235 @@ group("CELPIP listening — the third append-only field, and the answer sheet");
     "progress-merge's option ceiling matches progress-schema's",
     MERGE_CELPIP_MAX_OPTION_INDEX === CELPIP_MAX_OPTION_INDEX,
     `merge ${MERGE_CELPIP_MAX_OPTION_INDEX} vs schema ${CELPIP_MAX_OPTION_INDEX}`,
+  );
+}
+
+group("CELPIP reading — the fourth append-only field, and one map for two item types");
+{
+  const merged = mergeCelpip(readingOnly, allFourSkills);
+  deepEqual(
+    "the two devices' sitting histories combine, and the shared one appears once",
+    merged.readingAttempts[RSET1],
+    [g1, g2, g3],
+  );
+  const dates = merged.readingAttempts[RSET1].map((e) => e.date);
+  deepEqual("sorted ascending by submission timestamp", dates, [...dates].sort());
+  ok(
+    "merging twice yields an identical array — the reconcile settles",
+    celpipEqual(mergeCelpip(merged, readingOnly), merged) &&
+      celpipEqual(mergeCelpip(merged, allFourSkills), merged),
+  );
+
+  // THE ENUM TRAP, at the set-id level, for the third field running.
+  // `celpipAttemptEntry` drops a writing attempt whose taskType is not one of
+  // its two hard-coded literals — a SECOND copy of the zod enum. Nothing in the
+  // reading rule may mirror a list of set ids or part kinds: a set cut from the
+  // phase for the calendar must never delete a result she already has.
+  const survived = mergeCelpip(
+    mkCelpip({ readingAttempts: { "reading-set-that-was-cut": [gCutSet] } }),
+    CELPIP_EMPTY,
+  );
+  deepEqual(
+    "a sitting for a set id this build does not recognise is NOT deleted by the merge",
+    survived.readingAttempts["reading-set-that-was-cut"],
+    [gCutSet],
+  );
+  ok(
+    "it still survives a second reconcile rather than being dropped on the way back",
+    mergeCelpip(survived, survived).readingAttempts["reading-set-that-was-cut"].length === 1,
+  );
+
+  // The abandoned sheet: nothing answered, nothing right, out of time. The
+  // house rule is that submission is never gated on completeness, so a
+  // zero-everything result is a REAL outcome and the merge must carry it rather
+  // than reading it as an empty entry.
+  const blank = mergeCelpip(readingBlankOnly, readingOnly);
+  deepEqual(
+    "a sitting with an empty answer sheet is preserved, not treated as junk",
+    blank.readingAttempts[RSET1].filter((e) => e.date === gBlank.date),
+    [gBlank],
+  );
+  ok(
+    "and its out-of-time flag survives verbatim",
+    blank.readingAttempts[RSET1].filter((e) => e.date === gBlank.date)[0].outOfTime === true,
+  );
+
+  // A natural-key collision collapses to one, the same one either way round.
+  const clash = mergeCelpip(
+    mkCelpip({ readingAttempts: { [RSET1]: [rdg(RSET1, g2.date, { correct: 9 })] } }),
+    mkCelpip({ readingAttempts: { [RSET1]: [rdg(RSET1, g2.date, { correct: 35 })] } }),
+  );
+  ok("a natural-key collision collapses to one entry", clash.readingAttempts[RSET1].length === 1);
+  deepEqual(
+    "and it collapses to the same one in either order",
+    mergeCelpip(
+      mkCelpip({ readingAttempts: { [RSET1]: [rdg(RSET1, g2.date, { correct: 35 })] } }),
+      mkCelpip({ readingAttempts: { [RSET1]: [rdg(RSET1, g2.date, { correct: 9 })] } }),
+    ),
+    clash,
+  );
+
+  // Identity is setId + date. An entry with neither cannot be de-duplicated and
+  // would be re-appended on every reconcile, growing the column forever.
+  const identityless = {
+    readingAttempts: {
+      [RSET1]: [{ ...g1, date: "" }, { ...g1, setId: "" }, { correct: 4 }, g1],
+    },
+  };
+  const kept = mergeCelpip(identityless, CELPIP_EMPTY);
+  deepEqual("a sitting with no natural key is dropped, not stored", kept.readingAttempts[RSET1], [
+    g1,
+  ]);
+  ok(
+    "so a repeat merge cannot append a second copy of it",
+    mergeCelpip(kept, identityless).readingAttempts[RSET1].length === 1,
+  );
+
+  // ---- The coercer normalises, and does so idempotently. ----
+  const nasty = mergeCelpip(
+    {
+      readingAttempts: {
+        [RSET1]: [
+          {
+            setId: RSET1,
+            date: "2026-08-01T05:00:00.000Z",
+            durationSeconds: -2340,
+            answers: {
+              "r1-q1": 2,
+              "r1-b2": -1,
+              "r2-q3": 1.5,
+              "r2-b4": "3",
+              "r3-q5": MERGE_CELPIP_MAX_OPTION_INDEX + 1,
+              "r4-b6": null,
+              "r4-q7": Number.NaN,
+            },
+            correct: -4,
+            total: -38,
+            outOfTime: "yes",
+          },
+        ],
+      },
+    },
+    CELPIP_EMPTY,
+  );
+  const n = nasty.readingAttempts[RSET1][0];
+  ok("a negative duration is clamped to zero", n.durationSeconds === 0, `${n.durationSeconds}`);
+  ok("a negative correct count is clamped to zero", n.correct === 0, `${n.correct}`);
+  ok("a negative total is clamped to zero", n.total === 0, `${n.total}`);
+  ok("a non-boolean outOfTime flag is coerced to a boolean", typeof n.outOfTime === "boolean");
+  deepEqual(
+    "every unusable answer index is DROPPED rather than clamped — a clamped index would be an answer she never chose",
+    n.answers,
+    { "r1-q1": 2 },
+  );
+  ok(
+    "the rule is identical for a blank id and a question id — one map, one sanitiser",
+    !("r1-b2" in n.answers) && !("r2-b4" in n.answers) && !("r2-q3" in n.answers),
+  );
+  ok(
+    "and normalising is idempotent, so the reconcile settles instead of rewriting",
+    celpipEqual(mergeCelpip(nasty, nasty), nasty),
+  );
+
+  // The answer sheet is a record with content-supplied keys, so it needs the
+  // same rebuild-never-spread treatment. A poisoned ITEM id is a distinct hole
+  // from a poisoned SET id, and the reading sheet has a wider key space than the
+  // listening one because blanks live in it too.
+  const poisoned = mergeCelpip(
+    {
+      readingAttempts: {
+        [RSET1]: [
+          {
+            ...g1,
+            date: "2026-08-01T06:00:00.000Z",
+            answers: JSON.parse(
+              '{"__proto__":1,"constructor":2,"prototype":3,"r1-b1":3}',
+            ) as Record<string, number>,
+          },
+        ],
+      },
+    },
+    CELPIP_EMPTY,
+  );
+  deepEqual(
+    "poisoned item ids are dropped, the real blank answer survives",
+    poisoned.readingAttempts[RSET1][0].answers,
+    { "r1-b1": 3 },
+  );
+
+  // THE FIELDS THAT ARE NOT THERE. An in-progress answer sheet is deliberately
+  // never persisted (a second deletable map would fight `drafts` for the one
+  // shared instant), and neither is any per-part timing detail, so a client that
+  // sends either must have it dropped. Without this the argument quietly stops
+  // being true the first time a future component sends the field speculatively.
+  const withDraftSheet = mergeCelpip(
+    {
+      readingAttempts: {
+        [RSET1]: [{ ...g1, inProgress: { "r1-q1": 2 }, partIndex: 2, notes: "…" }],
+      },
+    },
+    CELPIP_EMPTY,
+  );
+  deepEqual(
+    "an in-progress sheet, a part cursor or a notes field is dropped by the coercer",
+    Object.keys(withDraftSheet.readingAttempts[RSET1][0]).sort(),
+    Object.keys(g1).sort(),
+  );
+
+  // ---- Additivity: the row shape between 02.1-04 and this plan. ----
+  const additive = mergeCelpip(legacyNoReadingField, readingOnly);
+  deepEqual(
+    "a row written before this plan keeps its writing history intact",
+    additive.attempts["email-neighbour"],
+    [a1],
+  );
+  deepEqual("and keeps its rehearsal history intact", additive.speakingAttempts[WINTER], [r1]);
+  deepEqual("and keeps its listening history intact", additive.listeningAttempts[SET1], [h1]);
+  deepEqual(
+    "while the absent reading field simply fills in from the other side",
+    additive.readingAttempts[RSET1],
+    [g1, g2],
+  );
+  deepEqual(
+    "the Phase-1 row, which has none of the three new fields, is still total",
+    mergeCelpip(legacyNoSpeakingField, CELPIP_EMPTY).readingAttempts,
+    {},
+  );
+  ok(
+    "no instant is fabricated for the field that did not exist",
+    mergeCelpip(legacyNoReadingField, CELPIP_EMPTY).updatedAt === "2026-07-29T12:00:00.000Z",
+  );
+
+  // ---- All four skills coexist and do not interfere. ----
+  const crossSkill = mergeCelpip(allFourSkills, readingOnly);
+  deepEqual(
+    "adding reading sittings leaves the writing history untouched",
+    crossSkill.attempts,
+    mergeCelpip(allFourSkills, CELPIP_EMPTY).attempts,
+  );
+  deepEqual(
+    "and leaves the rehearsal history untouched",
+    crossSkill.speakingAttempts,
+    mergeCelpip(allFourSkills, CELPIP_EMPTY).speakingAttempts,
+  );
+  deepEqual(
+    "and leaves the listening history untouched",
+    crossSkill.listeningAttempts,
+    mergeCelpip(allFourSkills, CELPIP_EMPTY).listeningAttempts,
+  );
+  ok(
+    "the four key spaces are separate: a reading set id never collides with any other bank's id",
+    !(RSET1 in crossSkill.attempts) &&
+      !(RSET1 in crossSkill.speakingAttempts) &&
+      !(RSET1 in crossSkill.listeningAttempts) &&
+      !(SET1 in crossSkill.readingAttempts) &&
+      !(WINTER in crossSkill.readingAttempts) &&
+      !("email-neighbour" in crossSkill.readingAttempts),
+  );
+  ok(
+    "all four attempt records are present on the merged state",
+    Object.keys(mergeCelpip(allFourSkills, CELPIP_EMPTY)).sort().join(",") ===
+      "attempts,drafts,listeningAttempts,readingAttempts,speakingAttempts,updatedAt",
   );
 }
 

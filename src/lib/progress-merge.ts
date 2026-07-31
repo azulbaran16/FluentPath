@@ -71,6 +71,7 @@ import type {
   CelpipAttempt,
   CelpipListeningAttempt,
   CelpipProgressState,
+  CelpipReadingAttempt,
   CelpipSpeakingAttempt,
   ProgressState,
   SrsItem,
@@ -656,6 +657,7 @@ export const MERGE_CELPIP_EMPTY: CelpipProgressState = {
   drafts: {},
   speakingAttempts: {},
   listeningAttempts: {},
+  readingAttempts: {},
   updatedAt: null,
 };
 
@@ -921,6 +923,55 @@ function canonicalListening(list: CelpipListeningAttempt[]): CelpipListeningAtte
   return canonicalEntries(list, listeningKey);
 }
 
+/**
+ * One completed Reading set, normalised.
+ *
+ * NOTE WHAT IS NOT HERE, twice over, and for the third field running. There is
+ * no literal list of set ids or part kinds — `celpipAttemptEntry` above
+ * hard-codes the writing task-type pair independently of the zod enum, and that
+ * second copy is the trap that would delete a stored result the moment a set id
+ * it does not recognise arrives, which is exactly what happens when a set is
+ * cut from the phase for the calendar. And there is no in-progress answer sheet
+ * field: only submitted results are persisted (see `CelpipReadingAttempt`), so
+ * this map has no delete site and needs no instant of its own.
+ *
+ * Identity is `setId` plus `date`. An entry missing either is dropped rather
+ * than repaired, because an entry that cannot be de-duplicated would be
+ * re-appended on every reconcile and grow the column forever.
+ */
+function celpipReadingEntry(v: unknown): CelpipReadingAttempt | null {
+  if (!isPlainObject(v)) return null;
+  const setId = str(v.setId);
+  const date = str(v.date);
+  if (setId === null || setId === "" || date === null || date === "") return null;
+  const duration = num(v.durationSeconds, 0);
+  const correct = num(v.correct, 0);
+  const total = num(v.total, 0);
+  return {
+    setId,
+    date,
+    durationSeconds: duration < 0 ? 0 : duration,
+    // The SAME sanitiser the listening sheet uses, deliberately reused rather
+    // than copied: the reading sheet's keys are question ids AND blank ids, so
+    // it is a wider key space carrying the same values, and the out-of-range
+    // rule that matters (drop, never clamp) must not fork between the two.
+    answers: indexRecord(v.answers),
+    correct: correct < 0 ? 0 : correct,
+    total: total < 0 ? 0 : total,
+    outOfTime: Boolean(v.outOfTime),
+  };
+}
+
+/** The Reading twin of `attemptKey` — the set answered and the instant it was
+ * submitted, joined on the same literal NUL. */
+function readingKey(e: CelpipReadingAttempt): string {
+  return `${e.setId}\u0000${e.date}`;
+}
+
+function canonicalReading(list: CelpipReadingAttempt[]): CelpipReadingAttempt[] {
+  return canonicalEntries(list, readingKey);
+}
+
 function celpipAttemptRecord(v: unknown): Record<string, CelpipAttempt[]> {
   return entryRecord(v, celpipAttemptEntry, attemptKey);
 }
@@ -933,6 +984,10 @@ function celpipSpeakingRecord(v: unknown): Record<string, CelpipSpeakingAttempt[
   return entryRecord(v, celpipSpeakingEntry, speakingKey);
 }
 
+function celpipReadingRecord(v: unknown): Record<string, CelpipReadingAttempt[]> {
+  return entryRecord(v, celpipReadingEntry, readingKey);
+}
+
 function celpipCoerce(v: unknown): CelpipProgressState {
   if (!isPlainObject(v)) return { ...MERGE_CELPIP_EMPTY };
   return {
@@ -940,6 +995,7 @@ function celpipCoerce(v: unknown): CelpipProgressState {
     drafts: stringRecord(v.drafts),
     speakingAttempts: celpipSpeakingRecord(v.speakingAttempts),
     listeningAttempts: celpipListeningRecord(v.listeningAttempts),
+    readingAttempts: celpipReadingRecord(v.readingAttempts),
     updatedAt: str(v.updatedAt),
   };
 }
@@ -1005,6 +1061,13 @@ export function mergeCelpip(a: unknown, b: unknown): CelpipProgressState {
     // `attempts` field already carries instead of needing one of its own.
     listeningAttempts: unionRecord(x.listeningAttempts, y.listeningAttempts, (p, q) =>
       canonicalListening([...p, ...q]),
+    ),
+    // And a fourth time, one line. Four append-only maps under one rule is the
+    // payoff for generalising `canonicalEntries`/`entryRecord` in 02.1-01: each
+    // new skill inherits the writing field's proof rather than needing its own,
+    // and there is exactly one merge rule in this file that can be got wrong.
+    readingAttempts: unionRecord(x.readingAttempts, y.readingAttempts, (p, q) =>
+      canonicalReading([...p, ...q]),
     ),
     // The later of the two, never a fresh one: a stamp here would make every
     // merged copy outrank every unmerged one, and the reconcile would then

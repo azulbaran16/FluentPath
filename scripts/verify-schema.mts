@@ -33,6 +33,7 @@ import {
   type CelpipAttempt,
   type CelpipListeningAttempt,
   type CelpipProgressState,
+  type CelpipReadingAttempt,
   type CelpipSpeakingAttempt,
   type ProgressState,
 } from "../src/lib/progress-schema.ts";
@@ -480,6 +481,24 @@ const listeningAttempt: CelpipListeningAttempt = {
   outOfTime: false,
 };
 
+/** A Reading result exactly as the runner will record it. Note what is NOT on
+ * it: an in-progress answer sheet or a part cursor. Only a submitted result is
+ * stored — a resumable sheet would be a second deletable map riding the one
+ * shared instant that `drafts` already rides.
+ *
+ * The answer sheet mixes `-q` ids (comprehension questions) with `-b` ids
+ * (drop-down blanks) ON PURPOSE: they are one key space, because the two item
+ * types grade identically. */
+const readingAttempt: CelpipReadingAttempt = {
+  setId: "reading-set-1",
+  date: "2026-07-30T09:22:15.000Z",
+  durationSeconds: 2_340,
+  answers: { "r1-q1": 2, "r1-b3": 0, "r4-b7": 1 },
+  correct: 30,
+  total: 38,
+  outOfTime: false,
+};
+
 const celpipFull: CelpipProgressState = {
   attempts: {
     "email-neighbour": [olderAttempt, attempt],
@@ -488,6 +507,7 @@ const celpipFull: CelpipProgressState = {
   drafts: { "survey-transit": "In my opinion the current schedule is" },
   speakingAttempts: { "speaking-advice-first-winter": [speakingAttempt] },
   listeningAttempts: { "listening-set-1": [listeningAttempt] },
+  readingAttempts: { "reading-set-1": [readingAttempt] },
   updatedAt: INSTANT,
 };
 
@@ -781,6 +801,7 @@ group("CELPIP speaking bounds — every field on the new shape is capped");
     drafts: {},
     speakingAttempts: {},
     listeningAttempts: {},
+    readingAttempts: {},
     updatedAt: INSTANT,
   };
   // 200 rehearsals spread over 8 prompts — far more than an exam candidate
@@ -833,11 +854,34 @@ group("CELPIP speaking bounds — every field on the new shape is capped");
       },
     ];
   }
+  // Plus a Reading history: 30 sittings across 4 sets, each carrying a FULL
+  // 38-item answer sheet whose keys are LONGER than the listening ones, because
+  // a reading sheet holds blank ids as well as question ids. Re-measured rather
+  // than assumed for the same reason the listening half was: the answer map is
+  // the only thing on the shape that grows with content, and a 413 is
+  // classified as a permanent drop that would discard the whole CELPIP sync.
+  const fullReadingSheet: Record<string, number> = {};
+  for (let q = 0; q < 38; q += 1) {
+    const part = (q % 4) + 1;
+    fullReadingSheet[`reading-part-${part}-${q % 3 === 0 ? "blank" : "question"}-${q}`] = q % 4;
+  }
+  for (let i = 0; i < 30; i += 1) {
+    const setId = `reading-set-${i % 4}`;
+    worstCase.readingAttempts[setId] = [
+      ...(worstCase.readingAttempts[setId] ?? []),
+      {
+        ...readingAttempt,
+        setId,
+        date: new Date(Date.UTC(2026, 6, 4, 0, i)).toISOString(),
+        answers: fullReadingSheet,
+      },
+    ];
+  }
   const bytes = Buffer.byteLength(JSON.stringify(worstCase), "utf8");
   // Printed unconditionally: a sizing assertion is only useful if the number it
   // passed on is visible, so a later shape change can be compared against it.
   console.log(
-    `    measured: 200 rehearsals + 40 essays + 30 full listening sheets = ${bytes} bytes (${(
+    `    measured: 200 rehearsals + 40 essays + 30 full listening sheets + 30 full reading sheets = ${bytes} bytes (${(
       (bytes / MAX_BODY_BYTES) *
       100
     ).toFixed(1)}% of the 2 MiB cap)`,
@@ -1072,6 +1116,227 @@ group("CELPIP listening bounds — one bad answer costs only itself");
   );
 }
 
+group("CELPIP reading — the same per-entry rules, one map for two item types");
+{
+  // THE ADDITIVITY CASE, now three deep. The row that matters TODAY carries
+  // writing, speaking and listening but no `readingAttempts` at all: that is
+  // the shape sitting in Postgres between 02.1-04 and this plan. It must
+  // recover to an empty record rather than failing the payload.
+  const preReadingBlob = {
+    attempts: { "survey-transit": [surveyAttempt] },
+    drafts: {},
+    speakingAttempts: { "speaking-advice-first-winter": [speakingAttempt] },
+    listeningAttempts: { "listening-set-1": [listeningAttempt] },
+    updatedAt: INSTANT,
+  };
+  const preReading = acceptCelpip(
+    "a row written between 02.1-04 and this plan: reading absent, the rest present",
+    preReadingBlob,
+  );
+  deepEqual("the absent reading field recovers to an empty record", preReading.readingAttempts, {});
+  deepEqual(
+    "and the listening history it does carry is untouched",
+    preReading.listeningAttempts,
+    preReadingBlob.listeningAttempts,
+  );
+  deepEqual(
+    "and so is the rehearsal history",
+    preReading.speakingAttempts,
+    preReadingBlob.speakingAttempts,
+  );
+  ok(
+    "read through the safe helper it behaves the same",
+    canon(safeReadCelpip(JSON.stringify(preReadingBlob)).readingAttempts) === "{}",
+  );
+  // And the Phase-1 blob, which has none of the three, still recovers all three.
+  const phase1 = acceptCelpip("a Phase-1 blob with none of the three new fields", {
+    attempts: { "survey-transit": [surveyAttempt] },
+    drafts: {},
+    updatedAt: INSTANT,
+  });
+  ok(
+    "a Phase-1 blob recovers all three new fields to empty records",
+    canon(phase1.readingAttempts) === "{}" &&
+      canon(phase1.listeningAttempts) === "{}" &&
+      canon(phase1.speakingAttempts) === "{}",
+  );
+
+  const parsed = acceptCelpip("a set array holding one good and three bad results", {
+    ...celpipFull,
+    readingAttempts: {
+      "reading-set-1": [
+        readingAttempt,
+        { ...readingAttempt, date: 1_753_000_000_000 }, // a number where the ISO date belongs
+        { ...readingAttempt, outOfTime: "yes" }, // a string where the flag belongs
+        "nope",
+      ],
+    },
+  });
+  deepEqual(
+    "the well-formed result survives alone",
+    parsed.readingAttempts["reading-set-1"],
+    [readingAttempt],
+  );
+
+  // A set id this build has never heard of must still validate — the same
+  // no-enum guarantee the speaking `shape` and the listening set id carry.
+  const unknownSet = acceptCelpip("a result for a set id this build does not know", {
+    ...celpipFull,
+    readingAttempts: {
+      "reading-set-that-was-cut": [{ ...readingAttempt, setId: "reading-set-that-was-cut" }],
+    },
+  });
+  ok(
+    "an unrecognised set id is accepted, not dropped",
+    unknownSet.readingAttempts["reading-set-that-was-cut"]?.length === 1,
+  );
+
+  const notAnArray = acceptCelpip("a set whose results value is not an array", {
+    ...celpipFull,
+    readingAttempts: { "reading-set-1": { 0: readingAttempt } },
+  });
+  ok(
+    "a non-array set value is dropped rather than coerced to an empty history",
+    !("reading-set-1" in notAnArray.readingAttempts),
+  );
+  deepEqual("its writing neighbours are untouched", notAnArray.attempts, celpipFull.attempts);
+  deepEqual(
+    "and its listening neighbours are untouched",
+    notAnArray.listeningAttempts,
+    celpipFull.listeningAttempts,
+  );
+
+  const poisoned = acceptCelpip("poisoned keys in the reading record", {
+    ...celpipFull,
+    readingAttempts: JSON.parse(
+      `{"__proto__":[],"constructor":[],"prototype":[],"reading-set-1":${JSON.stringify([
+        readingAttempt,
+      ])}}`,
+    ) as Record<string, unknown>,
+  });
+  deepEqual("poisoned set keys are dropped", Object.keys(poisoned.readingAttempts).sort(), [
+    "reading-set-1",
+  ]);
+
+  // The answer map is a record one level further in, and its key space is WIDER
+  // here than on the listening shape — question ids and blank ids share it — so
+  // a poisoned item id is worth asserting on its own rather than by analogy.
+  const poisonedAnswers = acceptCelpip("poisoned keys inside the reading answer sheet", {
+    ...celpipFull,
+    readingAttempts: {
+      "reading-set-1": [
+        {
+          ...readingAttempt,
+          answers: JSON.parse(
+            '{"__proto__":1,"constructor":2,"prototype":3,"r1-b1":3}',
+          ) as Record<string, number>,
+        },
+      ],
+    },
+  });
+  deepEqual(
+    "poisoned item ids are dropped, the real blank answer survives",
+    poisonedAnswers.readingAttempts["reading-set-1"][0].answers,
+    { "r1-b1": 3 },
+  );
+  ok(
+    "and no prototype was polluted along the way",
+    ({} as Record<string, unknown>).polluted === undefined,
+  );
+}
+
+group("CELPIP reading bounds — one bad answer costs only itself");
+{
+  for (const [label, bad] of [
+    ["a negative option index", -1],
+    ["an option index past the ceiling", CELPIP_MAX_OPTION_INDEX + 1],
+    ["a fractional option index", 1.5],
+    ["a non-finite option index", Number.POSITIVE_INFINITY],
+    ["a string where the index belongs", "2" as unknown as number],
+    ["null where the index belongs", null as unknown as number],
+  ] as Array<[string, number]>) {
+    // Deliberately puts the bad value on a BLANK id: the drop-down blank is the
+    // item type this section adds, and its answers ride the same map as the
+    // questions', so the rule has to hold for both keys identically.
+    const parsed = acceptCelpip(`a reading answer sheet carrying ${label}`, {
+      ...celpipFull,
+      readingAttempts: {
+        "reading-set-1": [
+          { ...readingAttempt, answers: { "r1-q1": 2, "r1-b2": bad, "r1-q3": 0 } },
+        ],
+      },
+    });
+    const entry = parsed.readingAttempts["reading-set-1"] ?? [];
+    ok(`${label}: the attempt itself is still stored`, entry.length === 1);
+    deepEqual(`${label}: only that one answer is dropped`, entry[0]?.answers, {
+      "r1-q1": 2,
+      "r1-q3": 0,
+    });
+  }
+
+  const atTheCeiling = acceptCelpip("a reading answer exactly at the option ceiling", {
+    ...celpipFull,
+    readingAttempts: {
+      "reading-set-1": [{ ...readingAttempt, answers: { "r1-b1": CELPIP_MAX_OPTION_INDEX } }],
+    },
+  });
+  deepEqual(
+    "an index exactly at the ceiling is still accepted",
+    atTheCeiling.readingAttempts["reading-set-1"][0].answers,
+    { "r1-b1": CELPIP_MAX_OPTION_INDEX },
+  );
+
+  for (const [label, patch] of [
+    ["a negative duration", { durationSeconds: -1 }],
+    ["a negative correct count", { correct: -1 }],
+    ["a negative total", { total: -1 }],
+    ["a fractional correct count", { correct: 12.5 }],
+    ["a duration past the counter ceiling", { durationSeconds: 1e12 }],
+    ["a non-finite duration", { durationSeconds: Number.POSITIVE_INFINITY }],
+  ] as Array<[string, Partial<Record<string, number>>]>) {
+    const bad = acceptCelpip(`a reading result carrying ${label}`, {
+      ...celpipFull,
+      readingAttempts: {
+        "reading-set-1": [
+          readingAttempt,
+          { ...readingAttempt, date: "2026-08-02T00:00:00.000Z", ...patch },
+        ],
+      },
+    });
+    deepEqual(
+      `${label} costs only its own entry`,
+      bad.readingAttempts["reading-set-1"],
+      [readingAttempt],
+    );
+  }
+
+  // THE FIELDS THAT ARE NOT THERE. An in-progress sheet and a part cursor are
+  // deliberately not persisted, so a client that sends either must have it
+  // stripped — otherwise the "no second deletable map" argument quietly stops
+  // being true the first time a future component sends the field speculatively.
+  const withDraftSheet = acceptCelpip("a result carrying an in-progress sheet", {
+    ...celpipFull,
+    readingAttempts: {
+      "reading-set-1": [
+        { ...readingAttempt, inProgress: { "r1-q1": 2 }, partIndex: 2, notes: "part 2 fees" },
+      ],
+    },
+  });
+  const stored = withDraftSheet.readingAttempts["reading-set-1"][0] as unknown as Record<
+    string,
+    unknown
+  >;
+  ok(
+    "an in-progress sheet, a part cursor and a notes field are all stripped",
+    !("inProgress" in stored) && !("partIndex" in stored) && !("notes" in stored),
+  );
+  deepEqual(
+    "and the result itself is stored, unchanged",
+    withDraftSheet.readingAttempts["reading-set-1"],
+    [readingAttempt],
+  );
+}
+
 group("CELPIP PROG-03 — a corrupt stored blob loads as the empty state");
 {
   const corrupt = ["{not json at all", "", "null", "42", '"a string"', "[]", '{"attempts":', " "];
@@ -1115,6 +1380,7 @@ group("CELPIP PROG-03 — a corrupt stored blob loads as the empty state");
       drafts: {},
       speakingAttempts: celpipFull.speakingAttempts,
       listeningAttempts: celpipFull.listeningAttempts,
+      readingAttempts: celpipFull.readingAttempts,
       updatedAt: INSTANT,
     },
   );

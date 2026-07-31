@@ -235,6 +235,48 @@ export interface CelpipListeningAttempt {
   outOfTime: boolean;
 }
 
+/**
+ * One completed CELPIP Reading set.
+ *
+ * Its own top-level field, for the third time and for exactly the same reason:
+ * `celpipAttemptEntry` in progress-merge.ts hard-codes the writing task-type
+ * pair independently of the zod enum above, so widening `taskType` stores an
+ * attempt that the merge then silently DELETES on the next reconcile. A
+ * separate append-only field cannot reach the writing shape at all, and the
+ * beta user's live writing history stays byte-identical.
+ *
+ * THE IN-PROGRESS ANSWER SHEET IS NOT HERE, AND THAT IS DELIBERATE — DO NOT
+ * "FIX" IT. Only a submitted result is stored. A half-finished sheet would be a
+ * second map with a real delete site (it has to clear on submit, or a finished
+ * attempt pre-fills the next timed run — the fca41b7 defect Phase 1 paid for),
+ * and this state carries exactly ONE `updatedAt` instant which `pickDraftsSide`
+ * already rides. A device stamping while saving an in-progress answer would
+ * then also win the `drafts` map and resurrect a cleared writing draft. The
+ * exposure from not persisting is small and bounded: a reading set is answer
+ * clicks rather than prose, and it is one sitting.
+ */
+export interface CelpipReadingAttempt {
+  setId: string;
+  /** ISO timestamp of submission. Half of the natural key. */
+  date: string;
+  /** Wall-clock seconds from starting the set to submitting it. */
+  durationSeconds: number;
+  /**
+   * Item id -> chosen option index, covering BOTH question ids and drop-down
+   * blank ids — the two grade identically and share one map, which is why a
+   * blank id must never collide with a question id inside a set (see
+   * `CelpipReadingPart`). Sanitised per entry, so one malformed answer costs
+   * only itself and the rest of the sheet still scores.
+   */
+  answers: Record<string, number>;
+  /** How many she got right, and out of how many. Both stored rather than
+   * recomputed: the bank is content and a later edit to a set must not
+   * retroactively change a result she already saw. */
+  correct: number;
+  total: number;
+  outOfTime: boolean;
+}
+
 export interface CelpipProgressState {
   attempts: Record<string, CelpipAttempt[]>;
   drafts: Record<string, string>;
@@ -261,6 +303,16 @@ export interface CelpipProgressState {
    */
   listeningAttempts: Record<string, CelpipListeningAttempt[]>;
   /**
+   * Completed Reading sets, keyed by set id — the fourth append-only map, on
+   * the same rule as the other three.
+   *
+   * Four such maps cost the merge nothing between them: none has a delete site,
+   * so none needs an instant of its own and none can fight `drafts` for the one
+   * this state carries. That is the whole reason each new skill got its own
+   * top-level field rather than one polymorphic map with a discriminator.
+   */
+  readingAttempts: Record<string, CelpipReadingAttempt[]>;
+  /**
    * The same D-01b activity instant `ProgressState.updatedAt` carries, and for
    * a sharper reason: `drafts` is this store's one field with a real delete
    * site (`clearDraft` runs the moment an attempt is submitted, so the next
@@ -286,6 +338,7 @@ export const CELPIP_EMPTY: CelpipProgressState = {
   drafts: {},
   speakingAttempts: {},
   listeningAttempts: {},
+  readingAttempts: {},
   updatedAt: null,
 };
 
@@ -621,6 +674,31 @@ export const celpipListeningAttemptSchema = z.object({
   outOfTime: z.boolean(),
 });
 
+/**
+ * One completed Reading set. Every field is required, for the same reason the
+ * other three attempt shapes' are: an entry missing its set id or its
+ * submission timestamp has no identity, and identity is what the merge
+ * de-duplicates on.
+ *
+ * `answers` is the same sanitised record of bounded integers the listening
+ * shape carries, and it holds BOTH question ids and drop-down blank ids — one
+ * map, because the two item types grade identically.
+ *
+ * NOTHING HERE IS FREE-FORM PROSE. Only a submitted result is stored and no
+ * in-progress sheet is (see `CelpipReadingAttempt`), so this shape is bounded
+ * numbers, bounded ids and one boolean — which is what keeps a realistic
+ * history far under the 2 MiB body cap where a 413 is a permanent drop.
+ */
+export const celpipReadingAttemptSchema = z.object({
+  setId: z.string().max(200),
+  date: z.string().max(64),
+  durationSeconds: z.number().int().min(0).max(MAX_COUNT),
+  answers: sanitizedRecord(z.number().int().min(0).max(CELPIP_MAX_OPTION_INDEX)),
+  correct: z.number().int().min(0).max(MAX_COUNT),
+  total: z.number().int().min(0).max(MAX_COUNT),
+  outOfTime: z.boolean(),
+});
+
 export const celpipProgressSchema = z.object({
   attempts: sanitizedRecord(sanitizedArray(celpipAttemptSchema)),
   drafts: sanitizedRecord(celpipText),
@@ -634,6 +712,11 @@ export const celpipProgressSchema = z.object({
   // every Listening result on every write, with no error anywhere, because the
   // write itself still succeeds.
   listeningAttempts: sanitizedRecord(sanitizedArray(celpipListeningAttemptSchema)),
+  // The fourth, and worth stating a third time rather than cross-referencing,
+  // because the failure is silent and total: leave this line out and the plain
+  // object constructor strips the field, so the server DELETES every Reading
+  // result on every write while the write itself still succeeds.
+  readingAttempts: sanitizedRecord(sanitizedArray(celpipReadingAttemptSchema)),
   // Load-bearing for the same reason `updatedAt` is on the progress schema,
   // and more so here: the plain object constructor strips what it does not
   // declare, so an undeclared instant would be deleted by the server on every

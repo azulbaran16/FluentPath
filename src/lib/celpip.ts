@@ -254,8 +254,11 @@ export interface CelpipListeningSegment {
  * CELPIP-07 both ask for per-question explanations, and an optional field is
  * one an author forgets under deadline. The compiler is a cheaper reviewer.
  *
- * Shared with Reading when plan 09 lands — the two skills differ in what the
- * learner consumes before the question, not in the question itself.
+ * SHARED WITH READING, not copied for it — the two skills differ in what the
+ * learner consumes before the question, not in the question itself, so both
+ * grade through one comparison against one answers map. A drop-down blank is
+ * the same act again with the surrounding sentence as its stem; see
+ * `CelpipReadingBlank`.
  */
 export interface CelpipObjectiveQuestion {
   id: string;
@@ -307,6 +310,261 @@ export const LISTENING_SETS: CelpipListeningSet[] = [...LISTENING_SET_BANK];
 
 export function getListeningSet(setId: string): CelpipListeningSet | undefined {
   return LISTENING_SETS.find((s) => s.id === setId);
+}
+
+/* ------------------------------------------------------------------ *
+ * Reading — the content types (D-06, D-07).
+ *
+ * THE LOAD-BEARING SHAPE DECISION HERE IS THE DROP-DOWN BLANK, and it is
+ * why this file gains a whole sub-model rather than a second list of
+ * multiple-choice questions.
+ *
+ * The blank appears in THREE of the exam's four reading parts — inside
+ * the reply in Correspondence, inside the short message in Diagram, and
+ * inside the reader comment in Viewpoints. A Reading section built only
+ * from four-option multiple choice would look nothing like the real
+ * exam, and this is the type learners most often meet cold on the day.
+ * Its difficulty is specific and cannot be faked: the wrong options are
+ * grammatically fine and only CONTEXTUALLY wrong, so the blank has to be
+ * read against the text around it rather than parsed as grammar.
+ *
+ * Two consequences run through everything below:
+ *
+ *   1. A blank belongs INSIDE its text, not beside it. `blankText` is an
+ *      ordered array of segments — prose runs and blank references — so
+ *      the reply renders as one continuous piece of writing with the
+ *      selects sitting in it. A list of questions detached from the
+ *      passage would remove the very context the type tests.
+ *   2. A blank and a question grade through ONE answers map, because
+ *      they are the same act: choose an option index, compare it to a
+ *      key. See the id-uniqueness note on `CelpipReadingPart`.
+ *
+ * The names `passage`, `diagram`, `blankText`, `minutes`, `kind` and
+ * `questions` are PINNED: plans 09 and 10 hard-code them in their verify
+ * commands, so renaming one silently disarms a downstream gate rather
+ * than failing it.
+ * ------------------------------------------------------------------ */
+
+/** The four scored CELPIP Reading part shapes, in exam order (D-07). */
+export type CelpipReadingPartKind =
+  | "correspondence"
+  | "diagram"
+  | "information"
+  | "viewpoints";
+
+/**
+ * The exam's own name for each part shape. A total `Record` over the union for
+ * the same reason the listening one is: a fifth kind fails `npx tsc --noEmit`
+ * here rather than rendering a blank heading to a learner.
+ */
+const READING_PART_KIND_LABEL: Record<CelpipReadingPartKind, string> = {
+  correspondence: "Reading Correspondence",
+  diagram: "Reading to Apply a Diagram",
+  information: "Reading for Information",
+  viewpoints: "Reading for Viewpoints",
+};
+
+/** The same four kinds as data, DERIVED from the label table rather than
+ * written out twice — the landing reports coverage as "n of 4". */
+export const CELPIP_READING_PART_KINDS = Object.keys(
+  READING_PART_KIND_LABEL,
+) as CelpipReadingPartKind[];
+
+export function readingPartKindLabel(kind: CelpipReadingPartKind): string {
+  return READING_PART_KIND_LABEL[kind];
+}
+
+/**
+ * One drop-down blank: a gap in a piece of prose that the learner fills from a
+ * short list of options.
+ *
+ * Same three fields an objective question carries, and deliberately so — the
+ * runner grades both through one comparison against one answers map. What it
+ * does NOT carry is a `stem`: the sentence around the blank IS the stem, which
+ * is exactly what makes the type hard and is why the segments below exist.
+ *
+ * `explanation` is REQUIRED, not optional, for the same reason
+ * `CelpipObjectiveQuestion.explanation` is: CELPIP-06 asks for per-question
+ * explanations, an optional field is one an author forgets under deadline, and
+ * on this type the explanation is doing more work than anywhere else — it is
+ * the only place the learner is told why an option that read perfectly well was
+ * still wrong.
+ */
+export interface CelpipReadingBlank {
+  id: string;
+  options: string[];
+  /** Index into `options`. */
+  answer: number;
+  explanation: string;
+}
+
+/**
+ * One run of a blank-bearing text: either literal prose or a reference to a
+ * blank declared alongside it.
+ *
+ * A discriminated union rather than an optional-field object, so a segment
+ * cannot be half of each and the renderer needs no fallback branch. There is
+ * deliberately no third member for raw markup: formatting is expressed as
+ * structure (paragraph arrays, table rows), never as an HTML string, which is
+ * what keeps `dangerouslySetInnerHTML` out of this section entirely (T-02.1-36).
+ */
+export type CelpipReadingTextSegment =
+  | { kind: "text"; text: string }
+  | { kind: "blank"; blankId: string }
+  /** A paragraph boundary inside one continuous text. Carried as a segment
+   * rather than by nesting paragraphs, so a blank can never straddle one. */
+  | { kind: "break" };
+
+/**
+ * A piece of prose with drop-down blanks in it — the reply in Correspondence,
+ * the short message in Diagram, the reader comment in Viewpoints.
+ *
+ * `blanks` is a flat array and `segments` references it by id rather than
+ * inlining the blank, so the answer key reads as a list and the prose reads as
+ * prose. A `blankId` that resolves to nothing renders as a visible gap marker
+ * rather than silently vanishing; plan 09's harness rejects one at build time.
+ */
+export interface CelpipReadingBlankText {
+  /** Heading above the text — a subject line, "Reader comment", and so on. */
+  title?: string;
+  /** Sender/date/greeting-style lines shown above the body, unblanked. */
+  intro?: string[];
+  segments: CelpipReadingTextSegment[];
+  blanks: CelpipReadingBlank[];
+}
+
+/** A labelled block inside an information passage. Part 3's text is usually
+ * presented as lettered sections, and the questions ask which one says what. */
+export interface CelpipReadingPassageSection {
+  label: string;
+  paragraphs: string[];
+}
+
+/**
+ * A plain reading text. Paragraphs are an ARRAY OF STRINGS, never one string
+ * with newlines and never markup: the renderer maps them to `<p>` elements
+ * through React text nodes, so authored prose can never become markup.
+ */
+export interface CelpipReadingPassage {
+  title?: string;
+  /** Lead paragraphs, before any labelled section. Often the whole text. */
+  paragraphs: string[];
+  /** Labelled blocks, for the information part. */
+  sections?: CelpipReadingPassageSection[];
+}
+
+/** What kind of thing the diagram is. Presentation only — it decides the
+ * heading treatment, never whether the data is renderable. */
+export type CelpipReadingDiagramKind = "schedule" | "fee-table" | "rules-list";
+
+/** One row: its row header plus its cells. A rules list carries one cell per
+ * row and no `headers`, which renders as a definition list rather than a table. */
+export interface CelpipReadingDiagramRow {
+  label: string;
+  cells: string[];
+}
+
+/**
+ * The Diagram part's stimulus, as STRUCTURED DATA rather than an image.
+ *
+ * Four reasons, and the last one decided it: structured data is authorable
+ * inside the content module beside everything else; it is greppable for the
+ * D-06 originality check, which an image is not; it reaches a screen reader as
+ * a real table instead of as alt text somebody has to remember to write; and it
+ * costs no asset pipeline — which is a cost this phase cannot absorb three
+ * weeks out from the exam.
+ */
+export interface CelpipReadingDiagram {
+  kind: CelpipReadingDiagramKind;
+  caption: string;
+  /** Column headers when the diagram is tabular. Absent on a rules list. */
+  headers?: string[];
+  rows: CelpipReadingDiagramRow[];
+  /** Point-form notes printed under the table, as the exam's brochures carry. */
+  notes?: string[];
+}
+
+/**
+ * One part of a reading set.
+ *
+ * `minutes` IS PER PART, NOT PER SET, and that is a training decision rather
+ * than a modelling one. The real exam paces Reading part by part — 11 minutes
+ * for correspondence, 8 for the diagram, 9 for information, 11 for viewpoints.
+ * A single 39-minute block would let a learner overspend on part 1 and then run
+ * out on part 4, which is precisely the failure the per-part allowance exists
+ * to train against.
+ *
+ * ALL THREE STIMULUS FIELDS ARE OPTIONAL AND A PART MAY CARRY MORE THAN ONE.
+ * Correspondence is an email (`passage`) plus a reply with blanks
+ * (`blankText`); Diagram is a table (`diagram`) plus a message with blanks;
+ * Information is a passage alone; Viewpoints is an article plus a commented
+ * reply. The runner renders whichever are present, in this order.
+ *
+ * ID UNIQUENESS IS A REAL CONSTRAINT, NOT A CONVENTION. Blank ids and question
+ * ids share ONE answers map on the attempt, so a blank id colliding with a
+ * question id inside the same set silently overwrites one of the two answers
+ * and mis-scores the sheet. Ids must be unique across every question and every
+ * blank in a set; plan 09's content harness gates it (T-02.1-39).
+ */
+export interface CelpipReadingPart {
+  id: string;
+  kind: CelpipReadingPartKind;
+  title: string;
+  /** This part's own allowance. The set's total is derived from these. */
+  minutes: number;
+  /** Instruction line shown above the stimulus, as the exam prints one. */
+  instructions?: string;
+  passage?: CelpipReadingPassage;
+  diagram?: CelpipReadingDiagram;
+  blankText?: CelpipReadingBlankText;
+  /** The plain comprehension items. Shares its answers map with the blanks. */
+  questions: CelpipObjectiveQuestion[];
+}
+
+/**
+ * A reading set: the exam's four parts in order.
+ *
+ * NOTE WHAT IS NOT HERE: a `timeLimitMinutes` field. The total is DERIVED by
+ * `readingSetMinutes` from the parts' own allowances, so it cannot be typed
+ * twice and cannot drift from the parts it is supposed to describe — which it
+ * would, the first time a part's allowance is corrected and the header is not.
+ */
+export interface CelpipReadingSet {
+  id: string;
+  title: string;
+  parts: CelpipReadingPart[];
+}
+
+/** The set's total allowance, summed from its parts. 39 minutes for a complete
+ * four-part set. */
+export function readingSetMinutes(set: CelpipReadingSet): number {
+  return set.parts.reduce((total, part) => total + part.minutes, 0);
+}
+
+/** Every gradable item in a part, blanks included — the denominator the runner
+ * scores against and the count the landing reports. 38 for a complete set. */
+export function readingPartItemCount(part: CelpipReadingPart): number {
+  return part.questions.length + (part.blankText?.blanks.length ?? 0);
+}
+
+export function readingSetItemCount(set: CelpipReadingSet): number {
+  return set.parts.reduce((total, part) => total + readingPartItemCount(part), 0);
+}
+
+/**
+ * The Reading bank — EMPTY until plan 09 authors it, deliberately.
+ *
+ * Availability follows this array's CONTENTS, exactly as the listening one
+ * does, so the landing reports Reading as "not yet available" on its own for as
+ * long as this is empty and needs no second edit to say so. Plan 09 replaces
+ * the empty literal with a spread from `src/lib/celpip/reading-set-1.ts`. Do
+ * NOT create that bank module empty now: an empty module is a second thing to
+ * remember to delete if the set is dropped for the calendar.
+ */
+export const READING_SETS: CelpipReadingSet[] = [];
+
+export function getReadingSet(setId: string): CelpipReadingSet | undefined {
+  return READING_SETS.find((s) => s.id === setId);
 }
 
 export { CELPIP_RUBRIC } from "./celpip/rubric.ts";
