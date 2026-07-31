@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02.1
 current_phase_name: celpip-remaining-skills
 status: in-progress
-stopped_at: "02.1-01 complete — Speaking tracer verified in a browser; next action is executing 02.1-02"
-last_updated: "2026-07-31T03:10:00.000Z"
+stopped_at: 02.1-02 complete — /celpip is skill-aware and self-reporting; next action is executing 02.1-03
+last_updated: "2026-07-31T07:11:13.630Z"
 last_activity: 2026-07-31
-last_activity_desc: "02.1-01 executed: CSP media-src fix, speakingAttempts through the merge contract, /celpip/speaking route"
+last_activity_desc: "02.1-02 executed: CELPIP_SECTIONS registry with derived coverage, cross-skill attempt history, /celpip no longer Writing-only"
 progress:
-  total_phases: 6
+  total_phases: 3
   completed_phases: 2
   total_plans: 25
-  completed_plans: 14
+  completed_plans: 15
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-07-23)
 ## Current Position
 
 Phase: 02.1 (celpip-remaining-skills) — IN PROGRESS
-Plan: 1 of 12
-Status: 02.1-01 (tracer) complete on `main` and pushed; next action is executing 02.1-02
-Last activity: 2026-07-31 — 02.1-01 executed: CSP media-src fix, speakingAttempts through the merge contract, /celpip/speaking route
+Plan: 2 of 12
+Status: 02.1-02 complete on `main`; next action is executing 02.1-03
+Last activity: 2026-07-31 — 02.1-02 executed: CELPIP_SECTIONS registry with derived coverage, cross-skill attempt history, /celpip no longer Writing-only
 
-Progress: [█████░░░░░] 56% (2 of 6 phases; 14 of 25 plans)
+Progress: [██████░░░░] 60% (2 of 6 phases; 15 of 25 plans)
 
 ## Performance Metrics
 
@@ -66,6 +66,7 @@ Progress: [█████░░░░░] 56% (2 of 6 phases; 14 of 25 plans)
 | Phase 02 P05 | 38min | 3 tasks | 6 files |
 | Phase 02 P06 | 55min | 2 tasks | 3 files |
 | Phase 02.1 P01 | ~70min | 3 tasks | 13 files |
+| Phase 02.1 P02 | 28m | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -111,6 +112,8 @@ Recent decisions affecting current work:
 - [Phase ?]: 02.1-01: the Speaking response countdown is always mode="timed" even in practice mode — pausing a countdown while MediaRecorder keeps capturing desynchronises the two
 - [Phase ?]: 02.1-01: the microphone opens on the Start press and stays open through prep so no permission dialog can eat the opening seconds; the UI says the indicator will be lit rather than hiding it
 - [Phase ?]: 02.1-01: mutation harnesses must fail loudly on a missing OR ambiguous anchor — CRLF/LF mismatch between progress-schema.ts and progress-merge.ts made three "surviving mutations" spurious, and one later anchor silently hit the writing coercer instead of the speaking one
+- [Phase ?]: 02.1-02: /celpip section availability is DERIVED from bank contents (CELPIP_SECTIONS) — a bank wired but empty still reports 'not yet available', so a dropped content plan cannot leave a false claim on the landing
+- [Phase ?]: 02.1-02: HISTORY_SOURCES in CelpipLanding is the single extension point for attempt history — a new skill adds one entry and changes nothing else in that file
 
 ### Pending Todos
 
@@ -118,11 +121,13 @@ Recent decisions affecting current work:
   Subjective quality (rubric wording, model-answer naturalness, exam feel) and a
   full real-time 27-minute timer run are still unconfirmed — worth a pass from
   the beta user before her exam. See 01-06-SUMMARY.md "Caveats".
+
 - 02.1-01: **the Speaking phone pass is owed** — no device was available at the
   checkpoint. The `MediaRecorder` container probe (`isTypeSupported` falling
   WebM → MP4) exists precisely for Safari before 18.4, which supports MP4 only,
   and that is the one browser family nobody has run it on. Plan 12's phase gate
   owns it.
+
 - 02.1-01: microphone release-on-stop is **code-verified, not observed** — the
   checkpoint used a synthetic AudioContext stream, whose track lifecycle is not
   the OS recording indicator. Worth one real-device glance in plan 12.
@@ -151,6 +156,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-31T03:10:00.000Z
-Stopped at: 02.1-01 complete — Speaking tracer verified in a browser and pushed; next action is executing 02.1-02
+Last session: 2026-07-31T07:11:13.600Z
+Stopped at: 02.1-02 complete — /celpip is skill-aware and self-reporting; next action is executing 02.1-03
 Resume file: None

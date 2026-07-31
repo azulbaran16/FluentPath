@@ -85,6 +85,7 @@ Plans:
   6. No text from third-party study material appears anywhere — verified during review
 
 **Scope decisions (user, 2026-07-30):**
+
 - Uneven by design: **Reading and Listening to depth, Speaking to a usable minimum** — no automated scoring anywhere
 - **Listening audio uses the Web Speech API** already in the app, not recorded files. Accepted cost: it sounds more robotic than the real exam. Accepted benefit: it ships now, at no cost, and still trains note-taking and pacing
 - All content original (same IP constraint as Phase 1)
@@ -99,12 +100,12 @@ tasks 5 and 6, 30/60 for the rest. Only structure was taken from those documents
 in full. Speaking task 3 ships a written scene description rather than an image — an open
 content dependency, stated on the landing.
 
-**Plans**: 12 plans — sequenced cheapest-content-first so the calendar can stop after any one
+**Plans**: 2/12 plans executed
 of them and the learner still gains something usable
 Plans:
 
 - [x] 02.1-01-PLAN.md — Tracer: one Speaking prompt end to end (CSP → record → play back → self-evaluate → Postgres) — **complete 2026-07-31**; browser checkpoint approved, phone pass owed to plan 12
-- [ ] 02.1-02-PLAN.md — Landing becomes skill-aware and self-honest (coverage derived from the banks)
+- [x] 02.1-02-PLAN.md — Landing becomes skill-aware and self-honest (coverage derived from the banks)
 - [ ] 02.1-03-PLAN.md — Speaking bank complete: 8 task shapes, full self-eval rubric, content harness
 - [ ] 02.1-04-PLAN.md — Listening plumbing: types, listeningAttempts, the speaker-turn speech driver, audio check
 - [ ] 02.1-05-PLAN.md — Listening runner + set 1 news-item part: the first hearable drill
@@ -176,7 +177,7 @@ Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. CELPIP Writing Practice | 6/6 | Complete | 2026-07-28 |
 | 2. Server-Side Progress | 7/7 | Complete | 2026-07-30 |
-| 2.1 CELPIP Remaining Skills | 1/12 | In progress | - |
+| 2.1 CELPIP Remaining Skills | 2/12 | In Progress|  |
 | 3. Every Scenario Practicable | 0/TBD | Not started | - |
 | 4. Full Curriculum Expansion | 0/TBD | Not started | - |
 | 5. AI Tutor End-to-End | 0/TBD | Not started | - |
