@@ -256,9 +256,22 @@ group("speaking: the written-scene substitution is disclosed, not hidden");
 // T-02.1-14. Exam Task 3 shows a photograph; this app writes the scene out
 // instead. That is a visible product compromise, and the mitigation is that it
 // is SAID — in the prompt's own copy and in the section caveat the landing
-// renders. The keyword match below is a proxy for "she is told": if the wording
-// changes, update the pattern, never delete the assertion.
-const DISCLOSURE = /photograph|picture|image/i;
+// renders. The two patterns below are a proxy for "she is told", and BOTH must
+// match: naming the picture is not a disclosure on its own, and neither is
+// saying something was written out.
+//
+// FOUND BY MUTATION. A single /photograph|picture|image/ pattern let the whole
+// disclosure be deleted and still passed, because the replacement copy said
+// "read it, PICTURE it, and describe it" — the verb, not the noun. Requiring an
+// article in front of the noun rejects the verb, and requiring the substitution
+// clause as well means no single innocent word can satisfy the assertion. If
+// the copy is legitimately reworded, widen the alternations; never drop the
+// conjunction.
+const PICTURE_NOUN = /\b(a|an|the|no|any|original)\s+(photo|photograph|picture|image)\b/i;
+const SUBSTITUTION = /\b(written out|writes? the scene|instead|no original|not have)\b/i;
+const DISCLOSURE = {
+  test: (text: string) => PICTURE_NOUN.test(text) && SUBSTITUTION.test(text),
+};
 const sceneShaped = SPEAKING_PROMPTS.filter((p) => p.shape === "describe-scene");
 
 ok("there is a describe-scene prompt at all", sceneShaped.length > 0);
