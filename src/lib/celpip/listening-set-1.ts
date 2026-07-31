@@ -740,6 +740,209 @@ const DAILY_CONVERSATION_PART: CelpipListeningPart = {
   ],
 };
 
+/**
+ * Part 3 shape: Listening for Information.
+ *
+ * One speaker, one segment, and the part that tests SEQUENCE as much as detail.
+ * The script is a structured explanation with a fixed internal order — four
+ * benches a bicycle passes through, a three-colour classification assigned at
+ * one of them, an order of operations inside the longest stage, and a rule about
+ * where a failure sends the work back to. Three of the six questions below can
+ * only be answered by someone who tracked that order; knowing every fact in the
+ * talk and none of its shape answers them wrong.
+ *
+ * That is the whole reason this part exists in the exam and the reason it is
+ * hard to rehearse on paper: a written explanation can be re-read in any order,
+ * and a spoken one arrives once, in one order, and is gone.
+ *
+ * NOT a reading passage in disguise. A spoken talk and an information text read
+ * differently — the talk repeats itself, addresses the listener, and signposts
+ * its own structure out loud ("bench two is assessment") because the listener
+ * cannot scan back. Reusing a script as a Reading passage, or the reverse, is
+ * rejected on the record: it would blunt exactly the format fidelity D-07 buys.
+ *
+ * The distractors follow the house rule — every one of them is a fact the talk
+ * really does state, standing in the wrong place in the sequence.
+ */
+const INFORMATION_PART: CelpipListeningPart = {
+  id: "ls1-information",
+  kind: "information",
+  title: "What happens to a donated bicycle",
+  segments: [
+    {
+      id: "ls1-information-seg-1",
+      turns: [
+        {
+          speaker: "Priya Ramnath",
+          text: "Welcome to your first shift. Before you pick up a tool, you need the order a donated bicycle moves through.",
+        },
+        {
+          speaker: "Priya Ramnath",
+          text: "There are four benches in this workshop, and every bicycle visits them in the same fixed sequence. Nothing skips ahead.",
+        },
+        {
+          speaker: "Priya Ramnath",
+          text: "Bench one is intake. You wheel the bicycle in, wipe the frame down, and tie a numbered tag to the handlebar.",
+        },
+        {
+          speaker: "Priya Ramnath",
+          text: "At intake we write down three things only: the frame size, the wheel size, and whether the frame is cracked.",
+        },
+        {
+          speaker: "Priya Ramnath",
+          text: "A cracked frame ends it there. It goes straight to the metal bin, and nobody wastes an hour finding out later.",
+        },
+        {
+          speaker: "Priya Ramnath",
+          text: "Bench two is assessment. This is where the colour code is decided: green, amber or red.",
+        },
+        {
+          speaker: "Priya Ramnath",
+          text: "Green means cleaning and adjustment only. Amber means it needs parts we already keep in the drawers behind you.",
+        },
+        {
+          speaker: "Priya Ramnath",
+          text: "Red means a part we would have to buy, so a coordinator decides before any work starts.",
+        },
+        {
+          speaker: "Priya Ramnath",
+          text: "Bench three is the repair bench, and it is the longest stage by far.",
+        },
+        {
+          speaker: "Priya Ramnath",
+          text: "Work outward from the wheels. Tyres and tubes first, then the brakes, then the drivetrain, then the seat and handlebars.",
+        },
+        {
+          speaker: "Priya Ramnath",
+          text: "That order is not a preference. A brake set before the wheel is trued has to be set a second time.",
+        },
+        {
+          speaker: "Priya Ramnath",
+          text: "Bench four is the safety check, and you never sign your own. Somebody else checks what you did.",
+        },
+        {
+          speaker: "Priya Ramnath",
+          text: "The checker rides it round the yard, tests both brakes from walking speed, and pulls hard on the bars.",
+        },
+        {
+          speaker: "Priya Ramnath",
+          text: "If anything fails, the bicycle goes back to bench three, not to bench two. It keeps the colour code it already has.",
+        },
+        {
+          speaker: "Priya Ramnath",
+          text: "Once it passes, the tag is signed and dated and the bicycle goes to the rack by the door.",
+        },
+        {
+          speaker: "Priya Ramnath",
+          text: "From that rack they leave in one of two ways, and a coordinator decides which. That is not ours to decide.",
+        },
+        {
+          speaker: "Priya Ramnath",
+          text: "Adult bicycles are sold here on Saturday mornings, and that money is what buys the parts in the drawers.",
+        },
+        {
+          speaker: "Priya Ramnath",
+          text: "Children's bicycles are given away, every one of them, through the two family centres on Corley Road.",
+        },
+        {
+          speaker: "Priya Ramnath",
+          text: "One last rule, about the tags. A tag stays on until the bicycle leaves the building.",
+        },
+        {
+          speaker: "Priya Ramnath",
+          text: "Find an untagged bicycle anywhere in here and walk it back to bench one. It starts again from intake.",
+        },
+      ],
+    },
+  ],
+  questions: [
+    {
+      id: "ls1-information-q1",
+      segmentId: "ls1-information-seg-1",
+      stem: "In what order does a bicycle move through the four benches?",
+      options: [
+        "Assessment, intake, repair, safety check",
+        "Intake, repair, assessment, safety check",
+        "Intake, assessment, repair, safety check",
+        "Intake, assessment, safety check, repair",
+      ],
+      answer: 2,
+      explanation:
+        "Intake, assessment, repair, safety check — she numbers the benches out loud as she goes, which is the signposting a spoken explanation has to do because you cannot scan back. Every one of the four names appears in the talk, so recognising the words is no help here at all; only the order separates the options. This is the question to answer by writing four short words down the side of your page as she says them, rather than by trying to hold the sequence in your head to the end.",
+    },
+    {
+      id: "ls1-information-q2",
+      segmentId: "ls1-information-seg-1",
+      stem: "What is written down at the first bench?",
+      options: [
+        "The frame size, the wheel size, and whether the frame is cracked",
+        "The colour code and the parts the bicycle will need",
+        "The frame size and the name of the person who donated it",
+        "The wheel size and the Saturday the bicycle will be sold",
+      ],
+      answer: 0,
+      explanation:
+        "Three things only, and she says \"three things only\" before naming them. The colour code is real but it belongs to bench two, one stage later, and the Saturday sale is real but it is decided at the very end by a coordinator. Both wrong options are made entirely of true statements filed at the wrong bench — which is the characteristic mistake in this part, and the reason a note that records WHEN something was said beats a note that only records what.",
+    },
+    {
+      id: "ls1-information-q3",
+      segmentId: "ls1-information-seg-1",
+      stem: "What does an amber code mean?",
+      options: [
+        "The bicycle needs cleaning and adjustment only",
+        "The bicycle needs parts the workshop already keeps in stock",
+        "The bicycle needs a part that would have to be bought",
+        "The bicycle's frame is cracked and it will be scrapped",
+      ],
+      answer: 1,
+      explanation:
+        "Amber sits between the other two: green is cleaning and adjustment, red is a part that has to be bought and therefore needs a coordinator's decision first. A three-way classification spoken aloud in one breath is one of the two things this part is built to test, and the trap is that all three colours are defined in the same twenty seconds, in order, so the definitions blur together unless you write the colour beside its meaning as it arrives.",
+    },
+    {
+      id: "ls1-information-q4",
+      segmentId: "ls1-information-seg-1",
+      stem: "In what order should the repairs themselves be done?",
+      options: [
+        "Brakes first, then the wheels, then the drivetrain, then the seat",
+        "The wheels first, then the brakes, then the drivetrain, then the seat and handlebars",
+        "The drivetrain first, then the brakes, then the wheels",
+        "Whatever is most obviously broken, in any order that suits you",
+      ],
+      answer: 1,
+      explanation:
+        "Outward from the wheels: tyres and tubes, brakes, drivetrain, seat and handlebars. She also gives the reason, which is the part worth holding on to — a brake set before the wheel is trued has to be set twice — and the reason is what makes the first option identifiable as the reversal it is. When a talk explains WHY an order is what it is, the explanation is usually there because a question is coming.",
+    },
+    {
+      id: "ls1-information-q5",
+      segmentId: "ls1-information-seg-1",
+      stem: "What happens to a bicycle that fails the safety check?",
+      options: [
+        "It is scrapped, because it has already had its turn at the repair bench",
+        "It goes back to the repair bench and keeps the colour code it was given",
+        "It goes back to assessment and is given a new colour code",
+        "It goes back to intake and is issued with a new tag",
+      ],
+      answer: 1,
+      explanation:
+        "Back to bench three, not to bench two, and the code does not change. She states the distinction as a negative — \"not to bench two\" — which is easy to hear as the opposite of what it means if you catch only the bench number. Going back to intake is a real rule in this talk as well, but it applies to an untagged bicycle, not to a failed check. Where a process sends a failure is exactly the kind of thing you can only answer by having followed the shape of it.",
+    },
+    {
+      id: "ls1-information-q6",
+      segmentId: "ls1-information-seg-1",
+      stem: "How do finished bicycles leave the workshop?",
+      options: [
+        "All of them are sold at the Saturday morning sale",
+        "All of them are given away through the two family centres",
+        "Adult bicycles are sold, and children's bicycles are given away",
+        "The volunteer who repaired the bicycle decides which way it goes",
+      ],
+      answer: 2,
+      explanation:
+        "Two routes, split by who the bicycle is for: adult bicycles are sold on Saturday mornings and children's are given away through the family centres. The last option is the one to reject on principle rather than on memory — she says twice that a coordinator makes this decision and that it is not the volunteers' to make. Sales and gifts are also connected: the Saturday money is what fills the parts drawers, which is why an amber bicycle costs the workshop nothing extra and a red one has to be approved.",
+    },
+  ],
+};
+
 /** Words in one turn, counted the same way the content harness counts them. */
 function words(text: string): number {
   return text.trim().split(/\s+/).length;
@@ -777,6 +980,7 @@ function estimatedMinutes(parts: CelpipListeningPart[]): number {
 const SET_1_PARTS: CelpipListeningPart[] = [
   PROBLEM_SOLVING_PART,
   DAILY_CONVERSATION_PART,
+  INFORMATION_PART,
   NEWS_ITEM_PART,
 ];
 
