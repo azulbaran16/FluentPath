@@ -11,6 +11,18 @@ import { SPEAKING_TASK_PROMPTS } from "./celpip/speaking-prompts.ts";
 
 export type CelpipTaskType = "email" | "survey";
 
+/**
+ * The four CELPIP skills the landing offers.
+ *
+ * Deliberately a SEPARATE union from `CelpipTaskType`, which is the WRITING
+ * task union: that one types the stored writing attempt's `taskType`, whose
+ * literal pair is mirrored in `progress-schema.ts` and — independently — in
+ * `progress-merge.ts`, so widening it would put a live attempt one missed edit
+ * away from being silently deleted by the merge. `CelpipSkill` sits above
+ * `CelpipTaskType` and never reaches a stored shape.
+ */
+export type CelpipSkill = "writing" | "reading" | "listening" | "speaking";
+
 export interface CelpipWordRange {
   min: number;
   max: number;
@@ -58,6 +70,26 @@ export type CelpipSpeakingShape =
   | "difficult-situation"
   | "opinion"
   | "unusual-situation";
+
+/**
+ * The same eight shapes as data, so the landing can report coverage as
+ * "n of 8" without anybody typing 8 — and so adding a ninth shape moves the
+ * denominator on its own.
+ *
+ * Presentation only. This list is NOT mirrored anywhere in the persistence
+ * layer: `CelpipSpeakingAttempt.shape` is a bounded string precisely so that a
+ * shape added here can add a prompt but can never lose a learner's history.
+ */
+export const CELPIP_SPEAKING_SHAPES: CelpipSpeakingShape[] = [
+  "advice",
+  "personal-experience",
+  "describe-scene",
+  "predictions",
+  "compare-persuade",
+  "difficult-situation",
+  "opinion",
+  "unusual-situation",
+];
 
 export interface CelpipSpeakingPrompt {
   id: string;
@@ -133,3 +165,220 @@ export function getSpeakingPrompt(promptId: string): CelpipSpeakingPrompt | unde
 
 export { CELPIP_RUBRIC } from "./celpip/rubric.ts";
 export { CELPIP_SPEAKING_RUBRIC } from "./celpip/rubric-speaking.ts";
+
+/* ------------------------------------------------------------------ *
+ * The section registry (CELPIP-10).
+ *
+ * The ONE place a section's label, blurb, route prefix, card icons and
+ * availability are declared — and availability is DERIVED from the banks
+ * rather than written down: a section is offered when its bank exports at
+ * least one item and reported as not-yet-available when it exports none.
+ *
+ * That is the whole point of this file's role in the phase. The remaining
+ * content lands across a dozen plans against a fixed exam date, and any
+ * plan may be dropped for the calendar. A hand-maintained list of "what
+ * ships" would be one forgotten edit away from lying to a learner who is
+ * planning her preparation around it; a derived one cannot be.
+ * ------------------------------------------------------------------ */
+
+/**
+ * Icon keys the registry hands to the card layer — names, not components.
+ *
+ * This module is loaded directly by `node --experimental-strip-types` in the
+ * verification scripts, so it stays free of React and of lucide. The key ->
+ * component map lives in `src/lib/icons.tsx` with the rest of the
+ * presentation layer, exactly as `curriculum.ts` stays pure data.
+ */
+export type CelpipCardIcon =
+  | "email"
+  | "survey"
+  | "speaking"
+  | "reading"
+  | "listening";
+
+export interface CelpipSectionItem {
+  /** Bank id. The card's href is `${routePrefix}/${id}`. */
+  id: string;
+  title: string;
+  /** One line under the title on the card. */
+  summary: string;
+  /** Bottom-left of the card: "27 min", "30s prep · 90s speaking", … */
+  timing: string;
+  icon: CelpipCardIcon;
+}
+
+/**
+ * A sub-division within a section. Writing has two (the exam's two writing
+ * tasks); every other skill has exactly one. The sections are uneven by
+ * design (D-01) and the UI should not pretend otherwise, so this is a flat
+ * one-level grouping rather than a general nested-tab system.
+ */
+export interface CelpipSectionGroup {
+  key: string;
+  label: string;
+  items: CelpipSectionItem[];
+}
+
+export interface CelpipSectionCoverage {
+  /** Derived: true when the section's groups hold at least one item. */
+  available: boolean;
+  /** Derived from counts this module can see. "" when unavailable. */
+  summary: string;
+  /**
+   * The one hand-written field on a section: a qualitative limitation that a
+   * later plan can correct by editing a single string. Everything else about
+   * coverage is computed. Only meaningful — and only carried — when the
+   * section is available.
+   */
+  caveat?: string;
+}
+
+export interface CelpipSection {
+  skill: CelpipSkill;
+  label: string;
+  blurb: string;
+  /** Route prefix; an item's href is `${routePrefix}/${item.id}`. */
+  routePrefix: string;
+  groups: CelpipSectionGroup[];
+  coverage: CelpipSectionCoverage;
+}
+
+/**
+ * What a bank hands the registry.
+ *
+ * `undefined` means the bank module does not exist yet. A later plan replaces
+ * one `undefined` below with a call that builds one of these — a one-line edit
+ * — and nothing else on the landing changes. Do NOT create empty bank modules
+ * to satisfy the registry: an empty module is a second thing to remember to
+ * delete when a set is dropped, and this registry exists to remove exactly
+ * that class of forgetting.
+ */
+export interface CelpipSectionSource {
+  groups: CelpipSectionGroup[];
+  /** The derived half of the coverage line: what the bank actually holds. */
+  summary: string;
+}
+
+function plural(n: number, noun: string): string {
+  return `${n} ${noun}${n === 1 ? "" : "s"}`;
+}
+
+const WRITING_CARD_ICON: Record<CelpipTaskType, CelpipCardIcon> = {
+  email: "email",
+  survey: "survey",
+};
+
+function writingSource(): CelpipSectionSource {
+  // Groups come from CELPIP_TASK_META rather than from a second literal list
+  // of writing task types — one mirrored list of that union is already one
+  // too many.
+  const groups = (Object.keys(CELPIP_TASK_META) as CelpipTaskType[]).map(
+    (taskType) => ({
+      key: taskType,
+      label: CELPIP_TASK_META[taskType].label,
+      items: getTasksByType(taskType).map((task) => ({
+        id: task.id,
+        title: task.title,
+        summary: task.scenario,
+        timing: `${task.timeLimitMinutes} min`,
+        icon: WRITING_CARD_ICON[task.taskType],
+      })),
+    }),
+  );
+  const count = groups.reduce((n, g) => n + g.items.length, 0);
+  return {
+    groups,
+    summary: `${plural(count, "prompt")} across the exam's two writing tasks`,
+  };
+}
+
+function speakingSource(): CelpipSectionSource {
+  const items: CelpipSectionItem[] = SPEAKING_PROMPTS.map((prompt) => ({
+    id: prompt.id,
+    title: prompt.title,
+    summary: prompt.scenario,
+    timing: `${prompt.prepSeconds}s prep · ${prompt.responseSeconds}s speaking`,
+    icon: "speaking",
+  }));
+  const shapes = new Set(SPEAKING_PROMPTS.map((p) => p.shape));
+  return {
+    groups: [{ key: "speaking", label: "Speaking", items }],
+    summary: `${plural(items.length, "prompt")} covering ${shapes.size} of the ${
+      CELPIP_SPEAKING_SHAPES.length
+    } exam task shapes`,
+  };
+}
+
+// Reading and Listening have no bank module yet, so their sections read an
+// absent source and report themselves as not yet available. Plan 05 replaces
+// the listening `undefined` and plan 09 the reading one; each is one line.
+const READING_SOURCE: CelpipSectionSource | undefined = undefined;
+const LISTENING_SOURCE: CelpipSectionSource | undefined = undefined;
+
+function section(
+  skill: CelpipSkill,
+  label: string,
+  blurb: string,
+  source: CelpipSectionSource | undefined,
+  caveat?: string,
+): CelpipSection {
+  // Empty groups are dropped, so availability follows the bank's actual
+  // CONTENTS rather than the mere presence of a source: a set that is emptied
+  // or dropped from the phase flips the landing back to "not yet" by itself.
+  const groups = (source?.groups ?? []).filter((g) => g.items.length > 0);
+  const available = groups.length > 0;
+  return {
+    skill,
+    label,
+    blurb,
+    routePrefix: `/celpip/${skill}`,
+    groups,
+    coverage: {
+      available,
+      summary: available ? (source?.summary ?? "") : "",
+      caveat: available ? caveat : undefined,
+    },
+  };
+}
+
+export const CELPIP_SECTIONS: CelpipSection[] = [
+  section(
+    "writing",
+    "Writing",
+    "Task 1 email and Task 2 survey under exam timing, with original model answers and a descriptor self-check.",
+    writingSource(),
+  ),
+  section(
+    "reading",
+    "Reading",
+    "The exam's reading parts against the clock, with an answer key that explains why each answer is the answer.",
+    READING_SOURCE,
+  ),
+  section(
+    "listening",
+    "Listening",
+    "Spoken sets you hear once, with the questions revealed only after playback — as in the exam.",
+    LISTENING_SOURCE,
+  ),
+  section(
+    "speaking",
+    "Speaking",
+    "Timed prompts with a silent preparation window, in-browser recording, and a self-evaluation.",
+    speakingSource(),
+    "Your recording plays back in this browser and is never uploaded — only the timings and your own self-check are saved to your account.",
+  ),
+];
+
+export function getSection(skill: CelpipSkill): CelpipSection | undefined {
+  return CELPIP_SECTIONS.find((s) => s.skill === skill);
+}
+
+/** Sections whose banks actually hold something. */
+export function availableSections(): CelpipSection[] {
+  return CELPIP_SECTIONS.filter((s) => s.coverage.available);
+}
+
+/** Sections that do not ship yet — named out loud rather than hidden. */
+export function pendingSections(): CelpipSection[] {
+  return CELPIP_SECTIONS.filter((s) => !s.coverage.available);
+}
