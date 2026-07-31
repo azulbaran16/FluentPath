@@ -269,11 +269,203 @@ const CORRESPONDENCE_PART: CelpipReadingPart = {
 };
 
 /**
+ * Part 3 shape: Reading for Information — 9 minutes, nine questions, no blanks.
+ *
+ * The one reading part with no drop-down blanks, and the one that tests
+ * INFERENCE as much as detail. Its signature difficulty is the "the passage does
+ * not say" option, which is why two questions here carry that option and one of
+ * them has it as the key. **A not-stated option that is never the answer teaches
+ * the learner to ignore it, which is precisely the wrong lesson** — she would
+ * then meet it on the day having trained herself to discount the very option the
+ * exam is testing her on. Where it is not the key, the explanation names the
+ * section that states the fact; where it is, the explanation names what would
+ * have had to appear for it to be wrong.
+ *
+ * The passage is presented in LABELLED SECTIONS, as the real thing is, so a
+ * question can ask which part of the text carries something without asking her
+ * to count paragraphs.
+ *
+ * NOT ADAPTED FROM A LISTENING SCRIPT, and that was a live temptation with six
+ * finished listening parts sitting in the next file. A spoken talk and an
+ * information text read differently — a talk repeats itself, signposts itself
+ * and carries its speaker's voice — and reusing one as the other would blunt
+ * exactly the format fidelity D-07 is buying. Recorded here so the decision is
+ * on the record rather than rediscovered under time pressure.
+ */
+const INFORMATION_PART: CelpipReadingPart = {
+  id: "rs1-information",
+  kind: "information",
+  title: "Visitor notes: the Kettle Bend Woollen Mill",
+  minutes: 9,
+  instructions:
+    "Read the notes below and answer the nine questions that follow. Some questions ask what the text states; others ask what follows from it. One of the answers offered may be that the text does not say — read carefully before you accept or reject it.",
+  passage: {
+    title: "The Kettle Bend Woollen Mill — notes for visitors",
+    paragraphs: [
+      "The Kettle Bend Woollen Mill is a restored nineteenth-century mill on the Little Kettle River, open to the public from May to October and on winter weekends. The notes below cover its working history, what can be seen inside it today, and how to arrange a visit or a research request.",
+    ],
+    sections: [
+      {
+        label: "A. The years of work",
+        paragraphs: [
+          "The mill was built in 1867 by the Ransome family, who ran it for three generations. Water drawn from the Little Kettle River turned the wheel that drove the carding and spinning machinery, and a small dam upstream held back enough water to keep the floor running through the drier weeks of late summer. At its busiest, in the years around 1910, the mill employed about a hundred and forty people, most of them women from Kettle Bend and the farms around it.",
+          "Production ended in 1954, when the company that had bought the firm from the family moved its manufacturing to a larger plant in the west. The building then stood empty. The township bought it in 1986, and the first rooms opened to visitors five years later.",
+        ],
+      },
+      {
+        label: "B. What is open to visitors",
+        paragraphs: [
+          "The ground floor is the mill's working floor. It holds the carding machines, four spinning frames and one of the original looms, all restored to running order. Two of the machines are run for visitors on demonstration days, which fall on the first Saturday of each month from May to October.",
+          "The upper floor holds the pattern room, where the mill's designs were drawn and kept. It is reached by the original stair, which is steep and narrow. A lift was added in 2019; it serves the ground floor and the basement, where the café and the shop are, but it does not reach the upper floor. Photography without flash is welcome anywhere in the building.",
+        ],
+      },
+      {
+        label: "C. Visiting",
+        paragraphs: [
+          "The mill is open Wednesday to Sunday from ten until four between May and October, and on Saturdays and Sundays only for the rest of the year. Admission is by donation, and eight dollars a visitor is suggested.",
+          "The site has no parking of its own. Visitors leave their cars in the municipal lot on Mill Street, about five minutes' walk away, and the county bus on route 12 stops at the corner of Mill and Draper. Groups of ten or more should write ahead, as the working floor holds no more than twenty-five people at a time.",
+        ],
+      },
+      {
+        label: "D. Volunteering",
+        paragraphs: [
+          "Around sixty volunteers keep the mill open, and the site could not run without them. General training is offered twice a year, in March and in September, and runs over four evenings; volunteers are then asked for one shift a month.",
+          "Anyone who wishes to join the team that runs the machines on demonstration days completes a further year of training alongside an experienced operator. That team is held at eight people, so there is usually a wait.",
+        ],
+      },
+      {
+        label: "E. The archive",
+        paragraphs: [
+          "The mill's records were kept when the machinery was sold, and they now form the archive: payroll books covering most years between 1871 and 1954, order books, pattern sheets, and something over four thousand photographs. The archive room is open by appointment on Thursdays.",
+          "Written enquiries are answered within three weeks, and copies can be supplied for private study at cost. Anyone intending to publish an image must also complete a permission form, which the archivist sends on request. The Ransome family's personal papers are not held here; they were given to the provincial archives in 1974.",
+        ],
+      },
+    ],
+  },
+  questions: [
+    {
+      id: "rs1-info-q1",
+      stem: "According to the notes, what brought the mill's working life to an end?",
+      options: [
+        "The river could no longer drive the machinery",
+        "The company that owned it moved production elsewhere",
+        "The township could not afford to keep it running",
+        "The building was damaged and never repaired",
+      ],
+      answer: 1,
+      explanation:
+        "Section A says production ended in 1954 \"when the company that had bought the firm from the family moved its manufacturing to a larger plant in the west.\" The river and the dam appear in the paragraph above that one, but as an explanation of how the mill worked rather than of why it stopped. The township does not appear until 1986, thirty-two years after the closure, so it cannot be the cause of it — a date is often the fastest way to reject an option in this part.",
+    },
+    {
+      id: "rs1-info-q2",
+      stem: "In which year did the mill first open to visitors?",
+      options: ["1954", "1986", "1991", "2019"],
+      answer: 2,
+      explanation:
+        "The notes never print this year, and that is deliberate: section A says the township bought the building in 1986 and that the first rooms opened \"five years later.\" Adding those together is the whole question. 1986 is the purchase, 1954 the closure, and 2019 the year the lift was installed — every wrong option is a real date from the text, put in front of you to see whether you took the nearest number or the right one.",
+    },
+    {
+      id: "rs1-info-q3",
+      stem: "Why did the Ransome family choose Kettle Bend as the site for the mill?",
+      options: [
+        "Because the family already owned land along the river",
+        "Because the river could be relied on to drive the machinery all year",
+        "Because the railway reached the town in the same year",
+        "The passage does not say",
+      ],
+      answer: 3,
+      explanation:
+        "This is the not-stated answer, and the second option is what makes it hard: section A does say the river drove the machinery and that a dam kept the floor running through the drier weeks. But that is an account of how the mill worked once it was there, not of why the site was chosen — the text never gives a reason for the choice at all. For this option to be wrong, the notes would have to contain a sentence about the family's decision, of the form \"they built here because…\" — and no sentence anywhere in the five sections does that. Land ownership and the railway are never mentioned in any form.",
+    },
+    {
+      id: "rs1-info-q4",
+      stem: "A visitor who cannot manage stairs would be unable to see —",
+      options: ["the pattern room", "the carding machines", "the café and the shop", "the looms"],
+      answer: 0,
+      explanation:
+        "Section B has to be read as a whole for this one. The pattern room is on the upper floor, the upper floor is reached by the original stair, and the lift — which reaches the ground floor and the basement — does not go there. The carding machines and the looms are on the ground floor and the café and shop are in the basement, so the lift covers all three. Nothing in the text says the pattern room is closed; it says how it is reached, and the consequence is left to you.",
+    },
+    {
+      id: "rs1-info-q5",
+      stem: "When are the machines run for visitors?",
+      options: [
+        "On every day the mill is open",
+        "On the first Saturday of each month from May to October",
+        "At weekends throughout the year",
+        "The passage does not say",
+      ],
+      answer: 1,
+      explanation:
+        "Section B states it exactly: demonstration days \"fall on the first Saturday of each month from May to October.\" The last option is offered because this part always offers it, and here it is simply wrong — the fact is on the page. The third option borrows the winter opening hours from section C, which is a different fact about a different thing; noticing that a plausible detail came from the wrong section is most of the work in this part.",
+    },
+    {
+      id: "rs1-info-q6",
+      stem: "What do the notes say about parking?",
+      options: [
+        "There is a free lot at the mill itself",
+        "Parking is covered by the suggested donation",
+        "Visitors use a municipal lot a short walk away",
+        "There is nowhere to leave a car near the site",
+      ],
+      answer: 2,
+      explanation:
+        "Section C says the site has no parking of its own and that visitors use the municipal lot on Mill Street, about five minutes' walk away. The first and last options are the two opposite over-readings of the same sentence — one ignores the first half, the other ignores the second. The donation is mentioned in the paragraph just above, and attaching it to the parking is the kind of join the text never makes.",
+    },
+    {
+      id: "rs1-info-q7",
+      stem: "What is required of a volunteer who wants to join the demonstration team?",
+      options: [
+        "A further year of training alongside an experienced operator",
+        "Previous experience of working with textile machinery",
+        "Two shifts a month rather than one",
+        "The passage does not say",
+      ],
+      answer: 0,
+      explanation:
+        "Section D states the requirement plainly, so the not-stated option is wrong here — and it is worth noticing why it is tempting: the section also says the team is capped at eight and that there is usually a wait, which sounds like a further condition and is not one. Previous experience is exactly the sort of thing such a team might ask for, and the text never asks for it; the monthly shift is one, and that figure belongs to volunteering in general.",
+    },
+    {
+      id: "rs1-info-q8",
+      stem: "Someone who wants to reproduce one of the mill's photographs in a book must —",
+      options: [
+        "apply to the archive that holds the Ransome family's papers",
+        "complete a permission form as well as requesting the copy",
+        "visit on a Thursday and collect the copy the same day",
+        "allow three weeks after publication",
+      ],
+      answer: 1,
+      explanation:
+        "Section E separates two things that are easy to run together: copies can be supplied for private study at cost, and publishing an image \"must also\" involve a permission form. The word doing the work is \"also.\" The Ransome papers went to the provincial archives and are a different collection entirely; Thursday is when the archive room is open by appointment, which is not the same as a same-day service; and the three weeks is the answering time for an enquiry, not a wait after publication.",
+    },
+    {
+      id: "rs1-info-q9",
+      stem: "Which of these best describes how the mill is run today?",
+      options: [
+        "As a working factory that also admits visitors",
+        "As a private museum funded by its admission charges",
+        "As an archive with a small display area attached",
+        "As a publicly owned site that depends heavily on volunteers",
+      ],
+      answer: 3,
+      explanation:
+        "No single sentence says this; it is assembled from three. The township bought the building (section A), admission is by donation rather than a charge (section C), and about sixty volunteers keep it open, without whom \"the site could not run\" (section D). Production ended in 1954, so nothing is manufactured there now — the machines are run for visitors, which is a demonstration and not a factory. And the archive is one room of a building whose ground and upper floors are given to the machinery, so calling it an archive with a display attached inverts the proportions the notes describe.",
+    },
+  ],
+};
+
+/**
  * The set's parts, IN EXAM ORDER — see the warning in the file header. This is
  * not the order they were authored in and it is not append-only: the diagram
- * part belongs between these two, and viewpoints after them.
+ * part belongs BETWEEN these two, and viewpoints after them.
+ *
+ * THE SET'S TOTAL ALLOWANCE IS NOT WRITTEN DOWN ANYWHERE. `CelpipReadingSet`
+ * carries no `timeLimitMinutes` field on purpose (see the type in
+ * `../celpip.ts`): `readingSetMinutes` sums these parts' own `minutes`, so the
+ * total cannot be typed twice and cannot drift from the parts it describes. It
+ * reads 20 today and reaches the exam's 39 the moment plan 10 lands the other
+ * two — with no edit here.
  */
-const SET_1_PARTS: CelpipReadingPart[] = [CORRESPONDENCE_PART];
+const SET_1_PARTS: CelpipReadingPart[] = [CORRESPONDENCE_PART, INFORMATION_PART];
 
 export const READING_SET_1: CelpipReadingSet = {
   id: "reading-set-1",
