@@ -5,8 +5,8 @@
 // This is the single source of truth for CELPIP writing content.
 // ───────────────────────────────────────────────────────────
 
-import { EMAIL_TASKS } from "./celpip/tasks-email";
-import { SURVEY_TASKS } from "./celpip/tasks-survey";
+import { EMAIL_TASKS } from "./celpip/tasks-email.ts";
+import { SURVEY_TASKS } from "./celpip/tasks-survey.ts";
 
 export type CelpipTaskType = "email" | "survey";
 
@@ -75,4 +75,4 @@ export function getTasksByType(taskType: CelpipTaskType): CelpipWritingTask[] {
   return CELPIP_TASKS.filter((t) => t.taskType === taskType);
 }
 
-export { CELPIP_RUBRIC } from "./celpip/rubric";
+export { CELPIP_RUBRIC } from "./celpip/rubric.ts";
