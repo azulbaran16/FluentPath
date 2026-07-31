@@ -1,12 +1,32 @@
 import type { Metadata } from "next";
 import { CelpipLanding } from "@/components/celpip/CelpipLanding";
 import { JsonLd } from "@/components/JsonLd";
-import { SkillIcon } from "@/lib/icons";
+import { availableSections, pendingSections } from "@/lib/celpip";
+import { CelpipIcon } from "@/lib/icons";
 import { absoluteUrl } from "@/lib/site";
 
-const TITLE = "CELPIP Writing Practice — Free Exam Simulator";
-const DESCRIPTION =
-  "Practice CELPIP Writing Task 1 (email) and Task 2 (survey) under real exam timing, then self-check against original model answers and descriptor-based rubrics. Free, no account required.";
+// Every claim this page makes about what CELPIP practice exists is read off
+// the section registry, which reads it off the content banks.
+//
+// Four strings here used to say "Writing" — the metadata title, the
+// description, the h1 and the JSON-LD — and all four went stale the moment a
+// second skill shipped. The learner reading this has an exam date and is
+// planning her preparation around what the page says exists, so an overclaim
+// costs her real time. Deriving the claims means a set that never ships, or is
+// dropped for the calendar, cannot leave a false sentence behind.
+
+const AVAILABLE = availableSections();
+const PENDING = pendingSections();
+
+function joinWords(words: string[]): string {
+  if (words.length <= 1) return words[0] ?? "";
+  return `${words.slice(0, -1).join(", ")} and ${words[words.length - 1]}`;
+}
+
+const SKILLS = joinWords(AVAILABLE.map((s) => s.label));
+
+const TITLE = "CELPIP Practice — Free Exam Simulator";
+const DESCRIPTION = `Practice CELPIP ${SKILLS} under real exam timing, with original prompts and descriptor-based self-checks — no automated scoring pretending to be the real thing. Free, no account required.`;
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -22,17 +42,19 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// Full landing (plan 05): compact hero, Task 1/Task 2 tabs + card grids,
-// attempt history, and a mobile desktop-recommendation notice — all the
-// interactive body lives in CelpipLanding, a client component.
+// Compact hero + derived coverage line; the interactive body (skill tabs,
+// card grids and the cross-skill attempt history) lives in CelpipLanding, a
+// client component.
 export default function CelpipPage() {
   const learningResource = {
     "@context": "https://schema.org",
     "@type": "LearningResource",
-    name: "CELPIP Writing Practice",
+    name: "CELPIP Practice",
     description: DESCRIPTION,
     learningResourceType: "Interactive practice",
-    teaches: "CELPIP Writing",
+    // Names only the skills whose banks are non-empty (T-02.1-10): the public
+    // structured data must not claim coverage the app does not have.
+    teaches: AVAILABLE.map((section) => `CELPIP ${section.label}`),
     inLanguage: "en",
     isAccessibleForFree: true,
     url: absoluteUrl("/celpip"),
@@ -51,16 +73,30 @@ export default function CelpipPage() {
             color: "var(--sky)",
           }}
         >
-          <SkillIcon skill="writing" className="h-6 w-6" />
+          <CelpipIcon className="h-6 w-6" />
         </span>
         <div>
           <h1 className="font-display text-2xl font-semibold sm:text-3xl">
-            CELPIP Writing Practice
+            CELPIP Practice
           </h1>
           <p className="max-w-2xl text-sm text-muted">
-            Free, timed practice for CELPIP Writing Task 1 (email) and Task 2
-            (survey) — original prompts, model answers, and a self-check
-            rubric. No account needed.
+            Free, timed practice in the shape of the real exam — original
+            prompts and a self-check rubric, no account needed.
+          </p>
+          <p className="mt-2 max-w-2xl text-xs text-muted">
+            <span className="font-semibold text-ink-soft">Available now:</span>{" "}
+            {AVAILABLE.map((section) => (
+              <span key={section.skill}>
+                {section.label} — {section.coverage.summary}.{" "}
+              </span>
+            ))}
+            {PENDING.length > 0 && (
+              <>
+                <span className="font-semibold text-ink-soft">Not yet:</span>{" "}
+                {joinWords(PENDING.map((section) => section.label))} — those
+                sections are not built yet.
+              </>
+            )}
           </p>
         </div>
       </header>
