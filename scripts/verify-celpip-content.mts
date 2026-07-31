@@ -67,7 +67,18 @@ import {
   type CelpipListeningPartKind,
 } from "../src/lib/celpip.ts";
 
-// Reading   (plan 02.1-07) — append its bank import here.
+// Reading (plan 02.1-09)
+import {
+  CELPIP_READING_PART_KINDS,
+  READING_SETS,
+  getReadingSet,
+  readingPartItemCount,
+  readingPartKindLabel,
+  readingSetItemCount,
+  readingSetMinutes,
+  type CelpipReadingBlankText,
+  type CelpipReadingPartKind,
+} from "../src/lib/celpip.ts";
 
 /* ------------------------------------------------------------------ *
  * Shared harness. Every group below uses these and nothing else.
@@ -716,8 +727,368 @@ ok(
 );
 
 /* ================================================================== *
- * READING (plan 02.1-07) appends below.
+ * READING — set bank (plan 02.1-09)
  * ================================================================== */
+
+/**
+ * The confirmed shape of each reading part: its allowance in minutes, how many
+ * plain comprehension questions it carries, and how many drop-down blanks.
+ *
+ * Every figure is CONFIRMED against the beta user's own official format
+ * material rather than estimated from prep sites, which is why they are pinned
+ * here rather than merely bounded. A part that drifts from its row is a defect
+ * and not a judgement call: the item split is what makes the rehearsal feel like
+ * the test, and the blank count in particular is the difference between meeting
+ * the drop-down type in the position the exam puts it and meeting it for the
+ * first time on the day.
+ *
+ * A total `Record` over the union, so a fifth part kind fails `npx tsc --noEmit`
+ * here rather than shipping unchecked.
+ */
+const READING_PART_SHAPE: Record<
+  CelpipReadingPartKind,
+  { minutes: number; questions: number; blanks: number }
+> = {
+  correspondence: { minutes: 11, questions: 6, blanks: 5 },
+  diagram: { minutes: 8, questions: 3, blanks: 5 },
+  information: { minutes: 9, questions: 9, blanks: 0 },
+  viewpoints: { minutes: 11, questions: 5, blanks: 5 },
+};
+
+group("reading: the bank is structurally sound");
+
+const readingSetIds = READING_SETS.map((s) => s.id);
+ok("every reading set id is non-empty", readingSetIds.every(filled));
+ok(
+  "no duplicate reading set id",
+  duplicates(readingSetIds).length === 0,
+  duplicates(readingSetIds).join(", "),
+);
+ok(
+  "getReadingSet resolves every id in the bank to its own set",
+  READING_SETS.every((s) => getReadingSet(s.id) === s),
+);
+ok(
+  "getReadingSet of an id that is not in the bank is undefined",
+  getReadingSet("reading-does-not-exist") === undefined,
+);
+
+const allReadingParts = READING_SETS.flatMap((s) => s.parts);
+const allReadingQuestions = allReadingParts.flatMap((p) => p.questions);
+const allReadingBlanks = allReadingParts.flatMap((p) => p.blankText?.blanks ?? []);
+
+const readingPartIds = allReadingParts.map((p) => p.id);
+ok("every reading part id is non-empty", readingPartIds.every(filled));
+ok(
+  "no duplicate reading part id",
+  duplicates(readingPartIds).length === 0,
+  duplicates(readingPartIds).join(", "),
+);
+
+for (const set of READING_SETS) {
+  ok(`${set.id}: has a title`, filled(set.title));
+  ok(`${set.id}: holds at least one part`, set.parts.length > 0);
+
+  const kinds = set.parts.map((p) => p.kind);
+  ok(
+    `${set.id}: every part kind is one of the exam's four`,
+    kinds.every((k) => CELPIP_READING_PART_KINDS.includes(k)),
+    kinds.join(", "),
+  );
+  ok(
+    `${set.id}: no part kind appears twice in one set`,
+    new Set(kinds).size === kinds.length,
+    kinds.join(", "),
+  );
+  // NOT asserted: that a set covers all four. Set 1 is authored across two
+  // plans, so a coverage assertion would fail for the whole of plan 09 and get
+  // disabled rather than fixed — which is how a gate becomes decoration. The
+  // kinds present are REPORTED in the summary instead, exactly as the listening
+  // group reports its own, and the landing derives its coverage line from the
+  // same data.
+  //
+  // ORDER, however, IS asserted, and it is not the same property as coverage.
+  // This set ships parts 1 and 3 first, so its array is a partial one with a
+  // hole in the middle: a later plan that APPENDS the diagram rather than
+  // inserting it would run the exam's part 3 before its part 2, and nothing
+  // else in the build would notice. A SUBSEQUENCE test allows the set to be
+  // missing parts — it will be, for most of this phase — while requiring the
+  // ones it has to run in the exam's own order.
+  const examOrder = CELPIP_READING_PART_KINDS.filter((k) => kinds.includes(k));
+  ok(
+    `${set.id}: its parts run in the exam's own order`,
+    kinds.join(">") === examOrder.join(">"),
+    `${kinds.join(" > ")}   exam order: ${examOrder.join(" > ")}`,
+  );
+
+  // T-02.1-39, AND THE ONE INVARIANT PLAN 08 COULD NOT GATE ITSELF because
+  // gating it needed a bank to gate.
+  //
+  // Question ids and blank ids are the keys of ONE answers map on the stored
+  // attempt (`CelpipReadingAttempt.answers`), so a blank id that collides with a
+  // question id — even across two different parts of the same set — silently
+  // overwrites one of the two answers and mis-scores the sheet. The learner sees
+  // a score that is wrong by one and no error anywhere. This is the reason the
+  // ids carry a per-part token; the assertion is what makes the convention a
+  // constraint.
+  const itemIds = [
+    ...set.parts.flatMap((p) => p.questions.map((q) => q.id)),
+    ...set.parts.flatMap((p) => (p.blankText?.blanks ?? []).map((b) => b.id)),
+  ];
+  ok(`${set.id}: every question id and blank id is non-empty`, itemIds.every(filled));
+  ok(
+    `${set.id}: no id is shared between two items anywhere in the set, blanks included`,
+    duplicates(itemIds).length === 0,
+    duplicates(itemIds).join(", "),
+  );
+
+  // The set carries NO `timeLimitMinutes` field — `readingSetMinutes` derives
+  // the total from the parts, so it cannot be typed twice and drift from them.
+  // Asserted against a sum computed here rather than against a stored number,
+  // so the derivation itself is what is being checked.
+  ok(
+    `${set.id}: its total allowance is the sum of its parts' own minutes`,
+    readingSetMinutes(set) === set.parts.reduce((n, p) => n + p.minutes, 0),
+    `${readingSetMinutes(set)} vs ${set.parts.reduce((n, p) => n + p.minutes, 0)}`,
+  );
+  ok(
+    `${set.id}: its item count is the sum of its parts' questions and blanks`,
+    readingSetItemCount(set) ===
+      set.parts.reduce((n, p) => n + p.questions.length + (p.blankText?.blanks.length ?? 0), 0),
+    String(readingSetItemCount(set)),
+  );
+}
+
+group("reading: every part has the exam's own shape");
+
+for (const part of allReadingParts) {
+  const shape = READING_PART_SHAPE[part.kind];
+  const blanks = part.blankText?.blanks ?? [];
+
+  ok(`${part.id}: has a title`, filled(part.title));
+  ok(
+    `${part.id}: holds at least one item`,
+    readingPartItemCount(part) > 0,
+    `${part.questions.length} questions, ${blanks.length} blanks`,
+  );
+  ok(
+    `${part.id}: has the ${shape.minutes}-minute allowance a "${part.kind}" part has`,
+    part.minutes === shape.minutes,
+    `${part.minutes} min, exam allows ${shape.minutes}`,
+  );
+  ok(
+    `${part.id}: carries the ${shape.questions} questions a "${part.kind}" part carries`,
+    part.questions.length === shape.questions,
+    `${part.questions.length} questions, exam uses ${shape.questions}`,
+  );
+  ok(
+    `${part.id}: carries the ${shape.blanks} drop-down blanks a "${part.kind}" part carries`,
+    blanks.length === shape.blanks,
+    `${blanks.length} blanks, exam uses ${shape.blanks}`,
+  );
+  // `CelpipObjectiveQuestion` is shared with Listening, so it carries an
+  // optional `segmentId` that means nothing here — a reading part has no
+  // segments for it to name. A stray one is a copy-paste from the listening
+  // bank, which is exactly the direction D-07 says content must not travel.
+  ok(
+    `${part.id}: no question names an audio segment`,
+    part.questions.every((q) => q.segmentId === undefined),
+    part.questions
+      .filter((q) => q.segmentId !== undefined)
+      .map((q) => `${q.id}:${q.segmentId}`)
+      .join(", "),
+  );
+  // A part may legitimately carry more than one stimulus — correspondence is an
+  // email plus a reply with blanks — but a part carrying NONE renders as a
+  // heading with questions about nothing.
+  ok(
+    `${part.id}: carries at least one stimulus to read`,
+    part.passage !== undefined || part.diagram !== undefined || part.blankText !== undefined,
+  );
+
+  if (part.diagram) {
+    ok(`${part.id}: its diagram has a caption`, filled(part.diagram.caption));
+    ok(
+      `${part.id}: its diagram has at least one row`,
+      part.diagram.rows.length > 0,
+      String(part.diagram.rows.length),
+    );
+    ok(
+      `${part.id}: every diagram row has a label and at least one cell`,
+      part.diagram.rows.every((r) => filled(r.label) && r.cells.length > 0),
+    );
+  }
+}
+
+group("reading: every question and every blank can be answered and explained");
+
+/**
+ * The shared half of a gradable item. A blank and a question differ only in
+ * what supplies the stem, so everything about the OPTIONS and the KEY is
+ * checked by one function against both — the same reasoning that put them in
+ * one answers map in the first place. A second copy of these four assertions is
+ * a second place for one of them to be quietly relaxed.
+ */
+function checkGradable(id: string, options: string[], answer: number, explanation: string) {
+  ok(
+    `${id}: offers at least two options, all of them non-empty`,
+    options.length >= 2 && options.every(filled),
+    JSON.stringify(options),
+  );
+  ok(
+    `${id}: offers no duplicate option`,
+    new Set(options.map((o) => o.trim().toLowerCase())).size === options.length,
+    JSON.stringify(options),
+  );
+  // An out-of-range key marks every answer wrong forever and nothing in the
+  // build would notice: the runner would render four options and score none.
+  ok(
+    `${id}: its answer is a real index into its own options`,
+    inRange(answer, 0, options.length - 1),
+    `answer=${answer} of ${options.length} options`,
+  );
+  // CELPIP-06 asks for per-item explanations, and the results view renders this
+  // unconditionally — an empty one is a visible gap on the page she reads to
+  // find out why she was wrong. On a blank it is doing more work than anywhere
+  // else in the app: it is the only place she is told why an option that read
+  // perfectly well was still wrong.
+  ok(`${id}: carries an explanation`, filled(explanation));
+}
+
+for (const question of allReadingQuestions) {
+  ok(`${question.id}: has a stem`, filled(question.stem));
+  checkGradable(question.id, question.options, question.answer, question.explanation);
+}
+for (const blank of allReadingBlanks) {
+  checkGradable(blank.id, blank.options, blank.answer, blank.explanation);
+}
+
+group("reading: every blank is rendered, and everything rendered is a blank");
+
+// T-02.1-43, in BOTH directions, because the two failures are different and
+// both are silent.
+//
+// A segment naming a blank that does not exist renders as a visible gap marker
+// and can never be answered — the score's denominator counts it, so the sheet is
+// unwinnable by one. A declared blank that no segment references is worse: it is
+// counted, it is graded, and it is NOWHERE ON THE PAGE. She loses a mark on an
+// item she was never shown. Neither is visible to `tsc`, to lint, or to anybody
+// reading the module.
+function checkBlankText(partId: string, blankText: CelpipReadingBlankText) {
+  const declared = blankText.blanks.map((b) => b.id);
+  const referenced = blankText.segments
+    .filter((s): s is { kind: "blank"; blankId: string } => s.kind === "blank")
+    .map((s) => s.blankId);
+
+  const dangling = referenced.filter((id) => !declared.includes(id));
+  ok(
+    `${partId}: every blank named in the text is declared`,
+    dangling.length === 0,
+    dangling.join(", "),
+  );
+
+  const unreferenced = declared.filter((id) => !referenced.includes(id));
+  ok(
+    `${partId}: every declared blank appears in the text`,
+    unreferenced.length === 0,
+    `${unreferenced.join(", ")} — declared, graded, and never rendered`,
+  );
+
+  const twice = declared.filter((id) => referenced.filter((r) => r === id).length > 1);
+  ok(
+    `${partId}: no blank appears in the text more than once`,
+    twice.length === 0,
+    `${twice.join(", ")} — one answers-map key, two selects, one overwriting the other`,
+  );
+
+  // The number a screen reader announces ("Blank 3") is the blank's position in
+  // `blanks`, while its position on the page comes from `segments`. If the two
+  // disagree the labels are shuffled, and a learner using the labels to keep her
+  // place is silently misdirected.
+  ok(
+    `${partId}: the blanks are declared in the order they are read`,
+    referenced.join(">") === declared.join(">"),
+    `read: ${referenced.join(" > ")}\n      declared: ${declared.join(" > ")}`,
+  );
+
+  ok(
+    `${partId}: its text carries prose as well as blanks`,
+    blankText.segments.some((s) => s.kind === "text" && filled(s.text)),
+  );
+}
+
+for (const part of allReadingParts) {
+  if (part.blankText) checkBlankText(part.id, part.blankText);
+}
+
+group("reading: the landing tells the truth about what ships");
+
+const readingSection = getSection("reading");
+ok("the registry still has a reading section", readingSection !== undefined);
+ok(
+  "the reading section is available if and only if the bank holds a set with parts",
+  readingSection !== undefined &&
+    readingSection.coverage.available === allReadingParts.length > 0,
+  `available=${readingSection?.coverage.available} parts=${allReadingParts.length}`,
+);
+if (readingSection?.coverage.available) {
+  ok(
+    "its coverage line counts the part shapes that exist against the exam's four",
+    new RegExp(
+      `\\b${new Set(allReadingParts.map((p) => p.kind)).size} of the ${
+        CELPIP_READING_PART_KINDS.length
+      }\\b`,
+    ).test(readingSection.coverage.summary),
+    readingSection.coverage.summary,
+  );
+  ok(
+    "every set in the bank is offered as an item on the landing",
+    readingSection.groups.flatMap((g) => g.items).length === READING_SETS.length,
+    `${readingSection.groups.flatMap((g) => g.items).length} items vs ${READING_SETS.length} sets`,
+  );
+}
+
+group("reading: the passages do not ride into the page's own HTML");
+
+// The same conjunction the listening group carries, for the same measured
+// reason and against a bigger payload: a resolved set crossing the
+// server/client boundary is serialized into the RSC payload and inlined into the
+// document, which for a reading set means every passage AND the whole answer key
+// in `view-source` before she has read a word. Passing the id is not the
+// property being defended. NOT passing the set is.
+const readingRouteSource = readFileSync(
+  join(
+    import.meta.dirname,
+    "..",
+    "src",
+    "app",
+    "(catalog)",
+    "celpip",
+    "reading",
+    "[setId]",
+    "page.tsx",
+  ),
+  "utf8",
+);
+
+ok(
+  "the reading route hands the runner an id",
+  /<ReadingRunner\s+setId=/.test(readingRouteSource),
+);
+ok(
+  "the reading route never hands the runner a resolved set",
+  !/<ReadingRunner\s[^>]*\bset=\{/.test(readingRouteSource),
+  "a `set={…}` prop is serialized into this page's HTML — pass `setId` instead",
+);
+
+const readingRunnerSource = readFileSync(
+  join(import.meta.dirname, "..", "src", "components", "celpip", "ReadingRunner.tsx"),
+  "utf8",
+);
+ok(
+  "the runner resolves the set itself, on the client",
+  /getReadingSet\(/.test(readingRunnerSource),
+);
 
 /* ------------------------------------------------------------------ *
  * Summary
@@ -753,6 +1124,29 @@ if (LISTENING_SETS.length === 0) {
       )}w (ceiling ${MAX_TURN_WORDS}w)`,
     );
     console.log(`    shapes: ${kinds.map(listeningPartKindLabel).join(", ")}`);
+  }
+}
+
+// REPORTED, not asserted — the same coverage note as the listening group above.
+// Printed on every run so a set stalling at two part shapes is visible rather
+// than merely true.
+if (READING_SETS.length === 0) {
+  console.log("  reading: no sets in the bank");
+} else {
+  for (const set of READING_SETS) {
+    const kinds = set.parts.map((p) => p.kind);
+    console.log(
+      `  reading: ${set.id} — ${kinds.length}/${
+        CELPIP_READING_PART_KINDS.length
+      } part shapes, ${readingSetItemCount(set)} items (${set.parts.reduce(
+        (n, p) => n + p.questions.length,
+        0,
+      )} questions, ${set.parts.reduce(
+        (n, p) => n + (p.blankText?.blanks.length ?? 0),
+        0,
+      )} drop-down blanks), ${readingSetMinutes(set)} min`,
+    );
+    console.log(`    shapes: ${kinds.map(readingPartKindLabel).join(", ")}`);
   }
 }
 

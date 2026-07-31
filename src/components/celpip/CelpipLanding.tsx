@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import {
   CELPIP_SECTIONS,
   getListeningSet,
+  getReadingSet,
   getSection,
   getSpeakingPrompt,
   getTask,
@@ -16,6 +17,7 @@ import {
   type CelpipAttempt,
   type CelpipListeningAttempt,
   type CelpipProgressState,
+  type CelpipReadingAttempt,
   type CelpipSpeakingAttempt,
 } from "@/lib/celpip-progress";
 import { CELPIP_CARD_ICONS } from "@/lib/icons";
@@ -155,6 +157,23 @@ const HISTORY_SOURCES: HistorySource[] = [
         `${formatDuration(attempt.durationSeconds)} used`,
         `${attempt.correct}/${attempt.total} correct`,
         ...(attempt.audioFailed ? ["read, not heard"] : []),
+      ].join(" · "),
+  }),
+  historySource<CelpipReadingAttempt>({
+    skill: "reading",
+    read: (state) => state.readingAttempts,
+    title: (itemId) => getReadingSet(itemId)?.title,
+    // A score out of the set's own total, which counts drop-down blanks
+    // alongside the plain questions because both are graded the same way. The
+    // over-time note is on here for the same reason the listening row carries
+    // "read, not heard": a score from an attempt whose clock ran out is not the
+    // same result, and a row that hid the difference would be the one small lie
+    // on the page whose whole job is honesty.
+    meta: (attempt) =>
+      [
+        `${formatDuration(attempt.durationSeconds)} used`,
+        `${attempt.correct}/${attempt.total} correct`,
+        ...(attempt.outOfTime ? ["ran out of time"] : []),
       ].join(" · "),
   }),
 ];

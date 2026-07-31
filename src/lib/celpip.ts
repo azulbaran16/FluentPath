@@ -735,10 +735,29 @@ function listeningSource(): CelpipSectionSource {
   };
 }
 
-// Reading has no bank module yet, so its section reads an absent source and
-// reports itself as not yet available. Plan 09 replaces this `undefined`; it is
-// one line, exactly as the listening one above it was.
-const READING_SOURCE: CelpipSectionSource | undefined = undefined;
+function readingSource(): CelpipSectionSource {
+  const items: CelpipSectionItem[] = READING_SETS.map((set) => ({
+    id: set.id,
+    title: set.title,
+    // The part SHAPES, never a line of a passage. This string is rendered into
+    // the landing's own HTML, so a summary assembled from the text would put
+    // authored prose — and, one careless edit later, an answer — into the served
+    // document.
+    summary: set.parts.map((part) => readingPartKindLabel(part.kind)).join(" · "),
+    // Both DERIVED from the parts. A reading set carries no stored total, so
+    // there is no second number here to fall out of step with the parts it
+    // describes.
+    timing: `${readingSetMinutes(set)} min · ${plural(readingSetItemCount(set), "question")}`,
+    icon: "reading",
+  }));
+  const kinds = new Set(READING_SETS.flatMap((set) => set.parts).map((p) => p.kind));
+  return {
+    groups: [{ key: "reading", label: "Reading", items }],
+    summary: `${plural(items.length, "set")} covering ${kinds.size} of the ${
+      CELPIP_READING_PART_KINDS.length
+    } exam part shapes`,
+  };
+}
 
 function section(
   skill: CelpipSkill,
@@ -777,7 +796,13 @@ export const CELPIP_SECTIONS: CelpipSection[] = [
     "reading",
     "Reading",
     "The exam's reading parts against the clock, with an answer key that explains why each answer is the answer.",
-    READING_SOURCE,
+    readingSource(),
+    // NO caveat. The one above it and the two below it name a deliberate product
+    // compromise — synthesised audio, a written-out photograph — which is a fact
+    // about the thing itself that no count can express. Reading has none: it is
+    // simply incomplete, and its coverage line already says so in derived
+    // numbers that move on their own as parts land. A hand-written sentence
+    // naming which parts are missing would be stale the day plan 10 commits.
   ),
   section(
     "listening",
