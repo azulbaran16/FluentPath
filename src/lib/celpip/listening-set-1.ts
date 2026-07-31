@@ -32,6 +32,19 @@ import type { CelpipListeningPart, CelpipListeningSet } from "../celpip";
 // That is why a single-speaker news item is still written as a sequence of
 // turns, all attributed to the same reader: the chunking is what protects
 // playback, not the speaker count.
+//
+// WHERE THIS SET'S EXAM-FORMAT FIGURES COME FROM. The part names, the per-part
+// item counts (8 / 5 / 6 / 5 / 8 / 5) and the overall time window are CONFIRMED
+// against the beta user's own official format material, not estimated from prep
+// sites. That distinction is worth recording because the two kinds of number
+// were mixed earlier in this phase: research had to fall back on third-party
+// sites that disagreed with each other about the discussion part — two said
+// eight items, one said roughly two — and the official material settled it at
+// eight. So a part whose item count does not match `LISTENING_ITEM_COUNT` in
+// `scripts/verify-celpip-content.mts` is a defect, not a judgement call. Only
+// STRUCTURE crossed over from that material. No sentence of it is in this file
+// or anywhere else in the app (D-06); every script, stem, option and
+// explanation below is written from scratch.
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
@@ -1147,6 +1160,269 @@ const VIEWPOINTS_PART: CelpipListeningPart = {
   ],
 };
 
+/**
+ * Part 5 shape: Listening to a Discussion.
+ *
+ * THREE speakers, and the part that tests who said what rather than what was
+ * said. Every other part in this set can be answered by somebody who heard the
+ * words and lost track of the mouths; six of the eight questions below cannot.
+ *
+ * THE SPEAKERS NAME EACH OTHER OUT LOUD, ON PURPOSE. In the real exam this part
+ * is a video and the faces do the attributing. Here there is no video, and — the
+ * thing to know before authoring another multi-speaker part — the player shows
+ * NO speaker label while the audio is playing. The name attached to each turn is
+ * a voice key and a TRANSCRIPT label, and the transcript is only reachable after
+ * she has answered (D-04). So a question that asks which of three people said
+ * something is answerable only if the script itself binds each voice to a name.
+ * All three are named aloud inside the first seven turns, each of them either
+ * immediately before or immediately after they first speak, which is how a real
+ * meeting introduces itself when nobody can see the room.
+ *
+ * Genuine cross-talk, not three monologues taking turns: one speaker withdraws
+ * an argument mid-discussion when a number contradicts it, another restates his
+ * remaining point in her own words before building something different on it,
+ * and the proposal that finally carries is not the one the meeting opened with.
+ * A discussion in which nobody moves is a viewpoints part with extra voices.
+ *
+ * The distractors follow the house rule one level up: nearly every wrong option
+ * is a real fact from this discussion attributed to the WRONG SPEAKER, or a real
+ * position held at the wrong point in it. Recognising the content is worth
+ * nothing here; only having tracked the mouth it came out of pays.
+ *
+ * Turns are short by nature in a three-way argument, which is the one way this
+ * part is easier to write safely than the long monologues above it.
+ */
+const DISCUSSION_PART: CelpipListeningPart = {
+  id: "ls1-discussion",
+  kind: "discussion",
+  title: "The six o'clock swim",
+  segments: [
+    {
+      id: "ls1-discussion-seg-1",
+      turns: [
+        {
+          speaker: "Yusra Belkacem",
+          text: "Thanks for coming in early. I want to settle the six o'clock lane swim before the board raises it.",
+        },
+        {
+          speaker: "Yusra Belkacem",
+          text: "Bethan, you have the attendance sheets. What is it averaging now?",
+        },
+        {
+          speaker: "Bethan Cray",
+          text: "Nine, across the last twelve weeks. Two years ago the same mornings averaged eleven.",
+        },
+        {
+          speaker: "Yusra Belkacem",
+          text: "Nine. And we heat the whole hall from half past five, five mornings a week.",
+        },
+        {
+          speaker: "Yusra Belkacem",
+          text: "So I'm proposing we cut it to three mornings. Monday, Wednesday, Friday. Nothing else in the timetable moves.",
+        },
+        {
+          speaker: "Marek Dolinski",
+          text: "I'd fight that, Yusra. The early swimmers are the ones who renew every year without being chased.",
+        },
+        {
+          speaker: "Yusra Belkacem",
+          text: "I knew you would, Marek. Go on.",
+        },
+        {
+          speaker: "Marek Dolinski",
+          text: "Twenty-two of our season tickets belong to people who only ever come before seven.",
+        },
+        {
+          speaker: "Bethan Cray",
+          text: "That's true, and I don't think Yusra is disputing it.",
+        },
+        {
+          speaker: "Yusra Belkacem",
+          text: "I'm not. I'm disputing five mornings of heating for nine people, whoever those nine are.",
+        },
+        {
+          speaker: "Marek Dolinski",
+          text: "Nine is a winter number. Ask me again in May and it will be fifteen.",
+        },
+        {
+          speaker: "Yusra Belkacem",
+          text: "I checked before I called this meeting. October averaged nine. March averaged nine. So did last May.",
+        },
+        {
+          speaker: "Marek Dolinski",
+          text: "Last May as well?",
+        },
+        {
+          speaker: "Yusra Belkacem",
+          text: "Last May as well. I'd have used the seasonal argument myself if the numbers had supported it.",
+        },
+        {
+          speaker: "Marek Dolinski",
+          text: "Then I withdraw it. It was the only real argument I had against losing a day.",
+        },
+        {
+          speaker: "Bethan Cray",
+          text: "Don't withdraw all of it, Marek. Your first point stands, and it's the one that matters.",
+        },
+        {
+          speaker: "Bethan Cray",
+          text: "Your point was that these are habit swimmers. Take Tuesday away and you don't lose Tuesday. You lose the habit.",
+        },
+        {
+          speaker: "Bethan Cray",
+          text: "So keep all five mornings, Yusra, and start them at half past six instead.",
+        },
+        {
+          speaker: "Yusra Belkacem",
+          text: "That saves one hour of heating a day, not two. Half the saving I came in for.",
+        },
+        {
+          speaker: "Bethan Cray",
+          text: "It is. It's also the half nobody has to notice.",
+        },
+        {
+          speaker: "Marek Dolinski",
+          text: "They would notice. But they'd still come, and that is a different complaint.",
+        },
+        {
+          speaker: "Yusra Belkacem",
+          text: "All right. I'll take the later start to the board as a trial, not a decision.",
+        },
+        {
+          speaker: "Yusra Belkacem",
+          text: "Eight weeks. I'll email every season-ticket holder today, so nobody finds out at the door.",
+        },
+        {
+          speaker: "Bethan Cray",
+          text: "I'll have the boiler timer changed. It's set from the office, so it's ten minutes' work.",
+        },
+        {
+          speaker: "Marek Dolinski",
+          text: "And I'll ask them myself, on the poolside, for the first fortnight. Not a form. A question.",
+        },
+        {
+          speaker: "Bethan Cray",
+          text: "And if it hasn't held by March, Yusra's three mornings come back on the table.",
+        },
+      ],
+    },
+  ],
+  questions: [
+    {
+      id: "ls1-discussion-q1",
+      segmentId: "ls1-discussion-seg-1",
+      stem: "Who proposes cutting the early swim to three mornings a week?",
+      options: [
+        "Marek, who teaches the early sessions",
+        "Yusra, who called the meeting",
+        "Bethan, after she has looked at the boiler timer",
+        "The board, which raised it before the meeting",
+      ],
+      answer: 1,
+      explanation:
+        "Yusra proposes it and names the days — Monday, Wednesday, Friday — a few seconds after giving the heating figure. The board is mentioned twice and both times by Yusra herself: once as the thing she wants to settle before the board raises it, and once as where she will take the trial. Neither is the board proposing anything. Bethan does deal with the boiler timer, but at the very end of the meeting and as a job she has taken on, not as a proposal.",
+    },
+    {
+      id: "ls1-discussion-q2",
+      segmentId: "ls1-discussion-seg-1",
+      stem: "What evidence does Marek give that the early swimmers matter to the pool?",
+      options: [
+        "Twenty-two season tickets belong to people who only ever come before seven",
+        "The same mornings averaged eleven swimmers two years ago",
+        "October, March and last May all averaged nine",
+        "The swimmers would still come if the session started half an hour later",
+      ],
+      answer: 0,
+      explanation:
+        "The season-ticket figure is Marek's, and it is the one point of his that survives the whole discussion. Every wrong option is a real number or a real claim from this same conversation belonging to somebody else, or to him at another moment: eleven is Bethan's, read off the attendance sheets; the three months that all averaged nine are Yusra's, and she uses them against him; and the swimmers still coming after a later start is Marek's own line, but he says it near the end and about a proposal that does not exist yet when this question's answer is spoken.",
+    },
+    {
+      id: "ls1-discussion-q3",
+      segmentId: "ls1-discussion-seg-1",
+      stem: "Which speaker changes position during the discussion, and what changes it?",
+      options: [
+        "Marek, when he hears that last May averaged nine as well",
+        "Yusra, when she hears that twenty-two season tickets are at stake",
+        "Bethan, when she hears that the saving would only be one hour",
+        "Nobody: all three of them end where they began",
+      ],
+      answer: 0,
+      explanation:
+        "Marek claims nine is a winter number and that May would be fifteen; Yusra answers that she checked October, March and last May and all three averaged nine. He repeats the month back as a question — \"last May as well?\" — and then says he withdraws it. That repeated question is the moment to listen for in this part: somebody asking for a fact a second time is usually about to give something up. Yusra never moves on the heating and Bethan holds one position from her first sentence to her last.",
+    },
+    {
+      id: "ls1-discussion-q4",
+      segmentId: "ls1-discussion-seg-1",
+      stem: "Bethan tells Marek not to withdraw his whole case. Which part of it does she keep?",
+      options: [
+        "That the low figure is a winter figure and the summer will lift it",
+        "That the early swimmers come out of habit, so losing a morning costs more than a morning",
+        "That twenty-two season tickets settle the question on their own",
+        "That the board should not be told anything until the trial is finished",
+      ],
+      answer: 1,
+      explanation:
+        "She restates his first point in her own words before doing anything with it — take Tuesday away and you do not lose Tuesday, you lose the habit — and then builds a different proposal on top of it. The seasonal argument is the part he withdrew and she lets it go with him. Nobody says the season tickets settle anything, and nobody suggests keeping the board in the dark: Yusra says the opposite, that she will take the later start to the board as a trial. Hearing one speaker repeat another's argument back is the hardest thing in this part, because the words arrive in the wrong voice.",
+    },
+    {
+      id: "ls1-discussion-q5",
+      segmentId: "ls1-discussion-seg-1",
+      stem: "What is the early swim averaging now, and what did it average two years ago?",
+      options: [
+        "Nine now, and eleven two years ago",
+        "Eleven now, and nine two years ago",
+        "Nine in winter, and fifteen in May",
+        "Fifteen now, and nine two years ago",
+      ],
+      answer: 0,
+      explanation:
+        "Bethan reads both figures straight off the attendance sheets in one sentence, and Yusra repeats the nine back before building her proposal on it. Fifteen is never a count of anything — it is Marek's prediction for May, and Yusra disposes of it a few turns later with three months that all came in at nine. A number that arrives inside a prediction and a number that arrives inside a record sound identical; only what surrounds them tells you which is which.",
+    },
+    {
+      id: "ls1-discussion-q6",
+      segmentId: "ls1-discussion-seg-1",
+      stem: "Whose proposal do the three of them agree to try?",
+      options: [
+        "Yusra's — three mornings a week, on Monday, Wednesday and Friday",
+        "Bethan's — all five mornings kept, starting half an hour later",
+        "Marek's — the timetable left exactly as it is",
+        "None of theirs: they agree to let the board decide",
+      ],
+      answer: 1,
+      explanation:
+        "Bethan's later start is what carries, and it is worth noticing that the person who proposed it had said almost nothing about the timetable until then. Yusra's three mornings is the proposal the meeting opens with and the one it does not adopt — although Bethan parks it rather than burying it in the last line. Marek argues against a cut but never proposes anything of his own, which is different from proposing that nothing change. And Yusra takes the trial to the board, which is not the same as letting the board decide; she says so in the same sentence, \"as a trial, not a decision\".",
+    },
+    {
+      id: "ls1-discussion-q7",
+      segmentId: "ls1-discussion-seg-1",
+      stem: "Which job does Marek take on before the trial starts?",
+      options: [
+        "Emailing every season-ticket holder",
+        "Getting the boiler timer changed",
+        "Asking the swimmers himself at the poolside for the first fortnight",
+        "Reporting back to the board in March",
+      ],
+      answer: 2,
+      explanation:
+        "Three jobs are handed out in the last half-minute and each one belongs to a different person: Yusra emails the season-ticket holders today, Bethan has the boiler timer changed because it is set from the office and takes ten minutes, and Marek asks the swimmers in person — \"not a form, a question\". March is real, but it is Bethan's fallback date and nobody is given the job of reporting on it. When a discussion ends in a list of tasks, expect to be asked whose is whose, and note the name beside the task rather than the task alone.",
+    },
+    {
+      id: "ls1-discussion-q8",
+      segmentId: "ls1-discussion-seg-1",
+      stem: "What have they agreed will happen if the later start has not worked by March?",
+      options: [
+        "The early swim will close altogether",
+        "The proposal to cut to three mornings comes back on the table",
+        "The six o'clock start returns and the saving is given up",
+        "The board will decide without the three of them",
+      ],
+      answer: 1,
+      explanation:
+        "Bethan says it in the closing line, and she says whose proposal it is — \"Yusra's three mornings\" — which is the detail to hold on to: the idea that lost the argument has been parked, not dropped. Closing the swim is never suggested by anyone. The trial is eight weeks and it goes to the board as a trial, so the board is being asked rather than left to decide on its own. The last thing said in a discussion is very often the thing tested, and it is also what a tired listener stops writing down.",
+    },
+  ],
+};
+
 /** Words in one turn, counted the same way the content harness counts them. */
 function words(text: string): number {
   return text.trim().split(/\s+/).length;
@@ -1167,12 +1443,19 @@ function words(text: string): number {
  * still listening and has not yet been shown a question, and that is a defect no
  * assertion can find because the two numbers would both look reasonable.
  *
- * PROVISIONAL while the set is incomplete, and it MOVES ON ITS OWN the moment a
- * part is appended or removed — including the exam part shapes this set does not
- * carry yet. No count of what exists is written into this comment on purpose:
+ * It MOVES ON ITS OWN the moment a part is appended or removed, and the
+ * derivation is the same whether the set carries one part or every shape the
+ * exam uses. No count of what exists is written into this comment on purpose:
  * coverage is derived from `SET_1_PARTS` everywhere it is reported, on the
  * landing and in the harness summary, and a number repeated in prose is the one
- * that goes stale. The real exam gives roughly 47-55 minutes for all six parts.
+ * that goes stale.
+ *
+ * THE SANITY CHECK, since there is no assertion that can catch a plausible wrong
+ * answer here: the exam itself allows roughly 47-55 minutes for a full six-part
+ * Listening section — a figure confirmed against official format material rather
+ * than taken from a prep site. A full set whose derived limit lands far outside
+ * that window means the DERIVATION is wrong, not the exam. Fix the arithmetic
+ * above; never type a number in below.
  */
 function estimatedMinutes(parts: CelpipListeningPart[]): number {
   const spoken = parts
@@ -1195,6 +1478,7 @@ const SET_1_PARTS: CelpipListeningPart[] = [
   DAILY_CONVERSATION_PART,
   INFORMATION_PART,
   NEWS_ITEM_PART,
+  DISCUSSION_PART,
   VIEWPOINTS_PART,
 ];
 
