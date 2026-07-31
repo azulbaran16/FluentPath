@@ -132,13 +132,17 @@ Plans:
 
 - **Only one set per skill.** One Reading set, one Listening set. A second set of either was never
   authored — she can sit each drill exactly once before the answers are known to her.
+
 - **No recorded or premium-TTS audio.** D-03 stands; Listening is browser speech and sounds it.
   VOICE-01 in the v2 backlog owns the replacement. The data model already takes an optional
   `audioUrl` without migration.
+
 - **No image for Speaking task 3.** The scene is written out. Stated on the landing and in the
   prompt; needs only an optional `sceneImage` field when a genuine original image exists.
+
 - **No automated scoring anywhere** (D-02, deliberate). Reading and Listening self-score against
   objective keys; Speaking and Writing are learner self-evaluation. AI evaluation waits on Phase 5.
+
 - **The browser and phone pass itself.** ~20 entries in `.planning/WINDOWS.md` are variants of
   "nobody has seen this rendered". They were owed to this plan and are still owed.
 
@@ -202,7 +206,7 @@ Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. CELPIP Writing Practice | 6/6 | Complete | 2026-07-28 |
 | 2. Server-Side Progress | 7/7 | Complete | 2026-07-30 |
-| 2.1 CELPIP Remaining Skills | 11/12 | In Progress|  |
+| 2.1 CELPIP Remaining Skills | 12/12 | In Progress|  |
 | 3. Every Scenario Practicable | 0/TBD | Not started | - |
 | 4. Full Curriculum Expansion | 0/TBD | Not started | - |
 | 5. AI Tutor End-to-End | 0/TBD | Not started | - |

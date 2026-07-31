@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02.1
 current_phase_name: celpip-remaining-skills
 status: in-progress
-stopped_at: Completed 02.1-10-PLAN.md
-last_updated: "2026-07-31T11:01:12.162Z"
+stopped_at: Completed 02.1-12-PLAN.md — automated gate PASSED; browser pass (Task 2) outstanding
+last_updated: "2026-07-31T11:16:34.642Z"
 last_activity: 2026-07-31
 last_activity_desc: "02.1-05 executed: the hear-once runner, its route and the news-item part. Nobody has heard it yet."
 progress:
   total_phases: 3
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 25
-  completed_plans: 24
+  completed_plans: 25
 ---
 
 # Project State
@@ -32,7 +32,7 @@ Plan: 12 of 12
 Status: 02.1-05 complete on `main`; Listening is a real section on `/celpip` with one of the six exam part shapes authored. Next action is executing 02.1-06 (set 1's problem-solving and daily-conversation parts — a pure append to `SET_1_PARTS`)
 Last activity: 2026-07-31 — 02.1-05 executed: the hear-once runner, its route and the news-item part. Nobody has heard it yet.
 
-Progress: [██████████] 96% (2 of 6 phases; 18 of 25 plans)
+Progress: [██████████] 100% (2 of 6 phases; 18 of 25 plans)
 
 ## Performance Metrics
 
@@ -76,6 +76,7 @@ Progress: [██████████] 96% (2 of 6 phases; 18 of 25 plans)
 | Phase 02.1 P08 | 74m | 2 tasks | 9 files |
 | Phase 02.1 P09 | ~55min | 3 tasks | 4 files |
 | Phase 02.1 P10 | 40 | 2 tasks | 4 files |
+| Phase 02.1 P12 | 50m | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -158,6 +159,8 @@ Recent decisions affecting current work:
 - [Phase ?]: An explanation names an option by its content, never its position, because re-ordering options is the fix for a uniform key
 - [Phase ?]: Each reading part runs its items in the exam's own order: blanks before questions for the diagram part only
 - [Phase ?]: Part-kind coverage stays reported and unasserted even though plan 09's reason expired — a future set 2 may legitimately ship partial
+- [Phase ?]: 02.1-12: CELPIP-07 and CELPIP-08 marked [~] (met with a stated limitation) rather than [x] — their own wording rests on a browser observation nobody has made
+- [Phase ?]: 02.1-12: the four Speaking rubric axis names are the official CELPIP sub-score names — judged factual labels rather than expression, and disclosed in the gate record rather than hidden
 
 ### Pending Todos
 
@@ -185,6 +188,7 @@ Recent decisions affecting current work:
 - Zero automated tests exist — phases should include targeted verification for what they touch
 - 02.1-04: nobody has HEARD the audio check — no browser, no phone, no speaker. Chrome's ~15s utterance truncation (the reason speaker-turn chunking exists) and the iPhone silent-switch path are both untested on a device. AudioCheck is not mounted by any route until plan 05, so this cannot close before then. Owed to 02.1-12; WINDOWS.md id 8.
 - 02.1-05: nobody has HEARD the Listening runner or clicked through it — no browser, no phone, no speaker. Playback of a real 226-word twelve-turn script, the onCompleted handoff that reveals the questions, the one-at-a-time flow, submit, and the attempt reaching the account are all unobserved. Chrome's ~15s truncation and the iPhone silent switch remain untested on a device. Owed to 02.1-12; WINDOWS.md ids 8, 10, 11.
+- Phase 2.1 cannot be closed until the browser/phone pass runs: six ROADMAP criteria and ~20 WINDOWS.md entries depend on it. Checklist in 02.1-12-SUMMARY.md
 
 ### Roadmap Evolution
 
@@ -202,6 +206,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-31T11:01:02.061Z
-Stopped at: Completed 02.1-10-PLAN.md
+Last session: 2026-07-31T11:16:25.549Z
+Stopped at: Completed 02.1-12-PLAN.md — automated gate PASSED; browser pass (Task 2) outstanding
 Resume file: None

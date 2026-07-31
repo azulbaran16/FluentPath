@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 22
+open_count: 24
 waived_count: 0
 fixed_count: 0
-total_count: 22
-last_updated: 2026-07-31T11:00:17.547Z
+total_count: 24
+last_updated: 2026-07-31T11:16:17.383Z
 ---
 
 # Broken Windows Ledger
@@ -37,6 +37,8 @@ last_updated: 2026-07-31T11:00:17.547Z
 | 20 | 02.1 | unrun-verify | src/lib/celpip/reading-set-1.ts |  | The two 'the passage does not say' questions are gated for shape but not for pedagogy: nothing asserts that at least one such option is the KEY. An author who made every not-stated option wrong would pass all 519 assertions while teaching the learner to discount the very option the information part tests her on. The invariant is stated in a comment on INFORMATION_PART and gated by nothing. | open |  | 2026-07-31T10:27:00.993Z |  |
 | 21 | 02.1 | unrun-verify | src/lib/celpip/reading-set-1.ts |  | Nobody has worked Reading set 1 end to end at a real pace; whether 39 minutes fits these passages is untested | open |  | 2026-07-31T11:00:17.011Z |  |
 | 22 | 02.1 | unrun-verify | src/components/celpip/ReadingRunner.tsx |  | The new per-part item order (blanks before questions for the diagram part only) has never been seen rendered; gated by harness and mutation only | open |  | 2026-07-31T11:00:17.547Z |  |
+| 23 | 02.1 | deviation | src/lib/celpip-speech.ts |  | planVoices is all-or-nothing: enoughVoices requires pool.length >= distinct.length, so a device offering only two English voices drops ALL THREE discussion speakers to the browser default distinguished by pitch alone (1 / 0.85 / 1.15) rather than using the two real voices it has plus one shift. Six of the discussion part's eight items are attribution questions. Mitigated in content (plan 11 names all three speakers aloud within the first seven turns) but not in code, and unobserved by ear. Found by the 02.1-12 gate. | open |  | 2026-07-31T11:16:10.159Z |  |
+| 24 | 02.1 | unrun-verify | .planning/phases/02.1-celpip-remaining-skills/02.1-12-PLAN.md |  | 02.1-12 Task 2, the phase's blocking human checkpoint, was NOT performed: the six ROADMAP success criteria have not been observed in a browser, and no phone or Safari pass happened. The automated half of the gate passed in full. This is the entry that owes ~20 of the others in this ledger; an ordered checklist is in 02.1-12-SUMMARY.md and in the plan-12 final report. | open |  | 2026-07-31T11:16:17.383Z |  |
 
 ````json
 [
@@ -302,6 +304,30 @@ last_updated: 2026-07-31T11:00:17.547Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-07-31T11:00:17.547Z",
+    "resolved_at": null
+  },
+  {
+    "id": 23,
+    "kind": "deviation",
+    "phase": "02.1",
+    "file": "src/lib/celpip-speech.ts",
+    "line": null,
+    "description": "planVoices is all-or-nothing: enoughVoices requires pool.length >= distinct.length, so a device offering only two English voices drops ALL THREE discussion speakers to the browser default distinguished by pitch alone (1 / 0.85 / 1.15) rather than using the two real voices it has plus one shift. Six of the discussion part's eight items are attribution questions. Mitigated in content (plan 11 names all three speakers aloud within the first seven turns) but not in code, and unobserved by ear. Found by the 02.1-12 gate.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-07-31T11:16:10.159Z",
+    "resolved_at": null
+  },
+  {
+    "id": 24,
+    "kind": "unrun-verify",
+    "phase": "02.1",
+    "file": ".planning/phases/02.1-celpip-remaining-skills/02.1-12-PLAN.md",
+    "line": null,
+    "description": "02.1-12 Task 2, the phase's blocking human checkpoint, was NOT performed: the six ROADMAP success criteria have not been observed in a browser, and no phone or Safari pass happened. The automated half of the gate passed in full. This is the entry that owes ~20 of the others in this ledger; an ordered checklist is in 02.1-12-SUMMARY.md and in the plan-12 final report.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-07-31T11:16:17.383Z",
     "resolved_at": null
   }
 ]
