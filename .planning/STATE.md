@@ -5,8 +5,8 @@ milestone_name: milestone
 current_phase: 02.1
 current_phase_name: celpip-remaining-skills
 status: in-progress
-stopped_at: Completed 02.1-08-PLAN.md
-last_updated: "2026-07-31T10:03:10.071Z"
+stopped_at: Completed 02.1-09-PLAN.md
+last_updated: "2026-07-31T10:25:42.419Z"
 last_activity: 2026-07-31
 last_activity_desc: "02.1-05 executed: the hear-once runner, its route and the news-item part. Nobody has heard it yet."
 progress:
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-07-23)
 ## Current Position
 
 Phase: 02.1 (celpip-remaining-skills) — IN PROGRESS
-Plan: 10 of 12
+Plan: 11 of 12
 Status: 02.1-05 complete on `main`; Listening is a real section on `/celpip` with one of the six exam part shapes authored. Next action is executing 02.1-06 (set 1's problem-solving and daily-conversation parts — a pure append to `SET_1_PARTS`)
 Last activity: 2026-07-31 — 02.1-05 executed: the hear-once runner, its route and the news-item part. Nobody has heard it yet.
 
@@ -74,6 +74,7 @@ Progress: [█████████░] 88% (2 of 6 phases; 18 of 25 plans)
 | Phase 02.1 P07 | 22m | 2 tasks | 1 files |
 | Phase 02.1 P11 | 34 | 1 tasks | 2 files |
 | Phase 02.1 P08 | 74m | 2 tasks | 9 files |
+| Phase 02.1 P09 | ~55min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -148,6 +149,9 @@ Recent decisions affecting current work:
 - [Phase ?]: 02.1-08: readingAttempts is a fourth separate top-level append-only field; taskType was NOT widened, and in-progress answer sheets are never persisted
 - [Phase ?]: 02.1-08: the Reading clock is armed PER PART and the Timer is keyed by part id — two parts may legitimately share an allowance (correspondence and viewpoints are both 11 minutes)
 - [Phase ?]: 02.1-08: a reading set carries NO timeLimitMinutes; readingSetMinutes derives it from the parts so it cannot drift
+- [Phase ?]: Reading ships partial (parts 1 and 3) rather than waiting for all four: the correspondence part is the only one exercising both question types at once, so it is what makes the drop-down blank reachable at all
+- [Phase ?]: Part-kind coverage is REPORTED by the content harness and never asserted — an assertion would fail for the whole of plan 09 and get disabled rather than fixed; part ORDER is asserted as a subsequence, because this set has a hole where part 2 goes
+- [Phase ?]: The reading section carries NO hand-written caveat: unlike Listening's synthesised audio and Speaking's written-out photograph, Reading is simply incomplete, and its derived coverage line already says 2 of the 4 and moves on its own
 
 ### Pending Todos
 
@@ -192,6 +196,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-31T10:02:58.858Z
-Stopped at: Completed 02.1-08-PLAN.md
+Last session: 2026-07-31T10:25:42.392Z
+Stopped at: Completed 02.1-09-PLAN.md
 Resume file: None

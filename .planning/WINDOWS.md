@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 18
+open_count: 20
 waived_count: 0
 fixed_count: 0
-total_count: 18
-last_updated: 2026-07-31T10:02:46.482Z
+total_count: 20
+last_updated: 2026-07-31T10:27:00.993Z
 ---
 
 # Broken Windows Ledger
@@ -33,6 +33,8 @@ last_updated: 2026-07-31T10:02:46.482Z
 | 16 | 02.1 | unrun-verify | src/components/celpip/ReadingRunner.tsx |  | 02.1-08: nobody has seen the reading runner. Neither ReadingRunner nor DropdownBlank has been opened in a browser, on a phone, or with a screen reader — READING_SETS is empty so no URL reaches them. Untested: whether the native select opens as the system picker on iOS/Android, whether inline selects sit legibly in a paragraph at mobile widths, and whether the per-part clock reads correctly when re-armed. Cannot close before 02.1-09 lands a bank. Owed to 02.1-12. | open |  | 2026-07-31T10:02:45.239Z |  |
 | 17 | 02.1 | deviation | src/components/celpip/ReadingRunner.tsx |  | 02.1-08: two component invariants survived mutation with NO gate at all — the Timer's per-part key={part.id} and DropdownBlank's aria-label. Both are silent when broken (a stale clock carried into the next part; four unlabelled combo boxes in one paragraph). A committed gate needs a render harness, which 02.1-04 judged too much machinery for scripts/. The greps live only in 02.1-08-SUMMARY.md. | open |  | 2026-07-31T10:02:45.838Z |  |
 | 18 | 02.1 | unrun-verify | src/lib/celpip.ts |  | 02.1-08: id uniqueness across question ids and blank ids within a reading set is documented on CelpipReadingPart but gated by nothing. They share one answers map, so a collision silently overwrites one of two answers and mis-scores the sheet (T-02.1-39). This plan could not gate it — gating needs a bank. Owed to 02.1-09's content harness. | open |  | 2026-07-31T10:02:46.482Z |  |
+| 19 | 02.1 | unrun-verify | src/components/celpip/DropdownBlank.tsx |  | Nobody has answered a drop-down blank in a browser. The reading set now serves 200 and the explanation renders under the blank in code, but the plan's human-check (answer one blank wrongly on purpose and read the explanation) was not run: no browser-driving tool was available to this executor and adding one would have installed a package. Closes the moment someone opens /celpip/reading/reading-set-1 and picks a wrong option. | open |  | 2026-07-31T10:27:00.428Z |  |
+| 20 | 02.1 | unrun-verify | src/lib/celpip/reading-set-1.ts |  | The two 'the passage does not say' questions are gated for shape but not for pedagogy: nothing asserts that at least one such option is the KEY. An author who made every not-stated option wrong would pass all 519 assertions while teaching the learner to discount the very option the information part tests her on. The invariant is stated in a comment on INFORMATION_PART and gated by nothing. | open |  | 2026-07-31T10:27:00.993Z |  |
 
 ````json
 [
@@ -250,6 +252,30 @@ last_updated: 2026-07-31T10:02:46.482Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-07-31T10:02:46.482Z",
+    "resolved_at": null
+  },
+  {
+    "id": 19,
+    "kind": "unrun-verify",
+    "phase": "02.1",
+    "file": "src/components/celpip/DropdownBlank.tsx",
+    "line": null,
+    "description": "Nobody has answered a drop-down blank in a browser. The reading set now serves 200 and the explanation renders under the blank in code, but the plan's human-check (answer one blank wrongly on purpose and read the explanation) was not run: no browser-driving tool was available to this executor and adding one would have installed a package. Closes the moment someone opens /celpip/reading/reading-set-1 and picks a wrong option.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-07-31T10:27:00.428Z",
+    "resolved_at": null
+  },
+  {
+    "id": 20,
+    "kind": "unrun-verify",
+    "phase": "02.1",
+    "file": "src/lib/celpip/reading-set-1.ts",
+    "line": null,
+    "description": "The two 'the passage does not say' questions are gated for shape but not for pedagogy: nothing asserts that at least one such option is the KEY. An author who made every not-stated option wrong would pass all 519 assertions while teaching the learner to discount the very option the information part tests her on. The invariant is stated in a comment on INFORMATION_PART and gated by nothing.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-07-31T10:27:00.993Z",
     "resolved_at": null
   }
 ]
