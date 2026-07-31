@@ -100,8 +100,8 @@ tasks 5 and 6, 30/60 for the rest. Only structure was taken from those documents
 in full. Speaking task 3 ships a written scene description rather than an image — an open
 content dependency, stated on the landing.
 
-**Plans**: 11/12 plans executed
-of them and the learner still gains something usable
+**Plans**: 12/12 plans executed
+
 Plans:
 
 - [x] 02.1-01-PLAN.md — Tracer: one Speaking prompt end to end (CSP → record → play back → self-evaluate → Postgres) — **complete 2026-07-31**; browser checkpoint approved, phone pass owed to plan 12
@@ -115,7 +115,32 @@ Plans:
 - [x] 02.1-09-PLAN.md — Reading set 1: correspondence and information parts, reading harness group
 - [x] 02.1-10-PLAN.md — Reading set 1: diagram and viewpoints parts (set complete at 38 items / 39 min)
 - [x] 02.1-11-PLAN.md — Listening set 1: the three-speaker discussion part (8 items)
-- [ ] 02.1-12-PLAN.md — Phase gate: IP grep, full suite, production-header CSP check, browser + phone UAT
+- [x] 02.1-12-PLAN.md — Phase gate: IP grep, full suite, production-header CSP check, browser + phone UAT — **automated half complete 2026-07-31; the browser pass is outstanding**
+
+**Gate record (02.1-12, 2026-07-31)** — read this before planning the next milestone.
+
+| # | Criterion | Status |
+|---|-----------|--------|
+| 1 | Reading set, four parts, timed, explained key | **Ships, unobserved.** All four part shapes, 38 items over 39 minutes (11/8/9/11), every item explained; 648 content assertions; route serves 200 and leaks 0 of 90 probed strings. Nobody has worked it at a real pace or answered a drop-down blank in a browser |
+| 2 | Listening heard-not-read, questions after playback, explained key | **Ships, largely unheard.** 6/6 shapes, 37 items, 157 turns, 55-minute clock; D-04/D-05 re-proved at the served boundary (0 of 142 turns and 0 of 37 stems in the HTML). Only ~12 turns of one part have ever been played aloud, by the user, in plan 05 |
+| 3 | Speaking record → play back → self-evaluate | **Ships, one prompt observed.** All 8 task shapes at the exam's confirmed windows. Only the plan-01 advice prompt has been recorded and played back, on desktop. No phone, no Safari |
+| 4 | Attempts cross devices | **Contract proved, round trip unobserved.** 20,146 merge + 309 schema assertions; a pre-phase blob still parses with the three new fields recovering to empty. Only Speaking has been seen crossing devices against a real account |
+| 5 | Landing honest about what is missing | **Verified against a production server.** Coverage lines are derived, not written: Writing 17 prompts, Reading 4/4, Listening 6/6, Speaking 8/8. Both compromises are stated — Listening's synthesised audio and Speaking task 3's written-out photograph |
+| 6 | No third-party text anywhere | **Verified both ways.** Repository-wide grep over `src` for the academy name, six prep-site names and the official archive filenames: 0 hits. Reviewer read-through of the Speaking rubric, all four Reading parts and the Listening scripts: original throughout — see `02.1-12-SUMMARY.md` for the one judgement call (the four rubric axis names) |
+
+**What did NOT ship, so the next milestone inherits a known gap rather than a surprise:**
+
+- **Only one set per skill.** One Reading set, one Listening set. A second set of either was never
+  authored — she can sit each drill exactly once before the answers are known to her.
+- **No recorded or premium-TTS audio.** D-03 stands; Listening is browser speech and sounds it.
+  VOICE-01 in the v2 backlog owns the replacement. The data model already takes an optional
+  `audioUrl` without migration.
+- **No image for Speaking task 3.** The scene is written out. Stated on the landing and in the
+  prompt; needs only an optional `sceneImage` field when a genuine original image exists.
+- **No automated scoring anywhere** (D-02, deliberate). Reading and Listening self-score against
+  objective keys; Speaking and Writing are learner self-evaluation. AI evaluation waits on Phase 5.
+- **The browser and phone pass itself.** ~20 entries in `.planning/WINDOWS.md` are variants of
+  "nobody has seen this rendered". They were owed to this plan and are still owed.
 
 **UI hint**: yes
 

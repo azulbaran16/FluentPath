@@ -24,6 +24,19 @@ Stack: Next.js 16 (App Router) · React 19 · TypeScript · Tailwind v4.
   fields) and the merge rules are `src/lib/progress-merge.ts` — read both before
   touching either store. The merge must stay idempotent, commutative and associative:
   it re-runs on every authenticated load.
+- CELPIP practice at `/celpip` covers all four skills as of Fase 2.1 — Writing, plus Reading
+  (`src/lib/celpip/reading-set-1.ts`), Listening (`listening-set-1.ts`) and Speaking
+  (`speaking-prompts.ts`, `rubric-speaking.ts`). All content is original: third-party study
+  material is a format reference only and no sentence of it may enter the app. Section
+  availability and every coverage line on the landing are **derived from bank contents**
+  (`CELPIP_SECTIONS` in `src/lib/celpip.ts`) — never hand-written, so they cannot overclaim.
+- Listening audio is the Web Speech API (`src/lib/celpip-speech.ts`), not recorded files.
+  **Scripts are chunked one turn per speaker turn, ≤25 words each, and that is a correctness
+  constraint rather than a style note:** Chrome truncates a single utterance at roughly
+  fifteen seconds with no error and sometimes no `onend`, and the questions are revealed by
+  that `onend` and by nothing else — so an over-long turn strands the learner on a screen with
+  no words and no questions. `scripts/verify-celpip-content.mts` gates the ceiling at 35 words.
+  A single-speaker news item is still written as many turns for this reason alone.
 - AI tutor endpoint `src/app/api/tutor/route.ts` is a stub until `ANTHROPIC_API_KEY` is set (Fase 5).
 - Design system & theme tokens in `src/app/globals.css` ("Traveler's Journal": Fraunces + Hanken Grotesk).
 - Full plan & phases: `docs/plans/2026-06-19-fluentpath-design.md`.
