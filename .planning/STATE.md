@@ -5,8 +5,8 @@ milestone_name: milestone
 current_phase: 02.1
 current_phase_name: celpip-remaining-skills
 status: in-progress
-stopped_at: Completed 02.1-12-PLAN.md — automated gate PASSED; browser pass (Task 2) outstanding
-last_updated: "2026-07-31T11:16:34.642Z"
+stopped_at: Completed 02.1-12-PLAN.md — automated gate PASSED, browser pass PARTIAL (Reading + landing closed; Listening results, Speaking playback, phone/Safari and cross-device persistence still owed)
+last_updated: "2026-07-31T12:01:08.583Z"
 last_activity: 2026-07-31
 last_activity_desc: "02.1-05 executed: the hear-once runner, its route and the news-item part. Nobody has heard it yet."
 progress:
@@ -161,6 +161,8 @@ Recent decisions affecting current work:
 - [Phase ?]: Part-kind coverage stays reported and unasserted even though plan 09's reason expired — a future set 2 may legitimately ship partial
 - [Phase ?]: 02.1-12: CELPIP-07 and CELPIP-08 marked [~] (met with a stated limitation) rather than [x] — their own wording rests on a browser observation nobody has made
 - [Phase ?]: 02.1-12: the four Speaking rubric axis names are the official CELPIP sub-score names — judged factual labels rather than expression, and disclosed in the gate record rather than hidden
+- [Phase ?]: 02.1-12 (user, 2026-07-31): the four Speaking rubric dimension names stay VERBATIM — they are the exam's own scoring axes and renaming would hurt recognition on the day. The only verbatim borrowing in the app, and a deliberate one
+- [Phase ?]: 02.1-12: the Listening caveat was never missing — it ships in the same client chunk as Speaking's and simply never uses the word 'synthesised'. Quote product copy, do not paraphrase it, in verification records
 
 ### Pending Todos
 
@@ -206,6 +208,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-31T11:16:25.549Z
-Stopped at: Completed 02.1-12-PLAN.md — automated gate PASSED; browser pass (Task 2) outstanding
+Last session: 2026-07-31T12:01:08.555Z
+Stopped at: Completed 02.1-12-PLAN.md — automated gate PASSED, browser pass PARTIAL (Reading + landing closed; Listening results, Speaking playback, phone/Safari and cross-device persistence still owed)
 Resume file: None

@@ -117,16 +117,23 @@ Plans:
 - [x] 02.1-11-PLAN.md — Listening set 1: the three-speaker discussion part (8 items)
 - [x] 02.1-12-PLAN.md — Phase gate: IP grep, full suite, production-header CSP check, browser + phone UAT — **automated half complete 2026-07-31; the browser pass is outstanding**
 
-**Gate record (02.1-12, 2026-07-31)** — read this before planning the next milestone.
+**Gate record (02.1-12, 2026-07-31)** — automated gate **and** browser pass. Read this before
+planning the next milestone.
 
 | # | Criterion | Status |
 |---|-----------|--------|
-| 1 | Reading set, four parts, timed, explained key | **Ships, unobserved.** All four part shapes, 38 items over 39 minutes (11/8/9/11), every item explained; 648 content assertions; route serves 200 and leaks 0 of 90 probed strings. Nobody has worked it at a real pace or answered a drop-down blank in a browser |
-| 2 | Listening heard-not-read, questions after playback, explained key | **Ships, largely unheard.** 6/6 shapes, 37 items, 157 turns, 55-minute clock; D-04/D-05 re-proved at the served boundary (0 of 142 turns and 0 of 37 stems in the HTML). Only ~12 turns of one part have ever been played aloud, by the user, in plan 05 |
-| 3 | Speaking record → play back → self-evaluate | **Ships, one prompt observed.** All 8 task shapes at the exam's confirmed windows. Only the plan-01 advice prompt has been recorded and played back, on desktop. No phone, no Safari |
-| 4 | Attempts cross devices | **Contract proved, round trip unobserved.** 20,146 merge + 309 schema assertions; a pre-phase blob still parses with the three new fields recovering to empty. Only Speaking has been seen crossing devices against a real account |
-| 5 | Landing honest about what is missing | **Verified against a production server.** Coverage lines are derived, not written: Writing 17 prompts, Reading 4/4, Listening 6/6, Speaking 8/8. Both compromises are stated — Listening's synthesised audio and Speaking task 3's written-out photograph |
-| 6 | No third-party text anywhere | **Verified both ways.** Repository-wide grep over `src` for the academy name, six prep-site names and the official archive filenames: 0 hits. Reviewer read-through of the Speaking rubric, all four Reading parts and the Listening scripts: original throughout — see `02.1-12-SUMMARY.md` for the one judgement call (the four rubric axis names) |
+| 1 | Reading set, four parts, timed, explained key | **MET on desktop — the one section verified end to end.** Four part shapes, 38 items over 39 minutes; render order confirmed by DOM position (questions before blanks for correspondence); per-part clocks re-arm 11→8→9→**11**, part 4 re-arming despite sharing part 1's allowance, which proves the `key={part.id}` fix rather than assuming it; blanks 5/5/0/5; submission allowed at 2/38 and it graded; 36 explanation blocks on the results screen; no positional prose in the rendered DOM. Outstanding: no mobile pass, and nobody has worked it at a real pace |
+| 2 | Listening heard-not-read, questions after playback, explained key | **PARTIAL.** 6/6 shapes, 37 items, 157 turns; D-04/D-05 re-proved at the served boundary (0 of 142 turns and 0 of 37 stems in the HTML). Questions were reached in a browser. **Not reached: the results screen and the post-answer transcript with speaker labels** (automation overshot twice) and the **55-minute clock** (untimed) |
+| 3 | Speaking record → play back → self-evaluate | **PARTIAL.** All 8 shapes at the exam's confirmed windows; the Speaking tab and its Task 3 caveat were seen rendering. **No human has heard a recording play back** — a `blob:` element loads and `recordingSeconds` is right, which is not the same claim. Mic-indicator-on-stop is code-verified only |
+| 4 | Attempts cross devices | **NOT VERIFIED.** 20,146 merge + 309 schema assertions, and a pre-phase blob still parses with the three new fields recovering to empty. A Reading attempt was graded in a browser, so the caller is exercised — but the cross-device round trip was not attempted at all. The weakest of the six |
+| 5 | Landing honest about what is missing | **MET, fully observed.** Four real tabs switching grids, clean hydration, **no "Coming soon" anywhere**, Speaking's Task 3 caveat on screen. Coverage lines derived, not written: Writing 17, Reading 4/4, Listening 6/6, Speaking 8/8. The Listening caveat exists and ships in the same client chunk as Speaking's — it says *"spoken by your browser rather than played from a recording"* and never uses the word "synthesised", which is why an earlier text-match for that word found nothing |
+| 6 | No third-party text anywhere | **MET both ways.** Repository-wide grep over `src` for the academy name, six prep-site names and the official archive filenames: 0 hits. Reviewer read-through of the Speaking rubric, all four Reading parts and the Listening scripts: original throughout. One disclosed borrowing, now a settled decision — see below |
+
+**Decision (user, 2026-07-31): the four Speaking rubric dimension names stay verbatim.** "Task
+Fulfilment", "Content & Coherence", "Vocabulary" and "Listenability" are the exam's own scoring
+axes. They are how she will be marked, and renaming them would hurt her recognition on the day.
+Recorded as a decision, not an open item — the only verbatim borrowing in the app, and a
+deliberate one.
 
 **What did NOT ship, so the next milestone inherits a known gap rather than a surprise:**
 
@@ -143,8 +150,16 @@ Plans:
 - **No automated scoring anywhere** (D-02, deliberate). Reading and Listening self-score against
   objective keys; Speaking and Writing are learner self-evaluation. AI evaluation waits on Phase 5.
 
-- **The browser and phone pass itself.** ~20 entries in `.planning/WINDOWS.md` are variants of
-  "nobody has seen this rendered". They were owed to this plan and are still owed.
+- **Six things the browser pass did not reach.** The Listening **results screen and transcript**;
+  the **55-minute Listening clock**; **Speaking playback by ear**; the **OS mic indicator on
+  stop**; **any phone or Safari path** (the MediaRecorder WebM→MP4 probe has still never run on
+  the browser family it was written for); and **cross-device persistence** for the three new
+  sections. Reading is the only section verified end to end, and only on desktop.
+
+- **The three-voice collapse in `planVoices` is bounded but untested.** The test machine had 5
+  English voices, so the fallback did not engage. Below three voices all three discussion
+  speakers become one voice at pitches 1 / 0.85 / 1.15, and six of that part's eight items are
+  attribution questions. Content mitigates it (all three are named aloud early); code does not.
 
 **UI hint**: yes
 
