@@ -269,6 +269,213 @@ const CORRESPONDENCE_PART: CelpipReadingPart = {
 };
 
 /**
+ * Part 2 shape: Reading to Apply a Diagram — 8 minutes, eight items.
+ *
+ * THE ORDER HERE IS THE REVERSE OF PART 1'S, AND THAT IS NOT A SLIP. The
+ * correspondence part runs six questions and then five blanks; this part runs
+ * **five blanks and then three questions**, because the blanks live in a short
+ * message ABOUT the table and the questions are asked about the table itself.
+ * The split (5 + 3, not 3 + 5) is confirmed against the beta user's own official
+ * format material; the phase's research notes had the two numbers the wrong way
+ * round and are wrong. `READING_PART_SHAPE` in
+ * `scripts/verify-celpip-content.mts` carries the confirmed figures.
+ *
+ * THE STIMULUS IS STRUCTURED DATA, NOT AN IMAGE, and the choice is worth
+ * restating where the content is authored rather than only where the type is
+ * declared: the table stays greppable for the D-06 originality check, it reaches
+ * a screen reader as a real table with row and column headers instead of as alt
+ * text somebody has to remember to write, and it costs no asset pipeline — which
+ * is a cost this phase cannot absorb three weeks out from the exam.
+ *
+ * THE EXCEPTIONS ARE THE PART. A schedule whose every row behaves the same way
+ * generates no items worth asking: every question below is answerable only by
+ * combining a row with a note (the visitor surcharge, the holiday make-up, the
+ * forty-eight-hour hold, the age rule) or by reading a column heading that a
+ * hurried learner assumes says something else ("per family", not per person).
+ * The tempting wrong option in every blank is a neighbouring row's fact or a
+ * note that has been superseded, never a grammatical error.
+ */
+const DIAGRAM_PART: CelpipReadingPart = {
+  id: "rs1-diagram",
+  kind: "diagram",
+  title: "The winter programme at a community centre",
+  minutes: 8,
+  instructions:
+    "Study the programme below, then choose the best option for each blank in the message about it. Three questions on the programme itself follow the message. Every option in a blank fits the sentence — only one fits what the programme and its notes actually say.",
+  diagram: {
+    kind: "schedule",
+    caption: "Bellwood Community Centre — winter session, 12 January to 16 March",
+    headers: ["Programme", "Day and time", "Ten-week fee", "Drop-in"],
+    rows: [
+      {
+        label: "Pottery (beginners)",
+        cells: ["Mondays, 6:30–8:30 pm", "$145", "not available"],
+      },
+      {
+        label: "Lane swim",
+        cells: ["Tuesdays and Thursdays, 7:00–8:30 am", "$60", "$6 a morning"],
+      },
+      {
+        label: "Conversation circle",
+        cells: ["Wednesdays, 1:00–2:30 pm", "no charge", "no charge"],
+      },
+      {
+        label: "Weight room orientation",
+        cells: ["Saturdays, 9:00–10:00 am", "$25 (one session)", "not available"],
+      },
+      {
+        label: "Family skate",
+        cells: ["Sundays, 3:00–5:00 pm", "$40 per family", "$10 per family"],
+      },
+    ],
+    notes: [
+      "The ten-week fees above are the rates for township residents. Anyone registering from outside the township adds $15 to any ten-week fee.",
+      "The centre is closed on statutory holidays. The pottery class that would have fallen on Monday 16 February is made up on Monday 23 March, the week after the session ends.",
+      "A place booked online is held for forty-eight hours and is released if the fee has not been paid by then.",
+      "Nobody under sixteen may use the weight room without having completed the orientation.",
+    ],
+  },
+  blankText: {
+    title: "A message about the programme",
+    intro: [
+      "From: Delphine Okonjo",
+      "To: Ray Vandermeer",
+      "Subject: the winter list is out",
+    ],
+    segments: [
+      { kind: "text", text: "Ray — the winter list came out this morning and I have put my name down for the pottery, which runs " },
+      { kind: "blank", blankId: "rs1-diag-b1" },
+      { kind: "text", text: ". Come and do it with me; you have been saying you would for two years." },
+      { kind: "break" },
+      {
+        kind: "text",
+        text: "Two things to know before you register. The first is the money: because you are out at Harlow Bay rather than in the township, the ten-week fee for you would be ",
+      },
+      { kind: "blank", blankId: "rs1-diag-b2" },
+      {
+        kind: "text",
+        text: ". The second is the holiday. We lose the Monday in the middle of February, but that class ",
+      },
+      { kind: "blank", blankId: "rs1-diag-b3" },
+      { kind: "text", text: ", so we are not paying for a week we do not get." },
+      { kind: "break" },
+      { kind: "text", text: "If you would rather try something once before committing to ten weeks of anything, " },
+      { kind: "blank", blankId: "rs1-diag-b4" },
+      { kind: "text", text: ". The pottery does not work that way, unfortunately — it is the whole session or nothing." },
+      { kind: "break" },
+      { kind: "text", text: "And do not sit on it. They hold a place " },
+      { kind: "blank", blankId: "rs1-diag-b5" },
+      { kind: "text", text: ", so book on an afternoon when you can pay the same day." },
+      { kind: "break" },
+      { kind: "text", text: "Delphine" },
+    ],
+    blanks: [
+      {
+        id: "rs1-diag-b1",
+        options: [
+          "on Monday evenings",
+          "on Tuesday and Thursday mornings",
+          "on Wednesday afternoons",
+          "on Saturday mornings",
+        ],
+        answer: 0,
+        explanation:
+          "The pottery row gives Mondays, 6:30 to 8:30 in the evening. Each of the other three is a real time from this table and belongs to a different row: Tuesday and Thursday mornings is the lane swim, Wednesday afternoon is the conversation circle, and Saturday morning is the weight room orientation. In this part the wrong option is almost always a neighbouring row rather than an invention, so read down the column you are actually in.",
+      },
+      {
+        id: "rs1-diag-b2",
+        options: [
+          "one hundred and sixty dollars rather than the hundred and forty-five I am paying",
+          "the same hundred and forty-five dollars I am paying",
+          "one hundred and thirty dollars, since you are not a member",
+          "sixty dollars, which is the rate for people from outside",
+        ],
+        answer: 0,
+        explanation:
+          "This blank cannot be answered from the table alone, which is the point of the part: the pottery fee is $145, and the first note says anyone registering from outside the township adds $15 to any ten-week fee. Ray is at Harlow Bay, so $160. The second option is what you get by ignoring the note; the third invents a membership discount that appears nowhere; and sixty dollars is the lane swim's fee, lifted from the row above.",
+      },
+      {
+        id: "rs1-diag-b3",
+        options: [
+          "is made up on the Monday after the session ends",
+          "runs as usual, because the centre stays open on the holidays",
+          "is refunded at the drop-in rate",
+          "is moved to the Saturday of the same week",
+        ],
+        answer: 0,
+        explanation:
+          "The second note says the class that would have fallen on 16 February is made up on Monday 23 March, the week after the session ends. The second option contradicts the first sentence of that same note. The third is impossible on its own terms — the pottery row says drop-in is not available, so there is no drop-in rate to refund at. And nothing anywhere moves a class to a Saturday; Saturday morning belongs to the orientation.",
+      },
+      {
+        id: "rs1-diag-b4",
+        options: [
+          "the lane swim takes drop-ins at six dollars a morning",
+          "the orientation is free to walk into on a Saturday",
+          "the family skate is the only thing here that takes drop-ins",
+          "you can pay for a single pottery evening at the door",
+        ],
+        answer: 0,
+        explanation:
+          "Two rows carry a drop-in rate — the lane swim at $6 a morning and the family skate at $10 a family — and the lane swim is the one that lets a single person try a single session. The orientation costs $25 and its drop-in column says not available. The family skate does take drop-ins, but it is not the only thing that does, and the word doing the damage in that option is \"only\". The last one is contradicted twice over: by the pottery row's drop-in column and by the next sentence of the message itself.",
+      },
+      {
+        id: "rs1-diag-b5",
+        options: [
+          "for forty-eight hours after you book it online",
+          "until the first class of the session",
+          "for as long as there is room in the programme",
+          "until the end of the week you booked in",
+        ],
+        answer: 0,
+        explanation:
+          "The third note gives both halves of the rule: a place booked online is held for forty-eight hours, and it is released if the fee has not been paid by then. That is also why the sentence after the blank tells him to book on an afternoon when he can pay the same day — a detail that only makes sense once the hold is short. The other three are all longer, more comfortable readings of a rule the notes deliberately make tight.",
+      },
+    ],
+  },
+  questions: [
+    {
+      id: "rs1-diag-q1",
+      stem: "Someone who is at work every weekday until six in the evening, and away from Bellwood every weekend, could take —",
+      options: [
+        "the pottery class",
+        "the lane swim",
+        "the conversation circle",
+        "the family skate",
+      ],
+      answer: 0,
+      explanation:
+        "Only one programme in the table begins after six on a weekday: the pottery, at 6:30 on Monday evenings. The lane swim is at seven in the morning and the conversation circle at one in the afternoon, both of which fall inside the working day described. The family skate is on a Sunday, which is the half of the week this person is away for. Two constraints have to be held at once here — the hour and the day — and each of the three wrong options fails exactly one of them.",
+    },
+    {
+      id: "rs1-diag-q2",
+      stem: "Two parents and their three children, all living in the township, want to skate every Sunday of the session. What do they pay?",
+      options: [
+        "Forty dollars",
+        "Two hundred dollars — forty dollars each",
+        "Fifty dollars — the drop-in rate for five people",
+        "Eighty dollars — forty dollars for each parent",
+      ],
+      answer: 0,
+      explanation:
+        "The fee column says \"$40 per family\", and the three wrong answers are the three ways of not reading those last two words. They live in the township, so no surcharge applies, and they want the whole session rather than single afternoons, so the drop-in rate is not the one to use. A column heading is as much a fact as a cell is, and this part is largely about noticing that.",
+    },
+    {
+      id: "rs1-diag-q3",
+      stem: "A fifteen-year-old who wants to use the weight room on a Wednesday afternoon must —",
+      options: [
+        "come to a Saturday orientation first",
+        "wait until she is sixteen, whatever else she does",
+        "pay the drop-in rate at the door",
+        "register for the whole ten-week programme",
+      ],
+      answer: 0,
+      explanation:
+        "The last note is a condition, not an age bar, and the difference between those two is the whole question: nobody under sixteen may use the weight room without having completed the orientation — so completing it is what lets her in. There is no drop-in rate to pay, because the orientation's drop-in column says not available, and there is no ten-week weight room programme in the table at all; the orientation is a single $25 session.",
+    },
+  ],
+};
+
+/**
  * Part 3 shape: Reading for Information — 9 minutes, nine questions, no blanks.
  *
  * The one reading part with no drop-down blanks, and the one that tests
@@ -465,7 +672,7 @@ const INFORMATION_PART: CelpipReadingPart = {
  * reads 20 today and reaches the exam's 39 the moment plan 10 lands the other
  * two — with no edit here.
  */
-const SET_1_PARTS: CelpipReadingPart[] = [CORRESPONDENCE_PART, INFORMATION_PART];
+const SET_1_PARTS: CelpipReadingPart[] = [CORRESPONDENCE_PART, DIAGRAM_PART, INFORMATION_PART];
 
 export const READING_SET_1: CelpipReadingSet = {
   id: "reading-set-1",
