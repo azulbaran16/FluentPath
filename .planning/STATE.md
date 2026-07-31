@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02.1
 current_phase_name: celpip-remaining-skills
 status: in-progress
-stopped_at: Completed 02.1-04-PLAN.md
-last_updated: "2026-07-31T08:13:51.086Z"
+stopped_at: Completed 02.1-05-PLAN.md
+last_updated: "2026-07-31T08:48:47.244Z"
 last_activity: 2026-07-31
-last_activity_desc: "02.1-04 executed: Listening infrastructure — content types, listeningAttempts, the one speech driver, and the audio check"
+last_activity_desc: "02.1-05 executed: the hear-once Listening runner, its route and set 1's news-item part — /celpip offers Listening for the first time"
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 25
-  completed_plans: 17
+  completed_plans: 18
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-23)
 
 **Core value:** A learner can practice any real-life English scenario end-to-end — with an AI tutor that corrects them in context — and their progress is never lost.
-**Current focus:** Phase 02.1 — celpip-remaining-skills (executing, plans 01-04 of 12 complete)
+**Current focus:** Phase 02.1 — celpip-remaining-skills (executing, plans 01-05 of 12 complete)
 
 ## Current Position
 
 Phase: 02.1 (celpip-remaining-skills) — IN PROGRESS
-Plan: 5 of 12
-Status: 02.1-04 complete on `main`; next action is executing 02.1-05 (the plan that makes Listening usable — 04 and 05 are one unit)
-Last activity: 2026-07-31 — 02.1-04 executed: Listening infrastructure — nothing learner-visible yet, by design
+Plan: 6 of 12
+Status: 02.1-05 complete on `main`; Listening is a real section on `/celpip` with one of the six exam part shapes authored. Next action is executing 02.1-06 (set 1's problem-solving and daily-conversation parts — a pure append to `SET_1_PARTS`)
+Last activity: 2026-07-31 — 02.1-05 executed: the hear-once runner, its route and the news-item part. Nobody has heard it yet.
 
-Progress: [███████░░░] 68% (2 of 6 phases; 17 of 25 plans)
+Progress: [███████░░░] 72% (2 of 6 phases; 18 of 25 plans)
 
 ## Performance Metrics
 
@@ -69,6 +69,7 @@ Progress: [███████░░░] 68% (2 of 6 phases; 17 of 25 plans)
 | Phase 02.1 P02 | 28m | 3 tasks | 7 files |
 | Phase 02.1 P03 | 48m | 3 tasks | 4 files |
 | Phase 02.1 P04 | 62m | 2 tasks | 9 files |
+| Phase 02.1 P05 | 45m | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -127,6 +128,11 @@ Recent decisions affecting current work:
 - [Phase ?]: 02.1-04: src/lib/celpip-speech.ts is the ONE place the CELPIP section drives speechSynthesis; onCompleted is attached to the LAST utterance only, because under D-05 it is the single signal allowed to reveal the questions
 - [Phase ?]: 02.1-04: every utterance is queued synchronously inside one call (the iOS gesture rule) and never chained from onend — gated by scripts/verify-celpip-speech.mts against a mock engine, since tsc, lint and a desktop browser are all happy with the broken version
 - [Phase ?]: 02.1-04: pre-existing defect fixed — progress-merge's coercers assigned poisoned record keys (constructor/prototype) that the schema strips, so the two halves of one contract disagreed and the reconcile would write on every authenticated page load, forever
+- [Phase ?]: 02.1-05: a resolved set passed from a server component to a client one is serialized into the RSC payload and INLINED into the page's HTML — the listening route passes the set ID and the player resolves it, gated by a conjunction (measured: 41 of 42 authored strings in the served HTML before the fix, 0 after)
+- [Phase ?]: 02.1-05: the ONLY pre-answer paths to the script are the two audio-failure valves, and both set audioFailed on the attempt so a read run can never be mistaken for a listened one in her history
+- [Phase ?]: 02.1-05: listening questions are revealed one at a time and are not revisitable — the selection lives in a `pending` slot until she advances, so moving on is the deliberate act rather than a side effect of clicking an option
+- [Phase ?]: 02.1-05: adding a listening part is a pure append to SET_1_PARTS — the set's timeLimitMinutes is derived from the parts, so plans 06/07/11 add a const and one array entry and touch nothing else
+- [Phase ?]: 02.1-05: the content harness REPORTS part-kind coverage and ASSERTS the exam's per-part item counts (8/5/6/5/8/5) — a coverage gate would fail for most of the phase and be disabled rather than fixed
 
 ### Pending Todos
 
@@ -153,6 +159,7 @@ Recent decisions affecting current work:
 - Phase 5 needs `ANTHROPIC_API_KEY` configured in Coolify production env (user action) to leave stub mode
 - Zero automated tests exist — phases should include targeted verification for what they touch
 - 02.1-04: nobody has HEARD the audio check — no browser, no phone, no speaker. Chrome's ~15s utterance truncation (the reason speaker-turn chunking exists) and the iPhone silent-switch path are both untested on a device. AudioCheck is not mounted by any route until plan 05, so this cannot close before then. Owed to 02.1-12; WINDOWS.md id 8.
+- 02.1-05: nobody has HEARD the Listening runner or clicked through it — no browser, no phone, no speaker. Playback of a real 226-word twelve-turn script, the onCompleted handoff that reveals the questions, the one-at-a-time flow, submit, and the attempt reaching the account are all unobserved. Chrome's ~15s truncation and the iPhone silent switch remain untested on a device. Owed to 02.1-12; WINDOWS.md ids 8, 10, 11.
 
 ### Roadmap Evolution
 
@@ -170,6 +177,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-31T08:13:27.584Z
-Stopped at: Completed 02.1-04-PLAN.md
+Last session: 2026-07-31T08:48:47.216Z
+Stopped at: Completed 02.1-05-PLAN.md
 Resume file: None
