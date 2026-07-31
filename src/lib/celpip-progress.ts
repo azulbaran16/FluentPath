@@ -7,6 +7,7 @@ import {
   nowInstant,
   safeReadCelpip,
   type CelpipAttempt,
+  type CelpipListeningAttempt,
   type CelpipProgressState,
   type CelpipSpeakingAttempt,
 } from "./progress-schema";
@@ -40,7 +41,12 @@ const KEY = "fluentpath.celpip.v1";
 const SAVE_DEBOUNCE_MS = 2_000;
 
 export { CELPIP_EMPTY };
-export type { CelpipAttempt, CelpipProgressState, CelpipSpeakingAttempt };
+export type {
+  CelpipAttempt,
+  CelpipListeningAttempt,
+  CelpipProgressState,
+  CelpipSpeakingAttempt,
+};
 
 /** Renders an attempt's durationSeconds as m:ss — shared by the results
  * metrics strip and the landing's attempt-history rows so both read the same. */
@@ -299,6 +305,27 @@ export function useCelpipProgress() {
     [],
   );
 
+  /** The Listening twin: append-only into a per-set array, through `persist`
+   * like every other mutation here, for the same reason.
+   *
+   * NO NOTES REACH HERE, AND NONE EVER SHOULD. The player's note-taking area is
+   * React state and dies with the set. Persisting it would mean a second map
+   * with a real delete site riding the one `updatedAt` this state carries, and
+   * `drafts` already rides it — the two would fight and a cleared writing draft
+   * would come back. See the comment on `CelpipListeningAttempt`. */
+  const addListeningAttempt = useCallback(
+    (setId: string, attempt: CelpipListeningAttempt) => {
+      persist((s) => ({
+        ...s,
+        listeningAttempts: {
+          ...s.listeningAttempts,
+          [setId]: [...(s.listeningAttempts[setId] ?? []), attempt],
+        },
+      }));
+    },
+    [],
+  );
+
   /** Returns true on a successful save, false if the underlying localStorage
    * write threw — callers surface a visible warning on false. */
   const saveDraft = useCallback(
@@ -339,6 +366,11 @@ export function useCelpipProgress() {
     [state.speakingAttempts],
   );
 
+  const listeningAttemptsForSet = useCallback(
+    (setId: string) => state.listeningAttempts[setId] ?? [],
+    [state.listeningAttempts],
+  );
+
   const lastAttempt = useCallback(
     (taskId: string) => {
       const list = state.attempts[taskId];
@@ -356,11 +388,13 @@ export function useCelpipProgress() {
     state,
     addAttempt,
     addSpeakingAttempt,
+    addListeningAttempt,
     saveDraft,
     clearDraft,
     draftFor,
     attemptsForTask,
     speakingAttemptsForPrompt,
+    listeningAttemptsForSet,
     lastAttempt,
     completedTasks,
   };

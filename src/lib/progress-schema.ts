@@ -189,6 +189,52 @@ export interface CelpipSpeakingAttempt {
   note: string;
 }
 
+/**
+ * One completed CELPIP Listening set.
+ *
+ * Its own top-level field, for exactly the reason `CelpipSpeakingAttempt` is:
+ * `celpipAttemptEntry` in progress-merge.ts hard-codes the writing task-type
+ * pair independently of the zod enum above, so widening `taskType` stores an
+ * attempt that the merge then silently DELETES on the next reconcile. A
+ * separate append-only field cannot reach the writing shape at all.
+ *
+ * THE LEARNER'S NOTES ARE NOT HERE, AND THAT IS DELIBERATE — DO NOT "FIX" IT.
+ * Note-taking under time pressure is half of what this section trains, so the
+ * player gives her a notes area; it lives in React state and is gone when the
+ * set ends. Persisting it would create a second map with a real delete site,
+ * and this state carries exactly ONE `updatedAt` instant which `pickDraftsSide`
+ * already rides. A second whole-field-selected map sharing that instant means a
+ * device stamping while saving a note also wins the `drafts` map — resurrecting
+ * a cleared writing draft, which is the fca41b7 defect Phase 1 paid for. Not
+ * persisting removes the failure mode instead of re-defending against it, and
+ * it matches the exam, where the scratch paper is not preserved either.
+ */
+export interface CelpipListeningAttempt {
+  setId: string;
+  /** ISO timestamp of submission. Half of the natural key. */
+  date: string;
+  /** Wall-clock seconds from starting the set to submitting it. */
+  durationSeconds: number;
+  /**
+   * Question id -> chosen option index. Sanitised per entry, so one malformed
+   * answer costs only itself and the rest of the sheet still scores.
+   */
+  answers: Record<string, number>;
+  /** How many she got right, and out of how many. Both stored rather than
+   * recomputed: the bank is content and a later edit to a set must not
+   * retroactively change a result she already saw. */
+  correct: number;
+  total: number;
+  /** How many times she replayed the audio. "Plays once" cannot be ENFORCED in
+   * a browser — a reload restarts everything — so it is recorded instead, which
+   * makes her own history honest with her rather than pretending. */
+  replays: number;
+  /** She reported hearing nothing at the audio check and went on anyway. The
+   * attempt is still valid and still stored; it just did not measure listening. */
+  audioFailed: boolean;
+  outOfTime: boolean;
+}
+
 export interface CelpipProgressState {
   attempts: Record<string, CelpipAttempt[]>;
   drafts: Record<string, string>;
@@ -204,6 +250,16 @@ export interface CelpipProgressState {
    * needs no instant at all.
    */
   speakingAttempts: Record<string, CelpipSpeakingAttempt[]>;
+  /**
+   * Completed Listening sets, keyed by set id — append-only, exactly like
+   * `attempts` and `speakingAttempts`, and merged by the same rule.
+   *
+   * A third append-only map costs the merge nothing: it has no delete site, so
+   * it needs no instant of its own and cannot fight `drafts` for the one this
+   * state carries. That is the entire reason all three new skills are shaped
+   * this way rather than as one polymorphic map.
+   */
+  listeningAttempts: Record<string, CelpipListeningAttempt[]>;
   /**
    * The same D-01b activity instant `ProgressState.updatedAt` carries, and for
    * a sharper reason: `drafts` is this store's one field with a real delete
@@ -229,6 +285,7 @@ export const CELPIP_EMPTY: CelpipProgressState = {
   attempts: {},
   drafts: {},
   speakingAttempts: {},
+  listeningAttempts: {},
   updatedAt: null,
 };
 
@@ -455,6 +512,18 @@ export const SCHEMA_MATCHES_STATE: Identical<
  */
 export const CELPIP_MAX_TEXT = 20_000;
 
+/**
+ * The largest option index a stored answer may carry.
+ *
+ * An objective question offers four options; this is two orders of magnitude of
+ * headroom on a value that is only ever an array index, and it means a hostile
+ * or broken client cannot store 1e308 in the middle of an answer sheet. An
+ * out-of-range index is DROPPED rather than clamped: a clamped index would be a
+ * fabricated answer, and showing the learner an answer she never chose is worse
+ * than showing her a blank.
+ */
+export const CELPIP_MAX_OPTION_INDEX = 31;
+
 const celpipText = z.string().max(CELPIP_MAX_TEXT);
 
 /** Validates each element and keeps the survivors, dropping the rest — the
@@ -526,6 +595,32 @@ export const celpipSpeakingAttemptSchema = z.object({
   note: celpipText,
 });
 
+/**
+ * One completed Listening set. Every field is required, for the same reason the
+ * other two attempt shapes' are: an entry missing its set id or its submission
+ * timestamp has no identity, and identity is what the merge de-duplicates on.
+ *
+ * `answers` is a sanitised record of bounded integers, so one malformed answer
+ * is dropped and the rest of the sheet is still stored — the per-entry rule the
+ * whole contract is built on, applied one level deeper.
+ *
+ * NOTHING HERE IS FREE-FORM PROSE. The learner's notes are not persisted (see
+ * `CelpipListeningAttempt`), so this shape is bounded numbers, bounded ids and
+ * booleans, which is what keeps a realistic history far under the 2 MiB body
+ * cap where a 413 is a permanent drop.
+ */
+export const celpipListeningAttemptSchema = z.object({
+  setId: z.string().max(200),
+  date: z.string().max(64),
+  durationSeconds: z.number().int().min(0).max(MAX_COUNT),
+  answers: sanitizedRecord(z.number().int().min(0).max(CELPIP_MAX_OPTION_INDEX)),
+  correct: z.number().int().min(0).max(MAX_COUNT),
+  total: z.number().int().min(0).max(MAX_COUNT),
+  replays: z.number().int().min(0).max(MAX_COUNT),
+  audioFailed: z.boolean(),
+  outOfTime: z.boolean(),
+});
+
 export const celpipProgressSchema = z.object({
   attempts: sanitizedRecord(sanitizedArray(celpipAttemptSchema)),
   drafts: sanitizedRecord(celpipText),
@@ -534,6 +629,11 @@ export const celpipProgressSchema = z.object({
   // the server silently DELETE every Speaking attempt on every write — with no
   // error anywhere, because the write itself would still succeed.
   speakingAttempts: sanitizedRecord(sanitizedArray(celpipSpeakingAttemptSchema)),
+  // Load-bearing in exactly the same way, and worth repeating rather than
+  // cross-referencing: leave this line out and the server silently DELETES
+  // every Listening result on every write, with no error anywhere, because the
+  // write itself still succeeds.
+  listeningAttempts: sanitizedRecord(sanitizedArray(celpipListeningAttemptSchema)),
   // Load-bearing for the same reason `updatedAt` is on the progress schema,
   // and more so here: the plain object constructor strips what it does not
   // declare, so an undeclared instant would be deleted by the server on every

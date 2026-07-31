@@ -163,6 +163,150 @@ export function getSpeakingPrompt(promptId: string): CelpipSpeakingPrompt | unde
   return SPEAKING_PROMPTS.find((p) => p.id === promptId);
 }
 
+/* ------------------------------------------------------------------ *
+ * Listening — the content types (D-03, D-04, D-05).
+ *
+ * A script is an ordered array of SPEAKER TURNS, never one string, and
+ * that is the load-bearing shape decision of this section rather than a
+ * style preference. It solves four problems with one choice:
+ *
+ *   1. Chrome truncates a single long utterance at roughly fifteen
+ *      seconds with no error and sometimes no `onend`. One utterance per
+ *      turn keeps every one of them far under that ceiling without a
+ *      `resume()` timer fighting the engine.
+ *   2. The multi-speaker parts (problem solving has two voices, the
+ *      discussion has three) are testing whether the learner can track
+ *      who said what. Turns are what let each speaker get their own
+ *      voice.
+ *   3. The post-answer transcript — the ONLY place the script text may
+ *      ever be shown (D-04) — renders with speaker labels for free.
+ *   4. `audioUrl` has an obvious per-segment home, which is exactly the
+ *      reversibility D-03 asks for: swapping the Web Speech API for
+ *      recorded audio later is a file per script, not a data migration.
+ * ------------------------------------------------------------------ */
+
+/** The six scored CELPIP Listening part shapes, in exam order. */
+export type CelpipListeningPartKind =
+  | "problem-solving"
+  | "daily-conversation"
+  | "information"
+  | "news-item"
+  | "discussion"
+  | "viewpoints";
+
+/**
+ * The exam's own name for each part shape.
+ *
+ * Declared as a total `Record` over the union rather than as a lookup with a
+ * fallback, so adding a seventh kind fails `npx tsc --noEmit` here instead of
+ * rendering a blank heading to a learner.
+ */
+const LISTENING_PART_KIND_LABEL: Record<CelpipListeningPartKind, string> = {
+  "problem-solving": "Listening to Problem Solving",
+  "daily-conversation": "Listening to a Daily Life Conversation",
+  information: "Listening for Information",
+  "news-item": "Listening to a News Item",
+  discussion: "Listening to a Discussion",
+  viewpoints: "Listening to Viewpoints",
+};
+
+/**
+ * The same six kinds as data, DERIVED from the label table above rather than
+ * written out a second time — the landing reports coverage as "n of 6" and a
+ * mirrored list is the thing that goes stale. Object key order is insertion
+ * order for string keys, so this stays in exam order.
+ */
+export const CELPIP_LISTENING_PART_KINDS = Object.keys(
+  LISTENING_PART_KIND_LABEL,
+) as CelpipListeningPartKind[];
+
+export function listeningPartKindLabel(kind: CelpipListeningPartKind): string {
+  return LISTENING_PART_KIND_LABEL[kind];
+}
+
+/** One line of a script. `speaker` is BOTH the transcript label and the voice
+ * key, so a script cannot label a speaker one way and voice them another. */
+export interface CelpipListeningTurn {
+  speaker: string;
+  text: string;
+}
+
+export interface CelpipListeningSegment {
+  id: string;
+  turns: CelpipListeningTurn[];
+  /**
+   * RESERVED FOR VOICE-01, and deliberately absent from every segment today.
+   *
+   * This is the whole of D-03's reversibility promise in one optional field:
+   * when recorded or premium-TTS audio lands, a segment gains a file path and
+   * the player prefers it over `speechSynthesis`. No stored attempt changes
+   * shape, no set is re-authored, and nothing migrates. A same-origin file also
+   * needs no CSP change — `default-src 'self'` already covers it.
+   */
+  audioUrl?: string;
+}
+
+/**
+ * One objective question with a single correct option.
+ *
+ * `explanation` is REQUIRED at the type level, not optional: CELPIP-06 and
+ * CELPIP-07 both ask for per-question explanations, and an optional field is
+ * one an author forgets under deadline. The compiler is a cheaper reviewer.
+ *
+ * Shared with Reading when plan 09 lands — the two skills differ in what the
+ * learner consumes before the question, not in the question itself.
+ */
+export interface CelpipObjectiveQuestion {
+  id: string;
+  /** The question itself. */
+  stem: string;
+  options: string[];
+  /** Index into `options`. */
+  answer: number;
+  /** Why that option is the answer — shown after submission, never before. */
+  explanation: string;
+  /** Which segment this question follows. Problem solving asks after each
+   * segment; every other part has one segment and may leave this absent. */
+  segmentId?: string;
+}
+
+/**
+ * One part of a set.
+ *
+ * EVERY part carries an ARRAY of segments even though only problem solving has
+ * more than one. A part that modelled its single segment as a bare field would
+ * make the player carry a special case forever, for one part, in the one
+ * component where a mistake means the learner hears nothing and — under D-05 —
+ * never sees a question either.
+ */
+export interface CelpipListeningPart {
+  id: string;
+  kind: CelpipListeningPartKind;
+  title: string;
+  segments: CelpipListeningSegment[];
+  questions: CelpipObjectiveQuestion[];
+}
+
+export interface CelpipListeningSet {
+  id: string;
+  title: string;
+  timeLimitMinutes: number;
+  parts: CelpipListeningPart[];
+}
+
+/**
+ * The Listening bank. EMPTY here on purpose — this plan ships the types, the
+ * persistence field and the speech driver; plan 05 creates the bank module and
+ * authors the content. An empty array is what keeps the landing honest in the
+ * meantime: `section()` filters empty groups, so Listening reports itself as
+ * not yet available until a real set exists.
+ */
+export const LISTENING_SETS: CelpipListeningSet[] = [];
+
+export function getListeningSet(setId: string): CelpipListeningSet | undefined {
+  return LISTENING_SETS.find((s) => s.id === setId);
+}
+
 export { CELPIP_RUBRIC } from "./celpip/rubric.ts";
 export { CELPIP_SPEAKING_RUBRIC } from "./celpip/rubric-speaking.ts";
 

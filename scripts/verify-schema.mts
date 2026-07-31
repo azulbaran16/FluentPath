@@ -20,6 +20,7 @@
 import { z } from "zod";
 import {
   CELPIP_EMPTY,
+  CELPIP_MAX_OPTION_INDEX,
   CELPIP_MAX_TEXT,
   CELPIP_SCHEMA_MATCHES_STATE,
   EMPTY,
@@ -30,6 +31,7 @@ import {
   safeReadProgress,
   sanitizedRecord,
   type CelpipAttempt,
+  type CelpipListeningAttempt,
   type CelpipProgressState,
   type CelpipSpeakingAttempt,
   type ProgressState,
@@ -462,6 +464,22 @@ const speakingAttempt: CelpipSpeakingAttempt = {
   note: "Started too slowly — spent the first fifteen seconds restating the scenario.",
 };
 
+/** A Listening result exactly as the player will record it. Note what is NOT on
+ * it: the learner's notes. Those live in React state and die with the set —
+ * persisting them would put a second deletable map on the one shared instant
+ * that `drafts` already rides. */
+const listeningAttempt: CelpipListeningAttempt = {
+  setId: "listening-set-1",
+  date: "2026-07-29T15:12:44.000Z",
+  durationSeconds: 2_640,
+  answers: { "l1-q1": 2, "l1-q2": 0, "l3-q4": 3 },
+  correct: 29,
+  total: 37,
+  replays: 0,
+  audioFailed: false,
+  outOfTime: false,
+};
+
 const celpipFull: CelpipProgressState = {
   attempts: {
     "email-neighbour": [olderAttempt, attempt],
@@ -469,6 +487,7 @@ const celpipFull: CelpipProgressState = {
   },
   drafts: { "survey-transit": "In my opinion the current schedule is" },
   speakingAttempts: { "speaking-advice-first-winter": [speakingAttempt] },
+  listeningAttempts: { "listening-set-1": [listeningAttempt] },
   updatedAt: INSTANT,
 };
 
@@ -761,6 +780,7 @@ group("CELPIP speaking bounds — every field on the new shape is capped");
     attempts: {},
     drafts: {},
     speakingAttempts: {},
+    listeningAttempts: {},
     updatedAt: INSTANT,
   };
   // 200 rehearsals spread over 8 prompts — far more than an exam candidate
@@ -796,11 +816,28 @@ group("CELPIP speaking bounds — every field on the new shape is capped");
       { ...attempt, taskId, date: new Date(Date.UTC(2026, 6, 2, 0, i)).toISOString() },
     ];
   }
+  // Plus a Listening history: 30 sittings across 4 sets, each carrying a FULL
+  // 37-item answer sheet. The answer map is the only thing on this shape that
+  // grows with content, so it is the half worth measuring rather than assuming.
+  const fullSheet: Record<string, number> = {};
+  for (let q = 0; q < 37; q += 1) fullSheet[`listening-part-${(q % 6) + 1}-q${q}`] = q % 4;
+  for (let i = 0; i < 30; i += 1) {
+    const setId = `listening-set-${i % 4}`;
+    worstCase.listeningAttempts[setId] = [
+      ...(worstCase.listeningAttempts[setId] ?? []),
+      {
+        ...listeningAttempt,
+        setId,
+        date: new Date(Date.UTC(2026, 6, 3, 0, i)).toISOString(),
+        answers: fullSheet,
+      },
+    ];
+  }
   const bytes = Buffer.byteLength(JSON.stringify(worstCase), "utf8");
   // Printed unconditionally: a sizing assertion is only useful if the number it
   // passed on is visible, so a later shape change can be compared against it.
   console.log(
-    `    measured: 200 rehearsals + 40 essays = ${bytes} bytes (${(
+    `    measured: 200 rehearsals + 40 essays + 30 full listening sheets = ${bytes} bytes (${(
       (bytes / MAX_BODY_BYTES) *
       100
     ).toFixed(1)}% of the 2 MiB cap)`,
@@ -815,6 +852,223 @@ group("CELPIP speaking bounds — every field on the new shape is capped");
   ok(
     "and it still round-trips through the schema unchanged",
     canon(celpipProgressSchema.parse(worstCase)) === canon(worstCase),
+  );
+}
+
+group("CELPIP listening — the same per-entry rules, one level deeper");
+{
+  // THE ADDITIVITY CASE. Two of them, in fact, and the second is the one that
+  // matters today: a row written before THIS plan carries `speakingAttempts`
+  // but no `listeningAttempts` at all. Both must recover to an empty record
+  // rather than failing the payload or leaving the field undefined.
+  const preSpeakingBlob = {
+    attempts: { "survey-transit": [surveyAttempt] },
+    drafts: {},
+    updatedAt: INSTANT,
+  };
+  const preSpeaking = acceptCelpip("a Phase-1 blob with neither new field", preSpeakingBlob);
+  deepEqual("listeningAttempts recovers to an empty record", preSpeaking.listeningAttempts, {});
+  deepEqual("and speakingAttempts still does too", preSpeaking.speakingAttempts, {});
+
+  const postSpeakingBlob = {
+    attempts: { "survey-transit": [surveyAttempt] },
+    drafts: {},
+    speakingAttempts: { "speaking-advice-first-winter": [speakingAttempt] },
+    updatedAt: INSTANT,
+  };
+  const postSpeaking = acceptCelpip(
+    "a row written between 02.1-01 and this plan: speaking present, listening absent",
+    postSpeakingBlob,
+  );
+  deepEqual("the absent listening field recovers to an empty record", postSpeaking.listeningAttempts, {});
+  deepEqual(
+    "and the rehearsal history it does carry is untouched",
+    postSpeaking.speakingAttempts,
+    postSpeakingBlob.speakingAttempts,
+  );
+  ok(
+    "read through the safe helper it behaves the same",
+    canon(safeReadCelpip(JSON.stringify(postSpeakingBlob)).listeningAttempts) === "{}",
+  );
+
+  const parsed = acceptCelpip("a set array holding one good and three bad results", {
+    ...celpipFull,
+    listeningAttempts: {
+      "listening-set-1": [
+        listeningAttempt,
+        { ...listeningAttempt, date: 1_753_000_000_000 }, // a number where the ISO date belongs
+        { ...listeningAttempt, audioFailed: "yes" }, // a string where the flag belongs
+        "nope",
+      ],
+    },
+  });
+  deepEqual(
+    "the well-formed result survives alone",
+    parsed.listeningAttempts["listening-set-1"],
+    [listeningAttempt],
+  );
+
+  // A set id this build has never heard of must still validate — the same
+  // no-enum guarantee the speaking `shape` carries, at the record-key level.
+  // Dropping a set from the phase for the calendar must never make an already
+  // stored result unreadable.
+  const unknownSet = acceptCelpip("a result for a set id this build does not know", {
+    ...celpipFull,
+    listeningAttempts: {
+      "listening-set-that-was-cut": [{ ...listeningAttempt, setId: "listening-set-that-was-cut" }],
+    },
+  });
+  ok(
+    "an unrecognised set id is accepted, not dropped",
+    unknownSet.listeningAttempts["listening-set-that-was-cut"]?.length === 1,
+  );
+
+  const notAnArray = acceptCelpip("a set whose results value is not an array", {
+    ...celpipFull,
+    listeningAttempts: { "listening-set-1": { 0: listeningAttempt } },
+  });
+  ok(
+    "a non-array set value is dropped rather than coerced to an empty history",
+    !("listening-set-1" in notAnArray.listeningAttempts),
+  );
+  deepEqual("its writing neighbours are untouched", notAnArray.attempts, celpipFull.attempts);
+  deepEqual(
+    "and its speaking neighbours are untouched",
+    notAnArray.speakingAttempts,
+    celpipFull.speakingAttempts,
+  );
+
+  const poisoned = acceptCelpip("poisoned keys in the listening record", {
+    ...celpipFull,
+    listeningAttempts: JSON.parse(
+      `{"__proto__":[],"constructor":[],"prototype":[],"listening-set-1":${JSON.stringify([
+        listeningAttempt,
+      ])}}`,
+    ) as Record<string, unknown>,
+  });
+  deepEqual("poisoned set keys are dropped", Object.keys(poisoned.listeningAttempts).sort(), [
+    "listening-set-1",
+  ]);
+
+  // The answer map is a record too, one level further in — so it needs the same
+  // treatment, and a poisoned QUESTION id is a distinct hole from a poisoned
+  // set id.
+  const poisonedAnswers = acceptCelpip("poisoned keys inside the answer sheet", {
+    ...celpipFull,
+    listeningAttempts: {
+      "listening-set-1": [
+        {
+          ...listeningAttempt,
+          answers: JSON.parse('{"__proto__":1,"constructor":2,"l1-q1":3}') as Record<
+            string,
+            number
+          >,
+        },
+      ],
+    },
+  });
+  deepEqual(
+    "poisoned question ids are dropped, the real answer survives",
+    poisonedAnswers.listeningAttempts["listening-set-1"][0].answers,
+    { "l1-q1": 3 },
+  );
+  ok(
+    "and no prototype was polluted along the way",
+    ({} as Record<string, unknown>).polluted === undefined,
+  );
+}
+
+group("CELPIP listening bounds — one bad answer costs only itself");
+{
+  // The per-entry rule applied INSIDE the attempt: a malformed answer is
+  // dropped from the sheet and the result is still stored, rather than the
+  // whole sitting being lost over one bad index.
+  for (const [label, bad] of [
+    ["a negative option index", -1],
+    ["an option index past the ceiling", CELPIP_MAX_OPTION_INDEX + 1],
+    ["a fractional option index", 1.5],
+    ["a non-finite option index", Number.POSITIVE_INFINITY],
+    ["a string where the index belongs", "2" as unknown as number],
+    ["null where the index belongs", null as unknown as number],
+  ] as Array<[string, number]>) {
+    const parsed = acceptCelpip(`an answer sheet carrying ${label}`, {
+      ...celpipFull,
+      listeningAttempts: {
+        "listening-set-1": [
+          { ...listeningAttempt, answers: { "l1-q1": 2, "l1-q2": bad, "l1-q3": 0 } },
+        ],
+      },
+    });
+    const entry = parsed.listeningAttempts["listening-set-1"] ?? [];
+    ok(`${label}: the attempt itself is still stored`, entry.length === 1);
+    deepEqual(`${label}: only that one answer is dropped`, entry[0]?.answers, {
+      "l1-q1": 2,
+      "l1-q3": 0,
+    });
+  }
+
+  const atTheCeiling = acceptCelpip("an answer exactly at the option ceiling", {
+    ...celpipFull,
+    listeningAttempts: {
+      "listening-set-1": [
+        { ...listeningAttempt, answers: { "l1-q1": CELPIP_MAX_OPTION_INDEX } },
+      ],
+    },
+  });
+  deepEqual(
+    "an index exactly at the ceiling is still accepted",
+    atTheCeiling.listeningAttempts["listening-set-1"][0].answers,
+    { "l1-q1": CELPIP_MAX_OPTION_INDEX },
+  );
+
+  // Every NUMBER on the shape is bounded, exactly as on the speaking one. Each
+  // costs only its own entry.
+  for (const [label, patch] of [
+    ["a negative duration", { durationSeconds: -1 }],
+    ["a negative correct count", { correct: -1 }],
+    ["a negative total", { total: -1 }],
+    ["a negative replay count", { replays: -1 }],
+    ["a fractional correct count", { correct: 12.5 }],
+    ["a replay count past the counter ceiling", { replays: 1e12 }],
+    ["a non-finite duration", { durationSeconds: Number.POSITIVE_INFINITY }],
+  ] as Array<[string, Partial<Record<string, number>>]>) {
+    const bad = acceptCelpip(`a result carrying ${label}`, {
+      ...celpipFull,
+      listeningAttempts: {
+        "listening-set-1": [
+          listeningAttempt,
+          { ...listeningAttempt, date: "2026-08-02T00:00:00.000Z", ...patch },
+        ],
+      },
+    });
+    deepEqual(
+      `${label} costs only its own entry`,
+      bad.listeningAttempts["listening-set-1"],
+      [listeningAttempt],
+    );
+  }
+
+  // THE FIELD THAT IS NOT THERE. Notes are deliberately not persisted, so a
+  // client that sends one must have it stripped — otherwise the "no second
+  // deletable map" argument quietly stops being true the first time a future
+  // component sends the field speculatively.
+  const withNotes = acceptCelpip("a result carrying learner notes", {
+    ...celpipFull,
+    listeningAttempts: {
+      "listening-set-1": [{ ...listeningAttempt, notes: "3pm, second platform, $4.25" }],
+    },
+  });
+  ok(
+    "a notes field is stripped rather than stored — the shape carries no free-form prose",
+    !(
+      "notes" in
+      (withNotes.listeningAttempts["listening-set-1"][0] as unknown as Record<string, unknown>)
+    ),
+  );
+  deepEqual(
+    "and the result itself is stored, unchanged",
+    withNotes.listeningAttempts["listening-set-1"],
+    [listeningAttempt],
   );
 }
 
@@ -860,6 +1114,7 @@ group("CELPIP PROG-03 — a corrupt stored blob loads as the empty state");
       attempts: { "email-neighbour": [attempt], "survey-transit": [surveyAttempt] },
       drafts: {},
       speakingAttempts: celpipFull.speakingAttempts,
+      listeningAttempts: celpipFull.listeningAttempts,
       updatedAt: INSTANT,
     },
   );

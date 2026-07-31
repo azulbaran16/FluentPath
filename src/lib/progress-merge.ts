@@ -69,6 +69,7 @@
 import type {
   AttemptStat,
   CelpipAttempt,
+  CelpipListeningAttempt,
   CelpipProgressState,
   CelpipSpeakingAttempt,
   ProgressState,
@@ -164,10 +165,27 @@ function num(v: unknown, fallback: number): number {
   return typeof v === "number" && Number.isFinite(v) ? v : fallback;
 }
 
+/**
+ * Record keys that must never be assigned into a coerced map — the same three
+ * `sanitizeEntries` skips in progress-schema.ts, and deliberately a second copy
+ * for the same reason `MERGE_EMPTY` is: this module takes no runtime import.
+ *
+ * `JSON.parse` creates `__proto__` as a real OWN property, so `Object.keys`
+ * enumerates it, and `out[k] = value` then reaches the inherited setter instead
+ * of defining a key. `constructor` and `prototype` are worse in a quieter way:
+ * assignment defines them as ordinary own keys, so the MERGE would carry them
+ * while the schema strips them on the write path — and the two halves of one
+ * contract disagreeing is a permanent write loop, because the reconcile finds a
+ * difference, sends it, gets it stripped, and finds the same difference on the
+ * next load. Every coercion function below therefore skips these three.
+ */
+const POISONED_KEYS = new Set(["__proto__", "constructor", "prototype"]);
+
 function flagRecord(v: unknown): Record<string, true> {
   if (!isPlainObject(v)) return {};
   const out: Record<string, true> = {};
   for (const k of Object.keys(v)) {
+    if (POISONED_KEYS.has(k)) continue;
     if (v[k]) out[k] = true;
   }
   return out;
@@ -177,6 +195,7 @@ function numberRecord(v: unknown): Record<string, number> {
   if (!isPlainObject(v)) return {};
   const out: Record<string, number> = {};
   for (const k of Object.keys(v)) {
+    if (POISONED_KEYS.has(k)) continue;
     const n = v[k];
     if (typeof n === "number" && Number.isFinite(n)) out[k] = n;
   }
@@ -199,6 +218,7 @@ function srsRecord(v: unknown): Record<string, SrsItem> {
   if (!isPlainObject(v)) return {};
   const out: Record<string, SrsItem> = {};
   for (const k of Object.keys(v)) {
+    if (POISONED_KEYS.has(k)) continue;
     const e = v[k];
     if (!isPlainObject(e)) continue;
     const box = optNum(e.box);
@@ -224,6 +244,7 @@ function attemptRecord(v: unknown): Record<string, AttemptStat> {
   if (!isPlainObject(v)) return {};
   const out: Record<string, AttemptStat> = {};
   for (const k of Object.keys(v)) {
+    if (POISONED_KEYS.has(k)) continue;
     const e = v[k];
     if (!isPlainObject(e)) continue;
     const updatedAt = str(e.updatedAt);
@@ -566,8 +587,8 @@ function pickVocabSide(x: MergeState, y: MergeState): number {
   const kx = Object.keys(x.vocab).sort();
   const ky = Object.keys(y.vocab).sort();
   if (kx.length !== ky.length) return kx.length > ky.length ? 1 : -1;
-  const jx = kx.join(" ");
-  const jy = ky.join(" ");
+  const jx = kx.join("\u0000");
+  const jy = ky.join("\u0000");
   return jx > jy ? 1 : jx < jy ? -1 : 0;
 }
 
@@ -634,6 +655,7 @@ export const MERGE_CELPIP_EMPTY: CelpipProgressState = {
   attempts: {},
   drafts: {},
   speakingAttempts: {},
+  listeningAttempts: {},
   updatedAt: null,
 };
 
@@ -641,6 +663,7 @@ function stringRecord(v: unknown): Record<string, string> {
   if (!isPlainObject(v)) return {};
   const out: Record<string, string> = {};
   for (const k of Object.keys(v)) {
+    if (POISONED_KEYS.has(k)) continue;
     const s = str(v[k]);
     if (s !== null) out[k] = s;
   }
@@ -651,6 +674,7 @@ function boolRecord(v: unknown): Record<string, boolean> {
   if (!isPlainObject(v)) return {};
   const out: Record<string, boolean> = {};
   for (const k of Object.keys(v)) {
+    if (POISONED_KEYS.has(k)) continue;
     if (typeof v[k] === "boolean") out[k] = v[k];
   }
   return out;
@@ -698,7 +722,7 @@ function celpipAttemptEntry(v: unknown): CelpipAttempt | null {
  * forge another task's key.
  */
 function attemptKey(e: CelpipAttempt): string {
-  return `${e.taskId} ${e.date}`;
+  return `${e.taskId}\u0000${e.date}`;
 }
 
 /**
@@ -754,6 +778,7 @@ function entryRecord<T extends { date: string }>(
   if (!isPlainObject(v)) return {};
   const out: Record<string, T[]> = {};
   for (const k of Object.keys(v)) {
+    if (POISONED_KEYS.has(k)) continue;
     const list = v[k];
     if (!Array.isArray(list)) continue;
     const entries: T[] = [];
@@ -808,15 +833,100 @@ function celpipSpeakingEntry(v: unknown): CelpipSpeakingAttempt | null {
 /** The Speaking twin of `attemptKey` — the prompt answered and the instant it
  * was submitted, joined on the same literal NUL. */
 function speakingKey(e: CelpipSpeakingAttempt): string {
-  return `${e.promptId} ${e.date}`;
+  return `${e.promptId}\u0000${e.date}`;
 }
 
 function canonicalSpeaking(list: CelpipSpeakingAttempt[]): CelpipSpeakingAttempt[] {
   return canonicalEntries(list, speakingKey);
 }
 
+/**
+ * The ceiling on a stored answer's option index, declared here as a DELIBERATE
+ * second copy of `CELPIP_MAX_OPTION_INDEX` for the same reason
+ * `MERGE_CELPIP_EMPTY` is a second copy of the empty state: importing the
+ * contract module as a VALUE would give this file a runtime relative import and
+ * break its standalone-load property. `scripts/verify-merge.mts` asserts the two
+ * numbers are equal, so the copy cannot drift silently.
+ */
+export const MERGE_CELPIP_MAX_OPTION_INDEX = 31;
+
+/**
+ * An answer sheet, normalised: question id -> chosen option index.
+ *
+ * An index that is not a non-negative integer inside the ceiling is DROPPED
+ * rather than clamped or repaired. Clamping would fabricate an answer — showing
+ * the learner a choice she never made, in her own history, with no way to tell —
+ * and repairing to 0 would silently mark a question as answered. The map is
+ * rebuilt from validated entries rather than spread, which is also what keeps a
+ * poisoned key (`__proto__`, `constructor`) out of the stored shape.
+ */
+function indexRecord(v: unknown): Record<string, number> {
+  if (!isPlainObject(v)) return {};
+  const out: Record<string, number> = {};
+  for (const k of Object.keys(v)) {
+    if (POISONED_KEYS.has(k)) continue;
+    const raw = v[k];
+    if (typeof raw !== "number" || !Number.isInteger(raw)) continue;
+    if (raw < 0 || raw > MERGE_CELPIP_MAX_OPTION_INDEX) continue;
+    out[k] = raw;
+  }
+  return out;
+}
+
+/**
+ * One completed Listening set, normalised.
+ *
+ * NOTE WHAT IS NOT HERE, twice over. There is no literal list of part kinds or
+ * set ids — `celpipAttemptEntry` above hard-codes the writing task-type pair
+ * independently of the zod enum, and that second copy is the trap that would
+ * delete a stored attempt the moment a set id or a part shape it does not
+ * recognise arrives. And there is no notes field: the learner's scratch notes
+ * are never persisted (see `CelpipListeningAttempt`), so this shape carries no
+ * free-form prose at all.
+ *
+ * Identity is `setId` plus `date`, exactly as the other two rules are: an entry
+ * missing either is dropped rather than repaired, because an entry that cannot
+ * be de-duplicated would be re-appended on every reconcile and grow the column
+ * forever.
+ */
+function celpipListeningEntry(v: unknown): CelpipListeningAttempt | null {
+  if (!isPlainObject(v)) return null;
+  const setId = str(v.setId);
+  const date = str(v.date);
+  if (setId === null || setId === "" || date === null || date === "") return null;
+  const duration = num(v.durationSeconds, 0);
+  const correct = num(v.correct, 0);
+  const total = num(v.total, 0);
+  const replays = num(v.replays, 0);
+  return {
+    setId,
+    date,
+    durationSeconds: duration < 0 ? 0 : duration,
+    answers: indexRecord(v.answers),
+    correct: correct < 0 ? 0 : correct,
+    total: total < 0 ? 0 : total,
+    replays: replays < 0 ? 0 : replays,
+    audioFailed: Boolean(v.audioFailed),
+    outOfTime: Boolean(v.outOfTime),
+  };
+}
+
+/** The Listening twin of `attemptKey` — the set answered and the instant it was
+ * submitted, joined on the same literal NUL. */
+function listeningKey(e: CelpipListeningAttempt): string {
+  return `${e.setId}\u0000${e.date}`;
+}
+
+function canonicalListening(list: CelpipListeningAttempt[]): CelpipListeningAttempt[] {
+  return canonicalEntries(list, listeningKey);
+}
+
 function celpipAttemptRecord(v: unknown): Record<string, CelpipAttempt[]> {
   return entryRecord(v, celpipAttemptEntry, attemptKey);
+}
+
+function celpipListeningRecord(v: unknown): Record<string, CelpipListeningAttempt[]> {
+  return entryRecord(v, celpipListeningEntry, listeningKey);
 }
 
 function celpipSpeakingRecord(v: unknown): Record<string, CelpipSpeakingAttempt[]> {
@@ -829,6 +939,7 @@ function celpipCoerce(v: unknown): CelpipProgressState {
     attempts: celpipAttemptRecord(v.attempts),
     drafts: stringRecord(v.drafts),
     speakingAttempts: celpipSpeakingRecord(v.speakingAttempts),
+    listeningAttempts: celpipListeningRecord(v.listeningAttempts),
     updatedAt: str(v.updatedAt),
   };
 }
@@ -888,6 +999,12 @@ export function mergeCelpip(a: unknown, b: unknown): CelpipProgressState {
     // (see pickDraftsSide).
     speakingAttempts: unionRecord(x.speakingAttempts, y.speakingAttempts, (p, q) =>
       canonicalSpeaking([...p, ...q]),
+    ),
+    // And the same rule a third time, one line. The Listening result is
+    // append-only with a natural key, so it inherits the proof the writing
+    // `attempts` field already carries instead of needing one of its own.
+    listeningAttempts: unionRecord(x.listeningAttempts, y.listeningAttempts, (p, q) =>
+      canonicalListening([...p, ...q]),
     ),
     // The later of the two, never a fresh one: a stamp here would make every
     // merged copy outrank every unmerged one, and the reconcile would then

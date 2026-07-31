@@ -14,6 +14,7 @@
 
 import {
   MERGE_CELPIP_EMPTY,
+  MERGE_CELPIP_MAX_OPTION_INDEX,
   MERGE_EMPTY,
   celpipEqual,
   mergeCelpip,
@@ -22,9 +23,11 @@ import {
 } from "../src/lib/progress-merge.ts";
 import {
   CELPIP_EMPTY,
+  CELPIP_MAX_OPTION_INDEX,
   EMPTY,
   type AttemptStat,
   type CelpipAttempt,
+  type CelpipListeningAttempt,
   type CelpipProgressState,
   type CelpipSpeakingAttempt,
   type ProgressState,
@@ -359,6 +362,42 @@ for (const j of junk) {
 }
 wellFormed("merge({}, {})", mergeProgress({}, {}));
 deepEqual("merge({}, {}) is the empty state", mergeProgress({}, {}), EMPTY);
+
+// Poisoned record keys, on the PROGRESS side. The same pre-existing gap the
+// CELPIP group below documents in full: progress-schema's `sanitizeEntries`
+// skipped `__proto__`, `constructor` and `prototype`; every coercion function
+// here assigned them. `constructor` and `prototype` survived the merge and were
+// stripped by the schema, so the reconcile would write on every page load.
+{
+  const poisoned = mergeProgress(
+    JSON.parse(
+      `{"completed":{"__proto__":true,"constructor":true,"prototype":true,"lesson-1":true},` +
+        `"skillXp":{"constructor":40,"listening":30},` +
+        `"vocab":{"prototype":true,"card-1":true},` +
+        `"srs":{"constructor":{"box":2,"due":"2026-07-30"},"card-1":{"box":1,"due":"2026-07-29"}},` +
+        `"attempts":{"prototype":{"topic":"x","tries":1,"wrong":0,"updatedAt":"2026-07-30"}}}`,
+    ),
+    EMPTY,
+  );
+  deepEqual("poisoned completed keys are dropped by the merge", Object.keys(poisoned.completed).sort(), [
+    "lesson-1",
+  ]);
+  deepEqual("poisoned skillXp keys are dropped by the merge", Object.keys(poisoned.skillXp).sort(), [
+    "listening",
+  ]);
+  deepEqual("poisoned vocab keys are dropped by the merge", Object.keys(poisoned.vocab).sort(), [
+    "card-1",
+  ]);
+  deepEqual("poisoned srs keys are dropped by the merge", Object.keys(poisoned.srs).sort(), [
+    "card-1",
+  ]);
+  deepEqual("poisoned attempt-stat keys are dropped by the merge", Object.keys(poisoned.attempts).sort(), []);
+  ok(
+    "and no prototype was polluted along the way",
+    ({} as Record<string, unknown>).polluted === undefined &&
+      Object.getPrototypeOf(poisoned.completed) === Object.prototype,
+  );
+}
 
 /* ------------------------------------------------------------------ *
  * 5. Never-lose — PROG-05 read literally: an account that already holds
@@ -1198,6 +1237,79 @@ const legacyNoSpeakingField = {
   updatedAt: "2026-07-25T12:00:00.000Z",
 } as unknown as CelpipProgressState;
 
+/* ---- Listening sittings (02.1-04) ---- */
+
+function lst(
+  setId: string,
+  date: string,
+  patch: Partial<CelpipListeningAttempt> = {},
+): CelpipListeningAttempt {
+  return {
+    setId,
+    date,
+    durationSeconds: 2_640,
+    answers: { "l1-q1": 2, "l1-q2": 0, "l3-q4": 3 },
+    correct: 29,
+    total: 37,
+    replays: 0,
+    audioFailed: false,
+    outOfTime: false,
+    ...patch,
+  };
+}
+
+const SET1 = "listening-set-everyday-canada";
+
+// h2 is the SHARED sitting, on both devices, and must come out once.
+const h1 = lst(SET1, "2026-07-26T14:00:00.000Z", { correct: 21 });
+const h2 = lst(SET1, "2026-07-28T14:40:00.000Z", { correct: 26 });
+const h3 = lst(SET1, "2026-07-30T08:05:00.000Z", { correct: 31, replays: 2 });
+// The valid stranded attempt: she heard nothing, said so at the audio check,
+// and went through the set anyway. Nothing here is gated on a quality signal,
+// so it has to survive the merge like any other result.
+const hDeaf = lst(SET1, "2026-07-31T06:30:00.000Z", {
+  answers: {},
+  correct: 0,
+  audioFailed: true,
+  outOfTime: true,
+});
+// A set id this build does not know, because the set was cut from the phase for
+// the calendar. The same regression guard the speaking `shape` carries, one
+// level out: nothing in the listening rule may mirror a list of set ids.
+const hCutSet = lst("listening-set-that-was-cut", "2026-07-31T09:00:00.000Z");
+
+const listeningOnly = mkCelpip({
+  listeningAttempts: { [SET1]: [h1, h2] },
+  updatedAt: "2026-07-28T14:40:00.000Z",
+});
+const allThreeSkills = mkCelpip({
+  attempts: { "email-neighbour": [a2, a3] },
+  drafts: { "survey-transit": "a draft open on the same evening she did a listening set" },
+  speakingAttempts: { [WINTER]: [r2, r3] },
+  listeningAttempts: { [SET1]: [h2, h3], "listening-set-that-was-cut": [hCutSet] },
+  updatedAt: "2026-07-30T08:05:00.000Z",
+});
+// Two sittings sharing a natural key (same set, same millisecond) but differing
+// in content: the tie-break must pick the same one either way round.
+const listeningTwins = mkCelpip({
+  listeningAttempts: {
+    [SET1]: [lst(SET1, h2.date, { correct: 11 }), lst(SET1, h2.date, { correct: 33 })],
+  },
+});
+const listeningDeafOnly = mkCelpip({
+  listeningAttempts: { [SET1]: [hDeaf] },
+  updatedAt: "2026-07-31T06:30:00.000Z",
+});
+// The row shape as it sits in Postgres between 02.1-01 and this plan: speaking
+// present, listening ABSENT rather than empty. Distinct from
+// legacyNoSpeakingField above, which is the Phase-1 shape missing both.
+const legacyNoListeningField = {
+  attempts: { "email-neighbour": [a1] },
+  drafts: {},
+  speakingAttempts: { [WINTER]: [r1] },
+  updatedAt: "2026-07-27T12:00:00.000Z",
+} as unknown as CelpipProgressState;
+
 const celpipStates: Array<[string, CelpipProgressState]> = [
   ["CELPIP_EMPTY", CELPIP_EMPTY],
   ["laptop", laptop],
@@ -1217,6 +1329,13 @@ const celpipStates: Array<[string, CelpipProgressState]> = [
   ["speakingTwins", speakingTwins],
   ["speakingSilentOnly", speakingSilentOnly],
   ["legacyNoSpeakingField", legacyNoSpeakingField],
+  // Added by 02.1-04, for the same reason and with the same payoff: each is
+  // exercised against every other state under both bracketings for free.
+  ["listeningOnly", listeningOnly],
+  ["allThreeSkills", allThreeSkills],
+  ["listeningTwins", listeningTwins],
+  ["listeningDeafOnly", listeningDeafOnly],
+  ["legacyNoListeningField", legacyNoListeningField],
 ];
 
 group("CELPIP algebra — idempotent, commutative, associative");
@@ -1489,6 +1608,236 @@ group("CELPIP speaking — the same append-only rule, and no enum trap");
   );
 }
 
+group("CELPIP listening — the third append-only field, and the answer sheet");
+{
+  const merged = mergeCelpip(listeningOnly, allThreeSkills);
+  deepEqual(
+    "the two devices' sitting histories combine, and the shared one appears once",
+    merged.listeningAttempts[SET1],
+    [h1, h2, h3],
+  );
+  const dates = merged.listeningAttempts[SET1].map((e) => e.date);
+  deepEqual("sorted ascending by submission timestamp", dates, [...dates].sort());
+  ok(
+    "merging twice yields an identical array — the reconcile settles",
+    celpipEqual(mergeCelpip(merged, listeningOnly), merged) &&
+      celpipEqual(mergeCelpip(merged, allThreeSkills), merged),
+  );
+
+  // THE ENUM TRAP, at the set-id level. `celpipAttemptEntry` drops a writing
+  // attempt whose taskType is not one of its two hard-coded literals, and that
+  // list is a SECOND copy of the zod enum. Nothing in the listening rule may
+  // mirror a list of set ids or part kinds: sets are content, a set can be cut
+  // from the phase for the calendar, and a cut set must never delete a result
+  // the learner already has.
+  const survived = mergeCelpip(
+    mkCelpip({ listeningAttempts: { "listening-set-that-was-cut": [hCutSet] } }),
+    CELPIP_EMPTY,
+  );
+  deepEqual(
+    "a sitting for a set id this build does not recognise is NOT deleted by the merge",
+    survived.listeningAttempts["listening-set-that-was-cut"],
+    [hCutSet],
+  );
+  ok(
+    "it still survives a second reconcile rather than being dropped on the way back",
+    mergeCelpip(survived, survived).listeningAttempts["listening-set-that-was-cut"].length === 1,
+  );
+
+  // The stranded attempt: audio failed, nothing answered, nothing right. It is
+  // a real outcome and the field that records it is the whole point of
+  // `audioFailed`, so the merge must carry it rather than reading a
+  // zero-everything entry as junk.
+  const deaf = mergeCelpip(listeningDeafOnly, listeningOnly);
+  deepEqual(
+    "a sitting where the audio failed is preserved, not treated as an empty entry",
+    deaf.listeningAttempts[SET1].filter((e) => e.audioFailed),
+    [hDeaf],
+  );
+  ok(
+    "and its flags survive verbatim",
+    deaf.listeningAttempts[SET1].filter((e) => e.audioFailed)[0].outOfTime === true,
+  );
+
+  // A natural-key collision collapses to one, the same one either way round.
+  const clash = mergeCelpip(
+    mkCelpip({ listeningAttempts: { [SET1]: [lst(SET1, h2.date, { correct: 11 })] } }),
+    mkCelpip({ listeningAttempts: { [SET1]: [lst(SET1, h2.date, { correct: 33 })] } }),
+  );
+  ok("a natural-key collision collapses to one entry", clash.listeningAttempts[SET1].length === 1);
+  deepEqual(
+    "and it collapses to the same one in either order",
+    mergeCelpip(
+      mkCelpip({ listeningAttempts: { [SET1]: [lst(SET1, h2.date, { correct: 33 })] } }),
+      mkCelpip({ listeningAttempts: { [SET1]: [lst(SET1, h2.date, { correct: 11 })] } }),
+    ),
+    clash,
+  );
+
+  // Identity is setId + date. An entry with neither cannot be de-duplicated and
+  // would be re-appended on every reconcile, growing the column forever.
+  const identityless = {
+    listeningAttempts: {
+      [SET1]: [{ ...h1, date: "" }, { ...h1, setId: "" }, { correct: 4 }, h1],
+    },
+  };
+  const kept = mergeCelpip(identityless, CELPIP_EMPTY);
+  deepEqual("a sitting with no natural key is dropped, not stored", kept.listeningAttempts[SET1], [
+    h1,
+  ]);
+  ok(
+    "so a repeat merge cannot append a second copy of it",
+    mergeCelpip(kept, identityless).listeningAttempts[SET1].length === 1,
+  );
+
+  // ---- The coercer normalises, and does so idempotently. ----
+  const nasty = mergeCelpip(
+    {
+      listeningAttempts: {
+        [SET1]: [
+          {
+            setId: SET1,
+            date: "2026-08-01T05:00:00.000Z",
+            durationSeconds: -2640,
+            answers: {
+              "l1-q1": 2,
+              "l1-q2": -1,
+              "l1-q3": 1.5,
+              "l1-q4": "3",
+              "l1-q5": MERGE_CELPIP_MAX_OPTION_INDEX + 1,
+              "l1-q6": null,
+              "l1-q7": Number.NaN,
+            },
+            correct: -4,
+            total: -37,
+            replays: -2,
+            audioFailed: 1,
+            outOfTime: "yes",
+          },
+        ],
+      },
+    },
+    CELPIP_EMPTY,
+  );
+  const n = nasty.listeningAttempts[SET1][0];
+  ok("a negative duration is clamped to zero", n.durationSeconds === 0, `${n.durationSeconds}`);
+  ok("a negative correct count is clamped to zero", n.correct === 0, `${n.correct}`);
+  ok("a negative total is clamped to zero", n.total === 0, `${n.total}`);
+  ok("a negative replay count is clamped to zero", n.replays === 0, `${n.replays}`);
+  ok("a non-boolean audioFailed flag is coerced to a boolean", typeof n.audioFailed === "boolean");
+  ok("a non-boolean outOfTime flag is coerced to a boolean", typeof n.outOfTime === "boolean");
+  deepEqual(
+    "every unusable answer index is DROPPED rather than clamped — a clamped index would be an answer she never chose",
+    n.answers,
+    { "l1-q1": 2 },
+  );
+  ok(
+    "every value left in the answer sheet is a real integer in range",
+    Object.values(n.answers).every(
+      (v) => Number.isInteger(v) && v >= 0 && v <= MERGE_CELPIP_MAX_OPTION_INDEX,
+    ),
+  );
+  ok(
+    "and normalising is idempotent, so the reconcile settles instead of rewriting",
+    celpipEqual(mergeCelpip(nasty, nasty), nasty),
+  );
+
+  // The answer sheet is a record with learner-supplied keys, so it needs the
+  // same rebuild-never-spread treatment the rubric maps get. A poisoned QUESTION
+  // id is a distinct hole from a poisoned SET id.
+  const poisoned = mergeCelpip(
+    {
+      listeningAttempts: {
+        [SET1]: [
+          {
+            ...h1,
+            date: "2026-08-01T06:00:00.000Z",
+            answers: JSON.parse('{"__proto__":1,"constructor":2,"l1-q1":3}') as Record<
+              string,
+              number
+            >,
+          },
+        ],
+      },
+    },
+    CELPIP_EMPTY,
+  );
+  deepEqual(
+    "poisoned question ids are dropped, the real answer survives",
+    poisoned.listeningAttempts[SET1][0].answers,
+    { "l1-q1": 3 },
+  );
+
+  // THE FIELD THAT IS NOT THERE. Notes are deliberately never persisted (a
+  // second deletable map would fight `drafts` for the one shared instant), so a
+  // client that sends one must have it dropped by the coercer. Without this,
+  // the argument quietly stops being true the first time a future component
+  // sends the field speculatively.
+  const withNotes = mergeCelpip(
+    {
+      listeningAttempts: {
+        [SET1]: [{ ...h1, notes: "3pm, second platform, $4.25", transcript: "…" }],
+      },
+    },
+    CELPIP_EMPTY,
+  );
+  deepEqual(
+    "a notes or transcript field is dropped by the coercer — the stored shape carries no prose",
+    Object.keys(withNotes.listeningAttempts[SET1][0]).sort(),
+    Object.keys(h1).sort(),
+  );
+
+  // ---- Additivity: the row shape between 02.1-01 and this plan. ----
+  const additive = mergeCelpip(legacyNoListeningField, listeningOnly);
+  deepEqual(
+    "a row written before this plan keeps its writing history intact",
+    additive.attempts["email-neighbour"],
+    [a1],
+  );
+  deepEqual("and keeps its rehearsal history intact", additive.speakingAttempts[WINTER], [r1]);
+  deepEqual(
+    "while the absent listening field simply fills in from the other side",
+    additive.listeningAttempts[SET1],
+    [h1, h2],
+  );
+  deepEqual(
+    "the Phase-1 row, which has neither new field, is still total",
+    mergeCelpip(legacyNoSpeakingField, CELPIP_EMPTY).listeningAttempts,
+    {},
+  );
+  ok(
+    "no instant is fabricated for the field that did not exist",
+    mergeCelpip(legacyNoListeningField, CELPIP_EMPTY).updatedAt === "2026-07-27T12:00:00.000Z",
+  );
+
+  // ---- The three skills do not interfere. ----
+  const crossSkill = mergeCelpip(allThreeSkills, listeningOnly);
+  deepEqual(
+    "adding sittings leaves the writing history untouched",
+    crossSkill.attempts,
+    mergeCelpip(allThreeSkills, CELPIP_EMPTY).attempts,
+  );
+  deepEqual(
+    "and leaves the rehearsal history untouched",
+    crossSkill.speakingAttempts,
+    mergeCelpip(allThreeSkills, CELPIP_EMPTY).speakingAttempts,
+  );
+  ok(
+    "the three key spaces are separate: a set id never collides with a prompt or task id",
+    !(SET1 in crossSkill.attempts) &&
+      !(SET1 in crossSkill.speakingAttempts) &&
+      !(WINTER in crossSkill.listeningAttempts) &&
+      !("email-neighbour" in crossSkill.listeningAttempts),
+  );
+
+  // ---- The two copies of the option ceiling must not drift. ----
+  ok(
+    "progress-merge's option ceiling matches progress-schema's",
+    MERGE_CELPIP_MAX_OPTION_INDEX === CELPIP_MAX_OPTION_INDEX,
+    `merge ${MERGE_CELPIP_MAX_OPTION_INDEX} vs schema ${CELPIP_MAX_OPTION_INDEX}`,
+  );
+}
+
 group("CELPIP drafts — a cleared draft is never resurrected");
 {
   const merged = mergeCelpip(beforeSubmit, afterSubmit);
@@ -1622,6 +1971,13 @@ group("CELPIP totality — garbage on either side never throws");
     { speakingAttempts: { [WINTER]: [null, 3, true, { promptId: "x" }, { date: "y" }] } },
     { speakingAttempts: { [WINTER]: [{ ...r1, durationSeconds: -5, sizeBytes: Number.NaN }] } },
     { speakingAttempts: { [WINTER]: [{ ...r1, shape: 42, mimeType: null, note: [] }] } },
+    { listeningAttempts: "nope" },
+    { listeningAttempts: [1, 2, 3] },
+    { listeningAttempts: { [SET1]: "not an array" } },
+    { listeningAttempts: { [SET1]: [null, 3, true, { setId: "x" }, { date: "y" }] } },
+    { listeningAttempts: { [SET1]: [{ ...h1, correct: -5, total: Number.NaN }] } },
+    { listeningAttempts: { [SET1]: [{ ...h1, answers: "not a map" }] } },
+    { listeningAttempts: { [SET1]: [{ ...h1, answers: [0, 1, 2] }] } },
   ];
   for (const j of celpipJunk) {
     let merged: CelpipProgressState;
@@ -1698,6 +2054,72 @@ group("CELPIP totality — garbage on either side never throws");
     "a writing attempt's non-boolean rubric values are dropped, not stored",
     rawRubric.attempts["email-neighbour"][0].checkedRubric,
     { "email-linkers": false },
+  );
+
+  // ---- Poisoned record keys, on the MERGE side. ----
+  //
+  // Found by a listening assertion in 02.1-04 and PRE-EXISTING: progress-schema's
+  // `sanitizeEntries` has skipped `__proto__`, `constructor` and `prototype`
+  // since it was written, and none of the coercion functions in progress-merge
+  // did. Nothing noticed, because every poisoned-key assertion in either script
+  // exercised the ZOD path only.
+  //
+  // It is not merely untidy. `constructor` and `prototype` were assigned as
+  // ordinary own keys by the merge and stripped by the schema, so the two halves
+  // of one contract disagreed: the reconcile would find a difference, send it,
+  // have it stripped server-side, and find the same difference on the next load
+  // — a write on every authenticated page view, forever.
+  const poisonedCelpip = mergeCelpip(
+    JSON.parse(
+      `{"drafts":{"__proto__":"x","constructor":"y","prototype":"z","survey-transit":"a real draft"},` +
+        `"attempts":{"constructor":[],"prototype":[],"email-neighbour":${JSON.stringify([a1])}},` +
+        `"speakingAttempts":{"constructor":[]},"listeningAttempts":{"prototype":[]}}`,
+    ),
+    CELPIP_EMPTY,
+  );
+  deepEqual(
+    "poisoned draft keys are dropped by the merge, not just by the schema",
+    Object.keys(poisonedCelpip.drafts).sort(),
+    ["survey-transit"],
+  );
+  deepEqual(
+    "poisoned attempt keys are dropped by the merge",
+    Object.keys(poisonedCelpip.attempts).sort(),
+    ["email-neighbour"],
+  );
+  deepEqual(
+    "poisoned speaking keys are dropped by the merge",
+    Object.keys(poisonedCelpip.speakingAttempts).sort(),
+    [],
+  );
+  deepEqual(
+    "poisoned listening keys are dropped by the merge",
+    Object.keys(poisonedCelpip.listeningAttempts).sort(),
+    [],
+  );
+  const poisonedRubric = mergeCelpip(
+    {
+      attempts: {
+        "email-neighbour": [
+          {
+            ...a1,
+            date: "2026-08-03T09:00:00.000Z",
+            checkedRubric: JSON.parse('{"constructor":true,"email-bullets":true}'),
+          },
+        ],
+      },
+    },
+    CELPIP_EMPTY,
+  );
+  deepEqual(
+    "and a poisoned key inside a rubric map is dropped too",
+    Object.keys(poisonedRubric.attempts["email-neighbour"][0].checkedRubric).sort(),
+    ["email-bullets"],
+  );
+  ok(
+    "no prototype was polluted along the way",
+    ({} as Record<string, unknown>).polluted === undefined &&
+      Object.getPrototypeOf(poisonedCelpip.drafts) === Object.prototype,
   );
 
   deepEqual("mergeCelpip({}, {}) is the CELPIP empty state", mergeCelpip({}, {}), CELPIP_EMPTY);
