@@ -5,10 +5,17 @@ import { useMemo, useState } from "react";
 import {
   CELPIP_SECTIONS,
   getSection,
+  getSpeakingPrompt,
   getTask,
   type CelpipSkill,
 } from "@/lib/celpip";
-import { formatDuration, useCelpipProgress } from "@/lib/celpip-progress";
+import {
+  formatDuration,
+  useCelpipProgress,
+  type CelpipAttempt,
+  type CelpipProgressState,
+  type CelpipSpeakingAttempt,
+} from "@/lib/celpip-progress";
 import { CELPIP_CARD_ICONS } from "@/lib/icons";
 import { CelpipGroupTabs, CelpipTabs } from "./CelpipTabs";
 import { TaskCard, type TaskAttemptStatus } from "./TaskCard";
@@ -24,6 +31,116 @@ function formatDate(iso: string): string {
 function attemptsLabel(n: number): string {
   return n === 1 ? "1 attempt" : `${n} attempts`;
 }
+
+/* ------------------------------------------------------------------ *
+ * The attempt history — one list, every skill.
+ * ------------------------------------------------------------------ */
+
+interface HistoryRow {
+  key: string;
+  skill: CelpipSkill;
+  itemId: string;
+  title: string;
+  /** null when the id no longer resolves to a bank item. */
+  href: string | null;
+  date: string;
+  /** The skill's own metrics, minus the date, which every row renders. */
+  meta: string;
+}
+
+interface HistorySource {
+  skill: CelpipSkill;
+  rows: (state: CelpipProgressState) => HistoryRow[];
+}
+
+/**
+ * Builds one history source. Generic in the attempt shape so each entry keeps
+ * full type-safety over its own record, erased to `HistorySource` at the
+ * boundary so the four entries can live in one array.
+ */
+function historySource<T extends { date: string }>(config: {
+  skill: CelpipSkill;
+  /** Which record on the stored state this reads. */
+  read: (state: CelpipProgressState) => Record<string, T[]>;
+  /** undefined when the id resolves to nothing in the bank. */
+  title: (itemId: string) => string | undefined;
+  /** That skill's metrics line. */
+  meta: (attempt: T) => string;
+}): HistorySource {
+  const routePrefix = getSection(config.skill)?.routePrefix;
+  return {
+    skill: config.skill,
+    rows: (state) =>
+      Object.entries(config.read(state)).flatMap(([itemId, attempts]) =>
+        attempts.map((attempt) => {
+          const title = config.title(itemId);
+          return {
+            // The id/date pair is the natural key the merge de-duplicates on
+            // (progress-merge.ts); the skill prefix is here only because two
+            // records now feed one list. The two must stay aligned: a React
+            // key that could collide where the merge would not would hide a
+            // duplicate attempt rather than reveal it.
+            key: `${config.skill}\u0000${itemId}\u0000${attempt.date}`,
+            skill: config.skill,
+            itemId,
+            title: title ?? itemId,
+            // T-02.1-08: an id that resolves to nothing never reaches a path.
+            // The row renders as plain text instead of as a link, rather than
+            // interpolating a stored, unresolved id into a route.
+            href:
+              title !== undefined && routePrefix !== undefined
+                ? `${routePrefix}/${encodeURIComponent(itemId)}`
+                : null,
+            date: attempt.date,
+            meta: config.meta(attempt),
+          };
+        }),
+      ),
+  };
+}
+
+function checkedCount(checkedRubric: Record<string, boolean>): number {
+  return Object.values(checkedRubric).filter(Boolean).length;
+}
+
+/**
+ * The single extension point for the attempt history.
+ *
+ * One entry per skill: which record on the stored state it reads, how to
+ * resolve a title from an item id, and how to render that skill's own metrics.
+ * **A later plan adds ONE entry here per new skill — listening in plan 05,
+ * reading in plan 09 — and needs to change nothing else in this file.** The
+ * sort, the empty state, the count, the per-card status, the href and the
+ * unresolved-id fallback are all driven off these entries.
+ *
+ * Metrics are per skill on purpose. The old rollup printed a word count for
+ * every row; that is meaningless for a spoken or a read attempt, and printing
+ * a zero for it would be a small lie on the page whose whole job is honesty.
+ */
+const HISTORY_SOURCES: HistorySource[] = [
+  historySource<CelpipAttempt>({
+    skill: "writing",
+    read: (state) => state.attempts,
+    title: (itemId) => getTask(itemId)?.title,
+    meta: (attempt) =>
+      `${formatDuration(attempt.durationSeconds)} used · ${attempt.wordCount} words`,
+  }),
+  historySource<CelpipSpeakingAttempt>({
+    skill: "speaking",
+    read: (state) => state.speakingAttempts,
+    title: (itemId) => getSpeakingPrompt(itemId)?.title,
+    meta: (attempt) => {
+      const checks = checkedCount(attempt.checkedRubric);
+      return [
+        `${formatDuration(attempt.durationSeconds)} used`,
+        attempt.recorded
+          ? `${formatDuration(attempt.recordingSeconds)} recorded`
+          : "no recording",
+        `${checks} self-check${checks === 1 ? "" : "s"} ticked`,
+      ].join(" · ");
+    },
+  }),
+];
 
 // Module-level so SSR and hydration pick the same tab: the first section
 // whose bank actually holds something. Writing is that section today, but
@@ -55,9 +172,27 @@ export function CelpipLanding() {
     setActiveGroup(null);
   }
 
+  const history = useMemo(
+    () =>
+      HISTORY_SOURCES.flatMap((source) => source.rows(state)).sort((a, b) =>
+        b.date.localeCompare(a.date),
+      ),
+    [state],
+  );
+
+  // Per-item attempt counts come off the same rows the history renders, so a
+  // card's "3 attempts" and the list below it can never disagree.
+  const attemptCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    for (const row of history) {
+      const key = `${row.skill}\u0000${row.itemId}`;
+      counts[key] = (counts[key] ?? 0) + 1;
+    }
+    return counts;
+  }, [history]);
+
   function attemptCountFor(skill: CelpipSkill, itemId: string): number {
-    if (skill === "speaking") return state.speakingAttempts[itemId]?.length ?? 0;
-    return state.attempts[itemId]?.length ?? 0;
+    return attemptCounts[`${skill}\u0000${itemId}`] ?? 0;
   }
 
   function statusFor(skill: CelpipSkill, itemId: string): TaskAttemptStatus {
@@ -70,17 +205,6 @@ export function CelpipLanding() {
       return "in-progress";
     return "not-started";
   }
-
-  const history = useMemo(() => {
-    return Object.entries(state.attempts)
-      .flatMap(([taskId, attempts]) =>
-        attempts.map((attempt) => ({
-          ...attempt,
-          taskTitle: getTask(taskId)?.title ?? taskId,
-        })),
-      )
-      .sort((a, b) => b.date.localeCompare(a.date));
-  }, [state.attempts]);
 
   return (
     <div>
@@ -138,26 +262,26 @@ export function CelpipLanding() {
           </div>
         ) : (
           <ul className="mt-3 space-y-2">
-            {history.map((attempt) => (
-              <li key={`${attempt.taskId}-${attempt.date}`}>
-                <Link
-                  href={`/celpip/writing/${attempt.taskId}`}
-                  className="flex items-center justify-between gap-4 rounded-xl border border-line bg-card px-4 py-3 text-sm transition-colors hover:bg-paper-deep"
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-semibold">
-                      {attempt.taskTitle}
-                    </p>
-                    <p className="mt-0.5 text-xs text-muted">
-                      {formatDate(attempt.date)} ·{" "}
-                      {formatDuration(attempt.durationSeconds)} used ·{" "}
-                      {attempt.wordCount} words
-                    </p>
+            {history.map((row) => (
+              <li key={row.key}>
+                {row.href === null ? (
+                  <div className="flex items-center justify-between gap-4 rounded-xl border border-line bg-card px-4 py-3 text-sm">
+                    <HistoryRowBody row={row} />
+                    <span className="shrink-0 text-xs text-muted">
+                      No longer available
+                    </span>
                   </div>
-                  <span className="shrink-0 text-xs font-semibold text-sky">
-                    View →
-                  </span>
-                </Link>
+                ) : (
+                  <Link
+                    href={row.href}
+                    className="flex items-center justify-between gap-4 rounded-xl border border-line bg-card px-4 py-3 text-sm transition-colors hover:bg-paper-deep"
+                  >
+                    <HistoryRowBody row={row} />
+                    <span className="shrink-0 text-xs font-semibold text-sky">
+                      View →
+                    </span>
+                  </Link>
+                )}
               </li>
             ))}
           </ul>
@@ -181,6 +305,18 @@ export function CelpipLanding() {
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+function HistoryRowBody({ row }: { row: HistoryRow }) {
+  const sectionLabel = getSection(row.skill)?.label ?? row.skill;
+  return (
+    <div className="min-w-0 flex-1">
+      <p className="truncate font-semibold">{row.title}</p>
+      <p className="mt-0.5 text-xs text-muted">
+        {sectionLabel} · {formatDate(row.date)} · {row.meta}
+      </p>
     </div>
   );
 }
