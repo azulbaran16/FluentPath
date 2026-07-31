@@ -105,7 +105,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CELPIP-06 | Phase 2.1 | Pending |
 | CELPIP-07 | Phase 2.1 | Pending |
 | CELPIP-08 | Phase 2.1 | Complete (02.1-01 + 02.1-03) — all eight exam task shapes ship, one original prompt each, at the exam's own prep/response timings; in-browser recording and playback; a four-dimension descriptor self-check; no automated scoring anywhere. One disclosed compromise: exam Task 3 shows a photograph and this app writes the scene out instead, said in the prompt copy and in the landing's Speaking caveat |
-| CELPIP-09 | Phase 2.1 | In progress — Speaking attempts persist and cross devices (02.1-01, verified against a real account). Listening and Reading attempts are not built yet (02.1-04, 02.1-08) |
+| CELPIP-09 | Phase 2.1 | In progress — Speaking attempts persist and cross devices (02.1-01, verified against a real account). Listening's persistence contract now exists end to end (02.1-04: `listeningAttempts` through all six lockstep sites, merged by the existing union rule, proved by 12,040 merge and 254 schema assertions) but **nothing writes to it yet** — plan 05 is the first caller. Reading attempts are not built (02.1-09) |
 | CELPIP-10 | Phase 2.1 | Pending |
 | PROG-01 | Phase 2 | Complete |
 | PROG-02 | Phase 2 | Complete |

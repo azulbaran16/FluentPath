@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 7
+open_count: 9
 waived_count: 0
 fixed_count: 0
-total_count: 7
-last_updated: 2026-07-31T07:30:42.000Z
+total_count: 9
+last_updated: 2026-07-31T08:09:51.645Z
 ---
 
 # Broken Windows Ledger
@@ -22,6 +22,8 @@ last_updated: 2026-07-31T07:30:42.000Z
 | 5 | 02.1 | unrun-verify | src/components/celpip/CelpipLanding.tsx |  | 02.1-02: the skill-aware /celpip landing has never been opened in a real browser. The server-rendered HTML was read from a production `next start` (coverage line, disabled tabs, JSON-LD) and the client logic was executed in node against a generated copy of the component, but hydration, the skill-tab switch and the Writing group control were never exercised in a browser. The plan explicitly warns that breaking the `ready` discipline produces a hydration mismatch on a page the beta user opens daily. Owed to 02.1-12. | open |  | 2026-07-31T07:07:20.000Z |  |
 | 6 | 02.1 | deviation | src/components/celpip/CelpipLanding.tsx |  | 02.1-02: HISTORY_SOURCES is gated only by an ad-hoc harness that was not committed (it transpiles the component and stubs its render imports, which is too heavy for scripts/). 54 assertions and 15 mutations ran green — including two that initially SURVIVED and were closed — but plans 05 and 09 append an entry to that array with no automated protection. CELPIP_SECTIONS is committed-gated by scripts/verify-celpip-sections.mts; the history half is not. | open |  | 2026-07-31T07:07:20.000Z |  |
 | 7 | 02.1 | unrun-verify | src/lib/celpip/speaking-prompts.ts |  | 02.1-03: the eight Speaking cards and the Task 3 written-scene caveat render only under the Speaking tab, which is client-side, so the served /celpip HTML carries the Writing tab alone and neither has been SEEN rendered. What was verified against a production `next start`: all eight prompt routes return 200, an unknown id returns 404, the coverage line reads "8 prompts covering 8 of the 8 exam task shapes", and the Task 3 page serves its disclosure, its scene text and its 30/60 timings. What was not: no browser has switched to the Speaking tab, and none of the seven new prompts has been taken through record -> playback -> self-check (only the plan-01 advice prompt was, at 02.1-01's checkpoint). Owed to 02.1-12. | open |  | 2026-07-31T07:30:42.000Z |  |
+| 8 | 02.1 | unrun-verify | src/components/celpip/AudioCheck.tsx |  | 02.1-04: nobody has HEARD the audio check. The whole component exists to answer the question 'did sound come out', and it has never been opened in a browser, never run on a phone, and never played through a speaker. Everything checkable without one was checked: the speech driver is gated by scripts/verify-celpip-speech.mts (50 assertions, 22 mutations) against a mock engine, and all seven of the component's render branches were server-rendered in node against a generated copy. What is untested is the part only a device can answer - whether two distinct voices actually come out on Chrome, Safari and Android; whether the iPhone hardware silent switch produces exactly the failure the troubleshoot branch describes; and whether a CELPIP-length multi-turn script really survives Chrome's ~15s utterance truncation. That last one is the reason speaker-turn chunking exists. AudioCheck is not mounted by any route until plan 05, so this cannot be closed before then. Owed to 02.1-12. | open |  | 2026-07-31T08:09:51.051Z |  |
+| 9 | 02.1 | deviation | src/components/celpip/AudioCheck.tsx |  | 02.1-04: AudioCheck's markup is gated only by an ad-hoc harness that was not committed - it transpiles the component with the TypeScript compiler API, seeds the phase state, and server-renders each branch, which is too much machinery for scripts/ and is the same judgement 02.1-02 made about HISTORY_SOURCES. 24 checks and 8 mutations ran green (7 caught, 1 known survivor: a dead onClick, which a markup-only harness cannot see). So plan 05 mounts and edits this component with no automated protection on its escape hatches - the iPhone silent-switch guidance, the reveal-the-words escape and the run-anyway path can each be deleted without any committed gate noticing. The speech DRIVER is committed-gated by scripts/verify-celpip-speech.mts; the component half is not. | open |  | 2026-07-31T08:09:51.645Z |  |
 
 ````json
 [
@@ -107,6 +109,30 @@ last_updated: 2026-07-31T07:30:42.000Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-07-31T07:30:42.000Z",
+    "resolved_at": null
+  },
+  {
+    "id": 8,
+    "kind": "unrun-verify",
+    "phase": "02.1",
+    "file": "src/components/celpip/AudioCheck.tsx",
+    "line": null,
+    "description": "02.1-04: nobody has HEARD the audio check. The whole component exists to answer the question 'did sound come out', and it has never been opened in a browser, never run on a phone, and never played through a speaker. Everything checkable without one was checked: the speech driver is gated by scripts/verify-celpip-speech.mts (50 assertions, 22 mutations) against a mock engine, and all seven of the component's render branches were server-rendered in node against a generated copy. What is untested is the part only a device can answer - whether two distinct voices actually come out on Chrome, Safari and Android; whether the iPhone hardware silent switch produces exactly the failure the troubleshoot branch describes; and whether a CELPIP-length multi-turn script really survives Chrome's ~15s utterance truncation. That last one is the reason speaker-turn chunking exists. AudioCheck is not mounted by any route until plan 05, so this cannot be closed before then. Owed to 02.1-12.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-07-31T08:09:51.051Z",
+    "resolved_at": null
+  },
+  {
+    "id": 9,
+    "kind": "deviation",
+    "phase": "02.1",
+    "file": "src/components/celpip/AudioCheck.tsx",
+    "line": null,
+    "description": "02.1-04: AudioCheck's markup is gated only by an ad-hoc harness that was not committed - it transpiles the component with the TypeScript compiler API, seeds the phase state, and server-renders each branch, which is too much machinery for scripts/ and is the same judgement 02.1-02 made about HISTORY_SOURCES. 24 checks and 8 mutations ran green (7 caught, 1 known survivor: a dead onClick, which a markup-only harness cannot see). So plan 05 mounts and edits this component with no automated protection on its escape hatches - the iPhone silent-switch guidance, the reveal-the-words escape and the run-anyway path can each be deleted without any committed gate noticing. The speech DRIVER is committed-gated by scripts/verify-celpip-speech.mts; the component half is not.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-07-31T08:09:51.645Z",
     "resolved_at": null
   }
 ]

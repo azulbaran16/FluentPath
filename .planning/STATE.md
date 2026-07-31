@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02.1
 current_phase_name: celpip-remaining-skills
 status: in-progress
-stopped_at: Completed 02.1-03-PLAN.md
-last_updated: "2026-07-31T07:34:46.545Z"
+stopped_at: Completed 02.1-04-PLAN.md
+last_updated: "2026-07-31T08:13:51.086Z"
 last_activity: 2026-07-31
-last_activity_desc: "02.1-03 executed: Speaking finished at all eight exam task shapes; CELPIP-08 closed"
+last_activity_desc: "02.1-04 executed: Listening infrastructure — content types, listeningAttempts, the one speech driver, and the audio check"
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 25
-  completed_plans: 16
+  completed_plans: 17
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-23)
 
 **Core value:** A learner can practice any real-life English scenario end-to-end — with an AI tutor that corrects them in context — and their progress is never lost.
-**Current focus:** Phase 02.1 — celpip-remaining-skills (executing, plans 01-03 of 12 complete)
+**Current focus:** Phase 02.1 — celpip-remaining-skills (executing, plans 01-04 of 12 complete)
 
 ## Current Position
 
 Phase: 02.1 (celpip-remaining-skills) — IN PROGRESS
-Plan: 4 of 12
-Status: 02.1-03 complete on `main`; next action is executing 02.1-04
-Last activity: 2026-07-31 — 02.1-03 executed: Speaking finished at all eight exam task shapes; CELPIP-08 closed
+Plan: 5 of 12
+Status: 02.1-04 complete on `main`; next action is executing 02.1-05 (the plan that makes Listening usable — 04 and 05 are one unit)
+Last activity: 2026-07-31 — 02.1-04 executed: Listening infrastructure — nothing learner-visible yet, by design
 
-Progress: [██████░░░░] 64% (2 of 6 phases; 16 of 25 plans)
+Progress: [███████░░░] 68% (2 of 6 phases; 17 of 25 plans)
 
 ## Performance Metrics
 
@@ -68,6 +68,7 @@ Progress: [██████░░░░] 64% (2 of 6 phases; 16 of 25 plans)
 | Phase 02.1 P01 | ~70min | 3 tasks | 13 files |
 | Phase 02.1 P02 | 28m | 3 tasks | 7 files |
 | Phase 02.1 P03 | 48m | 3 tasks | 4 files |
+| Phase 02.1 P04 | 62m | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -118,6 +119,14 @@ Recent decisions affecting current work:
 - [Phase ?]: 02.1-03: RESEARCH assumption A2 resolved — CELPIP Speaking timings confirmed against official material, pinned in one lookup and gated by rule, so a correction is deliberately a two-file edit
 - [Phase ?]: 02.1-03: Speaking Task 3 ships a written scene instead of the exam's photograph — recorded as an open content dependency, disclosed in the prompt copy and the landing caveat, gated by six mutations
 - [Phase ?]: 02.1-03: scripts/verify-celpip-content.mts is the shared CELPIP content harness and a low-conflict append target for plans 04 and 07 — shared helpers, one marked import block, per-skill sections
+- [Phase ?]: 02.1-04: a Listening script is an ordered array of SPEAKER TURNS, never one string — one shape solves Chrome's ~15s utterance truncation, per-speaker voices, the post-answer transcript and the audioUrl slot
+- [Phase ?]: 02.1-04: CelpipListeningSegment.audioUrl? is the reserved VOICE-01 slot and the whole of D-03's reversibility — recorded audio later is a file per script, never a migration
+- [Phase ?]: 02.1-04: CelpipObjectiveQuestion.explanation is REQUIRED at the type level, because an optional field is one an author forgets under deadline
+- [Phase ?]: 02.1-04: an out-of-range answer index is DROPPED, never clamped — a clamped index is an answer she never chose, shown back to her as her own
+- [Phase ?]: 02.1-04: listening notes are NEVER persisted, and BOTH the schema and the merge assert a client sending them has them stripped — otherwise the no-second-instant argument quietly stops being true
+- [Phase ?]: 02.1-04: src/lib/celpip-speech.ts is the ONE place the CELPIP section drives speechSynthesis; onCompleted is attached to the LAST utterance only, because under D-05 it is the single signal allowed to reveal the questions
+- [Phase ?]: 02.1-04: every utterance is queued synchronously inside one call (the iOS gesture rule) and never chained from onend — gated by scripts/verify-celpip-speech.mts against a mock engine, since tsc, lint and a desktop browser are all happy with the broken version
+- [Phase ?]: 02.1-04: pre-existing defect fixed — progress-merge's coercers assigned poisoned record keys (constructor/prototype) that the schema strips, so the two halves of one contract disagreed and the reconcile would write on every authenticated page load, forever
 
 ### Pending Todos
 
@@ -143,6 +152,7 @@ Recent decisions affecting current work:
 - Startup runs `prisma db push --accept-data-loss`; any schema change in Phase 1 must be additive or first migrate to proper Prisma migrations
 - Phase 5 needs `ANTHROPIC_API_KEY` configured in Coolify production env (user action) to leave stub mode
 - Zero automated tests exist — phases should include targeted verification for what they touch
+- 02.1-04: nobody has HEARD the audio check — no browser, no phone, no speaker. Chrome's ~15s utterance truncation (the reason speaker-turn chunking exists) and the iPhone silent-switch path are both untested on a device. AudioCheck is not mounted by any route until plan 05, so this cannot close before then. Owed to 02.1-12; WINDOWS.md id 8.
 
 ### Roadmap Evolution
 
@@ -160,6 +170,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-31T07:34:24.149Z
-Stopped at: Completed 02.1-03-PLAN.md
+Last session: 2026-07-31T08:13:27.584Z
+Stopped at: Completed 02.1-04-PLAN.md
 Resume file: None
