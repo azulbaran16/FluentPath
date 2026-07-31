@@ -745,14 +745,52 @@ ok(
  * A total `Record` over the union, so a fifth part kind fails `npx tsc --noEmit`
  * here rather than shipping unchecked.
  */
+/**
+ * `stimulus` says WHICH of the three stimulus fields a part of this kind
+ * carries, and it is asserted exactly rather than as a minimum. "Carries at
+ * least one stimulus" is not enough: a diagram part authored with a passage
+ * instead of a table renders no table at all, and its five blanks — which can
+ * only be answered from rows and notes — become unanswerable while every other
+ * assertion in this file still passes. The reverse is just as silent: a
+ * correspondence part given a diagram renders a table nobody asked about.
+ */
 const READING_PART_SHAPE: Record<
   CelpipReadingPartKind,
-  { minutes: number; questions: number; blanks: number }
+  {
+    minutes: number;
+    questions: number;
+    blanks: number;
+    stimulus: { passage: boolean; diagram: boolean; blankText: boolean };
+  }
 > = {
-  correspondence: { minutes: 11, questions: 6, blanks: 5 },
-  diagram: { minutes: 8, questions: 3, blanks: 5 },
-  information: { minutes: 9, questions: 9, blanks: 0 },
-  viewpoints: { minutes: 11, questions: 5, blanks: 5 },
+  correspondence: {
+    minutes: 11,
+    questions: 6,
+    blanks: 5,
+    stimulus: { passage: true, diagram: false, blankText: true },
+  },
+  // 5 blanks and 3 questions, NOT 3 and 5. The message about the diagram
+  // carries the blanks and the diagram itself carries the questions; the phase's
+  // research notes had the two numbers the wrong way round, and the figure here
+  // is the one confirmed against the beta user's own format material.
+  diagram: {
+    minutes: 8,
+    questions: 3,
+    blanks: 5,
+    stimulus: { passage: false, diagram: true, blankText: true },
+  },
+  information: {
+    minutes: 9,
+    questions: 9,
+    blanks: 0,
+    stimulus: { passage: true, diagram: false, blankText: false },
+  },
+  viewpoints: {
+    minutes: 11,
+    questions: 5,
+    blanks: 5,
+    stimulus: { passage: true, diagram: false, blankText: true },
+  },
 };
 
 group("reading: the bank is structurally sound");
@@ -905,6 +943,18 @@ for (const part of allReadingParts) {
     `${part.id}: carries at least one stimulus to read`,
     part.passage !== undefined || part.diagram !== undefined || part.blankText !== undefined,
   );
+  // And it must carry the RIGHT ones — see the note on `stimulus` above.
+  ok(
+    `${part.id}: carries exactly the stimuli a "${part.kind}" part carries`,
+    (part.passage !== undefined) === shape.stimulus.passage &&
+      (part.diagram !== undefined) === shape.stimulus.diagram &&
+      (part.blankText !== undefined) === shape.stimulus.blankText,
+    `passage=${part.passage !== undefined} diagram=${part.diagram !== undefined} blankText=${
+      part.blankText !== undefined
+    }, exam uses passage=${shape.stimulus.passage} diagram=${shape.stimulus.diagram} blankText=${
+      shape.stimulus.blankText
+    }`,
+  );
 
   if (part.diagram) {
     ok(`${part.id}: its diagram has a caption`, filled(part.diagram.caption));
@@ -917,7 +967,77 @@ for (const part of allReadingParts) {
       `${part.id}: every diagram row has a label and at least one cell`,
       part.diagram.rows.every((r) => filled(r.label) && r.cells.length > 0),
     );
+    // Every row is one `<tr>` keyed by its own label, so two rows sharing one
+    // renders as a React key collision — and, worse for the learner, makes any
+    // item that turns on "which row" ambiguous with nothing on the page saying
+    // which of the two it meant.
+    const rowLabels = part.diagram.rows.map((r) => r.label);
+    ok(
+      `${part.id}: no two diagram rows share a label`,
+      duplicates(rowLabels).length === 0,
+      duplicates(rowLabels).join(", "),
+    );
+    // A table is only accessible if the header row and the body rows agree.
+    // The row's own label is rendered as its `<th scope="row">`, so a tabular
+    // diagram needs ONE MORE header than a row has cells: the label column plus
+    // one per cell. Get this wrong and every `<th scope="col">` is announced
+    // against the wrong cell — silently, to the only user who cannot see the
+    // misalignment.
+    const cellCounts = new Set(part.diagram.rows.map((r) => r.cells.length));
+    ok(
+      `${part.id}: every diagram row has the same number of cells`,
+      cellCounts.size === 1,
+      [...cellCounts].join(", "),
+    );
+    if (part.diagram.headers && part.diagram.headers.length > 0) {
+      ok(
+        `${part.id}: its column headers cover the row-label column and every cell`,
+        part.diagram.rows.every((r) => r.cells.length + 1 === part.diagram!.headers!.length),
+        `${part.diagram.headers.length} headers vs ${
+          (part.diagram.rows[0]?.cells.length ?? 0) + 1
+        } columns`,
+      );
+      ok(
+        `${part.id}: every column header is non-empty`,
+        part.diagram.headers.every(filled),
+        JSON.stringify(part.diagram.headers),
+      );
+    }
+    ok(
+      `${part.id}: every diagram cell and note is non-empty`,
+      part.diagram.rows.every((r) => r.cells.every(filled)) &&
+        (part.diagram.notes ?? []).every(filled),
+    );
   }
+}
+
+group("reading: the answer is not always in the same place");
+
+// A DEFECT THAT PASSED EVERY OTHER ASSERTION IN THIS FILE, and the reason this
+// group exists: ten of the set's first fifteen drop-down blanks had their key at
+// index 0 — every blank in the correspondence part and every blank in the
+// diagram part. The options render in declared order, so a learner practising
+// against that bank learns, without ever being told, that the answer is the top
+// of the list. She then meets a real exam that randomises, having trained a cue
+// it does not supply. It is the same failure as an ungrammatical distractor —
+// teaching her to answer the hardest question type the wrong way — and it is
+// invisible to every gate that only ever looks at ONE item.
+//
+// Asserted per part rather than per set, because a uniform part is the thing
+// she experiences as a run of identical answers, and only where a part has three
+// or more of a kind: with two items, agreeing is a coin toss.
+function checkKeySpread(label: string, keys: number[]) {
+  if (keys.length < 3) return;
+  ok(
+    `${label}: its answers are not all in the same position`,
+    new Set(keys).size > 1,
+    `all ${keys.length} keys at index ${keys[0]}`,
+  );
+}
+
+for (const part of allReadingParts) {
+  checkKeySpread(`${part.id} (questions)`, part.questions.map((q) => q.answer));
+  checkKeySpread(`${part.id} (blanks)`, (part.blankText?.blanks ?? []).map((b) => b.answer));
 }
 
 group("reading: every question and every blank can be answered and explained");

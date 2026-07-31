@@ -42,6 +42,18 @@ import type { CelpipReadingPart, CelpipReadingSet } from "../celpip";
 // stem, option or passage line of it appears here or anywhere else in the app
 // (D-06).
 //
+// THE KEY MUST NOT ALWAYS BE THE FIRST OPTION, AND AN EXPLANATION MUST NAME AN
+// OPTION BY ITS CONTENT RATHER THAN BY ITS POSITION. Both halves of that were
+// broken here and were fixed in plan 10: ten of the set's fifteen blanks had
+// their answer at index 0, which trains a learner to reach for the top of the
+// list — the same disease as an ungrammatical distractor, teaching her to answer
+// the hardest question type by a cue the real exam does not supply. The harness
+// now fails a part whose items all put the key in one position. And because
+// re-ordering options is the fix, an explanation that says "the second option"
+// silently becomes false the moment anybody applies it: explanations here name
+// the option ("saying he cannot manage it", "the hundred and thirty"), which is
+// also easier to read next to a select whose order she cannot see.
+//
 // AUTHORING A DROP-DOWN BLANK IS THE EXPENSIVE PART, AND IT IS THE POINT.
 // The wrong options must be GRAMMATICALLY FINE and only CONTEXTUALLY wrong —
 // each one contradicts a specific fact in the first email or clashes with the
@@ -208,36 +220,36 @@ const CORRESPONDENCE_PART: CelpipReadingPart = {
       {
         id: "rs1-corr-b1",
         options: [
-          "asking me before the price goes out to everyone",
           "checking with the whole group before you booked",
           "holding the same cabin for us again",
+          "asking me before the price goes out to everyone",
           "waiting until the deposit had been paid",
         ],
-        answer: 0,
+        answer: 2,
         explanation:
-          "All four fit the sentence, and three of them describe something that did not happen. Nadia says she is writing to him \"before I write to everyone else,\" so she has not checked with the group — that is the entire reason this email exists. The cabin near Wakefield has been taken off the rental list, so nothing was held. And the deposit is not due until the twelfth, so it has not been paid. The only one of the four that names a thing she actually did is the first.",
+          "All four fit the sentence, and three of them describe something that did not happen. Nadia says she is writing to him \"before I write to everyone else,\" so she has not checked with the group — that is the entire reason this email exists. The cabin near Wakefield has been taken off the rental list, so nothing was held. And the deposit is not due until the twelfth, so it has not been paid. The only one of the four that names something she actually did is thanking her for asking him before the price goes out.",
       },
       {
         id: "rs1-corr-b2",
         options: [
-          "still a fair price for two nights",
           "the same as we each put in last year",
           "the least we have ever paid for that weekend",
           "more than I can manage this autumn",
+          "still a fair price for two nights",
         ],
-        answer: 0,
+        answer: 3,
         explanation:
-          "Two of these are ruled out by one number in the first email: last year was sixty-five dollars each, so eighty is neither the same nor the lowest they have paid. The fourth is ruled out by Colin himself — he opens with \"count me in\" and closes by promising his share before the twelfth, so a sentence saying he cannot manage it contradicts the letter it is sitting in. That is the shape of this question type: the grammar never tells you, the surrounding facts do.",
+          "Two of these are ruled out by one number in the first email: last year was sixty-five dollars each, so eighty is neither the same nor the lowest they have paid. Saying he cannot manage it is ruled out by Colin himself — he opens with \"count me in\" and closes by promising his share before the twelfth, so a sentence saying he cannot manage it contradicts the letter it is sitting in. That is the shape of this question type: the grammar never tells you, the surrounding facts do.",
       },
       {
         id: "rs1-corr-b3",
         options: [
-          "give them the figure and the reason in one message",
           "leave the figure until we are all up there",
+          "give them the figure and the reason in one message",
           "send it from the cabin once we have arrived",
           "let them work it out from the total",
         ],
-        answer: 0,
+        answer: 1,
         explanation:
           "The sentence that follows the blank does the ruling out for you: \"a number always lands better when the reason for it arrives beside it\" only makes sense after advice to send both together. Beyond that, the deposit is due on the twelfth, so waiting until they are at the cabin is too late to be advice at all, and the cabin has no internet, so nothing can be sent from it. Making people do the arithmetic themselves is the opposite of the plainness he has just recommended.",
       },
@@ -251,19 +263,19 @@ const CORRESPONDENCE_PART: CelpipReadingPart = {
         ],
         answer: 0,
         explanation:
-          "Marcus has pulled out, which quietly disqualifies the second option however natural it sounds — this is the kind of detail the part is testing you for having held on to. Booking the second car is what Nadia said she would do only if he could not drive, so it contradicts the offer in the next sentence to pick people up on the way. And the cabin is twenty minutes beyond the village he is offering to drive through, on a lake, which is not somewhere a bus meets you.",
+          "Marcus has pulled out, which quietly disqualifies coming up with him however natural that option sounds — this is the kind of detail the part is testing you for having held on to. Booking the second car is what Nadia said she would do only if he could not drive, so it contradicts the offer in the next sentence to pick people up on the way. And the cabin is twenty minutes beyond the village he is offering to drive through, on a lake, which is not somewhere a bus meets you.",
       },
       {
         id: "rs1-corr-b5",
         options: [
-          "the six of us",
           "the eight of us",
           "the four of us",
+          "the six of us",
           "however many end up coming",
         ],
-        answer: 0,
+        answer: 2,
         explanation:
-          "Eight was the number before Marcus and Priya pulled out, and it is the figure the first email gives you first, which is exactly why it is the tempting one. Six is what is left, and it is the number the whole price calculation in that email rests on. Four is not in the email at all. The last option is grammatical and would be fine in a different letter, but Colin has just been told the head count is settled, and he is a man who takes the Saturday dinner and says so plainly.",
+          "Eight was the number before Marcus and Priya pulled out, and it is the figure the first email gives you first, which is exactly why it is the tempting one. Six is what is left, and it is the number the whole price calculation in that email rests on. Four is not in the email at all. Leaving it open is grammatical and would be fine in a different letter, but Colin has just been told the head count is settled, and he is a man who takes the Saturday dinner and says so plainly.",
       },
     ],
   },
@@ -374,26 +386,26 @@ const DIAGRAM_PART: CelpipReadingPart = {
       {
         id: "rs1-diag-b1",
         options: [
-          "on Monday evenings",
           "on Tuesday and Thursday mornings",
           "on Wednesday afternoons",
           "on Saturday mornings",
+          "on Monday evenings",
         ],
-        answer: 0,
+        answer: 3,
         explanation:
           "The pottery row gives Mondays, 6:30 to 8:30 in the evening. Each of the other three is a real time from this table and belongs to a different row: Tuesday and Thursday mornings is the lane swim, Wednesday afternoon is the conversation circle, and Saturday morning is the weight room orientation. In this part the wrong option is almost always a neighbouring row rather than an invention, so read down the column you are actually in.",
       },
       {
         id: "rs1-diag-b2",
         options: [
-          "one hundred and sixty dollars rather than the hundred and forty-five I am paying",
           "the same hundred and forty-five dollars I am paying",
+          "one hundred and sixty dollars rather than the hundred and forty-five I am paying",
           "one hundred and thirty dollars, since you are not a member",
           "sixty dollars, which is the rate for people from outside",
         ],
-        answer: 0,
+        answer: 1,
         explanation:
-          "This blank cannot be answered from the table alone, which is the point of the part: the pottery fee is $145, and the first note says anyone registering from outside the township adds $15 to any ten-week fee. Ray is at Harlow Bay, so $160. The second option is what you get by ignoring the note; the third invents a membership discount that appears nowhere; and sixty dollars is the lane swim's fee, lifted from the row above.",
+          "This blank cannot be answered from the table alone, which is the point of the part: the pottery fee is $145, and the first note says anyone registering from outside the township adds $15 to any ten-week fee. Ray is at Harlow Bay, so $160. Keeping him at a hundred and forty-five is what you get by ignoring the note; the hundred and thirty invents a membership discount that appears nowhere in the table or its notes; and sixty dollars is the lane swim's fee, lifted from the row above.",
       },
       {
         id: "rs1-diag-b3",
@@ -405,29 +417,29 @@ const DIAGRAM_PART: CelpipReadingPart = {
         ],
         answer: 0,
         explanation:
-          "The second note says the class that would have fallen on 16 February is made up on Monday 23 March, the week after the session ends. The second option contradicts the first sentence of that same note. The third is impossible on its own terms — the pottery row says drop-in is not available, so there is no drop-in rate to refund at. And nothing anywhere moves a class to a Saturday; Saturday morning belongs to the orientation.",
+          "The second note says the class that would have fallen on 16 February is made up on Monday 23 March, the week after the session ends. Saying it runs as usual contradicts the first sentence of that same note. A refund at the drop-in rate is impossible on its own terms — the pottery row says drop-in is not available, so there is no drop-in rate to refund at. And nothing anywhere moves a class to a Saturday; Saturday morning belongs to the orientation.",
       },
       {
         id: "rs1-diag-b4",
         options: [
-          "the lane swim takes drop-ins at six dollars a morning",
           "the orientation is free to walk into on a Saturday",
           "the family skate is the only thing here that takes drop-ins",
+          "the lane swim takes drop-ins at six dollars a morning",
           "you can pay for a single pottery evening at the door",
         ],
-        answer: 0,
+        answer: 2,
         explanation:
-          "Two rows carry a drop-in rate — the lane swim at $6 a morning and the family skate at $10 a family — and the lane swim is the one that lets a single person try a single session. The orientation costs $25 and its drop-in column says not available. The family skate does take drop-ins, but it is not the only thing that does, and the word doing the damage in that option is \"only\". The last one is contradicted twice over: by the pottery row's drop-in column and by the next sentence of the message itself.",
+          "Two rows carry a drop-in rate — the lane swim at $6 a morning and the family skate at $10 a family — and the lane swim is the one that lets a single person try a single session. The orientation costs $25 and its drop-in column says not available. The family skate does take drop-ins, but it is not the only thing that does, and the word doing the damage there is \"only\". Paying for one pottery evening at the door is contradicted twice over: by the pottery row's drop-in column and by the next sentence of the message itself.",
       },
       {
         id: "rs1-diag-b5",
         options: [
-          "for forty-eight hours after you book it online",
           "until the first class of the session",
+          "for forty-eight hours after you book it online",
           "for as long as there is room in the programme",
           "until the end of the week you booked in",
         ],
-        answer: 0,
+        answer: 1,
         explanation:
           "The third note gives both halves of the rule: a place booked online is held for forty-eight hours, and it is released if the fee has not been paid by then. That is also why the sentence after the blank tells him to book on an afternoon when he can pay the same day — a detail that only makes sense once the hold is short. The other three are all longer, more comfortable readings of a rule the notes deliberately make tight.",
       },
@@ -438,12 +450,12 @@ const DIAGRAM_PART: CelpipReadingPart = {
       id: "rs1-diag-q1",
       stem: "Someone who is at work every weekday until six in the evening, and away from Bellwood every weekend, could take —",
       options: [
-        "the pottery class",
         "the lane swim",
+        "the pottery class",
         "the conversation circle",
         "the family skate",
       ],
-      answer: 0,
+      answer: 1,
       explanation:
         "Only one programme in the table begins after six on a weekday: the pottery, at 6:30 on Monday evenings. The lane swim is at seven in the morning and the conversation circle at one in the afternoon, both of which fall inside the working day described. The family skate is on a Sunday, which is the half of the week this person is away for. Two constraints have to be held at once here — the hour and the day — and each of the three wrong options fails exactly one of them.",
     },
@@ -451,12 +463,12 @@ const DIAGRAM_PART: CelpipReadingPart = {
       id: "rs1-diag-q2",
       stem: "Two parents and their three children, all living in the township, want to skate every Sunday of the session. What do they pay?",
       options: [
-        "Forty dollars",
         "Two hundred dollars — forty dollars each",
         "Fifty dollars — the drop-in rate for five people",
+        "Forty dollars",
         "Eighty dollars — forty dollars for each parent",
       ],
-      answer: 0,
+      answer: 2,
       explanation:
         "The fee column says \"$40 per family\", and the three wrong answers are the three ways of not reading those last two words. They live in the township, so no surcharge applies, and they want the whole session rather than single afternoons, so the drop-in rate is not the one to use. A column heading is as much a fact as a cell is, and this part is largely about noticing that.",
     },
