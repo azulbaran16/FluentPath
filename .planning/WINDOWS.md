@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 12
+open_count: 13
 waived_count: 0
 fixed_count: 0
-total_count: 12
-last_updated: 2026-07-31T09:12:59.043Z
+total_count: 13
+last_updated: 2026-07-31T09:26:46.853Z
 ---
 
 # Broken Windows Ledger
@@ -27,6 +27,7 @@ last_updated: 2026-07-31T09:12:59.043Z
 | 10 | 02.1 | unrun-verify | src/components/celpip/ListeningPlayer.tsx |  | Nobody has heard the Listening runner or driven it in a browser: the phase machine, the one-question-at-a-time reveal, submit and the recorded attempt have never been clicked through, and no audio has come out of a speaker on any device. | open |  | 2026-07-31T08:45:09.723Z |  |
 | 11 | 02.1 | deviation | src/components/celpip/ListeningPlayer.tsx |  | The player's D-04/D-05 behaviour is gated by greps and by a manually-run served-HTML measurement, not by a committed render harness. The RSC-payload leak is now committed-gated at the route boundary, but the one-at-a-time reveal and the no-revisit rule are not. | open |  | 2026-07-31T08:45:19.431Z |  |
 | 12 | 02.1 | unrun-verify | src/lib/celpip/listening-set-1.ts |  | Nobody has heard the two new two-speaker parts; the multi-voice distinguishability and the 714-word problem-solving script are unproved by ear | open |  | 2026-07-31T09:12:59.043Z |  |
+| 13 | 02.1 | unrun-verify | src/lib/celpip/listening-set-1.ts |  | Nobody has sat listening set 1 end to end and timed it. The set is now 2,090 words and 29 items on a 44-minute derived clock; the timing check is bounded by arithmetic against one real 76-second measurement, not observed. | open |  | 2026-07-31T09:26:46.853Z |  |
 
 ````json
 [
@@ -172,6 +173,18 @@ last_updated: 2026-07-31T09:12:59.043Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-07-31T09:12:59.043Z",
+    "resolved_at": null
+  },
+  {
+    "id": 13,
+    "kind": "unrun-verify",
+    "phase": "02.1",
+    "file": "src/lib/celpip/listening-set-1.ts",
+    "line": null,
+    "description": "Nobody has sat listening set 1 end to end and timed it. The set is now 2,090 words and 29 items on a 44-minute derived clock; the timing check is bounded by arithmetic against one real 76-second measurement, not observed.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-07-31T09:26:46.853Z",
     "resolved_at": null
   }
 ]

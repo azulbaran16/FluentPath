@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02.1
 current_phase_name: celpip-remaining-skills
 status: in-progress
-stopped_at: Completed 02.1-06-PLAN.md
-last_updated: "2026-07-31T09:13:25.739Z"
+stopped_at: Completed 02.1-07-PLAN.md
+last_updated: "2026-07-31T09:29:06.082Z"
 last_activity: 2026-07-31
 last_activity_desc: "02.1-05 executed: the hear-once runner, its route and the news-item part. Nobody has heard it yet."
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 25
-  completed_plans: 19
+  completed_plans: 20
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-07-23)
 ## Current Position
 
 Phase: 02.1 (celpip-remaining-skills) — IN PROGRESS
-Plan: 7 of 12
+Plan: 8 of 12
 Status: 02.1-05 complete on `main`; Listening is a real section on `/celpip` with one of the six exam part shapes authored. Next action is executing 02.1-06 (set 1's problem-solving and daily-conversation parts — a pure append to `SET_1_PARTS`)
 Last activity: 2026-07-31 — 02.1-05 executed: the hear-once runner, its route and the news-item part. Nobody has heard it yet.
 
-Progress: [████████░░] 76% (2 of 6 phases; 18 of 25 plans)
+Progress: [████████░░] 80% (2 of 6 phases; 18 of 25 plans)
 
 ## Performance Metrics
 
@@ -71,6 +71,7 @@ Progress: [████████░░] 76% (2 of 6 phases; 18 of 25 plans)
 | Phase 02.1 P04 | 62m | 2 tasks | 9 files |
 | Phase 02.1 P05 | 45m | 3 tasks | 6 files |
 | Phase 02.1 P06 | 38m | 2 tasks | 2 files |
+| Phase 02.1 P07 | 22m | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -136,6 +137,8 @@ Recent decisions affecting current work:
 - [Phase ?]: 02.1-05: the content harness REPORTS part-kind coverage and ASSERTS the exam's per-part item counts (8/5/6/5/8/5) — a coverage gate would fail for most of the phase and be disabled rather than fixed
 - [Phase ?]: Listening SET_1_PARTS is ordered by the exam's own part order, not by which plan authored each part, and the order is gated as a subsequence of CELPIP_LISTENING_PART_KINDS
 - [Phase ?]: A CELPIP conversation part must answer some items by implication rather than recall — 3 of 5 in ls1-daily-conversation — or it is a news item with two voices
+- [Phase ?]: Listening set 1's information and viewpoints parts: 3 of 6 information items are answerable only by having tracked the order, and 4 of 5 viewpoints items turn on fact against opinion or attribution
+- [Phase ?]: The set's derived timeLimitMinutes comment now names both terms (audio at the app's real 142 wpm, plus a minute per item) but still writes no count into prose
 
 ### Pending Todos
 
@@ -180,6 +183,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-31T09:13:25.713Z
-Stopped at: Completed 02.1-06-PLAN.md
+Last session: 2026-07-31T09:29:06.055Z
+Stopped at: Completed 02.1-07-PLAN.md
 Resume file: None
