@@ -5,8 +5,8 @@ milestone_name: milestone
 current_phase: 02.1
 current_phase_name: celpip-remaining-skills
 status: in-progress
-stopped_at: Completed 02.1-12-PLAN.md — automated gate PASSED, browser pass PARTIAL (Reading + landing closed; Listening results, Speaking playback, phone/Safari and cross-device persistence still owed)
-last_updated: "2026-07-31T12:01:08.583Z"
+stopped_at: "Phase 2.1 COMPLETE — all six criteria met, CELPIP-06..10 closed. Phase-exit debt: nothing has run on phone/Safari (highest priority), Speaking playback unheard, Listening results screen unobserved, finalize-on-tab-close limitation"
+last_updated: "2026-07-31T12:09:02.856Z"
 last_activity: 2026-07-31
 last_activity_desc: "02.1-05 executed: the hear-once runner, its route and the news-item part. Nobody has heard it yet."
 progress:
@@ -163,6 +163,7 @@ Recent decisions affecting current work:
 - [Phase ?]: 02.1-12: the four Speaking rubric axis names are the official CELPIP sub-score names — judged factual labels rather than expression, and disclosed in the gate record rather than hidden
 - [Phase ?]: 02.1-12 (user, 2026-07-31): the four Speaking rubric dimension names stay VERBATIM — they are the exam's own scoring axes and renaming would hurt recognition on the day. The only verbatim borrowing in the app, and a deliberate one
 - [Phase ?]: 02.1-12: the Listening caveat was never missing — it ships in the same client chunk as Speaking's and simply never uses the word 'synthesised'. Quote product copy, do not paraphrase it, in verification records
+- [Phase ?]: 02.1-12: closing the tab from a CELPIP results screen loses the attempt (finalizeAttempt runs on results-view exit, inherited by all four skills). Recorded as a known limitation and improvement candidate, deliberately NOT fixed at the phase gate
 
 ### Pending Todos
 
@@ -208,6 +209,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-31T12:01:08.555Z
-Stopped at: Completed 02.1-12-PLAN.md — automated gate PASSED, browser pass PARTIAL (Reading + landing closed; Listening results, Speaking playback, phone/Safari and cross-device persistence still owed)
+Last session: 2026-07-31T12:09:02.829Z
+Stopped at: Phase 2.1 COMPLETE — all six criteria met, CELPIP-06..10 closed. Phase-exit debt: nothing has run on phone/Safari (highest priority), Speaking playback unheard, Listening results screen unobserved, finalize-on-tab-close limitation
 Resume file: None

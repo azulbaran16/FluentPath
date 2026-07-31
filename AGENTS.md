@@ -30,6 +30,13 @@ Stack: Next.js 16 (App Router) · React 19 · TypeScript · Tailwind v4.
   material is a format reference only and no sentence of it may enter the app. Section
   availability and every coverage line on the landing are **derived from bank contents**
   (`CELPIP_SECTIONS` in `src/lib/celpip.ts`) — never hand-written, so they cannot overclaim.
+- **A CELPIP attempt is recorded when the learner LEAVES the results view** (Retry / Back to
+  tasks), via each runner's `finalizeAttempt` behind a `finalizedRef` guard. Phase 1 chose this
+  for Writing and Speaking, Listening and Reading all inherit it. **Known limitation: closing
+  the tab from the results screen loses the attempt**, including a full 39-minute Reading
+  sitting. `ProgressSync.tsx` wires `visibilitychange`/`pagehide`, but those flush the sync
+  *queue* — on the results screen nothing is queued yet, so they do not help. Fixing it means
+  wiring `finalizeAttempt` itself to those events in all three runners.
 - Listening audio is the Web Speech API (`src/lib/celpip-speech.ts`), not recorded files.
   **Scripts are chunked one turn per speaker turn, ≤25 words each, and that is a correctness
   constraint rather than a style note:** Chrome truncates a single utterance at roughly

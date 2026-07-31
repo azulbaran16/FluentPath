@@ -2,9 +2,9 @@
 schema_version: 1
 open_count: 20
 waived_count: 0
-fixed_count: 7
-total_count: 27
-last_updated: 2026-07-31T11:57:21.685Z
+fixed_count: 8
+total_count: 28
+last_updated: 2026-07-31T12:06:17.747Z
 ---
 
 # Broken Windows Ledger
@@ -15,7 +15,7 @@ last_updated: 2026-07-31T11:57:21.685Z
 
 | id | phase | kind | file | line | description | status | reason | recorded_at | resolved_at |
 |----|-------|------|------|------|-------------|--------|--------|-------------|-------------|
-| 1 | 02 | unrun-verify | src/lib/celpip-progress.ts |  | 02-06 Task 2 asked for a hand-check that a completed CELPIP task shows a blank editor after a reconcile; it needs an authenticated session against the live DB, which this run deliberately did not touch. Owed to 02-07. | open |  | 2026-07-28T23:55:44.383Z |  |
+| 1 | 02 | unrun-verify | src/lib/celpip-progress.ts |  | 02-06 Task 2 asked for a hand-check that a completed CELPIP task shows a blank editor after a reconcile; it needs an authenticated session against the live DB, which this run deliberately did not touch. Owed to 02-07. | fixed |  | 2026-07-28T23:55:44.383Z | 2026-07-31T12:06:17.747Z |
 | 2 | 02 | deviation | src/app/api/celpip-progress/route.ts |  | The plan's route gates are bare presence counts: overwrite-instead-of-merge, cap removal and rate-limit removal all produced ZERO failures. Sharpened call-site gates are recorded in 02-06-SUMMARY.md but live only in that document. | open |  | 2026-07-28T23:55:44.925Z |  |
 | 3 | 02.1 | unrun-verify | src/components/celpip/SpeakingRecorder.tsx |  | 02.1-01 checkpoint: the Speaking phone pass was not done (no device available). The MediaRecorder isTypeSupported container probe (WebM -> MP4) exists precisely for Safari before 18.4, which supports MP4 only, so the one browser family it was written for has never run it. Owed to 02.1-12. | open |  | 2026-07-31T03:10:00.000Z |  |
 | 4 | 02.1 | unrun-verify | src/components/celpip/SpeakingRecorder.tsx |  | 02.1-01 checkpoint: microphone release-on-stop is code-verified, not observed. The run used a synthetic AudioContext MediaStreamDestination, whose track lifecycle is not the OS recording indicator. Needs one real-device glance in 02.1-12. | open |  | 2026-07-31T03:10:00.000Z |  |
@@ -42,6 +42,7 @@ last_updated: 2026-07-31T11:57:21.685Z
 | 25 | 02.1 | unrun-verify | src/lib/celpip/speaking-prompts.ts |  | Successor to window 7, narrowed by the 02.1-12 browser pass. What CLOSED: the Speaking tab was switched to in a real browser, the cards render, and the Task 3 written-scene caveat was SEEN on screen. What REMAINS: none of the seven prompts added by plan 03 has been taken through record -> playback -> self-check, and no human has HEARD a recording play back on any prompt (a blob: audio element was verified to load and recordingSeconds to be correct, which is not the same thing). | open |  | 2026-07-31T11:57:10.263Z |  |
 | 26 | 02.1 | unrun-verify | src/components/celpip/DropdownBlank.tsx |  | Successor to window 16, narrowed by the 02.1-12 browser pass. What CLOSED on desktop: the reading runner renders, a drop-down blank was answered, and the per-part clock re-arms correctly (11:00 -> 8:00 -> 9:00 -> 11:00; part 4 re-armed despite sharing part 1's 11-minute allowance, which is exactly the latent bug key={part.id} was added for). What REMAINS: no mobile pass at all - whether the native select opens as the iOS/Android system picker, and whether four inline selects sit legibly in one paragraph at phone widths, are both still unknown. | open |  | 2026-07-31T11:57:11.373Z |  |
 | 27 | 02.1 | unrun-verify | .planning/phases/02.1-celpip-remaining-skills/02.1-12-PLAN.md |  | Successor to window 24: what the 02.1-12 browser pass did NOT reach, and what therefore still blocks a clean phase close. (1) The Listening RESULTS screen and the post-answer transcript with speaker labels - automation overshot it twice. (2) The 55-minute Listening clock, untimed. (3) Speaking playback BY EAR - no human has heard a recording. (4) The OS microphone indicator going out on stop - a synthetic stream cannot show it. (5) ANY phone or Safari path - the MediaRecorder WebM->MP4 container probe has still never executed on the browser family it was written for. (6) Cross-device persistence for the three new sections - not run at all. Reading is the one section verified end to end on desktop. | open |  | 2026-07-31T11:57:21.685Z |  |
+| 28 | 02.1 | deviation | src/components/celpip/ReadingRunner.tsx |  | KNOWN LIMITATION, now spanning all four skills: close the tab from the results screen and the attempt is lost - including a full 39-minute Reading sitting. finalizeAttempt runs on results-view EXIT (Retry / Back to tasks), the pattern Phase 1 chose for Writing and that Speaking, Listening and Reading each inherited. Observed 2026-07-31 in the 02.1-12 cross-device pass: a Reading attempt did not persist because the reviewer navigated straight to sign-out rather than through an exit control. IMPROVEMENT CANDIDATE, deliberately not fixed at the gate (out of plan scope). PRECISION FOR WHOEVER FIXES IT: ProgressSync.tsx:62-69 already wires visibilitychange+pagehide, but those flush the sync QUEUE - they push state already recorded. On the results screen finalizeAttempt has not run, so there is nothing queued to flush. The fix needs finalizeAttempt itself wired to the same event pair inside ReadingRunner, ListeningPlayer and SpeakingRecorder, with care for finalizedRef and the reset-on-retry paths. Use visibilitychange/pagehide, NOT beforeunload - ProgressSync.tsx:57-61 records why the unload-time events were deliberately avoided (unreliable on mobile, being removed). | open |  | 2026-07-31T12:06:17.158Z |  |
 
 ````json
 [
@@ -52,10 +53,10 @@ last_updated: 2026-07-31T11:57:21.685Z
     "file": "src/lib/celpip-progress.ts",
     "line": null,
     "description": "02-06 Task 2 asked for a hand-check that a completed CELPIP task shows a blank editor after a reconcile; it needs an authenticated session against the live DB, which this run deliberately did not touch. Owed to 02-07.",
-    "status": "open",
+    "status": "fixed",
     "reason": "",
     "recorded_at": "2026-07-28T23:55:44.383Z",
-    "resolved_at": null
+    "resolved_at": "2026-07-31T12:06:17.747Z"
   },
   {
     "id": 2,
@@ -367,6 +368,18 @@ last_updated: 2026-07-31T11:57:21.685Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-07-31T11:57:21.685Z",
+    "resolved_at": null
+  },
+  {
+    "id": 28,
+    "kind": "deviation",
+    "phase": "02.1",
+    "file": "src/components/celpip/ReadingRunner.tsx",
+    "line": null,
+    "description": "KNOWN LIMITATION, now spanning all four skills: close the tab from the results screen and the attempt is lost - including a full 39-minute Reading sitting. finalizeAttempt runs on results-view EXIT (Retry / Back to tasks), the pattern Phase 1 chose for Writing and that Speaking, Listening and Reading each inherited. Observed 2026-07-31 in the 02.1-12 cross-device pass: a Reading attempt did not persist because the reviewer navigated straight to sign-out rather than through an exit control. IMPROVEMENT CANDIDATE, deliberately not fixed at the gate (out of plan scope). PRECISION FOR WHOEVER FIXES IT: ProgressSync.tsx:62-69 already wires visibilitychange+pagehide, but those flush the sync QUEUE - they push state already recorded. On the results screen finalizeAttempt has not run, so there is nothing queued to flush. The fix needs finalizeAttempt itself wired to the same event pair inside ReadingRunner, ListeningPlayer and SpeakingRecorder, with care for finalizedRef and the reset-on-retry paths. Use visibilitychange/pagehide, NOT beforeunload - ProgressSync.tsx:57-61 records why the unload-time events were deliberately avoided (unreliable on mobile, being removed).",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-07-31T12:06:17.158Z",
     "resolved_at": null
   }
 ]
