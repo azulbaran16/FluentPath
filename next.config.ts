@@ -13,6 +13,15 @@ const csp = [
   "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://connect.facebook.net",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https:",
+  // The policy declares no media-src of its own, so it inherits default-src
+  // 'self' — and 'self' matches a scheme/host/port, never a blob: URL. The
+  // CELPIP Speaking recorder hands an <audio> element an object URL over the
+  // in-memory recording, so without this entry the browser refuses to load it
+  // and the learner cannot hear herself back. This is a narrow widening: it
+  // grants no script capability at all (blob: in script-src is the dangerous
+  // case, and it stays out). A future same-origin recorded-audio file
+  // (VOICE-01) needs no further change here — 'self' already covers it.
+  "media-src 'self' blob:",
   "font-src 'self' data:",
   "connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://connect.facebook.net",
   "frame-ancestors 'none'",
