@@ -16,11 +16,12 @@ import type { CelpipReadingPart, CelpipReadingSet } from "../celpip";
 // same way, and the landing's coverage line follows on its own.
 //
 // **THE ARRAY IS NOT APPEND-ONLY, AND THAT IS THE ONE TRAP IN THIS FILE.** This
-// set ships parts 1 and 3 first; the diagram is part 2 and viewpoints is part 4,
-// so plan 10 must INSERT the diagram between the two below rather than append
-// it. `scripts/verify-celpip-content.mts` asserts the array is a subsequence of
-// `CELPIP_READING_PART_KINDS`, so getting it wrong fails the build rather than
-// quietly running the exam's part 3 before its part 2.
+// set was authored across two plans: parts 1 and 3 first, then part 2 INSERTED
+// between them and part 4 appended after. `scripts/verify-celpip-content.mts`
+// asserts the array is a subsequence of `CELPIP_READING_PART_KINDS`, so a part
+// added in the wrong place fails the build rather than quietly running the
+// exam's part 3 before its part 2. All four are present now, so the next author
+// to meet this trap is whoever writes set 2 — which may again ship partial.
 //
 // IDS MUST BE UNIQUE ACROSS EVERY QUESTION AND EVERY BLANK IN THE SET, not just
 // within a part. Question ids and blank ids share ONE answers map on the stored
@@ -661,6 +662,223 @@ const INFORMATION_PART: CelpipReadingPart = {
 };
 
 /**
+ * Part 4 shape: Reading for Viewpoints — 11 minutes, ten items, five questions
+ * on the article and five drop-down blanks in a reader's comment beneath it.
+ *
+ * WHAT THIS PART TESTS IS ATTRIBUTION, NOT COMPREHENSION. Four of the five
+ * questions ask *who* held a position rather than *what* the position was, and
+ * that is the difference between this part and part 3. A learner who reads the
+ * article for its facts and not for its speakers can answer every question about
+ * content and still lose the part.
+ *
+ * THE POSITIONS OVERLAP ON PURPOSE, because four people disagreeing about
+ * everything is both easier and less like the real thing than four people whose
+ * agreements cut across each other:
+ *
+ *   Prewitt and Bouchard-Ng want the same outcome for different reasons.
+ *   Prewitt and Sarrazin agree the trial worked and disagree on what follows.
+ *   Sarrazin and Trang both end up pointing at service, from opposite premises.
+ *   Trang alone disputes what the headline number means, and asks for neither
+ *   outcome.
+ *
+ * Every question below is settled by a named sentence, and the explanation says
+ * which. An attribution question whose answer rests on tone rather than on a
+ * sentence is a guess dressed as an item.
+ *
+ * THE COMMENT'S BLANKS ARE WHERE STANCE AND ATTRIBUTION MEET. The correct option
+ * agrees or disagrees with a specific named position in a way that fits both the
+ * article's facts and the commenter's own argument; each wrong option is
+ * grammatical and fails on one of exactly two things — it credits the wrong
+ * person, or it reverses the stance the writer has already taken in her own
+ * paragraph.
+ */
+const VIEWPOINTS_PART: CelpipReadingPart = {
+  id: "rs1-viewpoints",
+  kind: "viewpoints",
+  title: "Four views on a town's free buses",
+  minutes: 11,
+  instructions:
+    "Read the article and answer the five questions that follow it. Most of them ask you who said something rather than what was said, so keep track of the speakers as you read. Then choose the best option for each blank in the reader's comment printed underneath.",
+  passage: {
+    title: "Ellisburn's free buses: four people on what should happen in April",
+    paragraphs: [
+      "For eighteen months nobody in Ellisburn has paid to board a bus. The trial has been covered by a provincial grant that runs out in June, the council votes on what happens next on the ninth of April, and the four people below will all be at that meeting. Trips taken across the network are up thirty-four per cent. Almost nothing else about the last eighteen months is agreed on.",
+      "Councillor Yolanda Prewitt, who chaired the committee that proposed the trial, treats the thirty-four per cent as the argument in itself. \"We were told nobody changes how they travel for the sake of two dollars and forty cents. Thirty-four per cent says otherwise.\" She is quick to add that the fare box covered eleven per cent of what it costs to run the system, and that collecting it was not free either. Her position is that the fare should not come back at all, and that the town should find the eleven per cent somewhere else in its own budget.",
+      "Devin Sarrazin, who runs the town's buses, is careful about what he is not saying. \"It worked. More people rode. I am not going to stand up in April and pretend otherwise.\" His disagreement is about what follows. On three of the six routes the last bus leaves at seven in the evening, and three have no Sunday service at all; a bus that is free but not running when a shift ends is, he says, free to the wrong people. He would rather bring back a modest fare and put every dollar of it into evening and Sunday runs. \"You cannot board a bus that is not there.\"",
+      "Marguerite Bouchard-Ng, who runs a home-care agency with fourteen staff, wants the fare kept at nothing and is impatient with the way the case for it is being made. Counting trips, she argues, tells you the size of the change and nothing about who it happened to. Her staff move between four and six houses a day; most of her clients no longer drive. \"Ask the councillor how many of her thirty-four per cent had another way of getting there. She does not know. That is my whole point.\" She has said more than once that she agrees with Councillor Prewitt's conclusion and not with her reasoning.",
+      "Hollis Trang, who teaches economics at Ellisburn College, is the only one of the four who doubts that the number means what it is being asked to mean. Route 6, out to the Denniker Yards, opened eight months into the trial and carries shift workers to an employer that runs around the clock; most of the growth, he says, arrived after that route did. \"You cannot credit a fare change for riders on a route that did not exist when the fare changed.\" He is not asking for the fare to come back. He wants the council to separate the two effects before it votes, and he expects that exercise to point at service rather than at price — which is where Sarrazin has arrived from the opposite direction.",
+      "The vote is on the ninth of April. The grant ends in June whichever way it goes.",
+    ],
+  },
+  questions: [
+    {
+      id: "rs1-view-q1",
+      stem: "Who argues that the rise in riders cannot be credited to the fare change?",
+      options: [
+        "Councillor Yolanda Prewitt",
+        "Devin Sarrazin",
+        "Hollis Trang",
+        "Marguerite Bouchard-Ng",
+      ],
+      answer: 2,
+      explanation:
+        "Trang's sentence settles it on its own: \"You cannot credit a fare change for riders on a route that did not exist when the fare changed.\" He is the only one of the four who questions what the thirty-four per cent is evidence of. Prewitt treats that figure as her whole argument, Sarrazin accepts it in as many words (\"It worked. More people rode\"), and Bouchard-Ng's complaint is that the figure is the wrong thing to count, which is not the same as doubting it.",
+    },
+    {
+      id: "rs1-view-q2",
+      stem: "Which two speakers agree that the trial worked and disagree about what should happen next?",
+      options: [
+        "Sarrazin and Trang",
+        "Prewitt and Sarrazin",
+        "Prewitt and Bouchard-Ng",
+        "Bouchard-Ng and Trang",
+      ],
+      answer: 1,
+      explanation:
+        "Both halves have to hold. Prewitt and Sarrazin both say the trial succeeded — she from the thirty-four per cent, he in a sentence written to head off exactly this misreading — and they want opposite things afterwards: no fare at all, or a modest fare spent on evening runs. Prewitt and Bouchard-Ng pass the first half and fail the second, because they want the same outcome and differ only in their reasons for it. Sarrazin and Trang fail the first half: Trang doubts what the trial showed. Bouchard-Ng and Trang agree on neither.",
+    },
+    {
+      id: "rs1-view-q3",
+      stem: "Whose case rests on which people are riding rather than on how many?",
+      options: ["Prewitt's", "Sarrazin's", "Trang's", "Bouchard-Ng's"],
+      answer: 3,
+      explanation:
+        "Bouchard-Ng says it directly — counting trips \"tells you the size of the change and nothing about who it happened to\" — and her question to the councillor is about how many of those riders had another way of getting there. Prewitt's case is the size of the change and nothing else. Sarrazin's is about when the buses run. Trang's is about what caused the number, which is a question about the same total rather than about the people inside it.",
+    },
+    {
+      id: "rs1-view-q4",
+      stem: "Which speaker would be most likely to accept a fare again if the money paid for later buses?",
+      options: [
+        "Devin Sarrazin",
+        "Yolanda Prewitt",
+        "Marguerite Bouchard-Ng",
+        "Hollis Trang",
+      ],
+      answer: 0,
+      explanation:
+        "It is Sarrazin's actual proposal, not an inference about him: a modest fare, with every dollar of it going to evening and Sunday runs. Prewitt says the fare should not come back at all. Bouchard-Ng wants it kept at nothing. Trang is the trickiest of the three wrong answers, because he also ends up pointing at service — but the article says plainly that he is not asking for the fare to come back; he wants the council to measure before it decides.",
+    },
+    {
+      id: "rs1-view-q5",
+      stem: "Which of these does every one of the four accept?",
+      options: [
+        "That the fare change is what produced the increase",
+        "That the buses should stay free after April",
+        "That more trips were taken during the eighteen months than before them",
+        "That the province will renew the grant",
+      ],
+      answer: 2,
+      explanation:
+        "The thirty-four per cent is the one thing nobody in the article disputes — Trang argues about what caused it, which concedes that it happened. The first option is the very thing he denies. The second is held by Prewitt and Bouchard-Ng and rejected by Sarrazin, so it is not unanimous. And the last is contradicted by the article's closing line: the grant ends in June whichever way the vote goes.",
+    },
+  ],
+  blankText: {
+    title: "From the comments",
+    intro: ["Ines Marchetti, Ellisburn — rides route 2"],
+    segments: [
+      {
+        kind: "text",
+        text: "I have taken the number 2 to work and back for eleven years, and of the four people quoted here, ",
+      },
+      { kind: "blank", blankId: "rs1-view-b1" },
+      {
+        kind: "text",
+        text: ". The bus I get on at half past six in the morning is full of people going in to work in kitchens and care homes, and not one of them is choosing between the bus and a car.",
+      },
+      { kind: "break" },
+      {
+        kind: "text",
+        text: "Mr Trang is right that route 6 opened in the middle of all this, and I would not pretend otherwise. But ",
+      },
+      { kind: "blank", blankId: "rs1-view-b2" },
+      { kind: "text", text: ", and that is what his argument leaves out." },
+      { kind: "break" },
+      {
+        kind: "text",
+        text: "Where I part company with Mr Sarrazin is not the evening runs — a bus that stops at seven is no use to a night shift, and he is right about that — but ",
+      },
+      { kind: "blank", blankId: "rs1-view-b3" },
+      { kind: "text", text: "." },
+      { kind: "break" },
+      { kind: "text", text: "And if the council needs the money, " },
+      { kind: "blank", blankId: "rs1-view-b4" },
+      { kind: "text", text: "." },
+      { kind: "break" },
+      { kind: "text", text: "So: keep the fare where it is, " },
+      { kind: "blank", blankId: "rs1-view-b5" },
+      {
+        kind: "text",
+        text: ", and count the people on the six-thirty bus before anybody decides what the last eighteen months proved.",
+      },
+      { kind: "break" },
+      { kind: "text", text: "Ines Marchetti" },
+    ],
+    blanks: [
+      {
+        id: "rs1-view-b1",
+        options: [
+          "it is Councillor Prewitt who has described my bus",
+          "it is Mr Trang who has described my bus",
+          "it is Ms Bouchard-Ng who has described my bus",
+          "not one of them has described my bus",
+        ],
+        answer: 2,
+        explanation:
+          "The sentence after the blank is an answer to Bouchard-Ng's question and to nobody else's: it says who is on the bus and that they have no alternative, which is exactly what she asks the councillor about. Crediting Prewitt puts the total in the mouth of the one person who says the total is beside the point. Crediting Trang credits an argument about what caused the rise, which is not about passengers at all. And saying none of them described it is contradicted by the writer's own next sentence, which agrees with one of them rather than rejecting all four.",
+      },
+      {
+        id: "rs1-view-b2",
+        options: [
+          "the number 2 has not changed its route or its timetable in six years, and it is fuller than it was",
+          "route 6 now carries more riders than the other five put together",
+          "the fare was never what kept anybody off my bus",
+          "nothing much has changed on the older routes either",
+        ],
+        answer: 0,
+        explanation:
+          "Trang's argument is that the growth came from a route that did not exist before, so the reply that answers it is one about a route that did not change and grew anyway. The claim about route 6 outcarrying the rest is a figure the article never gives, and inventing evidence is the one move a comment on an article cannot make. Saying the fare never kept anyone off her bus would undo the writer's own conclusion four lines later. And conceding that nothing changed on the older routes hands Trang the argument in the middle of a sentence that begins \"But\".",
+      },
+      {
+        id: "rs1-view-b3",
+        options: [
+          "his claim that the trial made no difference",
+          "the idea that we have to choose between the two",
+          "his view that the college students should be paying",
+          "the suggestion that the evenings are good enough as they are",
+        ],
+        answer: 1,
+        explanation:
+          "What Sarrazin proposes is a trade — a fare back in exchange for evening and Sunday runs — and a trade is the thing this writer refuses, having just agreed with him about the evenings. Saying he claims the trial made no difference contradicts the sentence in which he refuses to pretend anything of the kind. The college students belong to Trang's paragraph and to no argument about fares. And nobody in the article says the evenings are adequate; Sarrazin says the opposite, which is the half of his case she has just accepted.",
+      },
+      {
+        id: "rs1-view-b4",
+        options: [
+          "put the fares back where they were before the trial",
+          "wait for the province to renew the grant in June",
+          "charge on the new route and leave the other five alone",
+          "start with the eleven per cent the fare box used to bring in and ask what else the budget is doing",
+        ],
+        answer: 3,
+        explanation:
+          "Eleven per cent is the figure Prewitt gives for what the fares covered, and hers is the argument this writer is following: find it elsewhere in the budget. The option about the grant reverses the article's closing fact — it ends in June, it is not renewed then. Putting the fares back is the outcome the whole comment argues against, three words before she argues against it. And charging on route 6 alone would fall on the shift workers whose bus is the one she has just spent a paragraph defending.",
+      },
+      {
+        id: "rs1-view-b5",
+        options: [
+          "let the evening runs wait until the money turns up",
+          "find the evening runs their money somewhere else",
+          "admit that the evenings were never the real problem",
+          "put whatever is left into the route out to the Denniker Yards",
+        ],
+        answer: 1,
+        explanation:
+          "She has already granted Sarrazin the evenings, so the only ending that keeps her own paragraph consistent is one that keeps the fare at nothing and still pays for them. Letting the evening runs wait, and denying that they were ever a problem, both walk back a concession she made two lines earlier. And the Denniker Yards route is the newest thing on the network and the one part of it nobody in the article says is short of service.",
+      },
+    ],
+  },
+};
+
+/**
  * The set's parts, IN EXAM ORDER — see the warning in the file header. This is
  * not the order they were authored in and it is not append-only: the diagram
  * part belongs BETWEEN these two, and viewpoints after them.
@@ -668,11 +886,17 @@ const INFORMATION_PART: CelpipReadingPart = {
  * THE SET'S TOTAL ALLOWANCE IS NOT WRITTEN DOWN ANYWHERE. `CelpipReadingSet`
  * carries no `timeLimitMinutes` field on purpose (see the type in
  * `../celpip.ts`): `readingSetMinutes` sums these parts' own `minutes`, so the
- * total cannot be typed twice and cannot drift from the parts it describes. It
- * reads 20 today and reaches the exam's 39 the moment plan 10 lands the other
- * two — with no edit here.
+ * total cannot be typed twice and cannot drift from the parts it describes. With
+ * all four parts present it now reports the exam's own 39 minutes over 38 items
+ * — 11 + 8 + 9 + 11, and 11 + 8 + 9 + 10 — and it reports them because they were
+ * derived, not because anybody typed them here.
  */
-const SET_1_PARTS: CelpipReadingPart[] = [CORRESPONDENCE_PART, DIAGRAM_PART, INFORMATION_PART];
+const SET_1_PARTS: CelpipReadingPart[] = [
+  CORRESPONDENCE_PART,
+  DIAGRAM_PART,
+  INFORMATION_PART,
+  VIEWPOINTS_PART,
+];
 
 export const READING_SET_1: CelpipReadingSet = {
   id: "reading-set-1",
