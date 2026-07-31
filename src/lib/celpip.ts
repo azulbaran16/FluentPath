@@ -455,11 +455,32 @@ function speakingSource(): CelpipSectionSource {
   };
 }
 
-// Reading and Listening have no bank module yet, so their sections read an
-// absent source and report themselves as not yet available. Plan 05 replaces
-// the listening `undefined` and plan 09 the reading one; each is one line.
+function listeningSource(): CelpipSectionSource {
+  const items: CelpipSectionItem[] = LISTENING_SETS.map((set) => ({
+    id: set.id,
+    title: set.title,
+    // The part SHAPES, never a line of the script: this string is rendered on
+    // the landing, and D-04 is that she hears the words rather than reads them.
+    summary: set.parts.map((part) => listeningPartKindLabel(part.kind)).join(" · "),
+    timing: `${set.timeLimitMinutes} min · ${plural(
+      set.parts.reduce((n, part) => n + part.questions.length, 0),
+      "question",
+    )}`,
+    icon: "listening",
+  }));
+  const kinds = new Set(LISTENING_SETS.flatMap((set) => set.parts).map((p) => p.kind));
+  return {
+    groups: [{ key: "listening", label: "Listening", items }],
+    summary: `${plural(items.length, "set")} covering ${kinds.size} of the ${
+      CELPIP_LISTENING_PART_KINDS.length
+    } exam part shapes`,
+  };
+}
+
+// Reading has no bank module yet, so its section reads an absent source and
+// reports itself as not yet available. Plan 09 replaces this `undefined`; it is
+// one line, exactly as the listening one above it was.
 const READING_SOURCE: CelpipSectionSource | undefined = undefined;
-const LISTENING_SOURCE: CelpipSectionSource | undefined = undefined;
 
 function section(
   skill: CelpipSkill,
@@ -504,7 +525,11 @@ export const CELPIP_SECTIONS: CelpipSection[] = [
     "listening",
     "Listening",
     "Spoken sets you hear once, with the questions revealed only after playback — as in the exam.",
-    LISTENING_SOURCE,
+    listeningSource(),
+    // The other deliberate product compromise (D-03), said rather than hidden
+    // for the same reason the Speaking one is: she meets the real thing on exam
+    // day and has to know in advance how this differs.
+    "The audio here is spoken by your browser rather than played from a recording, so it sounds more mechanical than the exam's and the voices are whatever your device offers. That is a trade for having this to practise with now. What it still trains is the part that decides the score: following speech you cannot re-read, once, while taking notes.",
   ),
   section(
     "speaking",

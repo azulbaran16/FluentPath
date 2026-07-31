@@ -41,7 +41,12 @@ export default async function CelpipListeningPage({
   return (
     <>
       <JsonLd data={learningResource} />
-      <ListeningPlayer set={set} />
+      {/* The ID, never the resolved set. A prop crossing this boundary is
+          serialized into the RSC payload and inlined into this page's HTML —
+          which, for a set, means the whole script and the whole answer key in
+          the document source before she has heard anything (D-04). The player
+          resolves the id against the bank on the client. */}
+      <ListeningPlayer setId={set.id} />
     </>
   );
 }

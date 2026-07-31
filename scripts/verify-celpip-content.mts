@@ -41,6 +41,12 @@
  * Imports — one line per skill. APPEND HERE (see the header).
  * ------------------------------------------------------------------ */
 
+// Node built-ins, for the one source-level assertion in the listening group
+// (see the comment there — it defends D-04 against a shape no type-checker or
+// linter can see).
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
 // Speaking (plan 02.1-03)
 import {
   CELPIP_RUBRIC,
@@ -52,7 +58,15 @@ import {
 } from "../src/lib/celpip.ts";
 import { SPEAKING_TASK_TIMINGS } from "../src/lib/celpip/speaking-prompts.ts";
 
-// Listening (plan 02.1-04) — append its bank import here.
+// Listening (plan 02.1-05)
+import {
+  CELPIP_LISTENING_PART_KINDS,
+  LISTENING_SETS,
+  getListeningSet,
+  listeningPartKindLabel,
+  type CelpipListeningPartKind,
+} from "../src/lib/celpip.ts";
+
 // Reading   (plan 02.1-07) — append its bank import here.
 
 /* ------------------------------------------------------------------ *
@@ -371,7 +385,292 @@ ok(
 );
 
 /* ================================================================== *
- * LISTENING (plan 02.1-04) and READING (plan 02.1-07) append below.
+ * LISTENING — set bank (plan 02.1-05)
+ * ================================================================== */
+
+/**
+ * The per-part item counts the exam actually uses, confirmed against the beta
+ * user's official format material rather than estimated from prep sites. A part
+ * that drifts from these is a defect, not a judgement call: the item count is
+ * what makes the rehearsal feel like the test.
+ */
+const LISTENING_ITEM_COUNT: Record<CelpipListeningPartKind, number> = {
+  "problem-solving": 8,
+  "daily-conversation": 5,
+  information: 6,
+  "news-item": 5,
+  discussion: 8,
+  viewpoints: 5,
+};
+
+/**
+ * THE CEILING THAT KEEPS PLAYBACK ALIVE.
+ *
+ * Chrome truncates a single utterance at roughly fifteen seconds with no error
+ * and sometimes no `onend`. `celpip-speech.ts` speaks one utterance per turn at
+ * rate 0.95, so against a nominal 150 words per minute fifteen seconds is about
+ * 35 words. A turn past that does not merely cut the audio short: under D-05 the
+ * questions are revealed by that `onend` and by nothing else, so the learner is
+ * left on a screen with no words, no questions and no error. The authoring
+ * target is 25; this is the hard gate.
+ *
+ * If this assertion fails, SPLIT THE TURN. Never raise the number.
+ */
+const MAX_TURN_WORDS = 35;
+
+function wordCount(text: string): number {
+  return text.trim().split(/\s+/).length;
+}
+
+group("listening: the bank is structurally sound");
+
+const listeningSetIds = LISTENING_SETS.map((s) => s.id);
+ok("every listening set id is non-empty", listeningSetIds.every(filled));
+ok(
+  "no duplicate listening set id",
+  duplicates(listeningSetIds).length === 0,
+  duplicates(listeningSetIds).join(", "),
+);
+ok(
+  "getListeningSet resolves every id in the bank to its own set",
+  LISTENING_SETS.every((s) => getListeningSet(s.id) === s),
+);
+ok(
+  "getListeningSet of an id that is not in the bank is undefined",
+  getListeningSet("listening-does-not-exist") === undefined,
+);
+
+const allListeningParts = LISTENING_SETS.flatMap((s) => s.parts);
+const allListeningSegments = allListeningParts.flatMap((p) => p.segments);
+const allListeningQuestions = allListeningParts.flatMap((p) => p.questions);
+const allListeningTurns = allListeningSegments.flatMap((s) => s.turns);
+
+const partIds = allListeningParts.map((p) => p.id);
+const segmentIds = allListeningSegments.map((s) => s.id);
+// Question ids are the KEYS of the stored answer sheet, so a collision would
+// make one attempt's answer to one question overwrite another's — silently, and
+// in the learner's own history. Uniqueness here is a persistence invariant, not
+// a tidiness one.
+const questionIds = allListeningQuestions.map((q) => q.id);
+
+ok("every listening part id is non-empty", partIds.every(filled));
+ok("no duplicate listening part id", duplicates(partIds).length === 0, duplicates(partIds).join(", "));
+ok("every listening segment id is non-empty", segmentIds.every(filled));
+ok(
+  "no duplicate listening segment id",
+  duplicates(segmentIds).length === 0,
+  duplicates(segmentIds).join(", "),
+);
+ok("every listening question id is non-empty", questionIds.every(filled));
+ok(
+  "no duplicate listening question id anywhere in the bank",
+  duplicates(questionIds).length === 0,
+  duplicates(questionIds).join(", "),
+);
+
+for (const set of LISTENING_SETS) {
+  ok(`${set.id}: has a title`, filled(set.title));
+  ok(
+    `${set.id}: has a sane time limit in minutes`,
+    inRange(set.timeLimitMinutes, 1, 90),
+    String(set.timeLimitMinutes),
+  );
+  ok(`${set.id}: holds at least one part`, set.parts.length > 0);
+
+  const kinds = set.parts.map((p) => p.kind);
+  ok(
+    `${set.id}: every part kind is one of the exam's six`,
+    kinds.every((k) => CELPIP_LISTENING_PART_KINDS.includes(k)),
+    kinds.join(", "),
+  );
+  // NOT asserted: that a set covers all six. Set 1 is authored across four
+  // plans, so a coverage assertion would fail for most of the phase and end up
+  // disabled rather than fixed — which is how a gate becomes decoration. The
+  // count is REPORTED in the summary instead, and the landing derives its own
+  // coverage line from the same data.
+  ok(
+    `${set.id}: no part kind appears twice in one set`,
+    new Set(kinds).size === kinds.length,
+    kinds.join(", "),
+  );
+}
+
+group("listening: every part is complete enough to sit");
+
+for (const part of allListeningParts) {
+  ok(`${part.id}: has a title`, filled(part.title));
+  ok(`${part.id}: holds at least one segment`, part.segments.length > 0);
+  ok(
+    `${part.id}: carries the exam's item count for a "${part.kind}" part`,
+    part.questions.length === LISTENING_ITEM_COUNT[part.kind],
+    `${part.questions.length} questions, exam uses ${LISTENING_ITEM_COUNT[part.kind]}`,
+  );
+
+  const ownSegmentIds = new Set(part.segments.map((s) => s.id));
+  for (const question of part.questions) {
+    ok(
+      `${question.id}: names a segment that exists in its own part, or names none`,
+      question.segmentId === undefined || ownSegmentIds.has(question.segmentId),
+      String(question.segmentId),
+    );
+  }
+}
+
+group("listening: every segment can actually be spoken");
+
+for (const segment of allListeningSegments) {
+  ok(`${segment.id}: holds at least one turn`, segment.turns.length > 0);
+  ok(
+    `${segment.id}: every turn carries a speaker and something to say`,
+    segment.turns.every((t) => filled(t.speaker) && filled(t.text)),
+    segment.turns
+      .filter((t) => !filled(t.speaker) || !filled(t.text))
+      .map((t) => JSON.stringify(t))
+      .join(", "),
+  );
+  // T-02.1-24. The one assertion in this group that fails silently in a browser
+  // rather than loudly here.
+  const overLong = segment.turns.filter((t) => wordCount(t.text) > MAX_TURN_WORDS);
+  ok(
+    `${segment.id}: no turn exceeds ${MAX_TURN_WORDS} words`,
+    overLong.length === 0,
+    overLong.map((t) => `${wordCount(t.text)}w: ${t.text.slice(0, 60)}…`).join("\n      "),
+  );
+}
+
+group("listening: every question can be answered and explained");
+
+for (const question of allListeningQuestions) {
+  ok(`${question.id}: has a stem`, filled(question.stem));
+  ok(
+    `${question.id}: offers at least two options, all of them non-empty`,
+    question.options.length >= 2 && question.options.every(filled),
+    JSON.stringify(question.options),
+  );
+  ok(
+    `${question.id}: offers no duplicate option`,
+    new Set(question.options.map((o) => o.trim().toLowerCase())).size ===
+      question.options.length,
+    JSON.stringify(question.options),
+  );
+  // An out-of-range key marks every answer wrong forever, and nothing in the
+  // build would notice: the player would render four options and score none.
+  ok(
+    `${question.id}: its answer is a real index into its own options`,
+    inRange(question.answer, 0, question.options.length - 1),
+    `answer=${question.answer} of ${question.options.length} options`,
+  );
+  // CELPIP-07 asks for per-question explanations, and the results view renders
+  // this unconditionally — an empty one is a visible gap on the page she reads
+  // to find out why she was wrong.
+  ok(`${question.id}: carries an explanation`, filled(question.explanation));
+}
+
+group("listening: the landing tells the truth about what ships");
+
+const listeningSection = getSection("listening");
+ok("the registry still has a listening section", listeningSection !== undefined);
+ok(
+  "the listening section is available if and only if the bank holds a set with parts",
+  listeningSection !== undefined &&
+    listeningSection.coverage.available === allListeningParts.length > 0,
+  `available=${listeningSection?.coverage.available} parts=${allListeningParts.length}`,
+);
+if (listeningSection?.coverage.available) {
+  ok(
+    "its coverage line counts the part shapes that exist against the exam's six",
+    new RegExp(
+      `\\b${new Set(allListeningParts.map((p) => p.kind)).size} of the ${
+        CELPIP_LISTENING_PART_KINDS.length
+      }\\b`,
+    ).test(listeningSection.coverage.summary),
+    listeningSection.coverage.summary,
+  );
+  ok(
+    "every set in the bank is offered as an item on the landing",
+    listeningSection.groups.flatMap((g) => g.items).length === LISTENING_SETS.length,
+    `${listeningSection.groups.flatMap((g) => g.items).length} items vs ${LISTENING_SETS.length} sets`,
+  );
+  // D-03's compromise disclosed, and gated the way the Speaking picture
+  // disclosure is: a CONJUNCTION, because a single-token pattern was defeated
+  // once already in this file by an unrelated word matching it. Naming a
+  // recording is not a disclosure on its own, and neither is the word
+  // "browser". Both halves must be present.
+  const RECORDING_NOUN = /\b(a|an|the|no|any)\s+(recording|recordings|voice actor|studio)\b/i;
+  const SYNTHESIS =
+    /\b(spoken by (your|the) browser|your browser (speaks|reads)|browser'?s own voice|speech synthes\w+)\b/i;
+  const caveat = listeningSection.coverage.caveat ?? "";
+  ok(
+    "the landing's listening caveat says the audio is the browser's, not a recording",
+    RECORDING_NOUN.test(caveat) && SYNTHESIS.test(caveat),
+    caveat || "(no caveat)",
+  );
+  ok(
+    "no listening item's landing copy leaks a line of the script",
+    listeningSection.groups
+      .flatMap((g) => g.items)
+      .every((item) =>
+        allListeningTurns.every(
+          (turn) => !item.summary.includes(turn.text) && !item.title.includes(turn.text),
+        ),
+      ),
+  );
+}
+
+group("listening: the script does not ride into the page's own HTML");
+
+// THE ONE ASSERTION IN THIS FILE THAT READS SOURCE RATHER THAN CONTENT, and it
+// earns the exception. A prop crossing from a server component into a client
+// one is serialized into the RSC payload, which Next INLINES INTO THE PAGE'S
+// HTML — so a route that hands the player a resolved set puts every line of the
+// script, every option and every explanation into the document source before
+// the learner has heard a word. That was measured on this route, not theorised:
+// 41 of 42 authored strings were in the served HTML until the route was changed
+// to pass the id and let the player resolve it on the client.
+//
+// It is invisible to `tsc`, to lint, to every other script here, and to anyone
+// looking at the rendered page — the markup shows only the brief. It is one
+// keystroke away in `view-source`. D-04 is the decision this whole section
+// rests on, so the shape that defeats it is gated rather than commented.
+//
+// A CONJUNCTION on purpose: passing the id is not the property being defended.
+// NOT passing the set is.
+const listeningRouteSource = readFileSync(
+  join(
+    import.meta.dirname,
+    "..",
+    "src",
+    "app",
+    "(catalog)",
+    "celpip",
+    "listening",
+    "[setId]",
+    "page.tsx",
+  ),
+  "utf8",
+);
+
+ok(
+  "the listening route hands the player an id",
+  /<ListeningPlayer\s+setId=/.test(listeningRouteSource),
+);
+ok(
+  "the listening route never hands the player a resolved set",
+  !/<ListeningPlayer\s[^>]*\bset=\{/.test(listeningRouteSource),
+  "a `set={…}` prop is serialized into this page's HTML — pass `setId` instead",
+);
+
+const listeningPlayerSource = readFileSync(
+  join(import.meta.dirname, "..", "src", "components", "celpip", "ListeningPlayer.tsx"),
+  "utf8",
+);
+ok(
+  "the player resolves the set itself, on the client",
+  /getListeningSet\(/.test(listeningPlayerSource),
+);
+
+/* ================================================================== *
+ * READING (plan 02.1-07) appends below.
  * ================================================================== */
 
 /* ------------------------------------------------------------------ *
@@ -385,6 +684,31 @@ console.log(
     speakingItems.length
   } self-check items`,
 );
+
+// REPORTED, not asserted — see the coverage note in the listening group. The
+// number is printed on every run so a set stalling at one part shape is visible
+// rather than merely true.
+if (LISTENING_SETS.length === 0) {
+  console.log("  listening: no sets in the bank");
+} else {
+  for (const set of LISTENING_SETS) {
+    const kinds = set.parts.map((p) => p.kind);
+    console.log(
+      `  listening: ${set.id} — ${kinds.length}/${
+        CELPIP_LISTENING_PART_KINDS.length
+      } part shapes, ${set.parts.reduce((n, p) => n + p.questions.length, 0)} questions, ${
+        set.parts.flatMap((p) => p.segments).flatMap((s) => s.turns).length
+      } turns, longest turn ${Math.max(
+        0,
+        ...set.parts
+          .flatMap((p) => p.segments)
+          .flatMap((s) => s.turns)
+          .map((t) => wordCount(t.text)),
+      )}w (ceiling ${MAX_TURN_WORDS}w)`,
+    );
+    console.log(`    shapes: ${kinds.map(listeningPartKindLabel).join(", ")}`);
+  }
+}
 
 if (failures > 0) {
   console.error(`\nverify-celpip-content: ${failures} of ${checks} assertions FAILED`);

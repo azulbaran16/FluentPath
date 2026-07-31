@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Check, X } from "lucide-react";
 import {
+  getListeningSet,
   listeningPartKindLabel,
   type CelpipListeningPart,
   type CelpipListeningSegment,
@@ -116,7 +117,37 @@ function buildStages(set: CelpipListeningSet): Stage[] {
 const CARD =
   "rounded-[var(--radius)] border border-line bg-card p-6 shadow-[var(--shadow-soft)]";
 
-export function ListeningPlayer({ set }: { set: CelpipListeningSet }) {
+/**
+ * THE SET IS RESOLVED HERE, ON THE CLIENT, FROM AN ID — never handed down from
+ * the route as a prop.
+ *
+ * This looks like an indirection and is not. A prop crossing from a server
+ * component into a client one is serialized into the RSC payload, which Next
+ * INLINES INTO THE PAGE'S OWN HTML: taking the resolved set as a prop put every
+ * line of the script, every option and every explanation into the document
+ * source, in plain readable prose, before she had heard a word. `View source`
+ * would have handed her the whole answer key. Measured, not theorised — 41 of
+ * the 42 authored strings were in the served HTML of this route.
+ *
+ * Resolving from the id moves the bank into the client CHUNK instead. That is
+ * not secrecy — a determined learner can still read the bundle, exactly as she
+ * can for the shipped practice rooms, and T-02.1-25 accepts that. It is the
+ * difference between the words being one keystroke away in the page she is
+ * looking at and being somewhere in a JavaScript file. D-04 is the one decision
+ * this whole section rests on, and that difference is worth a wrapper.
+ *
+ * No hooks above the guard, so the early return is legal; the runner below
+ * takes a set that is known to exist.
+ */
+export function ListeningPlayer({ setId }: { setId: string }) {
+  const set = getListeningSet(setId);
+  // Unreachable in practice: the route calls notFound() first. Defence for a
+  // set dropped from the bank while a learner is on the page.
+  if (!set) return null;
+  return <SetRunner set={set} />;
+}
+
+function SetRunner({ set }: { set: CelpipListeningSet }) {
   const { addListeningAttempt } = useCelpipProgress();
   const voices = useEnglishVoices();
 

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
   CELPIP_SECTIONS,
+  getListeningSet,
   getSection,
   getSpeakingPrompt,
   getTask,
@@ -13,6 +14,7 @@ import {
   formatDuration,
   useCelpipProgress,
   type CelpipAttempt,
+  type CelpipListeningAttempt,
   type CelpipProgressState,
   type CelpipSpeakingAttempt,
 } from "@/lib/celpip-progress";
@@ -139,6 +141,21 @@ const HISTORY_SOURCES: HistorySource[] = [
         `${checks} self-check${checks === 1 ? "" : "s"} ticked`,
       ].join(" · ");
     },
+  }),
+  historySource<CelpipListeningAttempt>({
+    skill: "listening",
+    read: (state) => state.listeningAttempts,
+    title: (itemId) => getListeningSet(itemId)?.title,
+    // A score, not a word count. The "read, not heard" note is on here rather
+    // than left off because a listening score from an attempt she read the
+    // scripts for is not the same result, and a row that hid the difference
+    // would be the one small lie on the page whose whole job is honesty.
+    meta: (attempt) =>
+      [
+        `${formatDuration(attempt.durationSeconds)} used`,
+        `${attempt.correct}/${attempt.total} correct`,
+        ...(attempt.audioFailed ? ["read, not heard"] : []),
+      ].join(" · "),
   }),
 ];
 
