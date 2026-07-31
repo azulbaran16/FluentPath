@@ -60,6 +60,33 @@ Content is keyed `"world/scenario"` (e.g. `"social/small-talk"`), not by bare sl
   is not yet written, the app must say so rather than present a generic one as if it were
   scenario practice.
 
+### Ratified after research (2026-07-31)
+
+- **D-04 — the authoring floors.** Per scenario: **6 phrases, 8 vocabulary cards**; per
+  scenario×skill pair: **5 grammar questions** (and the equivalent density for reading and
+  writing). The user ratified the researcher's A1/A2 assumptions after being shown the cost
+  they imply: **~10,300 words and ~550 items, roughly two Phase 2.1s.** The cheaper floor
+  (4/5/3, ~6,000 words) was rejected because 5 cards per scenario is too thin for spaced
+  repetition to do its job. Scope reduction is therefore a decision to bring back to the
+  user, not one to take quietly mid-execution.
+
+- **D-05 — the review queue must actually resolve scenario items.** Today `ReviewView.tsx`,
+  `ReviewHub.tsx` and `Dashboard.tsx` resolve every due id through `GRAMMAR_QUESTIONS`, so
+  scenario phrases and vocabulary would be **stored, merged, and invisible** — CONT-02
+  satisfied on paper and broken on screen. Fixing that resolution is **in scope for this
+  phase**. It is code, not content, so it does not compete for the word budget.
+
+### The gap is larger than "generic content"
+
+Research and pattern-mapping agree, and this reframes CONT-01:
+
+- `ScenarioView` **never reads `scenario.skills`** below its header. All 35 scenarios render
+  the same three steps. **22 pairs (9 writing, 9 reading, 4 grammar) render nothing at all**,
+  while a `SkillPill` and the JSON-LD `teaches` field promise them.
+- The other **21 speaking pairs** receive `WORLD_FALLBACK` — three generic lines shared by
+  every scenario in that world. That is literally two scenarios returning the same exercise,
+  the outcome D-01 was chosen to prevent.
+
 ### Claude's Discretion
 
 - Exercise shape per skill, and how much prose each costs
