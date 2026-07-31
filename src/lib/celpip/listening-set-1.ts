@@ -5,12 +5,20 @@ import type { CelpipListeningPart, CelpipListeningSet } from "../celpip";
 // from third-party material (see .planning IP constraints for this phase).
 //
 // ─────────────────────────────────────────────────────────────────────────────
-// HOW TO ADD A PART. Declare it as its own `const` below, then append the name
-// to the `parts` array at the bottom. That is the ONLY edit — the set's time
-// limit is derived from the parts themselves, so nothing else moves and no
-// later plan has to restructure this file. A part that is cut for the calendar
-// is removed from the array the same way, and the landing's coverage line
-// follows on its own.
+// HOW TO ADD A PART. Declare it as its own `const` below, then put the name
+// into the `parts` array at the bottom IN EXAM ORDER — problem solving, daily
+// conversation, information, news item, discussion, viewpoints. That is the
+// ONLY edit — the set's time limit is derived from the parts themselves, so
+// nothing else moves and no later plan has to restructure this file. A part
+// that is cut for the calendar is removed from the array the same way, and the
+// landing's coverage line follows on its own.
+//
+// The array's order is the order she HEARS the parts in, and D-07 is that the
+// rehearsal should have the shape of the exam. Declaration order in this file
+// is therefore chronological (whichever plan wrote it) while ARRAY order is the
+// exam's; `scripts/verify-celpip-content.mts` asserts the array is a
+// subsequence of `CELPIP_LISTENING_PART_KINDS`, so an append in the wrong place
+// fails the build rather than quietly playing part four first.
 //
 // THE PER-TURN WORD CEILING IS A CORRECTNESS CONSTRAINT, NOT A STYLE NOTE.
 // Chrome truncates a single utterance at roughly fifteen seconds with no error
@@ -168,6 +176,344 @@ const NEWS_ITEM_PART: CelpipListeningPart = {
   ],
 };
 
+/**
+ * Part 1 shape: Listening to Problem Solving.
+ *
+ * The ONLY part in the exam where the questions follow EACH segment rather than
+ * the whole part, which is why every question below names its `segmentId`. The
+ * player needs no special case for it — a part has always been an array of
+ * segments and the runner has always asked after each one — but a question that
+ * named no segment, or named one from another part, would be asked in the wrong
+ * place or never asked at all. The harness gates both.
+ *
+ * Two speakers, a tenant and her building manager, working a practical problem
+ * through to an arrangement: dates, deadlines, a deductible, a locker number, a
+ * time to meet. That is what this part tests, and it is what makes the note pad
+ * earn its place on the screen — almost every question here turns on a number
+ * or a day that is stated once and then talked past.
+ *
+ * The distractors are built from the segment's OWN facts wearing the wrong hat:
+ * the day the building found the leak against the day she found it, the day the
+ * wall comes out against the day the file is due, the room her locker is next
+ * to against the place the water came from.
+ */
+const PROBLEM_SOLVING_PART: CelpipListeningPart = {
+  id: "ls1-problem-solving",
+  kind: "problem-solving",
+  title: "Water in the storage locker",
+  segments: [
+    {
+      id: "ls1-problem-seg-1",
+      turns: [
+        {
+          speaker: "Marisol Ferrand",
+          text: "Desmond, I'm glad I caught you. I've just come up from the basement, and there's water all through my storage locker.",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "Water? Which locker is yours, Marisol?",
+        },
+        {
+          speaker: "Marisol Ferrand",
+          text: "Twenty-seven. The one at the far end, past the laundry room. The floor is soaked and two of my boxes have gone soft.",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "That end backs onto the riser. A pipe behind the wall let go on the weekend, and we only found it Monday.",
+        },
+        {
+          speaker: "Marisol Ferrand",
+          text: "Nobody told me. I went down last night after work and stepped straight into it.",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "We put a notice on the lobby board Monday afternoon. I'm sorry — that clearly wasn't enough.",
+        },
+        {
+          speaker: "Marisol Ferrand",
+          text: "So Tuesday evening is when I found out, and by then it had been sitting there for three days.",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "What's in there? I need to know before I call anyone.",
+        },
+        {
+          speaker: "Marisol Ferrand",
+          text: "Books, mostly — four boxes of them. A folding table, my winter tires, and a box of my daughter's school things.",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "When did you last open the locker?",
+        },
+        {
+          speaker: "Marisol Ferrand",
+          text: "Three weeks ago, before I went away. The tires were up on the pallet, the boxes were on the floor beside it.",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "That's the difference, then. The tires were out of the water and the cardboard was standing in it.",
+        },
+        {
+          speaker: "Marisol Ferrand",
+          text: "Can I move anything today? I don't want to leave it down there getting worse.",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "Leave it exactly where it is until you've photographed it. I'll explain why in a moment.",
+        },
+      ],
+    },
+    {
+      id: "ls1-problem-seg-2",
+      turns: [
+        {
+          speaker: "Desmond Achebe",
+          text: "There are two ways to claim, and they run at different speeds. Listen to both before you decide.",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "The building's insurer covers the failure itself. That claim is thorough, but it takes six to eight weeks to pay out.",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "Your own tenant policy would pay in about two weeks, but you'd carry the deductible yourself. Most are five hundred dollars.",
+        },
+        {
+          speaker: "Marisol Ferrand",
+          text: "Mine is four hundred. But the books alone are worth more than that, so the deductible isn't the whole question.",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "It isn't. Either way I need an inventory from you — every item, what you paid, and a photograph of each.",
+        },
+        {
+          speaker: "Marisol Ferrand",
+          text: "How long do I have?",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "Ten days from today. The insurer won't look at anything filed after that, and I can't get you an extension.",
+        },
+        {
+          speaker: "Marisol Ferrand",
+          text: "I don't have receipts for boxes I packed years ago.",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "Then write what you remember and say it's an estimate. An honest estimate is accepted; a guess dressed as a receipt is not.",
+        },
+        {
+          speaker: "Marisol Ferrand",
+          text: "And the locker itself? I can't leave everything on a wet floor for ten days.",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "The wall comes out on Thursday and the repair runs to the end of the month. Twenty-seven is unusable until then.",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "I can give you forty-one on the north side. It's dry, but it's about half the size of yours.",
+        },
+        {
+          speaker: "Marisol Ferrand",
+          text: "Half. So the table stays behind.",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "The table wasn't going anywhere anyway. Anything you're claiming for has to stay put until the adjuster has seen it.",
+        },
+      ],
+    },
+    {
+      id: "ls1-problem-seg-3",
+      turns: [
+        {
+          speaker: "Marisol Ferrand",
+          text: "So what do I actually do first?",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "Photograph everything tonight, before anything dries out or gets moved. Wet cardboard looks like dry cardboard in a week.",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "I'll email you the inventory form this afternoon. Fill it in as far as you can and send it back to me.",
+        },
+        {
+          speaker: "Marisol Ferrand",
+          text: "Not to the insurer directly?",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "No. Everything goes through this office, or the claim gets a second file number and the two never meet.",
+        },
+        {
+          speaker: "Marisol Ferrand",
+          text: "And the key for forty-one?",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "Pick it up at the office. We're open nine to four on weekdays, but we close for lunch between twelve and one.",
+        },
+        {
+          speaker: "Marisol Ferrand",
+          text: "I could come tomorrow afternoon, around two.",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "I'm at the Fairlawn building all day Thursday. Friday morning is better — I'm here from nine.",
+        },
+        {
+          speaker: "Marisol Ferrand",
+          text: "Friday morning, then. Can somebody help me carry the tires up? They're heavier than they look.",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "Ravi is on site Friday until noon. Ask him when you collect the key, not before — he's on the boiler until then.",
+        },
+        {
+          speaker: "Marisol Ferrand",
+          text: "Understood. Photographs tonight, the form back to you, key on Friday.",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "And the inventory inside ten days. That's the only date in this that nobody can move, including me.",
+        },
+        {
+          speaker: "Marisol Ferrand",
+          text: "Ten days. I'll have it to you long before that.",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "One more thing. Don't throw out anything you've claimed for, even the boxes that are falling apart.",
+        },
+        {
+          speaker: "Marisol Ferrand",
+          text: "Even the ruined ones?",
+        },
+        {
+          speaker: "Desmond Achebe",
+          text: "Especially those. The adjuster pays for what he can see, and a photograph of an empty corner proves nothing.",
+        },
+      ],
+    },
+  ],
+  questions: [
+    {
+      id: "ls1-problem-q1",
+      segmentId: "ls1-problem-seg-1",
+      stem: "What has happened to the woman's storage locker?",
+      options: [
+        "A pipe behind the wall failed and flooded it",
+        "The laundry room next to it overflowed",
+        "Someone opened it while she was away",
+        "Rain came in through a vent in the ceiling",
+      ],
+      answer: 0,
+      explanation:
+        "The manager says a pipe behind the wall let go on the weekend. The laundry room is named in this segment, but only as a landmark for where her locker is — \"the one at the far end, past the laundry room\". A place given as a direction is the easiest thing in a spoken description to remember as a cause.",
+    },
+    {
+      id: "ls1-problem-q2",
+      segmentId: "ls1-problem-seg-1",
+      stem: "When did the woman herself find out about the water?",
+      options: [
+        "On the weekend, when the pipe failed",
+        "On Monday afternoon, from the notice in the lobby",
+        "On Tuesday evening, when she went down after work",
+        "Three weeks ago, the last time she opened the locker",
+      ],
+      answer: 2,
+      explanation:
+        "Four different days are named in half a minute and each one belongs to a different event: the pipe failed on the weekend, the building found it Monday and posted a notice that afternoon, she went down after work on Tuesday evening, and three weeks ago is when she last opened the locker. The question asks when SHE found out, and she says so herself — \"so Tuesday evening is when I found out\".",
+    },
+    {
+      id: "ls1-problem-q3",
+      segmentId: "ls1-problem-seg-1",
+      stem: "Why were her tires undamaged when her boxes were not?",
+      options: [
+        "She had taken the tires out of the locker before going away",
+        "The tires were up on a pallet and the boxes were on the floor",
+        "The boxes were stacked against the wall the water came from",
+        "The tires had been wrapped in plastic for the summer",
+      ],
+      answer: 1,
+      explanation:
+        "She describes the arrangement and he draws the conclusion: the tires were out of the water and the cardboard was standing in it. The third option is the tempting one, because the wall really is where the water came from — but nothing in the conversation says the boxes were nearer to it. An answer that merely sounds like the right kind of reason is the characteristic trap of this part.",
+    },
+    {
+      id: "ls1-problem-q4",
+      segmentId: "ls1-problem-seg-2",
+      stem: "How do the two ways of claiming differ?",
+      options: [
+        "The building's insurer pays sooner, but it covers less of the damage",
+        "Her own policy pays sooner, but she would pay the deductible herself",
+        "Her own policy pays more, but it takes six to eight weeks to arrive",
+        "The building's insurer needs no inventory, but it pays only for furniture",
+      ],
+      answer: 1,
+      explanation:
+        "The building's insurer takes six to eight weeks; her own tenant policy pays in about two, with the deductible coming out of her pocket. The first option reverses the two speeds, which is what happens if you hold on to \"six to eight weeks\" without holding on to whose claim it was. And the inventory is required either way — he says so before he names any deadline at all.",
+    },
+    {
+      id: "ls1-problem-q5",
+      segmentId: "ls1-problem-seg-2",
+      stem: "What must she supply, and by when?",
+      options: [
+        "Receipts for every item, within ten days",
+        "A list of the items with a photograph of each, within ten days",
+        "A list of the items with photographs, before the end of the month",
+        "Receipts and photographs, before the wall is opened on Thursday",
+      ],
+      answer: 1,
+      explanation:
+        "Every item, what she paid, and a photograph of each, ten days from today. Receipts are the deliberate trap: she says she has none, and his answer is that an honest written estimate is accepted instead. The end of the month and Thursday are both real dates in this segment — the repair finishing and the wall coming out — and neither is the filing deadline.",
+    },
+    {
+      id: "ls1-problem-q6",
+      segmentId: "ls1-problem-seg-2",
+      stem: "What is the drawback of the locker he offers her?",
+      options: [
+        "It is damp as well",
+        "It is only hers until the end of the month",
+        "It is about half the size of her own",
+        "It is on the far side of the laundry room",
+      ],
+      answer: 2,
+      explanation:
+        "Forty-one is dry — he says so — but about half the size. The end of the month is in the segment as when the repair to her own locker finishes, not as a date the loan runs out, and reading a deadline onto the wrong thing is exactly the mistake this part is built to catch.",
+    },
+    {
+      id: "ls1-problem-q7",
+      segmentId: "ls1-problem-seg-3",
+      stem: "When have they agreed she will collect the key?",
+      options: [
+        "Tomorrow afternoon, at about two",
+        "Friday morning, from nine",
+        "Friday at noon, when the caretaker finishes",
+        "Thursday, at the Fairlawn building",
+      ],
+      answer: 1,
+      explanation:
+        "She proposes tomorrow afternoon; he is at the Fairlawn building all day Thursday and offers Friday morning from nine; she agrees. Noon is in the segment as when Ravi's shift ends, not as a time to meet. In this part the first time somebody names is rarely the time they settle on — note the proposal, then wait for the agreement before you write it down.",
+    },
+    {
+      id: "ls1-problem-q8",
+      segmentId: "ls1-problem-seg-3",
+      stem: "What does he tell her to do with the ruined boxes?",
+      options: [
+        "Bring them to the office with the completed form",
+        "Throw them out once she has photographed them",
+        "Keep them until the adjuster has seen them",
+        "Move them into locker forty-one on Friday",
+      ],
+      answer: 2,
+      explanation:
+        "\"Don't throw out anything you've claimed for, even the boxes that are falling apart\" — because the adjuster pays for what he can see. Photographing them is required too, but that is in addition, not instead. Moving them is the opposite of what he asks: anything being claimed for stays where it is until the adjuster has been.",
+    },
+  ],
+};
+
 /** Words in one turn, counted the same way the content harness counts them. */
 function words(text: string): number {
   return text.trim().split(/\s+/).length;
@@ -178,9 +524,13 @@ function words(text: string): number {
  * plus a minute per question to answer it.
  *
  * DERIVED rather than written down, so that appending a part moves the number by
- * itself. PROVISIONAL while the set is incomplete — one part shape of the
- * exam's six exists today, and this figure will grow as the rest are authored.
- * The exam gives roughly 47-55 minutes for all six parts and about 38 items.
+ * itself. PROVISIONAL while the set is incomplete: not every one of the exam's
+ * six part shapes is authored yet, and this figure grows as the rest arrive.
+ * The exam gives roughly 47-55 minutes for all six parts and 37 items.
+ *
+ * No count of what exists is written into this comment on purpose. Coverage is
+ * derived from `SET_1_PARTS` everywhere it is reported — the landing, the
+ * harness summary — and a number repeated in prose is the one that goes stale.
  */
 function estimatedMinutes(parts: CelpipListeningPart[]): number {
   const spoken = parts
@@ -193,7 +543,12 @@ function estimatedMinutes(parts: CelpipListeningPart[]): number {
   return Math.max(1, Math.ceil(audioMinutes + questions));
 }
 
-const SET_1_PARTS: CelpipListeningPart[] = [NEWS_ITEM_PART];
+/**
+ * IN EXAM ORDER, not in the order the parts were written. See the note at the
+ * top of the file: this array is the order she hears them in, and the harness
+ * asserts it is a subsequence of the exam's six.
+ */
+const SET_1_PARTS: CelpipListeningPart[] = [PROBLEM_SOLVING_PART, NEWS_ITEM_PART];
 
 export const LISTENING_SET_1: CelpipListeningSet = {
   id: "listening-set-1",

@@ -493,6 +493,18 @@ for (const set of LISTENING_SETS) {
     new Set(kinds).size === kinds.length,
     kinds.join(", "),
   );
+  // The array order is the order she HEARS the parts in, and D-07 is that the
+  // rehearsal should have the shape of the exam. A set is allowed to be missing
+  // parts — most of this phase it will be — but the ones it has must run in
+  // exam order, so this is a SUBSEQUENCE test rather than an equality one.
+  // Without it, "append the part to the array" (which is what the module's own
+  // instructions used to say) silently plays part four before part one.
+  const examOrder = CELPIP_LISTENING_PART_KINDS.filter((k) => kinds.includes(k));
+  ok(
+    `${set.id}: its parts run in the exam's own order`,
+    kinds.join(">") === examOrder.join(">"),
+    `${kinds.join(" > ")}   exam order: ${examOrder.join(" > ")}`,
+  );
 }
 
 group("listening: every part is complete enough to sit");
