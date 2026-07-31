@@ -514,6 +514,232 @@ const PROBLEM_SOLVING_PART: CelpipListeningPart = {
   ],
 };
 
+/**
+ * Part 2 shape: Listening to a Daily Life Conversation.
+ *
+ * Two friends, one segment, casual register — and the part where the answer is
+ * often something neither speaker ever says. Problem solving above tests
+ * whether she caught a number; this tests whether she caught a decision that
+ * was made without being announced.
+ *
+ * THREE of the five questions below are answered by implication rather than by
+ * recall, and that is deliberate: a conversation part answered entirely by
+ * looking up stated facts is a news item with two voices, not the part shape it
+ * claims to be. One speaker here declines two things without once saying no —
+ * she answers a question about going back to her class by talking about the
+ * fees, and answers an invitation by naming a plan that has not been made — and
+ * the other names both refusals out loud so that the transcript, read after
+ * answering, shows the learner where the evidence was.
+ *
+ * The short turns are the register, not only the word ceiling. Real
+ * conversation interrupts itself, and two- and three-word turns are what make
+ * the pauses land as pauses when the engine speaks them one utterance at a time.
+ */
+const DAILY_CONVERSATION_PART: CelpipListeningPart = {
+  id: "ls1-daily-conversation",
+  kind: "daily-conversation",
+  title: "The bag she keeps carrying",
+  segments: [
+    {
+      id: "ls1-daily-seg-1",
+      turns: [
+        {
+          speaker: "Amir Haddad",
+          text: "You've got your bag with you. Aren't you supposed to be at the studio tonight?",
+        },
+        {
+          speaker: "Delphine Roy",
+          text: "I was. I've been carrying that bag around on Tuesdays for a month without opening it.",
+        },
+        {
+          speaker: "Amir Haddad",
+          text: "A month? I thought you loved that class. You talked about nothing else in February.",
+        },
+        {
+          speaker: "Delphine Roy",
+          text: "February was Nadia. She left in March, and the man who took over teaches it like a driving test.",
+        },
+        {
+          speaker: "Amir Haddad",
+          text: "That bad?",
+        },
+        {
+          speaker: "Delphine Roy",
+          text: "He's very good. He corrects your hands while you're working, and I can't think with someone doing that.",
+        },
+        {
+          speaker: "Amir Haddad",
+          text: "Have you said anything to him?",
+        },
+        {
+          speaker: "Delphine Roy",
+          text: "What would I say? He's doing exactly what he was hired to do, and doing it well.",
+        },
+        {
+          speaker: "Amir Haddad",
+          text: "The term runs to June, doesn't it? That's another eight weeks of Tuesdays.",
+        },
+        {
+          speaker: "Delphine Roy",
+          text: "The fees are paid through June, yes.",
+        },
+        {
+          speaker: "Amir Haddad",
+          text: "That's not what I asked.",
+        },
+        {
+          speaker: "Delphine Roy",
+          text: "I know.",
+        },
+        {
+          speaker: "Amir Haddad",
+          text: "So you're not going back.",
+        },
+        {
+          speaker: "Delphine Roy",
+          text: "I didn't say that. I said the fees are paid.",
+        },
+        {
+          speaker: "Amir Haddad",
+          text: "You've said it four times now, in four different ways.",
+        },
+        {
+          speaker: "Delphine Roy",
+          text: "Anyway. Are you still driving out to the coast on the long weekend?",
+        },
+        {
+          speaker: "Amir Haddad",
+          text: "That's a change of subject.",
+        },
+        {
+          speaker: "Delphine Roy",
+          text: "It is. Are you?",
+        },
+        {
+          speaker: "Amir Haddad",
+          text: "Saturday morning, early. There's room in the car if you want it — Ines dropped out.",
+        },
+        {
+          speaker: "Delphine Roy",
+          text: "That's kind. My sister might be down that weekend. I'd hate to say yes and leave you short.",
+        },
+        {
+          speaker: "Amir Haddad",
+          text: "Might be.",
+        },
+        {
+          speaker: "Delphine Roy",
+          text: "She hasn't booked anything yet.",
+        },
+        {
+          speaker: "Amir Haddad",
+          text: "So that's a no as well.",
+        },
+        {
+          speaker: "Delphine Roy",
+          text: "That's a maybe. Ask me Thursday.",
+        },
+        {
+          speaker: "Amir Haddad",
+          text: "I asked you last Thursday, and the Thursday before that.",
+        },
+        {
+          speaker: "Delphine Roy",
+          text: "Then you already know the answer, and you're making me say it out loud.",
+        },
+        {
+          speaker: "Amir Haddad",
+          text: "I'm not making you do anything. I'll give the seat to somebody else on Thursday.",
+        },
+        {
+          speaker: "Delphine Roy",
+          text: "That's probably sensible.",
+        },
+        {
+          speaker: "Amir Haddad",
+          text: "It is. And take the bag home, Delphine. Carrying it isn't keeping the class open for you.",
+        },
+        {
+          speaker: "Delphine Roy",
+          text: "I'll take it home.",
+        },
+      ],
+    },
+  ],
+  questions: [
+    {
+      id: "ls1-daily-q1",
+      segmentId: "ls1-daily-seg-1",
+      stem: "Why has the woman stopped enjoying her class?",
+      options: [
+        "The class moved to a night she cannot make",
+        "The teacher she liked left and the new one works differently",
+        "The fees went up at the start of the term",
+        "She has run out of things she wants to make",
+      ],
+      answer: 1,
+      explanation:
+        "Nadia left in March, and the man who replaced her corrects the students' hands while they work. Notice how carefully she avoids criticising him — \"he's very good\", \"doing exactly what he was hired to do\". The objection is to being interrupted mid-thought, not to his ability, and hearing that difference is what tells you the class is what changed rather than her.",
+    },
+    {
+      id: "ls1-daily-q2",
+      segmentId: "ls1-daily-seg-1",
+      stem: "What has the woman decided, without ever saying it directly?",
+      options: [
+        "To speak to the new teacher about how he teaches",
+        "To ask for the rest of her fees back",
+        "To stop going to the class",
+        "To wait until June and then sign up again",
+      ],
+      answer: 2,
+      explanation:
+        "She never says she has quit. She says she has carried the bag on Tuesdays for a month without opening it; she answers \"so you're not going back\" by repeating that the fees are paid; and at the end she agrees to take the bag home. Her friend names it for her — \"you've said it four times now, in four different ways\" — and she does not argue. In this part, the thing somebody keeps not answering is usually the answer.",
+    },
+    {
+      id: "ls1-daily-q3",
+      segmentId: "ls1-daily-seg-1",
+      stem: "Why does she ask about the trip to the coast when she does?",
+      options: [
+        "She wants him to invite her along",
+        "She wants to get off the subject of the class",
+        "She has already made plans for the long weekend",
+        "She wants him to leave later on Saturday",
+      ],
+      answer: 1,
+      explanation:
+        "He says it in four words — \"that's a change of subject\" — and she agrees that it is. The invitation comes anyway, which is what makes the first option sound reasonable, but the offer is his idea and he only makes it because someone else dropped out. She asks the question to end the previous one.",
+    },
+    {
+      id: "ls1-daily-q4",
+      segmentId: "ls1-daily-seg-1",
+      stem: "What does the man offer her?",
+      options: [
+        "A seat in his car to the coast, now that someone has dropped out",
+        "A lift to the studio on Tuesday evenings",
+        "To speak to the new teacher on her behalf",
+        "To carry the bag home for her",
+      ],
+      answer: 0,
+      explanation:
+        "Ines dropped out, so there is room in the car, leaving Saturday morning early. He does tell her to take the bag home, but that is an instruction to her, not an offer to do it himself — and telling the two apart is a matter of noticing who would be doing the carrying.",
+    },
+    {
+      id: "ls1-daily-q5",
+      segmentId: "ls1-daily-seg-1",
+      stem: "How does the man treat her answer about the weekend?",
+      options: [
+        "He accepts that she will decide by Thursday",
+        "He offers to hold the seat until her sister has booked",
+        "He treats it as a refusal and says he will give the seat away",
+        "He agrees to ask her again next week",
+      ],
+      answer: 2,
+      explanation:
+        "\"So that's a no as well.\" She asks him to ask again on Thursday, which is what she asked on the two previous Thursdays, and he declines to do it a fourth time: he will give the seat to somebody else. Thursday is said three times in this conversation and only the last one is a decision — the other two are requests to be asked later, which is the polite shape a no takes here.",
+    },
+  ],
+};
+
 /** Words in one turn, counted the same way the content harness counts them. */
 function words(text: string): number {
   return text.trim().split(/\s+/).length;
@@ -548,7 +774,11 @@ function estimatedMinutes(parts: CelpipListeningPart[]): number {
  * top of the file: this array is the order she hears them in, and the harness
  * asserts it is a subsequence of the exam's six.
  */
-const SET_1_PARTS: CelpipListeningPart[] = [PROBLEM_SOLVING_PART, NEWS_ITEM_PART];
+const SET_1_PARTS: CelpipListeningPart[] = [
+  PROBLEM_SOLVING_PART,
+  DAILY_CONVERSATION_PART,
+  NEWS_ITEM_PART,
+];
 
 export const LISTENING_SET_1: CelpipListeningSet = {
   id: "listening-set-1",
