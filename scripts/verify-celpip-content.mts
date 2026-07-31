@@ -72,6 +72,7 @@ import {
   CELPIP_READING_PART_KINDS,
   READING_SETS,
   getReadingSet,
+  readingPartBlanksFirst,
   readingPartItemCount,
   readingPartKindLabel,
   readingSetItemCount,
@@ -761,6 +762,15 @@ const READING_PART_SHAPE: Record<
     questions: number;
     blanks: number;
     stimulus: { passage: boolean; diagram: boolean; blankText: boolean };
+    /**
+     * Whether the exam puts this part's blanks BEFORE its questions. Only the
+     * diagram part does. The runner reads this from `readingPartBlanksFirst`,
+     * and it is pinned here for the same reason the minutes are: it is a
+     * confirmed format fact, not a layout preference, and getting it wrong
+     * changes what the learner has read before she answers without changing
+     * anything a type or a build could see.
+     */
+    blanksFirst: boolean;
   }
 > = {
   correspondence: {
@@ -768,6 +778,7 @@ const READING_PART_SHAPE: Record<
     questions: 6,
     blanks: 5,
     stimulus: { passage: true, diagram: false, blankText: true },
+    blanksFirst: false,
   },
   // 5 blanks and 3 questions, NOT 3 and 5. The message about the diagram
   // carries the blanks and the diagram itself carries the questions; the phase's
@@ -778,18 +789,21 @@ const READING_PART_SHAPE: Record<
     questions: 3,
     blanks: 5,
     stimulus: { passage: false, diagram: true, blankText: true },
+    blanksFirst: true,
   },
   information: {
     minutes: 9,
     questions: 9,
     blanks: 0,
     stimulus: { passage: true, diagram: false, blankText: false },
+    blanksFirst: false,
   },
   viewpoints: {
     minutes: 11,
     questions: 5,
     blanks: 5,
     stimulus: { passage: true, diagram: false, blankText: true },
+    blanksFirst: false,
   },
 };
 
@@ -942,6 +956,13 @@ for (const part of allReadingParts) {
   ok(
     `${part.id}: carries at least one stimulus to read`,
     part.passage !== undefined || part.diagram !== undefined || part.blankText !== undefined,
+  );
+  ok(
+    `${part.id}: its items run in the order a "${part.kind}" part runs them`,
+    readingPartBlanksFirst(part.kind) === shape.blanksFirst,
+    `blanksFirst=${readingPartBlanksFirst(part.kind)}, exam runs ${
+      shape.blanksFirst ? "blanks then questions" : "questions then blanks"
+    }`,
   );
   // And it must carry the RIGHT ones — see the note on `stimulus` above.
   ok(
@@ -1208,6 +1229,29 @@ const readingRunnerSource = readFileSync(
 ok(
   "the runner resolves the set itself, on the client",
   /getReadingSet\(/.test(readingRunnerSource),
+);
+
+group("reading: each part's items run in the order the exam runs them");
+
+// A CONJUNCTION, not a token count, for the reason plan 08 recorded when its
+// `finalizedRef` count-only gate turned out to pass on the very mutation it
+// existed to catch: a presence check is not a behaviour check.
+//
+// The property being defended is that NO blank-bearing text is rendered outside
+// an order guard. Both halves are needed. The count alone would pass if one of
+// the four call sites were deleted and its `BlankTextView` left rendering
+// unconditionally; the unguarded-render check alone would pass if the guard were
+// present but always true. Together they fail on either.
+const blanksFirstCalls = (readingRunnerSource.match(/readingPartBlanksFirst\(/g) ?? []).length;
+ok(
+  "the runner orders blanks against questions per part kind, in the live view and the review",
+  blanksFirstCalls === 4,
+  `${blanksFirstCalls} guard sites, expected 4 — two views, two branches each`,
+);
+ok(
+  "no blank-bearing text is rendered outside that guard",
+  !/\{\s*(?:part|reviewed)\.blankText\s*&&/.test(readingRunnerSource),
+  "a `{part.blankText && …}` renders the blanks in a fixed position regardless of the part kind",
 );
 
 /* ------------------------------------------------------------------ *

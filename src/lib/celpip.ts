@@ -376,6 +376,39 @@ export function readingPartKindLabel(kind: CelpipReadingPartKind): string {
 }
 
 /**
+ * Whether a part's drop-down blanks come BEFORE its comprehension questions.
+ *
+ * THE EXAM DOES NOT ANSWER THIS THE SAME WAY FOR EVERY PART, which is the only
+ * reason this table exists. Correspondence runs six questions about the first
+ * email and then five blanks inside the reply; viewpoints runs five questions
+ * about the article and then five blanks inside the reader comment. The diagram
+ * part inverts it — five blanks inside a short message about the table, then
+ * three questions about the table itself — and information has no blanks at all.
+ *
+ * Rendering every part in one fixed order gets one of those wrong whichever
+ * order is chosen, and gets it wrong SILENTLY: nothing type-checks against the
+ * running order of a page, and the items are all present and all gradable
+ * either way. What changes is what she reads before she answers. Putting the
+ * reply above the questions about the first email hands her the answers'
+ * context in the wrong sequence and makes the part easier than the one she will
+ * sit — which is the specific failure this whole section exists to prevent.
+ *
+ * A total `Record` over the union, like the label table above, so a fifth part
+ * kind fails `npx tsc --noEmit` here rather than silently inheriting an order
+ * nobody chose for it.
+ */
+const READING_PART_BLANKS_FIRST: Record<CelpipReadingPartKind, boolean> = {
+  correspondence: false,
+  diagram: true,
+  information: false, // no blanks at all; the value is unreachable and honest
+  viewpoints: false,
+};
+
+export function readingPartBlanksFirst(kind: CelpipReadingPartKind): boolean {
+  return READING_PART_BLANKS_FIRST[kind];
+}
+
+/**
  * One drop-down blank: a gap in a piece of prose that the learner fills from a
  * short list of options.
  *

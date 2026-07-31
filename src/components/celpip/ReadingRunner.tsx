@@ -5,6 +5,7 @@ import { useMemo, useRef, useState } from "react";
 import { Check, X } from "lucide-react";
 import {
   getReadingSet,
+  readingPartBlanksFirst,
   readingPartItemCount,
   readingPartKindLabel,
   readingSetItemCount,
@@ -254,7 +255,8 @@ function SetRunner({ set }: { set: CelpipReadingSet }) {
 
             {reviewed.passage && <PassageView passage={reviewed.passage} />}
             {reviewed.diagram && <DiagramView diagram={reviewed.diagram} />}
-            {reviewed.blankText && (
+            {/* Same running order as the live part — see `readingPartBlanksFirst`. */}
+            {readingPartBlanksFirst(reviewed.kind) && reviewed.blankText && (
               <BlankTextView
                 blankText={reviewed.blankText}
                 answers={answers}
@@ -265,6 +267,14 @@ function SetRunner({ set }: { set: CelpipReadingSet }) {
             {reviewed.questions.length > 0 && (
               <QuestionList
                 questions={reviewed.questions}
+                answers={answers}
+                submitted
+                onChange={choose}
+              />
+            )}
+            {!readingPartBlanksFirst(reviewed.kind) && reviewed.blankText && (
+              <BlankTextView
+                blankText={reviewed.blankText}
                 answers={answers}
                 submitted
                 onChange={choose}
@@ -450,7 +460,12 @@ function SetRunner({ set }: { set: CelpipReadingSet }) {
       <section className={`${CARD} mt-4`}>
         {part.passage && <PassageView passage={part.passage} />}
         {part.diagram && <DiagramView diagram={part.diagram} />}
-        {part.blankText && (
+        {/* THE ORDER OF THESE TWO IS PER PART KIND AND IS NOT COSMETIC — see
+            `readingPartBlanksFirst` in `../../lib/celpip`. The diagram part
+            reads its blanks first; correspondence and viewpoints read their
+            questions first, because the blank-bearing reply or comment is
+            written to be met AFTER the questions about the text above it. */}
+        {readingPartBlanksFirst(part.kind) && part.blankText && (
           <BlankTextView
             blankText={part.blankText}
             answers={answers}
@@ -462,6 +477,15 @@ function SetRunner({ set }: { set: CelpipReadingSet }) {
         {part.questions.length > 0 && (
           <QuestionList
             questions={part.questions}
+            answers={answers}
+            submitted={false}
+            disabled={locked}
+            onChange={choose}
+          />
+        )}
+        {!readingPartBlanksFirst(part.kind) && part.blankText && (
+          <BlankTextView
+            blankText={part.blankText}
             answers={answers}
             submitted={false}
             disabled={locked}
