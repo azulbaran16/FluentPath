@@ -9,6 +9,7 @@ import { EMAIL_TASKS } from "./celpip/tasks-email.ts";
 import { SURVEY_TASKS } from "./celpip/tasks-survey.ts";
 import { SPEAKING_TASK_PROMPTS } from "./celpip/speaking-prompts.ts";
 import { LISTENING_SET_BANK } from "./celpip/listening-set-1.ts";
+import { READING_SET_BANK } from "./celpip/reading-set-1.ts";
 
 export type CelpipTaskType = "email" | "survey";
 
@@ -552,16 +553,15 @@ export function readingSetItemCount(set: CelpipReadingSet): number {
 }
 
 /**
- * The Reading bank — EMPTY until plan 09 authors it, deliberately.
+ * The Reading bank, one file per set.
  *
  * Availability follows this array's CONTENTS, exactly as the listening one
- * does, so the landing reports Reading as "not yet available" on its own for as
- * long as this is empty and needs no second edit to say so. Plan 09 replaces
- * the empty literal with a spread from `src/lib/celpip/reading-set-1.ts`. Do
- * NOT create that bank module empty now: an empty module is a second thing to
- * remember to delete if the set is dropped for the calendar.
+ * does: a set dropped for the calendar, or a set whose parts are all removed,
+ * flips the landing back to "not yet available" on its own and needs no second
+ * edit to say so. Nothing about what ships is written down anywhere for a later
+ * edit to forget.
  */
-export const READING_SETS: CelpipReadingSet[] = [];
+export const READING_SETS: CelpipReadingSet[] = [...READING_SET_BANK];
 
 export function getReadingSet(setId: string): CelpipReadingSet | undefined {
   return READING_SETS.find((s) => s.id === setId);
