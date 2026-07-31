@@ -89,7 +89,33 @@ Plans:
 - **Listening audio uses the Web Speech API** already in the app, not recorded files. Accepted cost: it sounds more robotic than the real exam. Accepted benefit: it ships now, at no cost, and still trains note-taking and pacing
 - All content original (same IP constraint as Phase 1)
 
-**Plans**: TBD
+**Exam format confirmed 2026-07-30:** the beta user's official study material settled every
+format figure, closing RESEARCH assumptions A1 and A2. Reading is 4 parts / 38 questions /
+39 minutes, timed **per part** (11/8/9/11), with fill-in-the-blank items in three of the four
+parts. Listening is 6 parts / ~38 questions, the discussion part carrying **8** items, and
+questions are revealed **one at a time after the audio ends**. Speaking is a real two-phase
+timer (silent prep, then recording starts on its own): 30/90 for tasks 1 and 7, 60/60 for
+tasks 5 and 6, 30/60 for the rest. Only structure was taken from those documents; D-06 stands
+in full. Speaking task 3 ships a written scene description rather than an image — an open
+content dependency, stated on the landing.
+
+**Plans**: 12 plans — sequenced cheapest-content-first so the calendar can stop after any one
+of them and the learner still gains something usable
+Plans:
+
+- [ ] 02.1-01-PLAN.md — Tracer: one Speaking prompt end to end (CSP → record → play back → self-evaluate → Postgres)
+- [ ] 02.1-02-PLAN.md — Landing becomes skill-aware and self-honest (coverage derived from the banks)
+- [ ] 02.1-03-PLAN.md — Speaking bank complete: 8 task shapes, full self-eval rubric, content harness
+- [ ] 02.1-04-PLAN.md — Listening plumbing: types, listeningAttempts, the speaker-turn speech driver, audio check
+- [ ] 02.1-05-PLAN.md — Listening runner + set 1 news-item part: the first hearable drill
+- [ ] 02.1-06-PLAN.md — Listening set 1: problem-solving and daily-conversation parts
+- [ ] 02.1-07-PLAN.md — Listening set 1: information and viewpoints parts
+- [ ] 02.1-08-PLAN.md — Reading plumbing + runner + the fill-in-the-blank control
+- [ ] 02.1-09-PLAN.md — Reading set 1: correspondence and information parts, reading harness group
+- [ ] 02.1-10-PLAN.md — Reading set 1: diagram and viewpoints parts (set complete at 38 items / 39 min)
+- [ ] 02.1-11-PLAN.md — Listening set 1: the three-speaker discussion part (8 items)
+- [ ] 02.1-12-PLAN.md — Phase gate: IP grep, full suite, production-header CSP check, browser + phone UAT
+
 **UI hint**: yes
 
 ### Phase 3: Every Scenario Practicable
