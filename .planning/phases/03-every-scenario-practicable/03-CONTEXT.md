@@ -76,6 +76,21 @@ Content is keyed `"world/scenario"` (e.g. `"social/small-talk"`), not by bare sl
   satisfied on paper and broken on screen. Fixing that resolution is **in scope for this
   phase**. It is code, not content, so it does not compete for the word budget.
 
+### Ratified at plan review (2026-07-31)
+
+- **D-06 — the SRS id format is the composite `world/scenario#kind#slug`**, e.g.
+  `social/small-talk#phrase#hows-it-going`. The user ratified option A from the planner's
+  one-way-door checkpoint after the plan checker independently confirmed its premise: all
+  39 existing global grammar ids are slash-free, so collision with the new key space is
+  structurally impossible rather than merely unlikely, and `sanitizeEntries`
+  (`progress-schema.ts:411`) passes such keys through untouched. The two rejected options
+  were opaque global slugs (provenance gone, a second lookup table to keep in step) and
+  content-hash ids (a typo fix silently orphans a learner's box-4 item).
+  — **Reversibility: one-way.** The id becomes the key under which live learner progress
+  is stored in Postgres. Changing it later orphans entries with no migration path, because
+  `mergeProgress` unions keys blindly and cannot detect an orphan. The checkpoint that
+  guarded this is therefore **answered, not pending**: plan 01 executes option A.
+
 ### The gap is larger than "generic content"
 
 Research and pattern-mapping agree, and this reframes CONT-01:
