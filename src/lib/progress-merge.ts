@@ -70,6 +70,7 @@ import type {
   AttemptStat,
   CelpipAttempt,
   CelpipProgressState,
+  CelpipSpeakingAttempt,
   ProgressState,
   SrsItem,
 } from "./progress-schema";
@@ -632,6 +633,7 @@ export function progressEqual(a: unknown, b: unknown): boolean {
 export const MERGE_CELPIP_EMPTY: CelpipProgressState = {
   attempts: {},
   drafts: {},
+  speakingAttempts: {},
   updatedAt: null,
 };
 
@@ -712,10 +714,13 @@ function attemptKey(e: CelpipAttempt): string {
  * two records share a natural key but differ in content: an arbitrary winner
  * chosen by a total order, which is what keeps the join commutative.
  */
-function canonicalAttempts(list: CelpipAttempt[]): CelpipAttempt[] {
-  const byKey = new Map<string, { entry: CelpipAttempt; form: string }>();
+function canonicalEntries<T extends { date: string }>(
+  list: T[],
+  keyOf: (entry: T) => string,
+): T[] {
+  const byKey = new Map<string, { entry: T; form: string }>();
   for (const entry of list) {
-    const key = attemptKey(entry);
+    const key = keyOf(entry);
     const form = canonical(entry);
     const held = byKey.get(key);
     if (held === undefined || form > held.form) byKey.set(key, { entry, form });
@@ -728,24 +733,94 @@ function canonicalAttempts(list: CelpipAttempt[]): CelpipAttempt[] {
     .map((held) => held.entry);
 }
 
-function celpipAttemptRecord(v: unknown): Record<string, CelpipAttempt[]> {
+function canonicalAttempts(list: CelpipAttempt[]): CelpipAttempt[] {
+  return canonicalEntries(list, attemptKey);
+}
+
+/**
+ * The per-task record wrapper, generic over the entry type for the same reason
+ * `canonicalEntries` is: one proof rather than one copy per skill.
+ *
+ * Canonicalises HERE as well as in the join, so that coerce is the canonical
+ * form: merge(a, a) then equals coerce(a) exactly, and a stored history that
+ * happens to be out of order does not produce a write on every load until it
+ * has been rewritten once.
+ */
+function entryRecord<T extends { date: string }>(
+  v: unknown,
+  entryOf: (raw: unknown) => T | null,
+  keyOf: (entry: T) => string,
+): Record<string, T[]> {
   if (!isPlainObject(v)) return {};
-  const out: Record<string, CelpipAttempt[]> = {};
+  const out: Record<string, T[]> = {};
   for (const k of Object.keys(v)) {
     const list = v[k];
     if (!Array.isArray(list)) continue;
-    const entries: CelpipAttempt[] = [];
+    const entries: T[] = [];
     for (const raw of list) {
-      const entry = celpipAttemptEntry(raw);
+      const entry = entryOf(raw);
       if (entry !== null) entries.push(entry);
     }
-    // Canonicalised HERE as well as in the join, so that coerce is the
-    // canonical form: merge(a, a) then equals coerce(a) exactly, and a stored
-    // history that happens to be out of order does not produce a write on
-    // every load until it has been rewritten once.
-    out[k] = canonicalAttempts(entries);
+    out[k] = canonicalEntries(entries, keyOf);
   }
   return out;
+}
+
+/**
+ * One Speaking rehearsal, normalised.
+ *
+ * NOTE WHAT IS NOT HERE: any literal list of task shapes. `celpipAttemptEntry`
+ * above hard-codes the writing task-type pair independently of the zod enum,
+ * and that second copy is the trap — widen only the schema and an attempt
+ * validates on the wire, is stored, and is then silently deleted by the merge
+ * on the very next reconcile. `shape` is carried through as a plain bounded
+ * string, so adding a ninth exam shape to the content module can never delete a
+ * learner's stored attempt. Do not "tighten" this into an enum.
+ *
+ * Identity is `promptId` plus `date`, exactly as the writing rule is: an entry
+ * missing either is dropped rather than repaired, because an entry that cannot
+ * be de-duplicated would be re-appended on every reconcile and grow the column
+ * forever.
+ */
+function celpipSpeakingEntry(v: unknown): CelpipSpeakingAttempt | null {
+  if (!isPlainObject(v)) return null;
+  const promptId = str(v.promptId);
+  const date = str(v.date);
+  if (promptId === null || promptId === "" || date === null || date === "") return null;
+  const duration = num(v.durationSeconds, 0);
+  const recordingSeconds = num(v.recordingSeconds, 0);
+  const sizeBytes = num(v.sizeBytes, 0);
+  return {
+    promptId,
+    date,
+    shape: str(v.shape) ?? "",
+    durationSeconds: duration < 0 ? 0 : duration,
+    recorded: Boolean(v.recorded),
+    recordingSeconds: recordingSeconds < 0 ? 0 : recordingSeconds,
+    mimeType: str(v.mimeType) ?? "",
+    sizeBytes: sizeBytes < 0 ? 0 : sizeBytes,
+    checkedRubric: boolRecord(v.checkedRubric),
+    outOfTime: Boolean(v.outOfTime),
+    note: str(v.note) ?? "",
+  };
+}
+
+/** The Speaking twin of `attemptKey` — the prompt answered and the instant it
+ * was submitted, joined on the same literal NUL. */
+function speakingKey(e: CelpipSpeakingAttempt): string {
+  return `${e.promptId} ${e.date}`;
+}
+
+function canonicalSpeaking(list: CelpipSpeakingAttempt[]): CelpipSpeakingAttempt[] {
+  return canonicalEntries(list, speakingKey);
+}
+
+function celpipAttemptRecord(v: unknown): Record<string, CelpipAttempt[]> {
+  return entryRecord(v, celpipAttemptEntry, attemptKey);
+}
+
+function celpipSpeakingRecord(v: unknown): Record<string, CelpipSpeakingAttempt[]> {
+  return entryRecord(v, celpipSpeakingEntry, speakingKey);
 }
 
 function celpipCoerce(v: unknown): CelpipProgressState {
@@ -753,6 +828,7 @@ function celpipCoerce(v: unknown): CelpipProgressState {
   return {
     attempts: celpipAttemptRecord(v.attempts),
     drafts: stringRecord(v.drafts),
+    speakingAttempts: celpipSpeakingRecord(v.speakingAttempts),
     updatedAt: str(v.updatedAt),
   };
 }
@@ -805,6 +881,14 @@ export function mergeCelpip(a: unknown, b: unknown): CelpipProgressState {
     // hold. The per-key rule reads only the two arrays it is given.
     attempts: unionRecord(x.attempts, y.attempts, (p, q) => canonicalAttempts([...p, ...q])),
     drafts: pickDraftsSide(x, y) >= 0 ? { ...x.drafts } : { ...y.drafts },
+    // The SAME rule as `attempts`, one line, reusing the proof rather than
+    // adding a second one. It is a key union rather than a whole-field pick on
+    // purpose: this map has no delete site, so it needs no instant of its own —
+    // and giving it one governed by the shared `updatedAt` would break `drafts`
+    // (see pickDraftsSide).
+    speakingAttempts: unionRecord(x.speakingAttempts, y.speakingAttempts, (p, q) =>
+      canonicalSpeaking([...p, ...q]),
+    ),
     // The later of the two, never a fresh one: a stamp here would make every
     // merged copy outrank every unmerged one, and the reconcile would then
     // decide the drafts map by which device loaded the app last.

@@ -142,9 +142,68 @@ export interface CelpipAttempt {
   outOfTime: boolean;
 }
 
+/**
+ * One recorded CELPIP Speaking rehearsal.
+ *
+ * Deliberately its OWN top-level field rather than another `taskType` inside
+ * `CelpipAttempt`. Widening that union would have to move in lockstep across
+ * the zod enum here, the independent literal pair in progress-merge.ts, and the
+ * content module's `CelpipTaskType` — and the merge's copy is the one that
+ * silently DELETES an attempt it does not recognise. A separate field cannot
+ * reach the writing shape at all, so the beta user's live writing history stays
+ * byte-identical.
+ *
+ * `shape` is a bounded free string, NOT an enum, for the same reason: the eight
+ * Speaking task shapes live in the content module, and a ninth one added there
+ * must never be able to delete a learner's stored attempt. The bound is what
+ * stops it growing the column; the absence of a literal list is what stops it
+ * losing data.
+ *
+ * The recording itself is NOT here and never will be. Audio bytes stay in the
+ * component for the session — the localStorage cache is a ~5 MB origin quota
+ * and this payload is capped at 2 MiB on the wire, where a 413 is classified as
+ * a permanent drop and would discard the learner's whole CELPIP sync, writing
+ * history included. Only the four facts about the recording are stored.
+ */
+export interface CelpipSpeakingAttempt {
+  promptId: string;
+  /** ISO timestamp of submission. Half of the natural key. */
+  date: string;
+  /** The exam task shape this prompt follows, e.g. "advice". A bounded string
+   * on purpose — see the note above. */
+  shape: string;
+  /** Wall-clock seconds from starting the attempt to finishing it. */
+  durationSeconds: number;
+  /** Whether any audio was captured at all. An attempt with none is valid. */
+  recorded: boolean;
+  /** Length of the captured audio, not of the attempt. */
+  recordingSeconds: number;
+  /** The container the browser actually chose, read back off the recorder. */
+  mimeType: string;
+  sizeBytes: number;
+  /** Rubric item id -> checked state for this attempt. */
+  checkedRubric: Record<string, boolean>;
+  outOfTime: boolean;
+  /** The learner's own written note about the attempt. Free-form prose, so it
+   * carries the same ceiling an essay does. */
+  note: string;
+}
+
 export interface CelpipProgressState {
   attempts: Record<string, CelpipAttempt[]>;
   drafts: Record<string, string>;
+  /**
+   * Speaking rehearsals, keyed by prompt id — append-only, exactly like
+   * `attempts` and merged by the same rule.
+   *
+   * It is deliberately NOT a whole-field-selected map. This state carries one
+   * `updatedAt` instant and `drafts` already rides it; a second map selected on
+   * that same instant would fight it, and a device that stamped while saving a
+   * Speaking attempt would also win the drafts map — resurrecting a cleared
+   * draft, which is the fca41b7 defect. An append-only map with a natural key
+   * needs no instant at all.
+   */
+  speakingAttempts: Record<string, CelpipSpeakingAttempt[]>;
   /**
    * The same D-01b activity instant `ProgressState.updatedAt` carries, and for
    * a sharper reason: `drafts` is this store's one field with a real delete
@@ -169,6 +228,7 @@ export interface CelpipProgressState {
 export const CELPIP_EMPTY: CelpipProgressState = {
   attempts: {},
   drafts: {},
+  speakingAttempts: {},
   updatedAt: null,
 };
 
@@ -434,9 +494,46 @@ export const celpipAttemptSchema = z.object({
   outOfTime: z.boolean(),
 });
 
+/**
+ * One recorded Speaking rehearsal. Every field is required for the same reason
+ * the writing attempt's are: an entry missing its prompt id or its submission
+ * timestamp has no identity, and identity is what the merge de-duplicates on.
+ *
+ * `shape` is `z.string().max(64)` and NOT `z.enum([...])`. That is the whole
+ * point of the separate field: the eight exam task shapes are content, they
+ * live in `src/lib/celpip/speaking-prompts.ts`, and adding a ninth one there
+ * must never make a stored attempt unreadable. Nothing here mirrors that list —
+ * not this schema, and deliberately not `progress-merge.ts` either, which is
+ * where the equivalent writing literal has always lived as a second copy.
+ *
+ * `mimeType` is bounded at 64 because a container string is short and a hostile
+ * client should not be able to store prose in it. `note` takes the essay
+ * ceiling — it is the only free-form field on this shape. Nothing here is
+ * unbounded, which is what keeps a realistic history well under the 2 MiB body
+ * cap in `src/app/api/celpip-progress/route.ts`.
+ */
+export const celpipSpeakingAttemptSchema = z.object({
+  promptId: z.string().max(200),
+  date: z.string().max(64),
+  shape: z.string().max(64),
+  durationSeconds: z.number().int().min(0).max(MAX_COUNT),
+  recorded: z.boolean(),
+  recordingSeconds: z.number().int().min(0).max(MAX_COUNT),
+  mimeType: z.string().max(64),
+  sizeBytes: z.number().int().min(0).max(MAX_COUNT),
+  checkedRubric: sanitizedRecord(z.boolean()),
+  outOfTime: z.boolean(),
+  note: celpipText,
+});
+
 export const celpipProgressSchema = z.object({
   attempts: sanitizedRecord(sanitizedArray(celpipAttemptSchema)),
   drafts: sanitizedRecord(celpipText),
+  // Load-bearing exactly the way `updatedAt` below is: the plain object
+  // constructor strips what it does not declare, so leaving this out would make
+  // the server silently DELETE every Speaking attempt on every write — with no
+  // error anywhere, because the write itself would still succeed.
+  speakingAttempts: sanitizedRecord(sanitizedArray(celpipSpeakingAttemptSchema)),
   // Load-bearing for the same reason `updatedAt` is on the progress schema,
   // and more so here: the plain object constructor strips what it does not
   // declare, so an undeclared instant would be deleted by the server on every

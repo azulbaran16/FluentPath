@@ -8,6 +8,7 @@ import {
   safeReadCelpip,
   type CelpipAttempt,
   type CelpipProgressState,
+  type CelpipSpeakingAttempt,
 } from "./progress-schema";
 import { celpipEqual, mergeCelpip } from "./progress-merge";
 import { enqueue, flushQueue } from "./sync-queue";
@@ -39,7 +40,7 @@ const KEY = "fluentpath.celpip.v1";
 const SAVE_DEBOUNCE_MS = 2_000;
 
 export { CELPIP_EMPTY };
-export type { CelpipAttempt, CelpipProgressState };
+export type { CelpipAttempt, CelpipProgressState, CelpipSpeakingAttempt };
 
 /** Renders an attempt's durationSeconds as m:ss — shared by the results
  * metrics strip and the landing's attempt-history rows so both read the same. */
@@ -271,6 +272,33 @@ export function useCelpipProgress() {
     [],
   );
 
+  /** The Speaking twin of addAttempt: append-only into a per-prompt array,
+   * nothing mutated in place, and routed through `persist` like every other
+   * mutation in this file.
+   *
+   * Going through `persist` is not a style point. It is the single site that
+   * authors the D-01b instant, and the merge hands the WHOLE drafts map to the
+   * side carrying the later one — so a mutator that wrote the snapshot itself
+   * would leave the instant stale and give the drafts map to the wrong device.
+   *
+   * No audio reaches here. The attempt carries four facts about a recording
+   * (`recorded`, `recordingSeconds`, `mimeType`, `sizeBytes`) and never its
+   * bytes: this snapshot is stringified into localStorage and pushed to a
+   * 2 MiB-capped endpoint where a 413 is a permanent drop, so a synced
+   * recording would silently discard the learner's whole CELPIP history. */
+  const addSpeakingAttempt = useCallback(
+    (promptId: string, attempt: CelpipSpeakingAttempt) => {
+      persist((s) => ({
+        ...s,
+        speakingAttempts: {
+          ...s.speakingAttempts,
+          [promptId]: [...(s.speakingAttempts[promptId] ?? []), attempt],
+        },
+      }));
+    },
+    [],
+  );
+
   /** Returns true on a successful save, false if the underlying localStorage
    * write threw — callers surface a visible warning on false. */
   const saveDraft = useCallback(
@@ -306,6 +334,11 @@ export function useCelpipProgress() {
     [state.attempts],
   );
 
+  const speakingAttemptsForPrompt = useCallback(
+    (promptId: string) => state.speakingAttempts[promptId] ?? [],
+    [state.speakingAttempts],
+  );
+
   const lastAttempt = useCallback(
     (taskId: string) => {
       const list = state.attempts[taskId];
@@ -322,10 +355,12 @@ export function useCelpipProgress() {
     ready,
     state,
     addAttempt,
+    addSpeakingAttempt,
     saveDraft,
     clearDraft,
     draftFor,
     attemptsForTask,
+    speakingAttemptsForPrompt,
     lastAttempt,
     completedTasks,
   };

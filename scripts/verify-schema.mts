@@ -31,6 +31,7 @@ import {
   sanitizedRecord,
   type CelpipAttempt,
   type CelpipProgressState,
+  type CelpipSpeakingAttempt,
   type ProgressState,
 } from "../src/lib/progress-schema.ts";
 
@@ -445,12 +446,29 @@ const surveyAttempt: CelpipAttempt = {
   outOfTime: false,
 };
 
+/** A rehearsal exactly as SpeakingRecorder records it. Note what is NOT on it:
+ * the recording. Four facts about the audio are stored and the bytes are not. */
+const speakingAttempt: CelpipSpeakingAttempt = {
+  promptId: "speaking-advice-first-winter",
+  date: "2026-07-28T07:41:09.000Z",
+  shape: "advice",
+  durationSeconds: 148,
+  recorded: true,
+  recordingSeconds: 90,
+  mimeType: "audio/webm;codecs=opus",
+  sizeBytes: 341_882,
+  checkedRubric: { "speaking-did-the-task": true, "speaking-used-the-window": false },
+  outOfTime: false,
+  note: "Started too slowly — spent the first fifteen seconds restating the scenario.",
+};
+
 const celpipFull: CelpipProgressState = {
   attempts: {
     "email-neighbour": [olderAttempt, attempt],
     "survey-transit": [surveyAttempt],
   },
   drafts: { "survey-transit": "In my opinion the current schedule is" },
+  speakingAttempts: { "speaking-advice-first-winter": [speakingAttempt] },
   updatedAt: INSTANT,
 };
 
@@ -581,6 +599,225 @@ group("CELPIP bounds — free-form prose cannot grow the column without bound");
   });
 }
 
+group("CELPIP speaking — a new skill's attempts obey the same per-entry rules");
+{
+  // THE ADDITIVITY CASE, and the one that matters most today: the beta user's
+  // stored row was written before this phase and has no `speakingAttempts` key
+  // at all. It must parse to an empty record rather than failing the payload or
+  // leaving the field undefined.
+  const legacyBlob = {
+    attempts: { "survey-transit": [surveyAttempt] },
+    drafts: {},
+    updatedAt: INSTANT,
+  };
+  const legacy = acceptCelpip("a stored blob with speakingAttempts absent entirely", legacyBlob);
+  deepEqual("the absent field recovers to an empty record", legacy.speakingAttempts, {});
+  deepEqual("and the writing history it does carry is untouched", legacy.attempts, legacyBlob.attempts);
+  ok(
+    "read through the safe helper it behaves the same",
+    canon(safeReadCelpip(JSON.stringify(legacyBlob)).speakingAttempts) === "{}",
+  );
+
+  const parsed = acceptCelpip("a prompt array holding one good and three bad rehearsals", {
+    ...celpipFull,
+    speakingAttempts: {
+      "speaking-advice-first-winter": [
+        speakingAttempt,
+        { ...speakingAttempt, date: 1_753_000_000_000 }, // a number where the ISO date belongs
+        { ...speakingAttempt, recorded: "yes" }, // a string where the flag belongs
+        "nope",
+      ],
+    },
+  });
+  deepEqual(
+    "the well-formed rehearsal survives alone",
+    parsed.speakingAttempts["speaking-advice-first-winter"],
+    [speakingAttempt],
+  );
+
+  // The regression guard for the enum trap, at the SCHEMA end. `shape` is a
+  // bounded string, so a shape this build has never heard of must still
+  // validate — a ninth exam task shape added to the content module cannot make
+  // an already-stored attempt unreadable.
+  const unknownShape = acceptCelpip("a rehearsal whose shape this build does not know", {
+    ...celpipFull,
+    speakingAttempts: {
+      "speaking-future-shape": [{ ...speakingAttempt, shape: "role-play-a-call" }],
+    },
+  });
+  ok(
+    "an unrecognised shape string is accepted, not dropped",
+    unknownShape.speakingAttempts["speaking-future-shape"]?.length === 1,
+  );
+  ok(
+    "and it is stored verbatim rather than normalised to something known",
+    unknownShape.speakingAttempts["speaking-future-shape"][0].shape === "role-play-a-call",
+  );
+
+  const notAnArray = acceptCelpip("a prompt whose rehearsals value is not an array", {
+    ...celpipFull,
+    speakingAttempts: { "speaking-advice-first-winter": { 0: speakingAttempt } },
+  });
+  ok(
+    "a non-array prompt value is dropped rather than coerced to an empty history",
+    !("speaking-advice-first-winter" in notAnArray.speakingAttempts),
+  );
+  deepEqual("its writing neighbours are untouched", notAnArray.attempts, celpipFull.attempts);
+
+  const poisoned = acceptCelpip("poisoned keys in the speaking record", {
+    ...celpipFull,
+    speakingAttempts: JSON.parse(
+      `{"__proto__":[],"constructor":[],"prototype":[],"speaking-advice-first-winter":${JSON.stringify(
+        [speakingAttempt],
+      )}}`,
+    ) as Record<string, unknown>,
+  });
+  deepEqual("poisoned speaking keys are dropped", Object.keys(poisoned.speakingAttempts).sort(), [
+    "speaking-advice-first-winter",
+  ]);
+  ok(
+    "and no prototype was polluted along the way",
+    ({} as Record<string, unknown>).polluted === undefined,
+  );
+}
+
+group("CELPIP speaking bounds — every field on the new shape is capped");
+{
+  const huge = "x".repeat(CELPIP_MAX_TEXT + 1);
+  const overLongNote = acceptCelpip("a rehearsal whose note exceeds the essay cap", {
+    ...celpipFull,
+    speakingAttempts: {
+      "speaking-advice-first-winter": [
+        speakingAttempt,
+        { ...speakingAttempt, date: "2026-07-29T07:00:00.000Z", note: huge },
+      ],
+    },
+  });
+  deepEqual(
+    "the over-length note costs only its own entry",
+    overLongNote.speakingAttempts["speaking-advice-first-winter"],
+    [speakingAttempt],
+  );
+
+  const longMime = acceptCelpip("a rehearsal whose mimeType is prose", {
+    ...celpipFull,
+    speakingAttempts: {
+      "speaking-advice-first-winter": [{ ...speakingAttempt, mimeType: "a".repeat(65) }],
+    },
+  });
+  ok(
+    "a mimeType over 64 characters is refused as an entry",
+    (longMime.speakingAttempts["speaking-advice-first-winter"] ?? []).length === 0,
+  );
+
+  const longShape = acceptCelpip("a rehearsal whose shape is prose", {
+    ...celpipFull,
+    speakingAttempts: {
+      "speaking-advice-first-winter": [{ ...speakingAttempt, shape: "b".repeat(65) }],
+    },
+  });
+  ok(
+    "a shape over 64 characters is refused as an entry",
+    (longShape.speakingAttempts["speaking-advice-first-winter"] ?? []).length === 0,
+  );
+
+  // Every NUMBER on the shape is bounded too, not just the strings. A negative
+  // duration, a fractional byte count or a 1e308 recording length are all
+  // things a broken or hostile client can send, and all three would render as
+  // nonsense in the learner's own history. Each costs only its own entry.
+  for (const [label, patch] of [
+    ["a negative recording length", { recordingSeconds: -1 }],
+    ["a negative attempt duration", { durationSeconds: -30 }],
+    ["a negative size", { sizeBytes: -1 }],
+    ["a fractional recording length", { recordingSeconds: 90.5 }],
+    ["a fractional size", { sizeBytes: 1.5 }],
+    ["a recording length past the counter ceiling", { recordingSeconds: 1e12 }],
+    ["a size past the counter ceiling", { sizeBytes: 1e308 }],
+    ["a non-finite size", { sizeBytes: Number.POSITIVE_INFINITY }],
+  ] as Array<[string, Partial<Record<string, number>>]>) {
+    const bad = acceptCelpip(`a rehearsal carrying ${label}`, {
+      ...celpipFull,
+      speakingAttempts: {
+        "speaking-advice-first-winter": [speakingAttempt, { ...speakingAttempt, date: "2026-08-01T00:00:00.000Z", ...patch }],
+      },
+    });
+    deepEqual(
+      `${label} costs only its own entry`,
+      bad.speakingAttempts["speaking-advice-first-winter"],
+      [speakingAttempt],
+    );
+  }
+
+  // ---- The 2 MiB body cap, closed by MEASUREMENT rather than by claim. ----
+  //
+  // `MAX_BODY_BYTES` in src/app/api/celpip-progress/route.ts is 2 MiB, and the
+  // retry queue classifies a 413 as a PERMANENT drop: exceeding the cap would
+  // not retry, it would discard the learner's entire CELPIP sync, writing
+  // history included. So the question "is the new shape small enough?" is a
+  // data-loss question, and it is answered here by building a worst-case
+  // realistic state and weighing it.
+  const MAX_BODY_BYTES = 2 * 1024 * 1024; // mirrors src/app/api/celpip-progress/route.ts
+  const worstCase: CelpipProgressState = {
+    attempts: {},
+    drafts: {},
+    speakingAttempts: {},
+    updatedAt: INSTANT,
+  };
+  // 200 rehearsals spread over 8 prompts — far more than an exam candidate
+  // practising daily for three weeks would produce — each carrying a note at
+  // the length a learner actually writes.
+  const realisticNote =
+    "Ran out of things to say around the sixty second mark and repeated the second point. " +
+    "Next time plan a third reason during the prep window instead of polishing the opening.";
+  for (let i = 0; i < 200; i += 1) {
+    const promptId = `speaking-shape-${i % 8}-prompt`;
+    const entry: CelpipSpeakingAttempt = {
+      ...speakingAttempt,
+      promptId,
+      date: new Date(Date.UTC(2026, 6, 1, 0, i)).toISOString(),
+      note: realisticNote,
+      checkedRubric: {
+        "speaking-did-the-task": true,
+        "speaking-developed-points": false,
+        "speaking-used-the-window": true,
+        "speaking-right-register": true,
+      },
+    };
+    worstCase.speakingAttempts[promptId] = [
+      ...(worstCase.speakingAttempts[promptId] ?? []),
+      entry,
+    ];
+  }
+  // Plus the writing history that shares the same payload.
+  for (let i = 0; i < 40; i += 1) {
+    const taskId = `email-task-${i % 8}`;
+    worstCase.attempts[taskId] = [
+      ...(worstCase.attempts[taskId] ?? []),
+      { ...attempt, taskId, date: new Date(Date.UTC(2026, 6, 2, 0, i)).toISOString() },
+    ];
+  }
+  const bytes = Buffer.byteLength(JSON.stringify(worstCase), "utf8");
+  // Printed unconditionally: a sizing assertion is only useful if the number it
+  // passed on is visible, so a later shape change can be compared against it.
+  console.log(
+    `    measured: 200 rehearsals + 40 essays = ${bytes} bytes (${(
+      (bytes / MAX_BODY_BYTES) *
+      100
+    ).toFixed(1)}% of the 2 MiB cap)`,
+  );
+  ok(
+    `a worst-case realistic CELPIP state serializes well under the 2 MiB body cap (${bytes} bytes, ${Math.round(
+      (bytes / MAX_BODY_BYTES) * 100,
+    )}% of it)`,
+    bytes < MAX_BODY_BYTES / 4,
+    `${bytes} bytes vs cap ${MAX_BODY_BYTES}`,
+  );
+  ok(
+    "and it still round-trips through the schema unchanged",
+    canon(celpipProgressSchema.parse(worstCase)) === canon(worstCase),
+  );
+}
+
 group("CELPIP PROG-03 — a corrupt stored blob loads as the empty state");
 {
   const corrupt = ["{not json at all", "", "null", "42", '"a string"', "[]", '{"attempts":', " "];
@@ -622,6 +859,7 @@ group("CELPIP PROG-03 — a corrupt stored blob loads as the empty state");
     {
       attempts: { "email-neighbour": [attempt], "survey-transit": [surveyAttempt] },
       drafts: {},
+      speakingAttempts: celpipFull.speakingAttempts,
       updatedAt: INSTANT,
     },
   );

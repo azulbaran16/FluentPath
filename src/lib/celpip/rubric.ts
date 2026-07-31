@@ -1,4 +1,5 @@
 import type { CelpipRubric } from "../celpip";
+import { CELPIP_SPEAKING_RUBRIC } from "./rubric-speaking.ts";
 
 // Self-evaluation rubric, rewritten in our own words from the CELPIP Writing
 // level descriptors (task fulfillment, organization, vocabulary, grammar &
@@ -165,4 +166,10 @@ export const CELPIP_RUBRIC: CelpipRubric = {
       ],
     },
   ],
+  // Referenced, not authored here: the Speaking descriptors live in
+  // ./rubric-speaking.ts so that this file's originality claim above keeps
+  // covering exactly the text this file contains. The two are one array, not
+  // two copies — CELPIP_RUBRIC.speaking and CELPIP_SPEAKING_RUBRIC are the same
+  // reference.
+  speaking: CELPIP_SPEAKING_RUBRIC,
 };

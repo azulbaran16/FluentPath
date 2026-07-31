@@ -26,6 +26,7 @@ import {
   type AttemptStat,
   type CelpipAttempt,
   type CelpipProgressState,
+  type CelpipSpeakingAttempt,
   type ProgressState,
   type SrsItem,
 } from "../src/lib/progress-schema.ts";
@@ -1118,6 +1119,85 @@ const legacySmallerDrafts = mkCelpip({
   drafts: { "survey-transit": "a different answer, same key count as nothing else" },
 });
 
+/* ---- Speaking rehearsals (02.1-01) ---- */
+
+function spk(
+  promptId: string,
+  date: string,
+  patch: Partial<CelpipSpeakingAttempt> = {},
+): CelpipSpeakingAttempt {
+  return {
+    promptId,
+    date,
+    shape: "advice",
+    durationSeconds: 150,
+    recorded: true,
+    recordingSeconds: 90,
+    mimeType: "audio/webm;codecs=opus",
+    sizeBytes: 341_882,
+    checkedRubric: { "speaking-did-the-task": true, "speaking-used-the-window": false },
+    outOfTime: false,
+    note: `a note written at ${date}`,
+    ...patch,
+  };
+}
+
+const WINTER = "speaking-advice-first-winter";
+
+// r2 is the SHARED rehearsal, on both devices, and must come out once.
+const r1 = spk(WINTER, "2026-07-26T09:00:00.000Z");
+const r2 = spk(WINTER, "2026-07-28T18:20:00.000Z");
+const r3 = spk(WINTER, "2026-07-29T07:15:00.000Z");
+// The valid empty-handed attempt: nothing recorded and nothing ticked. Never
+// gated on a quality signal, so it has to survive the merge like any other.
+const rSilent = spk(WINTER, "2026-07-30T06:00:00.000Z", {
+  recorded: false,
+  recordingSeconds: 0,
+  mimeType: "",
+  sizeBytes: 0,
+  checkedRubric: {},
+  note: "",
+  outOfTime: true,
+});
+// A shape string this build does not know — the regression guard for the enum
+// trap. `celpipAttemptEntry` drops an unrecognised writing taskType; nothing in
+// the speaking rule may do the equivalent, or a ninth exam shape would delete
+// the learner's stored rehearsals on the next reconcile.
+const rFutureShape = spk("speaking-future-shape", "2026-07-30T09:00:00.000Z", {
+  shape: "role-play-a-phone-call",
+});
+
+const speakingOnly = mkCelpip({
+  speakingAttempts: { [WINTER]: [r1, r2] },
+  updatedAt: "2026-07-28T18:20:00.000Z",
+});
+const bothSkills = mkCelpip({
+  attempts: { "email-neighbour": [a2, a3] },
+  drafts: { "survey-transit": "a draft open while she also rehearses out loud" },
+  speakingAttempts: { [WINTER]: [r2, r3], "speaking-future-shape": [rFutureShape] },
+  updatedAt: "2026-07-29T07:15:00.000Z",
+});
+// Two rehearsals sharing a natural key (same prompt, same millisecond) but
+// differing in content: the tie-break must pick the same one either way round.
+const speakingTwins = mkCelpip({
+  speakingAttempts: {
+    [WINTER]: [spk(WINTER, r2.date, { note: "aaa" }), spk(WINTER, r2.date, { note: "zzz" })],
+  },
+});
+const speakingSilentOnly = mkCelpip({
+  speakingAttempts: { [WINTER]: [rSilent] },
+  updatedAt: "2026-07-30T06:00:00.000Z",
+});
+// The beta user's stored row as it sits in Postgres TODAY: written before this
+// phase, so `speakingAttempts` is not empty — it is ABSENT. Cast rather than
+// declared, because that shape is deliberately not a valid CelpipProgressState;
+// being total over exactly this is the additivity requirement.
+const legacyNoSpeakingField = {
+  attempts: { "email-neighbour": [a1], "survey-transit": [s1] },
+  drafts: { "email-neighbour": "written before the Speaking section existed" },
+  updatedAt: "2026-07-25T12:00:00.000Z",
+} as unknown as CelpipProgressState;
+
 const celpipStates: Array<[string, CelpipProgressState]> = [
   ["CELPIP_EMPTY", CELPIP_EMPTY],
   ["laptop", laptop],
@@ -1129,6 +1209,14 @@ const celpipStates: Array<[string, CelpipProgressState]> = [
   ["legacyWithDraft", legacyWithDraft],
   ["legacyBiggerDrafts", legacyBiggerDrafts],
   ["legacySmallerDrafts", legacySmallerDrafts],
+  // Added by 02.1-01. Each one is exercised against every other state under
+  // both bracketings by the O(n^3) sweep below — which is why fixtures here are
+  // worth more than one-off assertions.
+  ["speakingOnly", speakingOnly],
+  ["bothSkills", bothSkills],
+  ["speakingTwins", speakingTwins],
+  ["speakingSilentOnly", speakingSilentOnly],
+  ["legacyNoSpeakingField", legacyNoSpeakingField],
 ];
 
 group("CELPIP algebra — idempotent, commutative, associative");
@@ -1198,6 +1286,206 @@ group("CELPIP attempts — de-duplicated, and in a canonical order");
     "two tasks submitted in the same millisecond keep one entry each",
     twoTasks.attempts["email-neighbour"].length === 1 &&
       twoTasks.attempts["survey-transit"].length === 1,
+  );
+}
+
+group("CELPIP speaking — the same append-only rule, and no enum trap");
+{
+  const merged = mergeCelpip(speakingOnly, bothSkills);
+  deepEqual(
+    "the two devices' rehearsal histories combine, and the shared one appears once",
+    merged.speakingAttempts[WINTER],
+    [r1, r2, r3],
+  );
+  const dates = merged.speakingAttempts[WINTER].map((e) => e.date);
+  deepEqual("sorted ascending by submission timestamp", dates, [...dates].sort());
+  ok(
+    "merging twice yields an identical array — the reconcile settles",
+    celpipEqual(mergeCelpip(merged, speakingOnly), merged) &&
+      celpipEqual(mergeCelpip(merged, bothSkills), merged),
+  );
+
+  // THE REGRESSION GUARD FOR THE ENUM TRAP.
+  //
+  // `celpipAttemptEntry` drops a writing attempt whose taskType is not one of
+  // its two hard-coded literals — a list that is a SECOND copy of the zod enum,
+  // so widening only the schema stores an attempt that the merge then silently
+  // deletes on the next reconcile. Nothing in the speaking rule may mirror the
+  // eight known shapes, and this is the assertion that says so out loud. A
+  // schema-only suite cannot catch it: the schema accepts the entry either way.
+  const survived = mergeCelpip(
+    mkCelpip({ speakingAttempts: { "speaking-future-shape": [rFutureShape] } }),
+    CELPIP_EMPTY,
+  );
+  deepEqual(
+    "a rehearsal whose shape string this build does not recognise is NOT deleted by the merge",
+    survived.speakingAttempts["speaking-future-shape"],
+    [rFutureShape],
+  );
+  ok(
+    "and its shape is carried through verbatim, not normalised away",
+    survived.speakingAttempts["speaking-future-shape"][0].shape === "role-play-a-phone-call",
+  );
+  ok(
+    "it still survives a second reconcile rather than being dropped on the way back",
+    mergeCelpip(survived, survived).speakingAttempts["speaking-future-shape"].length === 1,
+  );
+
+  // The empty-handed attempt: nothing recorded, nothing ticked, no note. It is
+  // a valid outcome (D-02 puts no gate anywhere in this flow), so the merge
+  // must carry it like any other rather than reading it as a half-formed entry.
+  const silent = mergeCelpip(speakingSilentOnly, speakingOnly);
+  deepEqual(
+    "an attempt with no recording and no ticks is preserved, not treated as junk",
+    silent.speakingAttempts[WINTER].filter((e) => !e.recorded),
+    [rSilent],
+  );
+
+  // A natural-key collision collapses to one, the same one either way round.
+  const clash = mergeCelpip(
+    mkCelpip({ speakingAttempts: { [WINTER]: [spk(WINTER, r2.date, { note: "aaa" })] } }),
+    mkCelpip({ speakingAttempts: { [WINTER]: [spk(WINTER, r2.date, { note: "zzz" })] } }),
+  );
+  ok("a natural-key collision collapses to one entry", clash.speakingAttempts[WINTER].length === 1);
+  deepEqual(
+    "and it collapses to the same one in either order",
+    mergeCelpip(
+      mkCelpip({ speakingAttempts: { [WINTER]: [spk(WINTER, r2.date, { note: "zzz" })] } }),
+      mkCelpip({ speakingAttempts: { [WINTER]: [spk(WINTER, r2.date, { note: "aaa" })] } }),
+    ),
+    clash,
+  );
+
+  // Identity is promptId + date, exactly as the writing rule is. An entry with
+  // neither cannot be de-duplicated and would be re-appended on every reconcile.
+  const identityless = {
+    speakingAttempts: {
+      [WINTER]: [{ ...r1, date: "" }, { ...r1, promptId: "" }, { shape: "advice" }, r1],
+    },
+  };
+  const kept = mergeCelpip(identityless, CELPIP_EMPTY);
+  deepEqual(
+    "a rehearsal with no natural key is dropped, not stored",
+    kept.speakingAttempts[WINTER],
+    [r1],
+  );
+  ok(
+    "so a repeat merge cannot append a second copy of it",
+    mergeCelpip(kept, identityless).speakingAttempts[WINTER].length === 1,
+  );
+
+  // ---- The coercer normalises, and does so idempotently. ----
+  //
+  // coerce is what produces the canonical form on BOTH sides of the wire, so a
+  // value it lets through unnormalised is a value the reconcile keeps rewriting.
+  const nasty = mergeCelpip(
+    {
+      speakingAttempts: {
+        [WINTER]: [
+          {
+            promptId: WINTER,
+            date: "2026-07-31T05:00:00.000Z",
+            shape: 42,
+            durationSeconds: -90,
+            recorded: "yes",
+            recordingSeconds: -1,
+            mimeType: null,
+            sizeBytes: -4096,
+            checkedRubric: { "speaking-did-the-task": "true", "speaking-right-register": false },
+            outOfTime: 1,
+            note: undefined,
+          },
+        ],
+      },
+    },
+    CELPIP_EMPTY,
+  );
+  const n = nasty.speakingAttempts[WINTER][0];
+  ok("a negative attempt duration is clamped to zero", n.durationSeconds === 0, `${n.durationSeconds}`);
+  ok("a negative recording length is clamped to zero", n.recordingSeconds === 0, `${n.recordingSeconds}`);
+  ok("a negative size is clamped to zero", n.sizeBytes === 0, `${n.sizeBytes}`);
+  ok("a non-string shape falls back to the empty string", n.shape === "", JSON.stringify(n.shape));
+  ok("a null mimeType falls back to the empty string", n.mimeType === "", JSON.stringify(n.mimeType));
+  ok("an absent note falls back to the empty string", n.note === "", JSON.stringify(n.note));
+  ok("a non-boolean recorded flag is coerced to a boolean", typeof n.recorded === "boolean");
+  ok("a non-boolean outOfTime flag is coerced to a boolean", typeof n.outOfTime === "boolean");
+  deepEqual(
+    "a non-boolean rubric value is dropped rather than stored — the map is rebuilt, never spread",
+    n.checkedRubric,
+    { "speaking-right-register": false },
+  );
+  ok(
+    "every value left in the rubric map is a real boolean",
+    Object.values(n.checkedRubric).every((value) => typeof value === "boolean"),
+  );
+  ok(
+    "and normalising is idempotent, so the reconcile settles instead of rewriting",
+    celpipEqual(mergeCelpip(nasty, nasty), nasty),
+  );
+
+  // ---- Additivity: the beta user's live row. ----
+  const additive = mergeCelpip(legacyNoSpeakingField, speakingOnly);
+  deepEqual(
+    "a stored row written before this phase keeps its writing history intact",
+    additive.attempts["email-neighbour"],
+    [a1],
+  );
+  deepEqual(
+    "and the absent speaking field simply fills in from the other side",
+    additive.speakingAttempts[WINTER],
+    [r1, r2],
+  );
+  deepEqual(
+    "merging the legacy row against the empty state yields the writing shape byte-identical",
+    mergeCelpip(legacyNoSpeakingField, CELPIP_EMPTY).attempts,
+    { "email-neighbour": [a1], "survey-transit": [s1] },
+  );
+  ok(
+    "no instant is fabricated for the field that did not exist",
+    mergeCelpip(legacyNoSpeakingField, CELPIP_EMPTY).updatedAt === "2026-07-25T12:00:00.000Z",
+  );
+
+  // ---- The two skills do not interfere. ----
+  const crossSkill = mergeCelpip(laptop, speakingOnly);
+  deepEqual(
+    "adding rehearsals leaves the writing history untouched",
+    crossSkill.attempts,
+    mergeCelpip(laptop, CELPIP_EMPTY).attempts,
+  );
+  deepEqual(
+    "and adding essays leaves the rehearsal history untouched",
+    crossSkill.speakingAttempts,
+    mergeCelpip(speakingOnly, CELPIP_EMPTY).speakingAttempts,
+  );
+  ok(
+    "the rehearsal key space is separate: a prompt id never collides with a task id",
+    !(WINTER in crossSkill.attempts) && !("email-neighbour" in crossSkill.speakingAttempts),
+  );
+
+  // ---- No audio ever reaches the stored shape. ----
+  const fields = new Set(Object.keys(r1));
+  ok(
+    "the stored rehearsal carries no audio payload field of any kind",
+    !fields.has("blob") &&
+      !fields.has("audio") &&
+      !fields.has("data") &&
+      !fields.has("url") &&
+      !fields.has("objectUrl") &&
+      !fields.has("recording"),
+    `fields: ${[...fields].sort().join(",")}`,
+  );
+  const smuggled = mergeCelpip(
+    {
+      speakingAttempts: {
+        [WINTER]: [{ ...r1, audioBase64: "SUQzBAAAAAAA", blob: "…", recordingUrl: "blob:x" }],
+      },
+    },
+    CELPIP_EMPTY,
+  );
+  deepEqual(
+    "a client that tries to smuggle audio in has it dropped by the coercer",
+    Object.keys(smuggled.speakingAttempts[WINTER][0]).sort(),
+    Object.keys(r1).sort(),
   );
 }
 
@@ -1328,6 +1616,12 @@ group("CELPIP totality — garbage on either side never throws");
     { attempts: "nope", drafts: 7, updatedAt: 0 },
     { attempts: { "email-neighbour": "not an array" }, drafts: { k: 9 } },
     { attempts: { "email-neighbour": [null, 3, { taskId: "x" }] }, drafts: null },
+    { speakingAttempts: "nope" },
+    { speakingAttempts: [1, 2, 3] },
+    { speakingAttempts: { [WINTER]: "not an array" } },
+    { speakingAttempts: { [WINTER]: [null, 3, true, { promptId: "x" }, { date: "y" }] } },
+    { speakingAttempts: { [WINTER]: [{ ...r1, durationSeconds: -5, sizeBytes: Number.NaN }] } },
+    { speakingAttempts: { [WINTER]: [{ ...r1, shape: 42, mimeType: null, note: [] }] } },
   ];
   for (const j of celpipJunk) {
     let merged: CelpipProgressState;
@@ -1378,6 +1672,32 @@ group("CELPIP totality — garbage on either side never throws");
   ok(
     "so a repeat merge cannot append a second copy of it",
     mergeCelpip(kept, identityless).attempts["email-neighbour"].length === 1,
+  );
+
+  // Pre-existing gap found by mutation while adding the Speaking shape in
+  // 02.1-01: NO writing fixture carried a non-boolean rubric value, so replacing
+  // `boolRecord(v.checkedRubric)` in celpipAttemptEntry with a raw pass-through
+  // produced zero failures. The map must be REBUILT from validated entries and
+  // never spread from unvalidated input — that is what keeps a poisoned key or
+  // a non-boolean value out of the stored history.
+  const rawRubric = mergeCelpip(
+    {
+      attempts: {
+        "email-neighbour": [
+          {
+            ...a1,
+            date: "2026-07-31T11:00:00.000Z",
+            checkedRubric: { "email-bullets": "true", "email-linkers": false, "email-tone": 1 },
+          },
+        ],
+      },
+    },
+    CELPIP_EMPTY,
+  );
+  deepEqual(
+    "a writing attempt's non-boolean rubric values are dropped, not stored",
+    rawRubric.attempts["email-neighbour"][0].checkedRubric,
+    { "email-linkers": false },
   );
 
   deepEqual("mergeCelpip({}, {}) is the CELPIP empty state", mergeCelpip({}, {}), CELPIP_EMPTY);
