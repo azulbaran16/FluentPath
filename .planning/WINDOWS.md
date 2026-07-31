@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 2
+open_count: 4
 waived_count: 0
 fixed_count: 0
-total_count: 2
-last_updated: 2026-07-28T23:55:44.925Z
+total_count: 4
+last_updated: 2026-07-31T03:10:00.000Z
 ---
 
 # Broken Windows Ledger
@@ -17,6 +17,8 @@ last_updated: 2026-07-28T23:55:44.925Z
 |----|-------|------|------|------|-------------|--------|--------|-------------|-------------|
 | 1 | 02 | unrun-verify | src/lib/celpip-progress.ts |  | 02-06 Task 2 asked for a hand-check that a completed CELPIP task shows a blank editor after a reconcile; it needs an authenticated session against the live DB, which this run deliberately did not touch. Owed to 02-07. | open |  | 2026-07-28T23:55:44.383Z |  |
 | 2 | 02 | deviation | src/app/api/celpip-progress/route.ts |  | The plan's route gates are bare presence counts: overwrite-instead-of-merge, cap removal and rate-limit removal all produced ZERO failures. Sharpened call-site gates are recorded in 02-06-SUMMARY.md but live only in that document. | open |  | 2026-07-28T23:55:44.925Z |  |
+| 3 | 02.1 | unrun-verify | src/components/celpip/SpeakingRecorder.tsx |  | 02.1-01 checkpoint: the Speaking phone pass was not done (no device available). The MediaRecorder isTypeSupported container probe (WebM -> MP4) exists precisely for Safari before 18.4, which supports MP4 only, so the one browser family it was written for has never run it. Owed to 02.1-12. | open |  | 2026-07-31T03:10:00.000Z |  |
+| 4 | 02.1 | unrun-verify | src/components/celpip/SpeakingRecorder.tsx |  | 02.1-01 checkpoint: microphone release-on-stop is code-verified, not observed. The run used a synthetic AudioContext MediaStreamDestination, whose track lifecycle is not the OS recording indicator. Needs one real-device glance in 02.1-12. | open |  | 2026-07-31T03:10:00.000Z |  |
 
 ````json
 [
@@ -42,6 +44,30 @@ last_updated: 2026-07-28T23:55:44.925Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-07-28T23:55:44.925Z",
+    "resolved_at": null
+  },
+  {
+    "id": 3,
+    "kind": "unrun-verify",
+    "phase": "02.1",
+    "file": "src/components/celpip/SpeakingRecorder.tsx",
+    "line": null,
+    "description": "02.1-01 checkpoint: the Speaking phone pass was not done (no device available). The MediaRecorder isTypeSupported container probe (WebM -> MP4) exists precisely for Safari before 18.4, which supports MP4 only, so the one browser family it was written for has never run it. Owed to 02.1-12.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-07-31T03:10:00.000Z",
+    "resolved_at": null
+  },
+  {
+    "id": 4,
+    "kind": "unrun-verify",
+    "phase": "02.1",
+    "file": "src/components/celpip/SpeakingRecorder.tsx",
+    "line": null,
+    "description": "02.1-01 checkpoint: microphone release-on-stop is code-verified, not observed. The run used a synthetic AudioContext MediaStreamDestination, whose track lifecycle is not the OS recording indicator. Needs one real-device glance in 02.1-12.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-07-31T03:10:00.000Z",
     "resolved_at": null
   }
 ]

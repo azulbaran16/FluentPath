@@ -104,8 +104,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CELPIP-05 | Phase 1 | Complete |
 | CELPIP-06 | Phase 2.1 | Pending |
 | CELPIP-07 | Phase 2.1 | Pending |
-| CELPIP-08 | Phase 2.1 | Pending |
-| CELPIP-09 | Phase 2.1 | Pending |
+| CELPIP-08 | Phase 2.1 | In progress — tracer path only (02.1-01): one Task 1 prompt records, plays back and self-evaluates. The record/playback mechanism is done; the remaining 7 task shapes and 3 rubric dimensions land in 02.1-03 |
+| CELPIP-09 | Phase 2.1 | In progress — Speaking attempts persist and cross devices (02.1-01, verified against a real account). Listening and Reading attempts are not built yet (02.1-04, 02.1-08) |
 | CELPIP-10 | Phase 2.1 | Pending |
 | PROG-01 | Phase 2 | Complete |
 | PROG-02 | Phase 2 | Complete |

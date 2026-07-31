@@ -2,18 +2,18 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 02
-current_phase_name: server-side-progress
+current_phase: 02.1
+current_phase_name: celpip-remaining-skills
 status: in-progress
-stopped_at: Phase 02 complete — verified, merged, deployed; production audit clean (8 rows, 0 problematic)
-last_updated: "2026-07-31T01:38:42.145Z"
-last_activity: 2026-07-28
-last_activity_desc: "02-01 executed: shared store, pure merge, merge-on-write PUT"
+stopped_at: "02.1-01 complete — Speaking tracer verified in a browser; next action is executing 02.1-02"
+last_updated: "2026-07-31T03:10:00.000Z"
+last_activity: 2026-07-31
+last_activity_desc: "02.1-01 executed: CSP media-src fix, speakingAttempts through the merge contract, /celpip/speaking route"
 progress:
-  total_phases: 2
+  total_phases: 6
   completed_phases: 2
-  total_plans: 13
-  completed_plans: 13
+  total_plans: 25
+  completed_plans: 14
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-23)
 
 **Core value:** A learner can practice any real-life English scenario end-to-end — with an AI tutor that corrects them in context — and their progress is never lost.
-**Current focus:** Phase 02 — server-side-progress (executing, plan 01 of 07 complete)
+**Current focus:** Phase 02.1 — celpip-remaining-skills (executing, plan 01 of 12 complete)
 
 ## Current Position
 
-Phase: 02 (server-side-progress) — IN PROGRESS
-Plan: 7 of 7
-Status: 02-01 (tracer) complete on branch `phase-02-server-side-progress`; next action is executing 02-02
-Last activity: 2026-07-28 — 02-01 executed: shared store, pure merge, merge-on-write PUT
+Phase: 02.1 (celpip-remaining-skills) — IN PROGRESS
+Plan: 1 of 12
+Status: 02.1-01 (tracer) complete on `main` and pushed; next action is executing 02.1-02
+Last activity: 2026-07-31 — 02.1-01 executed: CSP media-src fix, speakingAttempts through the merge contract, /celpip/speaking route
 
-Progress: [█████████░] 92% (1 of 5 phases)
+Progress: [█████░░░░░] 56% (2 of 6 phases; 14 of 25 plans)
 
 ## Performance Metrics
 
@@ -65,6 +65,7 @@ Progress: [█████████░] 92% (1 of 5 phases)
 | Phase 02 P04 | 40min | 3 tasks | 5 files |
 | Phase 02 P05 | 38min | 3 tasks | 6 files |
 | Phase 02 P06 | 55min | 2 tasks | 3 files |
+| Phase 02.1 P01 | ~70min | 3 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -103,6 +104,13 @@ Recent decisions affecting current work:
 - [Phase ?]: 02-06: readLocal() in the CELPIP store reads through safeReadCelpip — after the hoist that value is merged and uploaded, not just rendered, so an unvalidated updatedAt would enter the join
 - [Phase ?]: 02-06: /api/celpip-progress gets its OWN 2 MiB cap and its own rate-limit bucket — the sibling's bounds are per-handler and a 20,000-char entry cap bounds one essay, not the number of attempts
 - [Phase ?]: 02-06: a count-based grep gate on a stamping helper does not pin WHERE the stamp lives; mutation X3 moves it into the reconcile with the count unchanged, so the gate now extracts the persist body and asserts inside=1 outside=0
+- [Phase ?]: 02.1-01: each new CELPIP skill gets its OWN top-level append-only field; `taskType` is never widened, because celpipAttemptEntry mirrors that enum independently of zod and would silently delete an unrecognised attempt on the next reconcile
+- [Phase ?]: 02.1-01: an attempt's `shape` is a bounded string with NO literal list mirrored in progress-merge.ts — adding a ninth exam shape must never be able to delete a learner's stored attempt
+- [Phase ?]: 02.1-01: no new deletable map, so no second whole-field instant; this state carries one `updatedAt` and `drafts` already rides it (a second map selected on it would resurrect a cleared draft — fca41b7)
+- [Phase ?]: 02.1-01: canonicalAttempts/celpipAttemptRecord generalised over `{ date: string }` with an injected key function, so Listening and Reading each add one line and inherit the existing proof rather than copying it
+- [Phase ?]: 02.1-01: the Speaking response countdown is always mode="timed" even in practice mode — pausing a countdown while MediaRecorder keeps capturing desynchronises the two
+- [Phase ?]: 02.1-01: the microphone opens on the Start press and stays open through prep so no permission dialog can eat the opening seconds; the UI says the indicator will be lit rather than hiding it
+- [Phase ?]: 02.1-01: mutation harnesses must fail loudly on a missing OR ambiguous anchor — CRLF/LF mismatch between progress-schema.ts and progress-merge.ts made three "surviving mutations" spurious, and one later anchor silently hit the writing coercer instead of the speaking one
 
 ### Pending Todos
 
@@ -110,6 +118,14 @@ Recent decisions affecting current work:
   Subjective quality (rubric wording, model-answer naturalness, exam feel) and a
   full real-time 27-minute timer run are still unconfirmed — worth a pass from
   the beta user before her exam. See 01-06-SUMMARY.md "Caveats".
+- 02.1-01: **the Speaking phone pass is owed** — no device was available at the
+  checkpoint. The `MediaRecorder` container probe (`isTypeSupported` falling
+  WebM → MP4) exists precisely for Safari before 18.4, which supports MP4 only,
+  and that is the one browser family nobody has run it on. Plan 12's phase gate
+  owns it.
+- 02.1-01: microphone release-on-stop is **code-verified, not observed** — the
+  checkpoint used a synthetic AudioContext stream, whose track lifecycle is not
+  the OS recording indicator. Worth one real-device glance in plan 12.
 
 ### Blockers/Concerns
 
@@ -135,6 +151,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-31T01:38:42.116Z
-Stopped at: Phase 02 complete — verified, merged, deployed; production audit clean (8 rows, 0 problematic)
+Last session: 2026-07-31T03:10:00.000Z
+Stopped at: 02.1-01 complete — Speaking tracer verified in a browser and pushed; next action is executing 02.1-02
 Resume file: None
