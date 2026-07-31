@@ -8,6 +8,7 @@
 import { EMAIL_TASKS } from "./celpip/tasks-email.ts";
 import { SURVEY_TASKS } from "./celpip/tasks-survey.ts";
 import { SPEAKING_TASK_PROMPTS } from "./celpip/speaking-prompts.ts";
+import { LISTENING_SET_BANK } from "./celpip/listening-set-1.ts";
 
 export type CelpipTaskType = "email" | "survey";
 
@@ -295,13 +296,14 @@ export interface CelpipListeningSet {
 }
 
 /**
- * The Listening bank. EMPTY here on purpose — this plan ships the types, the
- * persistence field and the speech driver; plan 05 creates the bank module and
- * authors the content. An empty array is what keeps the landing honest in the
- * meantime: `section()` filters empty groups, so Listening reports itself as
- * not yet available until a real set exists.
+ * The Listening bank, one file per set.
+ *
+ * Availability follows this array's CONTENTS, not its existence: a set dropped
+ * for the calendar flips the landing back to "not yet available" on its own,
+ * and a set whose parts are all removed does the same. Nothing about what ships
+ * is written down anywhere for a later edit to forget.
  */
-export const LISTENING_SETS: CelpipListeningSet[] = [];
+export const LISTENING_SETS: CelpipListeningSet[] = [...LISTENING_SET_BANK];
 
 export function getListeningSet(setId: string): CelpipListeningSet | undefined {
   return LISTENING_SETS.find((s) => s.id === setId);
