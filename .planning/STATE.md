@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02.1
 current_phase_name: celpip-remaining-skills
 status: in-progress
-stopped_at: 02.1-02 complete — /celpip is skill-aware and self-reporting; next action is executing 02.1-03
-last_updated: "2026-07-31T07:11:13.630Z"
+stopped_at: Completed 02.1-03-PLAN.md
+last_updated: "2026-07-31T07:34:46.545Z"
 last_activity: 2026-07-31
-last_activity_desc: "02.1-02 executed: CELPIP_SECTIONS registry with derived coverage, cross-skill attempt history, /celpip no longer Writing-only"
+last_activity_desc: "02.1-03 executed: Speaking finished at all eight exam task shapes; CELPIP-08 closed"
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 25
-  completed_plans: 15
+  completed_plans: 16
 ---
 
 # Project State
@@ -23,16 +23,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-23)
 
 **Core value:** A learner can practice any real-life English scenario end-to-end — with an AI tutor that corrects them in context — and their progress is never lost.
-**Current focus:** Phase 02.1 — celpip-remaining-skills (executing, plan 01 of 12 complete)
+**Current focus:** Phase 02.1 — celpip-remaining-skills (executing, plans 01-03 of 12 complete)
 
 ## Current Position
 
 Phase: 02.1 (celpip-remaining-skills) — IN PROGRESS
-Plan: 2 of 12
-Status: 02.1-02 complete on `main`; next action is executing 02.1-03
-Last activity: 2026-07-31 — 02.1-02 executed: CELPIP_SECTIONS registry with derived coverage, cross-skill attempt history, /celpip no longer Writing-only
+Plan: 4 of 12
+Status: 02.1-03 complete on `main`; next action is executing 02.1-04
+Last activity: 2026-07-31 — 02.1-03 executed: Speaking finished at all eight exam task shapes; CELPIP-08 closed
 
-Progress: [██████░░░░] 60% (2 of 6 phases; 15 of 25 plans)
+Progress: [██████░░░░] 64% (2 of 6 phases; 16 of 25 plans)
 
 ## Performance Metrics
 
@@ -67,6 +67,7 @@ Progress: [██████░░░░] 60% (2 of 6 phases; 15 of 25 plans)
 | Phase 02 P06 | 55min | 2 tasks | 3 files |
 | Phase 02.1 P01 | ~70min | 3 tasks | 13 files |
 | Phase 02.1 P02 | 28m | 3 tasks | 7 files |
+| Phase 02.1 P03 | 48m | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -114,6 +115,9 @@ Recent decisions affecting current work:
 - [Phase ?]: 02.1-01: mutation harnesses must fail loudly on a missing OR ambiguous anchor — CRLF/LF mismatch between progress-schema.ts and progress-merge.ts made three "surviving mutations" spurious, and one later anchor silently hit the writing coercer instead of the speaking one
 - [Phase ?]: 02.1-02: /celpip section availability is DERIVED from bank contents (CELPIP_SECTIONS) — a bank wired but empty still reports 'not yet available', so a dropped content plan cannot leave a false claim on the landing
 - [Phase ?]: 02.1-02: HISTORY_SOURCES in CelpipLanding is the single extension point for attempt history — a new skill adds one entry and changes nothing else in that file
+- [Phase ?]: 02.1-03: RESEARCH assumption A2 resolved — CELPIP Speaking timings confirmed against official material, pinned in one lookup and gated by rule, so a correction is deliberately a two-file edit
+- [Phase ?]: 02.1-03: Speaking Task 3 ships a written scene instead of the exam's photograph — recorded as an open content dependency, disclosed in the prompt copy and the landing caveat, gated by six mutations
+- [Phase ?]: 02.1-03: scripts/verify-celpip-content.mts is the shared CELPIP content harness and a low-conflict append target for plans 04 and 07 — shared helpers, one marked import block, per-skill sections
 
 ### Pending Todos
 
@@ -156,6 +160,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-31T07:11:13.600Z
-Stopped at: 02.1-02 complete — /celpip is skill-aware and self-reporting; next action is executing 02.1-03
+Last session: 2026-07-31T07:34:24.149Z
+Stopped at: Completed 02.1-03-PLAN.md
 Resume file: None

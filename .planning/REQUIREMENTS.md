@@ -27,7 +27,7 @@ constraint as v1 — **all content original**, third-party material is format re
 
 - [ ] **CELPIP-06**: Original Reading bank covering the exam's four parts (correspondence, diagram, information, viewpoints) — passages with matching question types, answer key, and per-question explanations
 - [ ] **CELPIP-07**: Original Listening bank read aloud through the Web Speech API already used elsewhere in the app — scripts the learner hears (not reads), note-taking space, questions revealed after playback, answer key with explanations
-- [ ] **CELPIP-08**: Speaking practice — timed prompts matching the real task shapes, in-browser recording so the learner can hear herself back, and a descriptor-based self-evaluation checklist. No automated scoring
+- [x] **CELPIP-08**: Speaking practice — timed prompts matching the real task shapes, in-browser recording so the learner can hear herself back, and a descriptor-based self-evaluation checklist. No automated scoring
 - [ ] **CELPIP-09**: Attempts for all three new sections persist under the Phase 2 server-side contract — same account, every device, offline-safe
 - [ ] **CELPIP-10**: `/celpip` landing exposes Reading, Listening and Speaking as real sections — the "coming soon" badges are gone for what ships and honest about what does not
 
@@ -104,7 +104,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CELPIP-05 | Phase 1 | Complete |
 | CELPIP-06 | Phase 2.1 | Pending |
 | CELPIP-07 | Phase 2.1 | Pending |
-| CELPIP-08 | Phase 2.1 | In progress — tracer path only (02.1-01): one Task 1 prompt records, plays back and self-evaluates. The record/playback mechanism is done; the remaining 7 task shapes and 3 rubric dimensions land in 02.1-03 |
+| CELPIP-08 | Phase 2.1 | Complete (02.1-01 + 02.1-03) — all eight exam task shapes ship, one original prompt each, at the exam's own prep/response timings; in-browser recording and playback; a four-dimension descriptor self-check; no automated scoring anywhere. One disclosed compromise: exam Task 3 shows a photograph and this app writes the scene out instead, said in the prompt copy and in the landing's Speaking caveat |
 | CELPIP-09 | Phase 2.1 | In progress — Speaking attempts persist and cross devices (02.1-01, verified against a real account). Listening and Reading attempts are not built yet (02.1-04, 02.1-08) |
 | CELPIP-10 | Phase 2.1 | Pending |
 | PROG-01 | Phase 2 | Complete |
