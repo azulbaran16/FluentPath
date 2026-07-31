@@ -100,7 +100,7 @@ tasks 5 and 6, 30/60 for the rest. Only structure was taken from those documents
 in full. Speaking task 3 ships a written scene description rather than an image — an open
 content dependency, stated on the landing.
 
-**Plans**: 5/12 plans executed
+**Plans**: 6/12 plans executed
 of them and the learner still gains something usable
 Plans:
 
@@ -109,7 +109,7 @@ Plans:
 - [x] 02.1-03-PLAN.md — Speaking bank complete: 8 task shapes, full self-eval rubric, content harness
 - [x] 02.1-04-PLAN.md — Listening plumbing: types, listeningAttempts, the speaker-turn speech driver, audio check
 - [x] 02.1-05-PLAN.md — Listening runner + set 1 news-item part: the first hearable drill
-- [ ] 02.1-06-PLAN.md — Listening set 1: problem-solving and daily-conversation parts
+- [x] 02.1-06-PLAN.md — Listening set 1: problem-solving and daily-conversation parts
 - [ ] 02.1-07-PLAN.md — Listening set 1: information and viewpoints parts
 - [ ] 02.1-08-PLAN.md — Reading plumbing + runner + the fill-in-the-blank control
 - [ ] 02.1-09-PLAN.md — Reading set 1: correspondence and information parts, reading harness group
@@ -177,7 +177,7 @@ Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. CELPIP Writing Practice | 6/6 | Complete | 2026-07-28 |
 | 2. Server-Side Progress | 7/7 | Complete | 2026-07-30 |
-| 2.1 CELPIP Remaining Skills | 5/12 | In Progress|  |
+| 2.1 CELPIP Remaining Skills | 6/12 | In Progress|  |
 | 3. Every Scenario Practicable | 0/TBD | Not started | - |
 | 4. Full Curriculum Expansion | 0/TBD | Not started | - |
 | 5. AI Tutor End-to-End | 0/TBD | Not started | - |
