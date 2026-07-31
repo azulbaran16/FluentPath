@@ -119,7 +119,7 @@ const CORRESPONDENCE_PART: CelpipReadingPart = {
       ],
       answer: 1,
       explanation:
-        "This is the sentence that rewards reading to the end of it: the cabin is cheaper, and the price per person still went up, because the same cost is being split six ways instead of eight. The first option is the one the email explicitly denies. The second car is a possibility she raises for later — it depends on his answer and is not in the eighty dollars — and the deposit's size is never mentioned at all, only its date.",
+        "This is the sentence that rewards reading to the end of it: the cabin is cheaper, and the price per person still went up, because the same cost is being split six ways instead of eight. A dearer cabin is the one thing the email explicitly denies. The second car is a possibility she raises for later — it depends on his answer and is not in the eighty dollars — and the deposit's size is never mentioned at all, only its date.",
     },
     {
       id: "rs1-corr-q3",
@@ -595,7 +595,7 @@ const INFORMATION_PART: CelpipReadingPart = {
       ],
       answer: 3,
       explanation:
-        "This is the not-stated answer, and the second option is what makes it hard: section A does say the river drove the machinery and that a dam kept the floor running through the drier weeks. But that is an account of how the mill worked once it was there, not of why the site was chosen — the text never gives a reason for the choice at all. For this option to be wrong, the notes would have to contain a sentence about the family's decision, of the form \"they built here because…\" — and no sentence anywhere in the five sections does that. Land ownership and the railway are never mentioned in any form.",
+        "This is the not-stated answer, and the option about the river is what makes it hard: section A does say the river drove the machinery and that a dam kept the floor running through the drier weeks. But that is an account of how the mill worked once it was there, not of why the site was chosen — the text never gives a reason for the choice at all. For this option to be wrong, the notes would have to contain a sentence about the family's decision, of the form \"they built here because…\" — and no sentence anywhere in the five sections does that. Land ownership and the railway are never mentioned in any form.",
     },
     {
       id: "rs1-info-q4",
@@ -616,7 +616,7 @@ const INFORMATION_PART: CelpipReadingPart = {
       ],
       answer: 1,
       explanation:
-        "Section B states it exactly: demonstration days \"fall on the first Saturday of each month from May to October.\" The last option is offered because this part always offers it, and here it is simply wrong — the fact is on the page. The third option borrows the winter opening hours from section C, which is a different fact about a different thing; noticing that a plausible detail came from the wrong section is most of the work in this part.",
+        "Section B states it exactly: demonstration days \"fall on the first Saturday of each month from May to October.\" The not-stated option is offered because this part always offers it, and here it is simply wrong — the fact is on the page. Weekends throughout the year borrows the winter opening hours from section C, which is a different fact about a different thing; noticing that a plausible detail came from the wrong section is most of the work in this part.",
     },
     {
       id: "rs1-info-q6",
@@ -781,7 +781,7 @@ const VIEWPOINTS_PART: CelpipReadingPart = {
       ],
       answer: 2,
       explanation:
-        "The thirty-four per cent is the one thing nobody in the article disputes — Trang argues about what caused it, which concedes that it happened. The first option is the very thing he denies. The second is held by Prewitt and Bouchard-Ng and rejected by Sarrazin, so it is not unanimous. And the last is contradicted by the article's closing line: the grant ends in June whichever way the vote goes.",
+        "The thirty-four per cent is the one thing nobody in the article disputes — Trang argues about what caused it, which concedes that it happened. Crediting the fare change with the increase is the very thing he denies. Keeping the buses free after April is held by Prewitt and Bouchard-Ng and rejected by Sarrazin, so it is not unanimous. And a renewed grant is contradicted by the article's closing line: the grant ends in June whichever way the vote goes.",
     },
   ],
   blankText: {
