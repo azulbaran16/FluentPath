@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02.1
 current_phase_name: celpip-remaining-skills
 status: in-progress
-stopped_at: Completed 02.1-09-PLAN.md
-last_updated: "2026-07-31T10:25:42.419Z"
+stopped_at: Completed 02.1-10-PLAN.md
+last_updated: "2026-07-31T11:01:12.162Z"
 last_activity: 2026-07-31
 last_activity_desc: "02.1-05 executed: the hear-once runner, its route and the news-item part. Nobody has heard it yet."
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 25
-  completed_plans: 22
+  completed_plans: 24
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-07-23)
 ## Current Position
 
 Phase: 02.1 (celpip-remaining-skills) — IN PROGRESS
-Plan: 11 of 12
+Plan: 12 of 12
 Status: 02.1-05 complete on `main`; Listening is a real section on `/celpip` with one of the six exam part shapes authored. Next action is executing 02.1-06 (set 1's problem-solving and daily-conversation parts — a pure append to `SET_1_PARTS`)
 Last activity: 2026-07-31 — 02.1-05 executed: the hear-once runner, its route and the news-item part. Nobody has heard it yet.
 
-Progress: [█████████░] 88% (2 of 6 phases; 18 of 25 plans)
+Progress: [██████████] 96% (2 of 6 phases; 18 of 25 plans)
 
 ## Performance Metrics
 
@@ -75,6 +75,7 @@ Progress: [█████████░] 88% (2 of 6 phases; 18 of 25 plans)
 | Phase 02.1 P11 | 34 | 1 tasks | 2 files |
 | Phase 02.1 P08 | 74m | 2 tasks | 9 files |
 | Phase 02.1 P09 | ~55min | 3 tasks | 4 files |
+| Phase 02.1 P10 | 40 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -152,6 +153,11 @@ Recent decisions affecting current work:
 - [Phase ?]: Reading ships partial (parts 1 and 3) rather than waiting for all four: the correspondence part is the only one exercising both question types at once, so it is what makes the drop-down blank reachable at all
 - [Phase ?]: Part-kind coverage is REPORTED by the content harness and never asserted — an assertion would fail for the whole of plan 09 and get disabled rather than fixed; part ORDER is asserted as a subsequence, because this set has a hole where part 2 goes
 - [Phase ?]: The reading section carries NO hand-written caveat: unlike Listening's synthesised audio and Speaking's written-out photograph, Reading is simply incomplete, and its derived coverage line already says 2 of the 4 and moves on its own
+- [Phase ?]: Reading covers all four exam parts: 38 items in 39 minutes, both derived from the parts and typed nowhere
+- [Phase ?]: The drop-down answer key must not sit in one option position across a part — a uniform part trains a cue the exam does not supply
+- [Phase ?]: An explanation names an option by its content, never its position, because re-ordering options is the fix for a uniform key
+- [Phase ?]: Each reading part runs its items in the exam's own order: blanks before questions for the diagram part only
+- [Phase ?]: Part-kind coverage stays reported and unasserted even though plan 09's reason expired — a future set 2 may legitimately ship partial
 
 ### Pending Todos
 
@@ -196,6 +202,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-31T10:25:42.392Z
-Stopped at: Completed 02.1-09-PLAN.md
+Last session: 2026-07-31T11:01:02.061Z
+Stopped at: Completed 02.1-10-PLAN.md
 Resume file: None

@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 20
+open_count: 22
 waived_count: 0
 fixed_count: 0
-total_count: 20
-last_updated: 2026-07-31T10:27:00.993Z
+total_count: 22
+last_updated: 2026-07-31T11:00:17.547Z
 ---
 
 # Broken Windows Ledger
@@ -35,6 +35,8 @@ last_updated: 2026-07-31T10:27:00.993Z
 | 18 | 02.1 | unrun-verify | src/lib/celpip.ts |  | 02.1-08: id uniqueness across question ids and blank ids within a reading set is documented on CelpipReadingPart but gated by nothing. They share one answers map, so a collision silently overwrites one of two answers and mis-scores the sheet (T-02.1-39). This plan could not gate it — gating needs a bank. Owed to 02.1-09's content harness. | open |  | 2026-07-31T10:02:46.482Z |  |
 | 19 | 02.1 | unrun-verify | src/components/celpip/DropdownBlank.tsx |  | Nobody has answered a drop-down blank in a browser. The reading set now serves 200 and the explanation renders under the blank in code, but the plan's human-check (answer one blank wrongly on purpose and read the explanation) was not run: no browser-driving tool was available to this executor and adding one would have installed a package. Closes the moment someone opens /celpip/reading/reading-set-1 and picks a wrong option. | open |  | 2026-07-31T10:27:00.428Z |  |
 | 20 | 02.1 | unrun-verify | src/lib/celpip/reading-set-1.ts |  | The two 'the passage does not say' questions are gated for shape but not for pedagogy: nothing asserts that at least one such option is the KEY. An author who made every not-stated option wrong would pass all 519 assertions while teaching the learner to discount the very option the information part tests her on. The invariant is stated in a comment on INFORMATION_PART and gated by nothing. | open |  | 2026-07-31T10:27:00.993Z |  |
+| 21 | 02.1 | unrun-verify | src/lib/celpip/reading-set-1.ts |  | Nobody has worked Reading set 1 end to end at a real pace; whether 39 minutes fits these passages is untested | open |  | 2026-07-31T11:00:17.011Z |  |
+| 22 | 02.1 | unrun-verify | src/components/celpip/ReadingRunner.tsx |  | The new per-part item order (blanks before questions for the diagram part only) has never been seen rendered; gated by harness and mutation only | open |  | 2026-07-31T11:00:17.547Z |  |
 
 ````json
 [
@@ -276,6 +278,30 @@ last_updated: 2026-07-31T10:27:00.993Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-07-31T10:27:00.993Z",
+    "resolved_at": null
+  },
+  {
+    "id": 21,
+    "kind": "unrun-verify",
+    "phase": "02.1",
+    "file": "src/lib/celpip/reading-set-1.ts",
+    "line": null,
+    "description": "Nobody has worked Reading set 1 end to end at a real pace; whether 39 minutes fits these passages is untested",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-07-31T11:00:17.011Z",
+    "resolved_at": null
+  },
+  {
+    "id": 22,
+    "kind": "unrun-verify",
+    "phase": "02.1",
+    "file": "src/components/celpip/ReadingRunner.tsx",
+    "line": null,
+    "description": "The new per-part item order (blanks before questions for the diagram part only) has never been seen rendered; gated by harness and mutation only",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-07-31T11:00:17.547Z",
     "resolved_at": null
   }
 ]
