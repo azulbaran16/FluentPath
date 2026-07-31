@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02.1
 current_phase_name: celpip-remaining-skills
 status: in-progress
-stopped_at: Completed 02.1-11-PLAN.md
-last_updated: "2026-07-31T09:50:19.530Z"
+stopped_at: Completed 02.1-08-PLAN.md
+last_updated: "2026-07-31T10:03:10.071Z"
 last_activity: 2026-07-31
 last_activity_desc: "02.1-05 executed: the hear-once runner, its route and the news-item part. Nobody has heard it yet."
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 25
-  completed_plans: 21
+  completed_plans: 22
 ---
 
 # Project State
@@ -28,11 +28,11 @@ See: .planning/PROJECT.md (updated 2026-07-23)
 ## Current Position
 
 Phase: 02.1 (celpip-remaining-skills) — IN PROGRESS
-Plan: 9 of 12
+Plan: 10 of 12
 Status: 02.1-05 complete on `main`; Listening is a real section on `/celpip` with one of the six exam part shapes authored. Next action is executing 02.1-06 (set 1's problem-solving and daily-conversation parts — a pure append to `SET_1_PARTS`)
 Last activity: 2026-07-31 — 02.1-05 executed: the hear-once runner, its route and the news-item part. Nobody has heard it yet.
 
-Progress: [████████░░] 84% (2 of 6 phases; 18 of 25 plans)
+Progress: [█████████░] 88% (2 of 6 phases; 18 of 25 plans)
 
 ## Performance Metrics
 
@@ -73,6 +73,7 @@ Progress: [████████░░] 84% (2 of 6 phases; 18 of 25 plans)
 | Phase 02.1 P06 | 38m | 2 tasks | 2 files |
 | Phase 02.1 P07 | 22m | 2 tasks | 1 files |
 | Phase 02.1 P11 | 34 | 1 tasks | 2 files |
+| Phase 02.1 P08 | 74m | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -143,6 +144,10 @@ Recent decisions affecting current work:
 - [Phase ?]: Listening discussion parts must name their speakers aloud: the player renders no speaker label during playback, so who-said-it questions are otherwise unanswerable
 - [Phase ?]: LISTENING_MIN_SPEAKERS gates the voice count each listening part shape needs — a discussion collapsed to two speakers passed every other assertion
 - [Phase ?]: Listening set 1 is closed at six of six part shapes and 37 items; further listening content is a new set, not a seventh part
+- [Phase ?]: 02.1-08: the drop-down blank is a native select and a first-class gradable item, built before any passage — it appears in three of the exam's four reading parts
+- [Phase ?]: 02.1-08: readingAttempts is a fourth separate top-level append-only field; taskType was NOT widened, and in-progress answer sheets are never persisted
+- [Phase ?]: 02.1-08: the Reading clock is armed PER PART and the Timer is keyed by part id — two parts may legitimately share an allowance (correspondence and viewpoints are both 11 minutes)
+- [Phase ?]: 02.1-08: a reading set carries NO timeLimitMinutes; readingSetMinutes derives it from the parts so it cannot drift
 
 ### Pending Todos
 
@@ -187,6 +192,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-31T09:50:02.329Z
-Stopped at: Completed 02.1-11-PLAN.md
+Last session: 2026-07-31T10:02:58.858Z
+Stopped at: Completed 02.1-08-PLAN.md
 Resume file: None

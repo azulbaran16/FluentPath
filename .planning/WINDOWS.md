@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 15
+open_count: 18
 waived_count: 0
 fixed_count: 0
-total_count: 15
-last_updated: 2026-07-31T09:47:20.426Z
+total_count: 18
+last_updated: 2026-07-31T10:02:46.482Z
 ---
 
 # Broken Windows Ledger
@@ -30,6 +30,9 @@ last_updated: 2026-07-31T09:47:20.426Z
 | 13 | 02.1 | unrun-verify | src/lib/celpip/listening-set-1.ts |  | Nobody has sat listening set 1 end to end and timed it. The set is now 2,090 words and 29 items on a 44-minute derived clock; the timing check is bounded by arithmetic against one real 76-second measurement, not observed. | open |  | 2026-07-31T09:26:46.853Z |  |
 | 14 | 02.1 | unrun-verify | src/lib/celpip/listening-set-1.ts |  | Nobody has heard the discussion part: whether three browser voices stay distinguishable by ear across a 378-word script is unknown, and six of its eight questions are unanswerable if they are not. | open |  | 2026-07-31T09:47:19.779Z |  |
 | 15 | 02.1 | deviation | src/components/celpip/ListeningPlayer.tsx |  | The player shows no speaker label WHILE audio plays; labels exist only in the post-answer transcript. Plan 11 authored around it by naming all three speakers aloud in the script, but any future multi-speaker part inherits the same constraint unspoken. | open |  | 2026-07-31T09:47:20.426Z |  |
+| 16 | 02.1 | unrun-verify | src/components/celpip/ReadingRunner.tsx |  | 02.1-08: nobody has seen the reading runner. Neither ReadingRunner nor DropdownBlank has been opened in a browser, on a phone, or with a screen reader — READING_SETS is empty so no URL reaches them. Untested: whether the native select opens as the system picker on iOS/Android, whether inline selects sit legibly in a paragraph at mobile widths, and whether the per-part clock reads correctly when re-armed. Cannot close before 02.1-09 lands a bank. Owed to 02.1-12. | open |  | 2026-07-31T10:02:45.239Z |  |
+| 17 | 02.1 | deviation | src/components/celpip/ReadingRunner.tsx |  | 02.1-08: two component invariants survived mutation with NO gate at all — the Timer's per-part key={part.id} and DropdownBlank's aria-label. Both are silent when broken (a stale clock carried into the next part; four unlabelled combo boxes in one paragraph). A committed gate needs a render harness, which 02.1-04 judged too much machinery for scripts/. The greps live only in 02.1-08-SUMMARY.md. | open |  | 2026-07-31T10:02:45.838Z |  |
+| 18 | 02.1 | unrun-verify | src/lib/celpip.ts |  | 02.1-08: id uniqueness across question ids and blank ids within a reading set is documented on CelpipReadingPart but gated by nothing. They share one answers map, so a collision silently overwrites one of two answers and mis-scores the sheet (T-02.1-39). This plan could not gate it — gating needs a bank. Owed to 02.1-09's content harness. | open |  | 2026-07-31T10:02:46.482Z |  |
 
 ````json
 [
@@ -211,6 +214,42 @@ last_updated: 2026-07-31T09:47:20.426Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-07-31T09:47:20.426Z",
+    "resolved_at": null
+  },
+  {
+    "id": 16,
+    "kind": "unrun-verify",
+    "phase": "02.1",
+    "file": "src/components/celpip/ReadingRunner.tsx",
+    "line": null,
+    "description": "02.1-08: nobody has seen the reading runner. Neither ReadingRunner nor DropdownBlank has been opened in a browser, on a phone, or with a screen reader — READING_SETS is empty so no URL reaches them. Untested: whether the native select opens as the system picker on iOS/Android, whether inline selects sit legibly in a paragraph at mobile widths, and whether the per-part clock reads correctly when re-armed. Cannot close before 02.1-09 lands a bank. Owed to 02.1-12.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-07-31T10:02:45.239Z",
+    "resolved_at": null
+  },
+  {
+    "id": 17,
+    "kind": "deviation",
+    "phase": "02.1",
+    "file": "src/components/celpip/ReadingRunner.tsx",
+    "line": null,
+    "description": "02.1-08: two component invariants survived mutation with NO gate at all — the Timer's per-part key={part.id} and DropdownBlank's aria-label. Both are silent when broken (a stale clock carried into the next part; four unlabelled combo boxes in one paragraph). A committed gate needs a render harness, which 02.1-04 judged too much machinery for scripts/. The greps live only in 02.1-08-SUMMARY.md.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-07-31T10:02:45.838Z",
+    "resolved_at": null
+  },
+  {
+    "id": 18,
+    "kind": "unrun-verify",
+    "phase": "02.1",
+    "file": "src/lib/celpip.ts",
+    "line": null,
+    "description": "02.1-08: id uniqueness across question ids and blank ids within a reading set is documented on CelpipReadingPart but gated by nothing. They share one answers map, so a collision silently overwrites one of two answers and mis-scores the sheet (T-02.1-39). This plan could not gate it — gating needs a bank. Owed to 02.1-09's content harness.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-07-31T10:02:46.482Z",
     "resolved_at": null
   }
 ]
