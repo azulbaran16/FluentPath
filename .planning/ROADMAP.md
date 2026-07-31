@@ -12,7 +12,7 @@ FluentPath is live but incomplete: practice modes, accounts, and billing exist, 
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: CELPIP Writing Practice** - Free exam-prep section at `/celpip`: original Task 1/Task 2 bank, real-exam simulator (timer, word count), model answers + descriptor-based self-evaluation
-- [ ] **Phase 2: Server-Side Progress** - Postgres becomes the authoritative, validated, retry-safe home of learner progress across devices
+- [x] **Phase 2: Server-Side Progress** - Postgres becomes the authoritative, validated, retry-safe home of learner progress across devices
 - [ ] **Phase 3: Every Scenario Practicable** - Audit and fill content so all existing scenarios offer real practice in every applicable skill, feeding SRS and weak topics
 - [ ] **Phase 4: Full Curriculum Expansion** - Expand the 6 worlds to their complete designed topic coverage with graduated B1–C1 and native-level content
 - [ ] **Phase 5: AI Tutor End-to-End** - Real Claude tutor live in production: scenario role-play, gentle correction, graceful gating/errors, progress credit
@@ -57,7 +57,7 @@ Plans:
   3. A malformed progress write is rejected by the server without corrupting stored data, and corrupted stored progress loads as a safe default instead of crashing the app
   4. Progress recorded while the network is down reaches the server automatically once the connection returns — no silent loss
 
-**Plans**: 6/7 plans executed
+**Plans**: 7/7 plans executed
 Plans:
 
 - [x] 02-01-PLAN.md — Tracer: one shared store, one reconcile per load, merge-on-write end to end
@@ -66,7 +66,7 @@ Plans:
 - [x] 02-04-PLAN.md — Persisted retry queue, flush triggers, and the discreet not-synced indicator
 - [x] 02-05-PLAN.md — CELPIP persistence contract: additive column, zod shape, de-duplicating merge
 - [x] 02-06-PLAN.md — CELPIP sync: merge-on-write route, module store, per-load reconcile
-- [ ] 02-07-PLAN.md — Live-data safety audit + full gate + human verification of the 4 criteria
+- [x] 02-07-PLAN.md — Live-data safety audit + full gate + human verification of the 4 criteria
 
 ### Phase 3: Every Scenario Practicable
 
@@ -125,7 +125,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. CELPIP Writing Practice | 6/6 | Complete | 2026-07-28 |
-| 2. Server-Side Progress | 6/7 | In Progress|  |
+| 2. Server-Side Progress | 7/7 | Complete | 2026-07-30 |
 | 3. Every Scenario Practicable | 0/TBD | Not started | - |
 | 4. Full Curriculum Expansion | 0/TBD | Not started | - |
 | 5. AI Tutor End-to-End | 0/TBD | Not started | - |

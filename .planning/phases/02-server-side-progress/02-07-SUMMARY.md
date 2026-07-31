@@ -2,26 +2,38 @@
 phase: 02-server-side-progress
 plan: 07
 type: execute
-status: blocked
-blocked_on: production DATABASE_URL (Task 1 — live-data audit)
-completed_tasks: 2 of 3
-verified_by: agent-driven browser session (Playwright) against a real local Postgres
-branch: phase-02-server-side-progress
-pushed: false
+status: complete
+completed: 2026-07-30
+completed_tasks: 3 of 3
+verified_by: agent-driven browser session (Playwright) against a real local Postgres; production audit run by the user against the live database
+branch: phase-02-server-side-progress (merged to main as 1be8ba6)
+pushed: true
+deployed: true
 ---
 
 # 02-07 Summary — Phase verification gate
 
-## Status: verified except the live-data audit
+## Status: COMPLETE — verified, merged and live
 
 Every ROADMAP success criterion was exercised in a browser against a real Postgres and
 passed, as did both deletion-resurrection cases the plan reviewer identified as blockers.
-The one task that cannot complete is the audit of production rows, which needs the Coolify
-`DATABASE_URL`. That credential exists only in the user's Coolify dashboard.
+The live-data audit passed against production. The phase is deployed and serving.
 
-**This branch must not merge to `main` until that audit runs** — merging is the deploy.
+## Task 1 — live-data audit: PASS
 
-## Task 1 — live-data audit: BLOCKED, tool ready
+Run by the user directly against the live Coolify Postgres, as a read-only SQL check
+rather than through the script, because the production `DATABASE_URL` lives only in the
+Coolify dashboard and could not reach this machine:
+
+```
+--- filas con progreso: 8, problematicas: 0 ---
+```
+
+Eight rows carry progress; every one parses and is a JSON object. None would fall back to
+the empty state, so none would have been overwritten. **The risk this gate existed to rule
+out does not exist in the real data**, and the beta user's progress was never exposed to it.
+
+### The tool, retained for future schema changes
 
 `scripts/audit-stored-progress.mts` is written, committed (`2bf2026`) and exercised in both
 directions against a local Postgres:
@@ -112,6 +124,45 @@ progress loop nor the CELPIP loop stamps on reconcile.
 Invisible through 21 seconds and 22 failed attempts, then appeared reading
 "Progress not synced — retrying". Silent on a blip, visible when the failure persists.
 
+## The defect this gate found and fixed
+
+**Unreadable rows were silently destroyed** (`db65499`). An unparseable blob read as
+`EMPTY`, and merge-on-write then replaced the row with `EMPTY` merged into whatever that
+browser held — the learner's history gone, with the server log as the only copy. This was
+the phase's one irreversible failure mode, and the reason the audit was a blocking gate.
+
+Both routes now freeze such a row: 409, nothing written, full blob logged. The client's
+local cache is untouched and the not-synced indicator surfaces. `sync-queue` classifies 409
+as retryable rather than letting it fall into the generic 4xx drop, so a repaired row heals
+on the next attempt — no redeploy, no lost work.
+
+Verified end to end against Postgres: with corrupt blobs in both domains, both routes
+answered 409 and **both rows were byte-intact afterwards**; once repaired, the pending
+write landed and merged with the recovered data (`kept/row` and `new/write` both present).
+The 409 rule is mutation-tested — reverting it to `drop` fails the queue proof.
+
+This is what made deploying ahead of the audit acceptable: it converted the failure from
+permanent to recoverable. The audit then came back clean anyway.
+
+## Production incident during this gate
+
+Deploying the merge took the site down for ~27 minutes (502 on every path). **The cause was
+not this phase**, and it would have happened on any redeploy. Diagnosis, in order:
+
+- The container log showed `prisma db push` succeeding in 146 ms and Next.js `✓ Ready` on
+  `0.0.0.0:3000` — the app was healthy throughout.
+- The `db push` hypothesis was eliminated by reproducing the exact startup path locally:
+  a fresh database with the old schema, a seeded user row, then the new schema pushed on
+  top. It succeeds in 103 ms and the row survives with `celpipProgress` NULL.
+- External probing found `nginx/1.24.0 (Ubuntu)` serving another app on the same host with
+  a 200, so nginx itself was alive; and host port 3000 belonged to a *different* project
+  ("Mesa de Fe"), so FluentPath was being reached by container IP.
+- `/etc/nginx/sites-available/fluenthapp.com` proxied to `http://10.0.1.4:3000` — the IP of
+  the container Coolify replaced during the rolling update.
+
+Fixed by publishing the app on a stable host port (`3100:3000` in Coolify) and repointing
+`proxy_pass` at `http://127.0.0.1:3100`, which survives future container replacements.
+
 ## Caveats
 
 - **Not a human sign-off.** An agent drove the browser. Subjective judgement — whether the
@@ -139,8 +190,22 @@ Invisible through 21 seconds and 22 failed attempts, then appeared reading
   host connections. The Docker container and the native service now coexist.
 - All test accounts and seeded rows were deleted from the local database afterwards.
 
+## Infrastructure findings (outside phase scope, but load-bearing)
+
+Three fragilities surfaced that nobody knew about, and none of them are phase defects:
+
+- **The GitHub repo has no webhook** — pushing to `main` does not deploy anything. The
+  entire branch strategy for this phase was built on the opposite assumption. Deploys are
+  manual until a webhook is added.
+- **No SSH access** to the Coolify host is configured on the development machine; the key
+  present (`andres_hosting`) belongs to an unrelated shared host. Every server-side step in
+  this gate had to be relayed through the user.
+- **`mesa-de-fe.jzstudio.dev` still proxies to a container IP** (`10.0.1.3`) and will break
+  exactly the same way on its next redeploy. Seven other vhosts on that server already use
+  the stable `127.0.0.1:<port>` pattern.
+
 ## Requirements
 
-PROG-01, PROG-02, PROG-04 and PROG-05 are verified behaviourally. PROG-03 is verified for
-both halves (malformed write rejected; corrupt row loads safe). None of them can be called
-verified *in production* until Task 1's audit runs.
+PROG-01 through PROG-05 are verified behaviourally against a local Postgres, and the data
+assumption underpinning all of them is now verified against production. The phase is
+deployed and serving at https://fluenthapp.com.
