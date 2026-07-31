@@ -192,7 +192,31 @@ deliberate one.
   2. Practicing any scenario adds its phrases and vocabulary to the SRS queue, and those items later appear in the review flow when due
   3. Mistakes made in any scenario's grammar practice surface in the learner's weak-topics recommendations
 
-**Plans**: TBD
+**Scope, measured (2026-07-31):** 35 scenarios · **52 scenario×skill pairs** (speaking 30, writing 9,
+reading 9, grammar 4) · ~10,300 words and ~550 authored items, roughly two Phase 2.1s. Floors
+ratified by the user (D-04): 6 phrases + 8 vocabulary per scenario, 5 grammar questions per pair.
+
+**Sequencing:** D-02 is binding — CONT-02 (phrases + vocabulary across all 35) lands before CONT-01
+(the 52 exercises), because those items feed the review loop immediately. The architectural risks —
+stable item ids, the review-queue resolution fix (D-05), the derived coverage registry (D-03) and the
+content harness — are front-loaded into the tracer, before any bulk authoring. Every plan states what
+the learner gains if execution stops right after it.
+
+**Plans**: 11 plans
+
+Plans:
+
+- [ ] 03-01-PLAN.md — Tracer: one scenario practicable end to end — stable ids, derived coverage, and the review loop that shows them
+- [ ] 03-02-PLAN.md — Review surfaces resolve across banks (D-05 closed) + CONT-02 for Social & Travel
+- [ ] 03-03-PLAN.md — CONT-02: Work & Professional and Practical Life — 12 scenarios
+- [ ] 03-04-PLAN.md — CONT-02: Reading & Ideas and Sounding Native — 10 scenarios; CONT-02 closes
+- [ ] 03-05-PLAN.md — CONT-01: Grammar — the quiz wiring and all four grammar pairs; pills and skill pages stop counting promises
+- [ ] 03-06-PLAN.md — CONT-01: Writing — single-task desk and all nine writing pairs
+- [ ] 03-07-PLAN.md — CONT-01: Reading — the exported single-passage reader, explained keys, five A2/B2 pairs
+- [ ] 03-08-PLAN.md — CONT-01: Reading — the four C1 passages; reading closes
+- [ ] 03-09-PLAN.md — CONT-01: Speaking — the rehearsal task shape and 14 pairs
+- [ ] 03-10-PLAN.md — CONT-01: Speaking — the last 16 pairs; CONT-01 closes at 52/52
+- [ ] 03-11-PLAN.md — Phase gate: full suite, measured payload, derivation control re-proved, browser + phone pass
 
 ### Phase 4: Full Curriculum Expansion
 
@@ -240,6 +264,6 @@ Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5
 | 1. CELPIP Writing Practice | 6/6 | Complete | 2026-07-28 |
 | 2. Server-Side Progress | 7/7 | Complete | 2026-07-30 |
 | 2.1 CELPIP Remaining Skills | 12/12 | Complete | 2026-07-31 |
-| 3. Every Scenario Practicable | 0/TBD | Not started | - |
+| 3. Every Scenario Practicable | 0/11 | Planned | - |
 | 4. Full Curriculum Expansion | 0/TBD | Not started | - |
 | 5. AI Tutor End-to-End | 0/TBD | Not started | - |
