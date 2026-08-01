@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 03
 current_phase_name: every-scenario-practicable
 status: in-progress
-stopped_at: "03-06 complete on main. CONT-01's writing quarter closes: all 9 pairs that declare writing have a brief, a checklist and an original model answer written for their own scenario (13/52 pairs, 39 pending: speaking 30, reading 9, grammar 0, writing 0). WritingDesk hides its picker below two prompts. Writing ids ARE composed through scenarioItemId — for draft-key scoping, not scheduling — and are proved UNSCHEDULED: no writing id is reviewable, every one resolves to nothing. 03-05's four-edit rule is CONDITIONAL on the bank writing to the SRS; 03-07 and 03-09 must check their renderer for recordAttempt first. review-items.ts gained a \"writing\" kind and SCHEDULED_ITEM_KINDS (a Rule 3 deviation: scenarioItemId's kind parameter is typed). verify-scenario-content 6355 -> 6557; 18 mutations caught, 6 controls survived, 3 applier refusals, 27 declared = 27 executed. CONT-01 NOT ticked (13/52). Nobody has typed into a writing desk (WINDOWS 35); the coverage summary field is rendered nowhere (WINDOWS 36). Next is 03-07 (reading)."
-last_updated: "2026-08-01T04:59:18.869Z"
+stopped_at: "03-07 complete on main. CONT-01's reading half opens: the single-passage reader is exported and five scenarios (travel/restaurant A2, practical/housing B2, academic/news B2, academic/stories B2, academic/summaries B2) open straight into a text written for them — no level filter, no list, no back link — with a key that explains itself on every question (18/52 pairs, 34 pending: speaking 30, reading 4, grammar 0, writing 0). READING DOES NOT SCORE: PassageReader has no recordAttempt, so 03-05's fourth edit was NOT taken and the negative is asserted, the second bank of three where the conditional rule said no. review-items.ts gained a \"reading\" kind outside SCHEDULED_ITEM_KINDS (the same Rule 3 deviation 03-06 recorded, for the same typed-parameter reason). The ReadingRoom browser function is byte-identical in the diff. verify-scenario-content 6557 -> 6815; 22 mutations caught with their expected label, 6 controls survived, 3 applier refusals, 31 declared = 31 executed. CONT-01 NOT ticked (18/52). Nobody has pressed Check answers, so the explained key is unseen (WINDOWS 37). Next is 03-08 (the four C1 passages), in the same wave as 03-09."
+last_updated: "2026-08-01T05:33:55.309Z"
 last_activity: 2026-08-01
-last_activity_desc: "03-06 executed: all 9 scenario writing pairs written (2,378 words — 9 briefs, 45 checklist lines, 9 model answers), CONT-01 at 13/52 with writing 0 pending. The desk hides its picker below two prompts. Writing ids are composed for draft-key scoping but proved UNSCHEDULED: reviewableIds() was deliberately not extended and the negative is asserted. verify-scenario-content 6355 -> 6557; 18 mutations caught with their expected label, 6 controls survived, 3 applier refusals, 27 declared = 27 executed"
+last_activity_desc: "03-07 executed: the single-passage reader is EXPORTED and five of the nine scenario reading pairs are written (2,912 words, 20 questions, 20 explanations), CONT-01 at 18/52 with reading 4 pending. READING DOES NOT SCORE — PassageReader has no recordAttempt, so 03-05 fourth wiring edit was deliberately NOT taken and the negative is asserted; two banks of three now. The ReadingRoom browser function is byte-identical in the diff. verify-scenario-content 6557 -> 6815; 22 mutations caught with their expected label, 6 controls survived, 3 applier refusals, 31 declared = 31 executed"
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 36
-  completed_plans: 31
+  completed_plans: 32
 ---
 
 # Project State
@@ -23,12 +23,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-23)
 
 **Core value:** A learner can practice any real-life English scenario end-to-end — with an AI tutor that corrects them in context — and their progress is never lost.
-**Current focus:** Phase 03 — every-scenario-practicable (executing, plan 06 of 11 complete)
+**Current focus:** Phase 03 — every-scenario-practicable (executing, plan 07 of 11 complete)
 
 ## Current Position
 
 Phase: 03 (every-scenario-practicable) — IN PROGRESS
-Plan: 6 of 11 complete
+Plan: 7 of 11 complete
 Status: 03-06 complete on `main`. **CONT-02 stays closed; CONT-01's writing quarter closes.** All
 nine scenario×skill pairs that declare writing — `work/emails`, `travel/hotel`,
 `practical/tech-support`, `social/complaining`, `work/presentations`, `work/networking`,
@@ -47,9 +47,9 @@ deletes them**. Next action is executing 03-07 (reading). **The exported surface
 on is recorded in `03-01-SUMMARY.md`; the authoring rules and the duplicate-scan method in
 `03-03-SUMMARY.md`; `03-05-SUMMARY.md` §1 is the wiring recipe; and `03-06-SUMMARY.md` §1 is the
 caveat on its fourth edit.** Read the summaries, not the plans.
-Last activity: 2026-08-01 — 03-06 executed: all 9 scenario writing pairs written (2,378 words: 9 briefs, 45 checklist lines, 9 model answers), the desk hides its picker below two prompts, and writing ids are composed for draft-key scoping but proved UNSCHEDULED — no writing id is reviewable and every one resolves to nothing. verify-scenario-content 6355 → 6557; 18 mutations caught with their expected label, 6 controls survived, 3 applier refusals, 27 declared = 27 executed. Zero exact repeats and zero above-threshold Jaccard hits anywhere in the writing corpus, including against the 13 global prompts. One model answer broke its own checklist on first draft and the content was rewritten, not the assertion. Nobody has typed into a scenario writing desk (WINDOWS.md 35) and the coverage `summary` field is still rendered nowhere (WINDOWS.md 36).
+Last activity: 2026-08-01 — 03-07 executed: the single-passage reader is exported and five of the nine scenario reading pairs are written (2,912 words across 5 passages, 20 questions, 76 options, 20 explanations), CONT-01 at 18/52 with reading 4 pending and speaking 30. READING DOES NOT SCORE — PassageReader has no recordAttempt, so 03-05’s fourth wiring edit (reviewableIds) was deliberately NOT taken and the negative is asserted instead; that is two banks of three where the conditional rule said no. PassageReader was EXPORTED rather than a wrapper written, onBack is optional and the article’s mt-3 moved behind it, and the ReadingRoom browser function is byte-identical in the diff. verify-scenario-content 6557 → 6815; 22 mutations caught with their expected label, 6 controls survived, 3 applier refusals, 31 declared = 31 executed. Zero exact repeats and zero above-threshold Jaccard hits anywhere in the reading corpus, including against the 18 global passages, and 0 four-word runs shared with any other authored text. Two explanations made false claims about their own examples on first draft and the content was rewritten, not the assertion. Nobody has pressed Check answers, so the explained key has never been seen (WINDOWS.md 37).
 
-Progress: [█████████░] 86% (3 of 6 phases; 31 of 36 plans)
+Progress: [█████████░] 89% (3 of 6 phases; 32 of 36 plans)
 
 ## Performance Metrics
 
@@ -100,6 +100,7 @@ Progress: [█████████░] 86% (3 of 6 phases; 31 of 36 plans)
 | Phase 03 P04 | ~70min | 2 tasks | 2 files |
 | Phase 03 P05 | 75min | 3 tasks | 8 files |
 | Phase 03 P06 | 24min | 3 tasks | 6 files |
+| Phase 03 P07 | ~55min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -218,6 +219,11 @@ Recent decisions affecting current work:
 - [Phase ?]: 03-05: CONT-01 was deliberately NOT ticked at 4/52 — the requirement says EVERY pair; assert the closure predicate before ticking, never after (the discipline 03-02 and 03-03 had to apply in reverse)
 - [Phase ?]: 03-06: writing ids are composed but UNSCHEDULED — nothing scores a writing task, so reviewableIds() was deliberately not extended and the negative is asserted instead
 - [Phase ?]: 03-06: 03-05's fourth-edit rule is CONDITIONAL on the bank writing to the SRS — plans 03-07 and 03-09 must check their renderer for recordAttempt before copying it
+- [Phase 03]: 03-07: reading does NOT record attempts — PassageReader has no recordAttempt, so 03-05's fourth wiring edit (reviewableIds) was deliberately NOT taken and the negative is asserted; two banks of three now
+- [Phase 03]: 03-07: PassageReader was EXPORTED rather than a scenario wrapper written; onBack became optional and the article's mt-3 moved behind it, so the ReadingRoom browser function is byte-identical in the diff
+- [Phase 03]: 03-07: explain and id are optional on the global ReadingQuestion and REQUIRED on ScenarioReadingQuestion — the optional pair exists only so the 18 shipped passages keep compiling
+- [Phase 03]: 03-07: the PASSAGE id is the composed D-06 id (uniqueness against bare global slugs like "coffee"); a QUESTION id is a plain authored slug, unique within its passage and a key to nothing
+- [Phase 03]: 03-07: CONT-01 was NOT ticked at 18/52 — the requirement says EVERY pair; assert the closure predicate before ticking, never after
 
 ### Pending Todos
 
@@ -263,6 +269,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-08-01T04:59:18.845Z
-Stopped at: Completed 03-06-PLAN.md
+Last session: 2026-08-01T05:33:55.284Z
+Stopped at: 03-07 complete on main. CONT-01's reading half opens: the single-passage reader is exported and five scenarios (travel/restaurant A2, practical/housing B2, academic/news B2, academic/stories B2, academic/summaries B2) open straight into a text written for them — no level filter, no list, no back link — with a key that explains itself on every question (18/52 pairs, 34 pending: speaking 30, reading 4, grammar 0, writing 0). READING DOES NOT SCORE: PassageReader has no recordAttempt, so 03-05's fourth edit was NOT taken and the negative is asserted, the second bank of three where the conditional rule said no. review-items.ts gained a "reading" kind outside SCHEDULED_ITEM_KINDS (the same Rule 3 deviation 03-06 recorded, for the same typed-parameter reason). The ReadingRoom browser function is byte-identical in the diff. verify-scenario-content 6557 -> 6815; 22 mutations caught with their expected label, 6 controls survived, 3 applier refusals, 31 declared = 31 executed. CONT-01 NOT ticked (18/52). Nobody has pressed Check answers, so the explained key is unseen (WINDOWS 37). Next is 03-08 (the four C1 passages), in the same wave as 03-09.
 Resume file: None

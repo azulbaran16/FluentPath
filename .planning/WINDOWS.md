@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 28
+open_count: 29
 waived_count: 0
 fixed_count: 8
-total_count: 36
-last_updated: 2026-08-01T04:55:30.754Z
+total_count: 37
+last_updated: 2026-08-01T05:29:13.276Z
 ---
 
 # Broken Windows Ledger
@@ -51,6 +51,7 @@ last_updated: 2026-08-01T04:55:30.754Z
 | 34 | 03 | stub | src/components/WorldView.tsx |  | 03-05: the world page's scenario cards still render SkillPill without an availability flag, so they count DECLARATIONS. Plan 03-05 gave SkillPill an optional 'available' prop and wired it in ScenarioView and on /skill/[skill]; WorldView.tsx was NOT in that plan's files_modified and was deliberately left alone rather than expanding scope quietly. The consequence today: /world/social shows a solid 'Speaking' pill on a scenario whose speaking practice is not written, while the scenario page one click deeper shows the same pill muted. The fix is three lines (import getScenarioCoverage, pass available per skill) and the prop already exists and defaults to true. Self-closing as plans 03-06 through 03-10 land, in the sense that the overclaim disappears when every pair is written - but it is an overclaim until then, which is precisely what D-03 forbids. | open |  | 2026-08-01T04:19:19.508Z |  |
 | 35 | 03 | unrun-verify | src/components/practice/WritingDesk.tsx |  | 03-06: the writing desk's INTERACTIVE half is unseen by a human, and so is the multi-prompt picker path. Observed in the served HTML of a production build: all nine scenario writing pairs render their own task with NO picker row (the markup goes straight from <div> to <div class="grid gap-5 lg:grid-cols-2 ">, with no mt-4), the level badge, the word range and the 0-words counter render, and the model answer is absent from the served HTML. NOT observed: typing into the editor, the counter turning 'in range', Save draft writing to localStorage under the composed id, ticking a checklist line, and Show model answer revealing the model. Also NOT observed: the >1-prompt branch that still renders the picker - the global writing room at /skill/writing mounts WritingDesk behind a client-side tab whose default is 'Learn', so 13 prompts never reach the initial HTML and curl cannot click the tab. The branch is one boolean (prompts.length > 1) and is unchanged for that path, but it is proved by reading rather than by seeing. Owed to plan 03-11's browser pass alongside entries 29-33. | open |  | 2026-08-01T04:55:16.464Z |  |
 | 36 | 03 | stub | src/lib/scenario-coverage.ts |  | 03-06: ScenarioSkillCoverage.summary is derived, asserted and rendered NOWHERE. Grep for '.summary' across src/components and src/app returns only the two CELPIP call sites (CelpipLanding.tsx:266 and celpip/page.tsx:90); no scenario surface renders the scenario coverage summary at all. So the strings the harness pins - '5 questions' for grammar since 03-05, '1 task' for writing since 03-06 - are a contract nobody reads yet. This is not a defect in either plan (both were told to produce a count and a unit, and both do) and the assertions have teeth (mutation M18 catches a reworded unit), but a field that is asserted and unrendered can drift into being wrong for a UI that later starts rendering it. Either a surface should show it or its absence should be a deliberate, recorded decision. | open |  | 2026-08-01T04:55:30.754Z |  |
+| 37 | 03 | unrun-verify | src/components/practice/ReadingRoom.tsx |  | 03-07: nobody has CHECKED ANSWERS on a scenario reading passage, so the two things this plan built have never been seen doing their job. Observed in the served HTML of a production build: all five scenario reading pairs (travel/restaurant, practical/housing, academic/news, academic/stories, academic/summaries) render the STANDALONE passage reader as their own step - level badge, minutes, Read aloud, title, body, glossary, questions and the Check answers button - with NO back link and NO level-filter pills, and academic/summaries renders its reading passage and its DIFFERENT writing passage on one page. NOT observed: the EXPLAINED KEY. Every explanation is behind {submitted && q.explain}, so it is absent from the served HTML entirely (grep returns 0, as does the answer index) and only appears after a click curl cannot make. So 'every scenario comprehension question tells the learner why the answer is the answer' is proved by construction - the type requires it, the harness asserts it non-empty on all 20 questions, and mutation M3 catches a whitespace explanation - but not by sight. Also unobserved: that the GLOBAL reading room's own single-passage reader still shows its back link after a text is chosen from the list. The ReadingRoom browser function is byte-identical in the diff and every change is behind onBack being present, so this is proved by reading rather than by seeing. Owed to plan 03-11's browser pass alongside entries 29-35. | open |  | 2026-08-01T05:29:13.276Z |  |
 
 ````json
 [
@@ -484,6 +485,18 @@ last_updated: 2026-08-01T04:55:30.754Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-08-01T04:55:30.754Z",
+    "resolved_at": null
+  },
+  {
+    "id": 37,
+    "kind": "unrun-verify",
+    "phase": "03",
+    "file": "src/components/practice/ReadingRoom.tsx",
+    "line": null,
+    "description": "03-07: nobody has CHECKED ANSWERS on a scenario reading passage, so the two things this plan built have never been seen doing their job. Observed in the served HTML of a production build: all five scenario reading pairs (travel/restaurant, practical/housing, academic/news, academic/stories, academic/summaries) render the STANDALONE passage reader as their own step - level badge, minutes, Read aloud, title, body, glossary, questions and the Check answers button - with NO back link and NO level-filter pills, and academic/summaries renders its reading passage and its DIFFERENT writing passage on one page. NOT observed: the EXPLAINED KEY. Every explanation is behind {submitted && q.explain}, so it is absent from the served HTML entirely (grep returns 0, as does the answer index) and only appears after a click curl cannot make. So 'every scenario comprehension question tells the learner why the answer is the answer' is proved by construction - the type requires it, the harness asserts it non-empty on all 20 questions, and mutation M3 catches a whitespace explanation - but not by sight. Also unobserved: that the GLOBAL reading room's own single-passage reader still shows its back link after a text is chosen from the list. The ReadingRoom browser function is byte-identical in the diff and every change is behind onBack being present, so this is proved by reading rather than by seeing. Owed to plan 03-11's browser pass alongside entries 29-35.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-01T05:29:13.276Z",
     "resolved_at": null
   }
 ]
