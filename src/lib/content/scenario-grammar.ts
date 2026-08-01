@@ -133,7 +133,182 @@ const BANK: Record<string, AuthoredGrammarQuestion[]> = {
     },
   ],
 
-};
+  /* ───────────────────── work/interviews · B2 ─────────────────────
+   * Narrating experience, hedging a claim, imagining a role you do not have
+   * yet, and asking your questions back without sounding blunt. */
+  "work/interviews": [
+    {
+      slug: "experience-perfect-continuous",
+      level: "B2",
+      topic: "Present perfect continuous",
+      prompt: "I ___ in logistics for about six years now.",
+      options: ["work", "worked", "have been working", "am working"],
+      answer: 2,
+      explain:
+        "A stretch of time that began in the past and is still running → present perfect continuous. “I work” loses the six years; “I worked” tells the panel you have left the field.",
+    },
+    {
+      slug: "star-past-perfect",
+      level: "B2",
+      topic: "Past perfect",
+      prompt: "By the time I took over, the team ___ two deadlines in a row.",
+      options: ["missed", "had missed", "has missed", "was missing"],
+      answer: 1,
+      explain:
+        "In a STAR answer the Situation happened before the Action you took, and past perfect is what marks that order — the misses came before you took over.",
+    },
+    {
+      slug: "hedge-would-say",
+      level: "B2",
+      topic: "Hedging with would",
+      prompt: "I ___ say my strongest suit is spotting problems early.",
+      options: ["would", "will", "do", "am"],
+      answer: 0,
+      explain:
+        "“I'd say…” frames a claim about yourself as an opinion, which is how you sound confident rather than boastful. “I will say” only announces that you are about to speak.",
+    },
+    {
+      slug: "hypothetical-second-conditional",
+      level: "B2",
+      topic: "Second conditional",
+      prompt: "If I ___ the role, I'd spend the first month listening.",
+      options: ["get", "got", "will get", "would get"],
+      answer: 1,
+      explain:
+        "You are imagining a job you do not have yet → second conditional: if + past simple, would + base verb. “Would” never goes in the if-half.",
+    },
+    {
+      slug: "indirect-question-success",
+      level: "B2",
+      topic: "Indirect questions",
+      prompt: "Could you tell me what ___ like in this role?",
+      options: [
+        "does success look",
+        "success looks",
+        "is success looking",
+        "looks success",
+      ],
+      answer: 1,
+      explain:
+        "Once a question sits inside another question the word order goes back to statement order: “what success looks like”, not “what does success look like”.",
+    },
+  ],
+
+  /* ───────────────────── work/emails · B1 ─────────────────────
+   * The grammar that decides whether an email reads as polite or blunt:
+   * modals for requests, the conditional for an offer, the passive where the
+   * actor is deliberately absent, and past forms used as distance. */
+  "work/emails": [
+    {
+      slug: "would-you-mind-request",
+      level: "B1",
+      topic: "Modals",
+      prompt: "___ you mind sending the figures over before Friday?",
+      options: ["Would", "Could", "Will", "Should"],
+      answer: 0,
+      explain:
+        "“Would you mind + -ing” is the softest request an email has. “Could you mind…” is not English, and “Will you send…” reads as an instruction rather than an ask.",
+    },
+    {
+      slug: "if-first-conditional-offer",
+      level: "B1",
+      topic: "First conditional",
+      prompt: "Let me know if you ___ anything else and I'll send it today.",
+      options: ["will need", "need", "needed", "would need"],
+      answer: 1,
+      explain:
+        "First conditional: present simple after “if”, “will” in the other half. “If you will need” is a common carry-over from Spanish and marks the email as non-native immediately.",
+    },
+    {
+      slug: "passive-invoice-sent",
+      level: "B1",
+      topic: "Passive voice",
+      prompt: "The invoice ___ last Tuesday, so it should be with you by now.",
+      options: ["was sent", "sent", "has sent", "was sending"],
+      answer: 0,
+      explain:
+        "The passive leaves the person out on purpose: “the invoice was sent” states the fact without pointing at who did — or did not — send it.",
+    },
+    {
+      slug: "look-forward-to-gerund",
+      level: "B1",
+      topic: "Gerund vs infinitive",
+      prompt: "I look forward to ___ from you.",
+      options: ["hear", "hearing", "heard", "be heard"],
+      answer: 1,
+      explain:
+        "The “to” in “look forward to” is a preposition, not an infinitive marker, so the verb after it takes -ing. This is the single most common sign-off error in English email.",
+    },
+    {
+      slug: "was-wondering-softener",
+      level: "B1",
+      topic: "Past continuous",
+      prompt: "I ___ whether you'd had a chance to look at the proposal.",
+      options: ["wonder", "was wondering", "am wondering", "have wondered"],
+      answer: 1,
+      explain:
+        "Putting the verb in the past — “I was wondering…” — puts distance between you and the ask, and that distance is what makes it polite. You are still asking now.",
+    },
+  ],
+
+  /* ───────────────────── native/phrasal-verbs · B2 ─────────────────────
+   * The scenario where a question can be about the thing it names. The
+   * briefing demonstrates separability on “turn it down” and the
+   * get up / get on / get over family, and the phrase set and deck use
+   * fourteen more, so none of those appears here as an answer. */
+  "native/phrasal-verbs": [
+    {
+      slug: "separable-pronoun-look-over",
+      level: "B2",
+      topic: "Phrasal verb separability",
+      prompt: "Here's the draft — could you ___ before I send it?",
+      options: ["look over it", "look it over", "over look it", "look over"],
+      answer: 1,
+      explain:
+        "“Look over” is separable, and a pronoun object HAS to sit in the middle: “look it over”. “Look over it” only works when you are literally looking over the top of something.",
+    },
+    {
+      slug: "inseparable-do-without",
+      level: "B2",
+      topic: "Phrasal verb separability",
+      prompt: "The projector's broken, so we'll have to ___ for now.",
+      options: ["do it without", "do without it", "without do it", "do it out"],
+      answer: 1,
+      explain:
+        "Not every phrasal verb splits. “Do without” is inseparable, so even a pronoun stays after the particle — “do without it”.",
+    },
+    {
+      slug: "particle-drag-on",
+      level: "B2",
+      topic: "Phrasal verb particles",
+      prompt: "The meeting ___ for another hour after the decision was made.",
+      options: ["dragged on", "dragged up", "dragged out", "dragged off"],
+      answer: 0,
+      explain:
+        "The particle carries the meaning: “on” is continuation, so “drag on” is to go on far too long. “Drag up” is to raise an old subject, and “drag out” is what somebody does to a meeting deliberately.",
+    },
+    {
+      slug: "particle-make-out",
+      level: "B2",
+      topic: "Phrasal verb particles",
+      prompt: "The line was terrible — I could barely ___ what she was saying.",
+      options: ["make up", "make out", "make off", "make over"],
+      answer: 1,
+      explain:
+        "“Make out” is to manage to hear or see something with difficulty. “Make up” is to invent it — a very different thing to admit to on a call.",
+    },
+    {
+      slug: "register-put-off",
+      level: "B2",
+      topic: "Phrasal verbs vs formal verbs",
+      prompt:
+        "The email says the review has been postponed; your manager just says it's been ___.",
+      options: ["put off", "put out", "put up", "put down"],
+      answer: 0,
+      explain:
+        "Most formal single words have a spoken phrasal twin — postpone → put off. The other particles build different verbs entirely: put out (annoyed), put up (give someone a bed), put down (criticise).",
+    },
+  ],};
 
 /**
  * Every key the bank actually holds — see the twins in phrases.ts and
