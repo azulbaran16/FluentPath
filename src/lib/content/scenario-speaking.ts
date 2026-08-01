@@ -363,7 +363,7 @@ const BANK: Record<string, AuthoredSpeakingTask> = {
     title: "Not the room you booked",
     level: "B1",
     setup:
-      "You booked a double room with a window. The card opens a small one facing the car park.",
+      "Your confirmation says a quiet room at the back. The card opens one beside the lift, above the kitchen.",
     moves: [
       "Say what you booked and what you were given, without saying anyone lied.",
       "Ask what else is free tonight, and how many of your nights it would cover.",
@@ -465,7 +465,7 @@ const BANK: Record<string, AuthoredSpeakingTask> = {
       "Your internet drops every evening around nine. Two earlier calls both ended with “try restarting the router”.",
     moves: [
       "Give the pattern first: when it started, how often, and what sets it off.",
-      "Say what you have already tried, so they can skip that page of their script.",
+      "Get ahead of the script: name what you already did, so they can skip those pages.",
       "Ask for a reference number, and if tonight is the same, ask for an escalation.",
     ],
     success:
