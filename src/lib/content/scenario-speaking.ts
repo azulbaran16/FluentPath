@@ -192,6 +192,145 @@ const BANK: Record<string, AuthoredSpeakingTask> = {
     success:
       "The whole request took under thirty seconds, and your offer back was something you can actually do.",
   },
+
+  /* The seventh Social scenario, and the only C1 one. The part learners
+   * actually need is not making the joke — it is what you say in the two
+   * seconds after it dies, which is the move most sets leave out. */
+  "social/humor": {
+    slug: "the-joke-that-did-not-land",
+    title: "The joke that did not land",
+    level: "C1",
+    setup:
+      "In the corridor a colleague drops a flat one-liner about the deadline. You are not sure it was a joke.",
+    moves: [
+      "Check the tone in one line that works whichever way it was meant.",
+      "Answer with one of your own, aimed at yourself or at the week — never at anyone present.",
+      "When it dies, name it and move on. Do not explain it.",
+    ],
+    success:
+      "You made one joke and one recovery, and the recovery was shorter than the joke.",
+  },
+
+  /* ═══════════════════ Work & Professional ═══════════════════
+   * Six scenarios, and each task turns on the move that is specific to it
+   * rather than on "sound professional": interrupting, signposting, countering
+   * without closing a door, asking for a contact, and taking criticism without
+   * defending. Where a scenario also declares writing, the rehearsal is
+   * deliberately the half a written brief cannot reach — the live turn, under
+   * time, with someone answering back. */
+
+  "work/interviews": {
+    slug: "tell-me-about-a-time-it-went-wrong",
+    title: "Tell me about a time it went wrong",
+    level: "B2",
+    setup:
+      "Final round. The interviewer asks about something you owned that went wrong, and you have ninety seconds.",
+    moves: [
+      "Set the scene in two sentences: when, where, what was yours.",
+      "Say what you did, in the first person, and finish on a result with a number in it.",
+      "Hand it back with a question only someone who has done the job would ask.",
+    ],
+    success:
+      "You said “I” more often than “we”, and you stopped on the result instead of trailing off.",
+  },
+
+  "work/meetings": {
+    slug: "take-the-floor-then-give-it-back",
+    title: "Take the floor, then give it back",
+    level: "B2",
+    setup:
+      "Eight people on a call. Someone has talked for four minutes and is about to skip the decision your team needs.",
+    moves: [
+      "Come in at the first pause: use their name and say what you are adding.",
+      "Make the point in three sentences and name who should answer it.",
+      "Give the floor back yourself, with one line on what was agreed.",
+    ],
+    success:
+      "You interrupted once, took under a minute, and handed the call to a named person.",
+  },
+
+  "work/presentations": {
+    slug: "three-things-and-the-question-you-cannot-answer",
+    title: "Three things, and the question you cannot answer",
+    level: "B2",
+    setup:
+      "Eight minutes, five slides, and a room that has already sat through two talks this morning.",
+    moves: [
+      "Open by naming the three things they will leave with, in the order you will say them.",
+      "Move between two slides aloud: close the first and open the second in one sentence.",
+      "Take a question you cannot answer: say so, say what you will do, give a date.",
+    ],
+    success:
+      "The room could repeat your three points, and the question you dodged did not sound dodged.",
+  },
+
+  "work/negotiating": {
+    slug: "a-counter-offer-that-keeps-the-door-open",
+    title: "A counter-offer that keeps the door open",
+    level: "C1",
+    setup:
+      "The supplier's quote came back eighteen per cent over budget. You want the price and the relationship.",
+    moves: [
+      "Say what works in their offer before you say what does not.",
+      "Counter as a trade: one thing you give, one thing you ask, one sentence.",
+      "Say what happens if they cannot move, in words they could repeat to their own boss.",
+    ],
+    success:
+      "Your counter had an “if” in it, and nothing you said would stop you calling them next quarter.",
+  },
+
+  "work/networking": {
+    slug: "three-minutes-and-one-contact",
+    title: "Three minutes and one contact",
+    level: "B2",
+    setup:
+      "The coffee break at a conference. The person you came to meet is free, and the break is short.",
+    moves: [
+      "Say who you are in one sentence that ends in what you do, not your job title.",
+      "Ask them something only they could answer, and say why you are asking.",
+      "Ask for the contact, name the one thing you will send, and let them go.",
+    ],
+    success:
+      "You listened more than you talked, asked once, and walked away with something to send.",
+  },
+
+  "work/feedback": {
+    slug: "take-it-before-you-answer-it",
+    title: "Take it before you answer it",
+    level: "B2",
+    setup:
+      "Your manager says the section you wrote slowed the whole document down. Your instinct is to explain why it is long.",
+    moves: [
+      "Say nothing in your defence: thank them and ask for one example.",
+      "Play the criticism back in your own words and check you have it right.",
+      "Ask what a better version looks like, then name what you will change.",
+    ],
+    success:
+      "You asked two questions before you gave a single reason, and you left with a change and a date.",
+  },
+
+  /* ═══════════════════ Reading & Ideas ═══════════════════
+   * The one speaking pair outside Social and Work in this plan. Its writing
+   * prompt (03-06) already asks for a written concession on a car-free city
+   * centre, so this takes a different motion and the half writing cannot
+   * reach: the ninety-second spoken open, where the concession has to come out
+   * before the other side reaches for it and the last line has to be the one
+   * that gets repeated. */
+
+  "academic/debate": {
+    slug: "open-for-the-motion-in-ninety-seconds",
+    title: "Open for the motion in ninety seconds",
+    level: "C1",
+    setup:
+      "A seminar debate on whether the school an applicant attended may count in university admissions. You open.",
+    moves: [
+      "State your position in one sentence the other side would call fair.",
+      "Give their best argument before they do, concede what is true in it, then show what survives.",
+      "Close on the sentence you want repeated. Add no new claim after it.",
+    ],
+    success:
+      "Your concession was one the other side would recognise, and your last line argued nothing new.",
+  },
 };
 
 /**
