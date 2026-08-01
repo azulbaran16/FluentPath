@@ -1927,6 +1927,29 @@ ok(
   duplicates(scenarioSpeakingIds).length === 0,
   duplicates(scenarioSpeakingIds).join(", "),
 );
+
+// The per-id "is exactly what scenarioItemId composes" assertion above is
+// weaker than it looks and was caught being so by a mutation: it recomposes
+// from the localId it just PARSED OUT of the same id, so an id hand-spelled in
+// the correct format satisfies it tautologically. The one-author rule is a
+// property of the SOURCE, so it is asserted at the source — the separator is
+// review-items.ts's to spell, and this bank must reach it only through
+// `scenarioItemId`. Scoped to the format itself rather than to the character,
+// so a task that one day mentions a hashtag out loud does not fail the build.
+const bankSource = readFileSync(
+  new URL("../src/lib/content/scenario-speaking.ts", import.meta.url),
+  "utf8",
+);
+const bankCode = bankSource
+  .replace(/\/\*[\s\S]*?\*\//g, " ")
+  .replace(/^[ \t]*\/\/.*$/gm, " ");
+ok(
+  "the speaking bank never spells the id format by hand",
+  !bankCode.includes("#speaking#") &&
+    !/#\$\{/.test(bankCode) &&
+    bankCode.includes("scenarioItemId("),
+  "the id is a one-way door on live learner data, so it gets exactly one author",
+);
 ok(
   "no scenario speaking id collides with a global grammar question id",
   scenarioSpeakingIds.every((id) => !grammarIds.has(id)),
