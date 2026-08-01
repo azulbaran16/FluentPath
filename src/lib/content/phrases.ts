@@ -196,6 +196,68 @@ const SETS: Record<string, Phrase[]> = {
     { id: "exchange-it-for-a-bigger-size", text: "Could I exchange it for a bigger size?", es: "¿Podría cambiarlo por una talla más grande?", tip: "'Exchange' es cambiar por otro artículo; 'refund', que te devuelvan el dinero." },
     { id: "is-this-on-sale", text: "Is this on sale, or is that the full price?", es: "¿Esto está rebajado o es el precio normal?", tip: "'On sale' = rebajado. 'For sale' = en venta. No los mezcles." },
   ],
+  // ── Reading & Ideas ────────────────────────────────────────────
+  // Four of these five declare READING and not speaking, so their phrases are
+  // deliberately not comprehension questions (that is the reading pair, owned
+  // by plans 03-07 and 03-08). They are the language of working with a text
+  // OUT LOUD: asking what a paragraph is driving at, hedging an inference,
+  // marking a shift in an argument, saying what a narrator is doing.
+  // `academic/debate` is the one that declares speaking, and it gets the
+  // language of conceding, rebutting and building.
+
+  // B2. Not "what does it say" but "how is it saying it" — the reading a
+  // learner has to do out loud before she can spot an angle.
+  "academic/news": [
+    { id: "headline-says-one-thing", text: "The headline says one thing, but the article says another.", es: "El titular dice una cosa y el artículo dice otra.", tip: "El titular suele escribirlo otra persona: por eso a veces no encaja con el texto." },
+    { id: "whos-the-source", text: "Who's the source for that?", es: "¿De dónde sale ese dato?", tip: "'A source' es la persona o el documento del que viene la información." },
+    { id: "claims-not-happened", text: "It says he claims it, not that it happened.", es: "Dice que él lo afirma, no que ocurriera.", tip: "'Claims' avisa de que el periódico no responde por ese dato." },
+    { id: "that-word-is-doing-a-lot", text: "That word's doing a lot of work in that sentence.", es: "Esa palabra está haciendo mucho trabajo en esa frase.", tip: "Así se señala una palabra tendenciosa sin acusar a nadie de mentir." },
+    { id: "only-skimmed-the-top", text: "I only skimmed the top of it.", es: "Solo le eché un vistazo por encima.", tip: "'Skim' es leer rápido para lo general; 'scan' es buscar un dato concreto." },
+    { id: "buried-halfway-down", text: "The actual news is buried halfway down.", es: "La noticia de verdad está enterrada a mitad del texto.", tip: "'Bury' un dato es dejarlo lejos del principio, a veces a propósito." },
+  ],
+  // C1, and the level where an author most easily writes vocabulary that is
+  // merely long. These six are about tracking an argument ACROSS paragraphs:
+  // hedging an inference, hearing a connector turn, admitting a loss of thread.
+  "academic/articles": [
+    { id: "if-im-reading-this-right", text: "If I'm reading this right, she's arguing the opposite.", es: "Si lo estoy entendiendo bien, defiende justo lo contrario.", tip: "'If I'm reading this right' matiza tu interpretación sin dejar de darla." },
+    { id: "that-however-changes-everything", text: "That 'however' changes everything that follows.", es: "Ese 'however' cambia todo lo que viene después.", tip: "Los conectores son el esqueleto del argumento: búscalos antes que los adjetivos." },
+    { id: "setting-up-the-counterargument", text: "He's setting up the counterargument so he can knock it down.", es: "Está montando el contraargumento para luego desmontarlo.", tip: "'Knock down an argument' es refutarlo; es lo que hace un autor justo antes de concluir." },
+    { id: "not-saying-it-outright", text: "She's not saying it outright, but that's the implication.", es: "No lo dice abiertamente, pero es lo que se da a entender.", tip: "En prensa larga, lo importante suele estar implícito y no afirmado." },
+    { id: "lost-the-thread", text: "I lost the thread around the third page.", es: "Perdí el hilo por la tercera página.", tip: "'Lose the thread' es exactamente el mismo hilo que en español." },
+    { id: "three-paragraphs-to-get-there", text: "It takes him three paragraphs to get to the point.", es: "Tarda tres párrafos en llegar al grano.", tip: "'Get to the point' es ir al grano; 'have a point', tener razón. No los confundas." },
+  ],
+  // B2. Voice and subtext: what the narrator is doing, and what a reader is
+  // allowed to say about it without having finished the book.
+  "academic/stories": [
+    { id: "narrator-isnt-telling-us-everything", text: "The narrator isn't telling us everything.", es: "El narrador no nos lo está contando todo.", tip: "'An unreliable narrator' es un recurso clásico de la ficción en inglés." },
+    { id: "saw-that-coming", text: "I saw that coming from the first page.", es: "Me lo veía venir desde la primera página.", tip: "'See it coming' vale igual para un giro de la trama que para la vida real." },
+    { id: "its-set-in", text: "It's set in a village in the fifties.", es: "Está ambientada en un pueblo en los años cincuenta.", tip: "Para ficción, el lugar y la época van siempre con 'set in'." },
+    { id: "never-warmed-to-her", text: "I never really warmed to the sister.", es: "La hermana nunca me llegó a caer bien.", tip: "'Warm to someone' es irle cogiendo aprecio poco a poco." },
+    { id: "nothing-much-happens", text: "Nothing much happens, and that's the point.", es: "No pasa gran cosa, y ahí está la gracia.", tip: "Defensa estándar de un relato lento; se dice sin ironía." },
+    { id: "ending-left-me-hanging", text: "The ending left me hanging.", es: "El final me dejó con la intriga.", tip: "'Leave someone hanging' es dejar algo sin resolver — también en una conversación." },
+  ],
+  // B2, and the WRITING half belongs to plan 03-06. These six are spoken: the
+  // language of REDUCING a text. `academic/debate` gets the language of making
+  // a case; this one gets the language of cutting one down.
+  "academic/summaries": [
+    { id: "boils-down-to", text: "The whole thing boils down to one idea.", es: "Todo se reduce a una sola idea.", tip: "'Boil down to' es lo que queda cuando quitas todo lo demás." },
+    { id: "in-a-nutshell", text: "In a nutshell, the tax didn't work.", es: "En pocas palabras, el impuesto no funcionó.", tip: "'In a nutshell' anuncia un resumen de una frase, no de un párrafo." },
+    { id: "thats-just-an-example", text: "That paragraph's just an example — it can go.", es: "Ese párrafo es solo un ejemplo; se puede quitar.", tip: "Al resumir, lo primero que cae son los ejemplos." },
+    { id: "in-my-own-words", text: "Let me put that in my own words.", es: "Déjame decirlo con mis propias palabras.", tip: "'In my own words' demuestra que lo has entendido, no que lo has copiado." },
+    { id: "leaving-anything-out", text: "Am I leaving anything important out?", es: "¿Me estoy dejando algo importante?", tip: "'Leave out' es omitir, y con pronombre va en medio: 'leave it out'." },
+    { id: "cut-it-down-to-half", text: "I need to cut this down to half a page.", es: "Tengo que reducirlo a media página.", tip: "'Cut down' es acortar; 'cut out' es eliminar del todo." },
+  ],
+  // C1, and the one scenario in this world that declares SPEAKING. Conceding,
+  // rebutting and building — the three moves the briefing names but does not
+  // give her the words for.
+  "academic/debate": [
+    { id: "take-your-point-but", text: "I take your point, but it only holds in the short term.", es: "Acepto tu argumento, pero solo se sostiene a corto plazo.", tip: "'I take your point' concede de verdad; 'I hear you' suena a que no piensas moverte." },
+    { id: "youre-conflating-two-things", text: "I think you're conflating two different things here.", es: "Creo que estás mezclando dos cosas distintas.", tip: "'Conflate' señala el error de razonamiento sin llamar confuso a nadie." },
+    { id: "by-that-logic", text: "By that logic, we'd have to ban bicycles too.", es: "Siguiendo esa lógica, habría que prohibir también las bicicletas.", tip: "Lleva el argumento del otro al extremo: muy eficaz y nada amable." },
+    { id: "start-with-where-we-agree", text: "Let's start with where we agree.", es: "Empecemos por donde sí coincidimos.", tip: "Abrir por el acuerdo desarma mucho antes que abrir atacando." },
+    { id: "evidence-or-a-feeling", text: "Is there evidence for that, or is it a feeling?", es: "¿Hay pruebas de eso, o es una impresión?", tip: "Pide la base sin negar la conclusión, que es lo que la hace difícil de esquivar." },
+    { id: "ill-grant-you-that-one", text: "I'll grant you that one.", es: "Eso te lo concedo.", tip: "Conceder algo pequeño da credibilidad a todo lo que no concedes." },
+  ],
   // The one scenario where she cannot see the other person. These six are the
   // lines that survive a bad line: getting volume, spelling out, reading a
   // number back, and ending a call without either party guessing.

@@ -1063,6 +1063,274 @@ const DECKS: Record<string, ScenarioVocabCard[]> = {
     },
   ],
 
+  // ── Reading & Ideas ────────────────────────────────────────────
+
+  // B2. The phrases are how she TALKS about a story; these cards are the
+  // machinery of the newsroom that produced it, which is what decides how much
+  // weight a line deserves.
+  "academic/news": [
+    {
+      id: "outlet",
+      term: "an outlet",
+      es: "un medio de comunicación",
+      example: "The same story ran in three outlets with three different angles.",
+    },
+    {
+      id: "byline",
+      term: "a byline",
+      es: "la firma del autor",
+      example: "Check the byline — she covers the courts, so she knows the case.",
+    },
+    {
+      id: "op-ed",
+      term: "an op-ed",
+      es: "un artículo de opinión",
+      example: "It reads like reporting, but it's an op-ed and it's labelled one.",
+    },
+    {
+      id: "break-a-story",
+      term: "break a story",
+      es: "dar una noticia en primicia",
+      example: "A local paper broke the story a week before anyone else.",
+    },
+    {
+      id: "allegedly",
+      term: "allegedly",
+      es: "presuntamente",
+      example: "He allegedly signed the contract himself, though nobody has seen it.",
+    },
+    {
+      id: "bias",
+      term: "bias",
+      es: "el sesgo",
+      example: "Every paper has some bias; the useful skill is knowing which.",
+    },
+    {
+      id: "retraction",
+      term: "a retraction",
+      es: "una rectificación",
+      example: "The correction ran on page nineteen, weeks after the retraction.",
+    },
+    {
+      id: "coverage",
+      term: "coverage",
+      es: "la cobertura informativa",
+      example: "The coverage died down the moment the trial ended.",
+    },
+  ],
+
+  // C1, and chosen against the trap the plan names: these are the words that
+  // let a reader TRACK an argument across paragraphs, not impressive nouns.
+  "academic/articles": [
+    {
+      id: "premise",
+      term: "a premise",
+      es: "una premisa",
+      example: "The argument is careful, but the premise it rests on is never defended.",
+    },
+    {
+      id: "qualify",
+      term: "qualify (a claim)",
+      es: "matizar una afirmación",
+      example: "He qualifies it two paragraphs later: 'in most cases', not 'always'.",
+    },
+    {
+      id: "caveat",
+      term: "a caveat",
+      es: "una salvedad",
+      example: "She offers one caveat, and it quietly undoes half the chapter.",
+    },
+    {
+      id: "underpin",
+      term: "underpin",
+      es: "sustentar, servir de base a",
+      example: "One study underpins the whole piece, and it is twenty years old.",
+    },
+    {
+      id: "case-in-point",
+      term: "a case in point",
+      es: "un ejemplo que lo demuestra",
+      example: "The 2008 crash is a case in point, and he spends four pages on it.",
+    },
+    {
+      id: "ostensibly",
+      term: "ostensibly",
+      es: "en apariencia, supuestamente",
+      example: "The essay is ostensibly about housing, but it's really about class.",
+    },
+    {
+      id: "upshot",
+      term: "the upshot",
+      es: "la conclusión práctica",
+      example: "The upshot is that nothing changes until the funding does.",
+    },
+    {
+      id: "gloss-over",
+      term: "gloss over",
+      es: "pasar por alto, tratar de puntillas",
+      example: "He glosses over the cost, which is the only question that matters.",
+    },
+  ],
+
+  // B2. The words a reader needs to say what a story DID to her — and to talk
+  // about fiction with someone who has read it.
+  "academic/stories": [
+    {
+      id: "plot-twist",
+      term: "a plot twist",
+      es: "un giro argumental",
+      example: "The plot twist works because she planted it in chapter two.",
+    },
+    {
+      id: "cliffhanger",
+      term: "a cliffhanger",
+      es: "un final en suspense",
+      example: "Every chapter ends on a cliffhanger, which gets tiring by page 200.",
+    },
+    {
+      id: "flashback",
+      term: "a flashback",
+      es: "un salto al pasado",
+      example: "The middle third is one long flashback to his first winter there.",
+    },
+    {
+      id: "foreshadowing",
+      term: "foreshadowing",
+      es: "los indicios de lo que va a pasar",
+      example: "The broken clock is foreshadowing — you only see it afterwards.",
+    },
+    {
+      id: "far-fetched",
+      term: "far-fetched",
+      es: "inverosímil",
+      example: "The ending is a bit far-fetched, but by then you don't mind.",
+    },
+    {
+      id: "bittersweet",
+      term: "bittersweet",
+      es: "agridulce",
+      example: "It's a bittersweet story: she wins, and it costs her everything.",
+    },
+    {
+      id: "page-turner",
+      term: "a page-turner",
+      es: "un libro que engancha",
+      example: "It's a proper page-turner — I read it in two evenings.",
+    },
+    {
+      id: "give-away-the-ending",
+      term: "give away the ending",
+      es: "destripar el final",
+      example: "Don't give away the ending; she's only halfway through.",
+    },
+  ],
+
+  // B2, and the vocabulary of REDUCTION — the qualities a summary is judged on,
+  // rather than the moves the phrases already teach.
+  "academic/summaries": [
+    {
+      id: "gist",
+      term: "the gist",
+      es: "la idea general",
+      example: "I didn't follow every word, but I got the gist of it.",
+    },
+    {
+      id: "paraphrase",
+      term: "paraphrase",
+      es: "parafrasear",
+      example: "Paraphrase it properly; changing two words is still copying.",
+    },
+    {
+      id: "concise",
+      term: "concise",
+      es: "conciso",
+      example: "Her summary was concise and still answered the question.",
+    },
+    {
+      id: "long-winded",
+      term: "long-winded",
+      es: "prolijo, farragoso",
+      example: "The original is long-winded, which is exactly why it needs a summary.",
+    },
+    {
+      id: "redundant",
+      term: "redundant",
+      es: "superfluo, que sobra",
+      example: "That last sentence is redundant — the paragraph already said it.",
+    },
+    {
+      id: "abstract",
+      term: "an abstract",
+      es: "un resumen inicial",
+      example: "Read the abstract first and you'll know whether the paper is for you.",
+    },
+    {
+      id: "verbatim",
+      term: "verbatim",
+      es: "literalmente, palabra por palabra",
+      example: "Don't quote it verbatim unless the wording itself is the point.",
+    },
+    {
+      id: "word-count",
+      term: "the word count",
+      es: "el número de palabras",
+      example: "It's good, but it's double the word count they asked for.",
+    },
+  ],
+
+  // C1. The phrases are the moves she MAKES; these cards are what she needs to
+  // name the moves being made at her.
+  "academic/debate": [
+    {
+      id: "rebuttal",
+      term: "a rebuttal",
+      es: "una réplica, una refutación",
+      example: "His rebuttal was three sentences long and it ended the argument.",
+    },
+    {
+      id: "straw-man",
+      term: "a straw man",
+      es: "un argumento de paja",
+      example: "That's a straw man — nobody in the room said anything that extreme.",
+    },
+    {
+      id: "anecdotal",
+      term: "anecdotal",
+      es: "anecdótico, basado en casos sueltos",
+      example: "The evidence is anecdotal: two friends of his and a taxi driver.",
+    },
+    {
+      id: "undermine",
+      term: "undermine",
+      es: "socavar, restar fuerza a",
+      example: "One wrong figure undermined everything she said after it.",
+    },
+    {
+      id: "compelling",
+      term: "compelling",
+      es: "convincente, difícil de rebatir",
+      example: "I disagree with him, but the case he made was compelling.",
+    },
+    {
+      id: "double-standard",
+      term: "a double standard",
+      es: "un doble rasero",
+      example: "There's a double standard here, and it's worth naming out loud.",
+    },
+    {
+      id: "double-down",
+      term: "double down",
+      es: "reafirmarse aún más",
+      example: "Instead of correcting it, he doubled down and lost the room.",
+    },
+    {
+      id: "devils-advocate",
+      term: "play devil's advocate",
+      es: "hacer de abogado del diablo",
+      example: "Let me play devil's advocate for a minute — what if she's right?",
+    },
+  ],
+
   // The phrases are what she SAYS into the handset. These cards are the state
   // the call can be in — on hold, cut off, in a voicemail — which is what the
   // other end will tell her is happening.
