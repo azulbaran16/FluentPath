@@ -34,6 +34,10 @@ import {
   type ProgressState,
   type SrsItem,
 } from "../src/lib/progress-schema.ts";
+// Phase 03: the ONE author of a scenario item's stored id. Imported rather
+// than spelled out so this harness cannot keep passing against a format the
+// app no longer writes.
+import { scenarioItemId } from "../src/lib/review-items.ts";
 
 /* ------------------------------------------------------------------ *
  * Harness
@@ -2448,6 +2452,272 @@ group("CELPIP totality — garbage on either side never throws");
       mkCelpip({ drafts: { a: "1", b: "2" } }),
       mkCelpip({ drafts: { b: "2", a: "1" } }),
     ),
+  );
+}
+
+/* ================================================================== *
+ * Scenario-shaped SRS keys (phase 03, D-06)
+ *
+ * The merge's per-entry rules cannot SEE a key — `unionRecord` hands
+ * `mergeSrsItem` two values and nothing else — so the algebra provably
+ * cannot change when the key space grows from `q-7` to
+ * `social/small-talk#phrase#hows-it-going`. That is the argument. This
+ * group is the evidence, because the argument is exactly the kind that
+ * stays true right up until someone adds a key-aware special case.
+ *
+ * The fixtures are swept against EVERY existing state, not asserted in
+ * isolation: the point is not that scenario keys merge with scenario
+ * keys, it is that they merge with the grammar keys, the malformed
+ * entries and the empty state that were already here — which is what
+ * a learner's real blob looks like the day after this phase ships.
+ *
+ * Ids are composed by `scenarioItemId` and never spelled by hand, here
+ * least of all: a harness that hard-codes the format is a harness that
+ * keeps passing after the format changes.
+ * ================================================================== */
+
+group("scenario keys — fixtures");
+
+const SMALL_TALK_PHRASE = scenarioItemId(
+  "social/small-talk",
+  "phrase",
+  "hows-it-going",
+);
+const SMALL_TALK_VOCAB = scenarioItemId(
+  "social/small-talk",
+  "vocab",
+  "break-the-ice",
+);
+const AIRPORT_PHRASE = scenarioItemId(
+  "travel/airport",
+  "phrase",
+  "check-this-bag",
+);
+
+ok(
+  "the composed key carries the slash that keeps it disjoint from `q-7`",
+  SMALL_TALK_PHRASE.includes("/") && !SMALL_TALK_PHRASE.startsWith("q-"),
+  SMALL_TALK_PHRASE,
+);
+
+// The phone: she rated the small-talk phrase "Not yet" this morning (box 0,
+// due today, unresolved) and got the vocabulary card right (box 2).
+const scenarioPhone = mk({
+  lastActive: "2026-07-28",
+  updatedAt: "2026-07-28T09:15:00.000Z",
+  srs: {
+    [SMALL_TALK_PHRASE]: { box: 0, due: "2026-07-28" },
+    [SMALL_TALK_VOCAB]: { box: 2, due: "2026-08-01" },
+  },
+  attempts: {
+    [SMALL_TALK_PHRASE]: {
+      topic: "Small talk & breaking the ice",
+      level: "B1",
+      tries: 3,
+      wrong: 2,
+      resolved: false,
+      updatedAt: "2026-07-28",
+    },
+    [SMALL_TALK_VOCAB]: {
+      topic: "Small talk & breaking the ice",
+      level: "B1",
+      tries: 2,
+      wrong: 0,
+      resolved: true,
+      updatedAt: "2026-07-28",
+    },
+  },
+});
+
+// The laptop, offline for a week: THE SAME phrase at a different box and a
+// different due date — the case the plan names — plus a scenario the phone
+// has never seen.
+const scenarioLaptop = mk({
+  lastActive: "2026-07-21",
+  updatedAt: "2026-07-21T20:00:00.000Z",
+  srs: {
+    [SMALL_TALK_PHRASE]: { box: 4, due: "2026-08-20" },
+    [AIRPORT_PHRASE]: { box: 1, due: "2026-07-23" },
+  },
+  attempts: {
+    [SMALL_TALK_PHRASE]: {
+      topic: "Small talk & breaking the ice",
+      level: "B1",
+      tries: 2,
+      wrong: 0,
+      resolved: true,
+      updatedAt: "2026-07-21",
+    },
+    [AIRPORT_PHRASE]: {
+      topic: "At the airport",
+      level: "A2",
+      tries: 1,
+      wrong: 1,
+      resolved: false,
+      lastWrongOption: 1,
+      updatedAt: "2026-07-21",
+    },
+  },
+});
+
+// Both key spaces in one blob, which is what every real account holds: a
+// global grammar id next to a composite one.
+const scenarioAndGrammar = mk({
+  lastActive: "2026-07-27",
+  updatedAt: "2026-07-27T12:00:00.000Z",
+  srs: {
+    "q-1": { box: 1, due: "2026-07-30" },
+    [SMALL_TALK_VOCAB]: { box: 0, due: "2026-07-27" },
+    [AIRPORT_PHRASE]: { box: 3, due: "2026-08-09" },
+  },
+  attempts: {
+    "q-1": {
+      topic: "Tenses",
+      tries: 2,
+      wrong: 1,
+      resolved: false,
+      lastWrongOption: 0,
+      updatedAt: "2026-07-27",
+    },
+    [SMALL_TALK_VOCAB]: {
+      topic: "Small talk & breaking the ice",
+      level: "B1",
+      tries: 4,
+      wrong: 2,
+      resolved: false,
+      updatedAt: "2026-07-27",
+    },
+  },
+});
+
+// A composite key in `srs` with no paired stat — the shape a key union can
+// always produce, now in the new key space too.
+const scenarioSrsWithoutStat = mk({
+  lastActive: "2026-07-24",
+  srs: { [SMALL_TALK_PHRASE]: { box: 2, due: "2026-08-02" } },
+});
+
+const scenarioStates: Array<[string, ProgressState]> = [
+  ["scenarioPhone", scenarioPhone],
+  ["scenarioLaptop", scenarioLaptop],
+  ["scenarioAndGrammar", scenarioAndGrammar],
+  ["scenarioSrsWithoutStat", scenarioSrsWithoutStat],
+];
+
+// Swept against everything above, not against each other.
+const allStates: Array<[string, ProgressState]> = [
+  ...states,
+  ...scenarioStates,
+];
+
+group("scenario keys — idempotence");
+for (const [na, a] of allStates) {
+  for (const [nb, b] of allStates) {
+    const once = mergeProgress(a, b);
+    deepEqual(
+      `idempotent: merge(${na}, merge(${na}, ${nb}))`,
+      mergeProgress(a, once),
+      once,
+    );
+  }
+}
+
+group("scenario keys — commutativity");
+for (const [na, a] of allStates) {
+  for (const [nb, b] of allStates) {
+    deepEqual(
+      `commutative: ${na} <-> ${nb}`,
+      mergeProgress(a, b),
+      mergeProgress(b, a),
+    );
+  }
+}
+
+group("scenario keys — associativity");
+for (const [na, a] of allStates) {
+  for (const [nb, b] of allStates) {
+    for (const [nc, c] of allStates) {
+      deepEqual(
+        `associative: (${na}·${nb})·${nc} = ${na}·(${nb}·${nc})`,
+        mergeProgress(mergeProgress(a, b), c),
+        mergeProgress(a, mergeProgress(b, c)),
+      );
+    }
+  }
+}
+
+group("scenario keys — the union neither drops nor invents one");
+{
+  const merged = mergeProgress(scenarioPhone, scenarioLaptop);
+  const expected = [
+    SMALL_TALK_PHRASE,
+    SMALL_TALK_VOCAB,
+    AIRPORT_PHRASE,
+  ].sort();
+  deepEqual(
+    "every composite key from both sides survives, and only those",
+    Object.keys(merged.srs).sort(),
+    expected,
+  );
+  deepEqual(
+    "the same holds for the paired attempts map",
+    Object.keys(merged.attempts).sort(),
+    expected,
+  );
+  ok(
+    "a composite key is never split on its separators",
+    Object.keys(merged.srs).every((k) => k === "q-1" || k.split("#").length === 3),
+    canon(Object.keys(merged.srs)),
+  );
+}
+
+group("scenario keys — the same item at two boxes and two due dates");
+{
+  const merged = mergeProgress(scenarioPhone, scenarioLaptop);
+  // The just-failed entry (box 0, due today) is the smallest possible pair, so
+  // it beats the stale box-4 success outright — and it moves as a UNIT.
+  deepEqual(
+    "the earlier due wins, box and due together",
+    merged.srs[SMALL_TALK_PHRASE],
+    { box: 0, due: "2026-07-28" },
+  );
+  ok(
+    "the surviving pair is one of the two inputs, never a blend",
+    merged.srs[SMALL_TALK_PHRASE].box === 0 &&
+      merged.srs[SMALL_TALK_PHRASE].due === "2026-07-28",
+    canon(merged.srs[SMALL_TALK_PHRASE]),
+  );
+  // The other direction of the same key, so the mistake notebook cannot be
+  // cleared by a stale device.
+  ok(
+    "an unresolved composite stat is not resurrected as resolved",
+    merged.attempts[SMALL_TALK_PHRASE].resolved === false,
+    canon(merged.attempts[SMALL_TALK_PHRASE]),
+  );
+  deepEqual(
+    "the scenario title travels with the stat, so weakTopics still groups",
+    merged.attempts[SMALL_TALK_PHRASE].topic,
+    "Small talk & breaking the ice",
+  );
+}
+
+group("scenario keys — the two key spaces do not interfere");
+{
+  // `account` also holds q-1, at an EARLIER due (2026-07-29) — so the grammar
+  // rule picks account's pair, exactly as it would with no composite key in
+  // sight. Asserted against the literal value rather than "one of the two", so
+  // a rule that started reading its neighbours could not hide here.
+  const merged = mergeProgress(scenarioAndGrammar, account);
+  deepEqual(
+    "the grammar entry merges by its own rule, untouched by its neighbours",
+    merged.srs["q-1"],
+    { box: 2, due: "2026-07-29" },
+  );
+  ok(
+    "and the composite entries are all still there",
+    merged.srs[SMALL_TALK_VOCAB] !== undefined &&
+      merged.srs[AIRPORT_PHRASE] !== undefined,
+    canon(Object.keys(merged.srs)),
   );
 }
 

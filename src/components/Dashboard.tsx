@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { WORLDS, SKILL_META, TOTAL_SCENARIOS, type Skill } from "@/lib/curriculum";
 import { useProgress } from "@/lib/progress";
 import { SkillIcon } from "@/lib/icons";
-import { GRAMMAR_QUESTIONS } from "@/lib/content/grammar";
+import { reviewableIds } from "@/lib/review-items";
 import { celebrate } from "@/lib/confetti";
 import { WorldCard } from "./WorldCard";
 import { ProgressRing } from "./ProgressRing";
@@ -14,7 +14,10 @@ import { Zap, Flame, GraduationCap, RefreshCw, ChevronRight, Target, type Lucide
 import { CountUp } from "./motion/CountUp";
 
 const SKILLS = Object.keys(SKILL_META) as Skill[];
-const REVIEWABLE_IDS = new Set(GRAMMAR_QUESTIONS.map((q) => q.id));
+
+// Every id every bank can currently emit — grammar questions AND each
+// scenario's own phrases and vocabulary. Static, so it is computed once.
+const REVIEWABLE_IDS = new Set(reviewableIds());
 
 export function Dashboard() {
   const {
@@ -32,8 +35,12 @@ export function Dashboard() {
     openMistakeCount,
   } = useProgress();
 
-  // Only count reviews that still exist in the current question bank, so the
-  // dashboard matches what the Review page actually shows.
+  // Only count reviews that still resolve against SOME bank, so the dashboard
+  // matches what the Review page actually shows. Resolution now spans every
+  // bank rather than the grammar one alone (D-05): a due scenario phrase used
+  // to be stored, merged and scheduled correctly and then counted nowhere. An
+  // orphaned id — one whose content has since been dropped — is still excluded,
+  // because /review skips it too and the two must not disagree.
   const dueCount = ready
     ? dueReviewIds().filter((id) => REVIEWABLE_IDS.has(id)).length
     : 0;
