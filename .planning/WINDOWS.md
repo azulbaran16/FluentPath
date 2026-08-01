@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 23
+open_count: 24
 waived_count: 0
 fixed_count: 8
-total_count: 31
-last_updated: 2026-08-01T01:53:21.055Z
+total_count: 32
+last_updated: 2026-08-01T02:24:03.538Z
 ---
 
 # Broken Windows Ledger
@@ -46,6 +46,7 @@ last_updated: 2026-08-01T01:53:21.055Z
 | 29 | 03 | unrun-verify | src/components/practice/RecallDeck.tsx |  | 03-01: the recall loop and the review flow have not been driven by a human in a browser. What WAS observed (production build, next start, served HTML): social/small-talk renders the 'Lock it in' step with its first authored card; social/dating renders the honest 'not ready yet' warm-up panel and NO generic per-world lines; both scenarios render one section per declared skill with 'Not yet available'; step numbers derive correctly (1 2 3 4 with the recall step omitted); the JSON-LD carries no 'teaches' key. What was NOT observed: (1) the interactive recall loop - Show it, Got it / Not yet, the XP float, the 'Locked in' screen; (2) /review rendering a due scenario item, because /review is auth-gated (307 to /login) and needs a signed-in session plus a populated store - this is the far end of D-05 and is proved deterministically by verify-scenario-content.mts (resolveReviewItem over every composed id, plus the schema/merge storage leg) but has never been seen; (3) the honest panel's link targets actually navigating. Owed to plan 03-11. | open |  | 2026-08-01T00:27:49.960Z |  |
 | 30 | 03 | unrun-verify | src/components/practice/ReviewHub.tsx |  | 03-02: the three widened review surfaces have not been seen by a human. Dashboard's due count, ReviewHub's 'Due today' badge, the weak-spots drill (both the mixed grammar+recall case and the 'nothing to drill yet' branch) and MistakesView's new compact recall card are gated ONLY by three grep guards, tsc/lint/build, and an inline node proof that the weak-spots selection returns 3 grammar + 14 recall items for a mixed weak set against the real banks. There is no committed assertion over any of these components, because they are React and this repo has no test runner (TEST-01, v2). All four need a signed-in session with a populated srs/attempts store to reach. NOTE: the user drove 03-01's far end in a browser on 2026-08-01 and reported /review resolving and rendering a real scenario item, which closes items (1) and (2) of ledger entry 29 - 03-11 inherits a smaller debt than 29 states. Owed to plan 03-11. | open |  | 2026-08-01T01:12:52.055Z |  |
 | 31 | 03 | unrun-verify | src/lib/content/phrases.ts |  | 03-03: the twelve new Work and Practical scenario pages have not been opened by a human. The RENDER PATH is observed (03-01 saw a curated scenario render its 'Lock it in' step from the same accessors, and the user drove /review in a browser on 2026-08-01) and the CONTENT is gated by 4529 committed assertions plus a 17-mutation sweep, so this is a low-risk gap rather than an unproven one. What no one has looked at: the six phrases and eight cards on each of work/emails, work/presentations, work/negotiating, work/networking, work/feedback, work/interviews, work/meetings, practical/phone-calls, practical/tech-support, practical/housing, practical/banking and practical/appointments as they actually read on screen - line breaks, the length of the longer C1 negotiating lines in the card, and whether the Spanish glosses sit well next to the English. Editorial, not structural. Owed to plan 03-11's browser pass, which is already visiting these surfaces for entries 29 and 30. | open |  | 2026-08-01T01:53:21.055Z |  |
+| 32 | 03 | unrun-verify | src/lib/content/phrases.ts |  | 03-04: the ten new Reading & Ideas and Sounding Native scenario pages have not been opened by a human. The RENDER PATH is observed (03-01 saw a curated scenario render its 'Lock it in' step through these same accessors, and the user drove /review in a browser on 2026-08-01) and the CONTENT is gated by 6019 committed assertions plus an 18-mutation sweep with 11 caught, 5 controls survived and 2 applier refusals, so this is an editorial gap rather than an unproven one. What nobody has looked at: the six phrases and eight cards on each of academic/news, academic/articles, academic/stories, academic/summaries, academic/debate, native/idioms, native/phrasal-verbs, native/pronunciation, native/register and native/culture as they actually read on screen. Two things are specific to this batch and worth a deliberate glance: native/register's phrases are three CONTRASTING PAIRS and the pairing is only legible if the casual and formal lines sit adjacent in the rendered order, and the C1 articles and debate lines are the longest in the corpus. Owed to plan 03-11's browser pass, which is already visiting these surfaces for entries 29, 30 and 31. | open |  | 2026-08-01T02:24:03.538Z |  |
 
 ````json
 [
@@ -419,6 +420,18 @@ last_updated: 2026-08-01T01:53:21.055Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-08-01T01:53:21.055Z",
+    "resolved_at": null
+  },
+  {
+    "id": 32,
+    "kind": "unrun-verify",
+    "phase": "03",
+    "file": "src/lib/content/phrases.ts",
+    "line": null,
+    "description": "03-04: the ten new Reading & Ideas and Sounding Native scenario pages have not been opened by a human. The RENDER PATH is observed (03-01 saw a curated scenario render its 'Lock it in' step through these same accessors, and the user drove /review in a browser on 2026-08-01) and the CONTENT is gated by 6019 committed assertions plus an 18-mutation sweep with 11 caught, 5 controls survived and 2 applier refusals, so this is an editorial gap rather than an unproven one. What nobody has looked at: the six phrases and eight cards on each of academic/news, academic/articles, academic/stories, academic/summaries, academic/debate, native/idioms, native/phrasal-verbs, native/pronunciation, native/register and native/culture as they actually read on screen. Two things are specific to this batch and worth a deliberate glance: native/register's phrases are three CONTRASTING PAIRS and the pairing is only legible if the casual and formal lines sit adjacent in the rendered order, and the C1 articles and debate lines are the longest in the corpus. Owed to plan 03-11's browser pass, which is already visiting these surfaces for entries 29, 30 and 31.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-01T02:24:03.538Z",
     "resolved_at": null
   }
 ]

@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 03
 current_phase_name: every-scenario-practicable
 status: in-progress
-stopped_at: "03-03 complete on main — Work & Professional and Practical Life at D-04's floors: 27/35 phrases, 25/35 vocabulary, 0/52 pairs. verify-scenario-content 2737 -> 4529. No work scenario gets the per-world generic set any more. Next is 03-04, which takes phrases to 35/35 and is the ONLY plan allowed to tick CONT-02. 8 scenarios are still on the honest warm-up panel (26 -> 18 -> 8). The three widened review surfaces from 03-02 remain unobserved in a browser (WINDOWS.md id 30)."
-last_updated: "2026-08-01T01:51:46.187Z"
+stopped_at: "03-04 complete on main — CONT-02 CLOSED. Reading & Ideas and Sounding Native at D-04's floors: 35/35 phrases, 35/35 vocabulary, 0/52 pairs. verify-scenario-content 4529 -> 6019. No scenario is served the per-world generic set any more, so 03-01's honest-panel regression note is REMOVED from Blockers/Concerns on its named evidence. getPhrases/WORLD_FALLBACK are now dead code, deleted by plan 03-11. Next is 03-05 (grammar), the first of the six CONT-01 skill plans. The ten new scenario pages remain unobserved in a browser (WINDOWS.md id 31)."
+last_updated: "2026-08-01T02:22:59.051Z"
 last_activity: 2026-08-01
-last_activity_desc: "03-03 executed: Work and Practical at D-04's floors (27/35, 25/35). 10 mutations caught, 5 controls survived, 0 duplicate strings across all 35 scenarios"
+last_activity_desc: "03-04 executed: Reading & Ideas and Sounding Native authored (128 new items). CONT-02 CLOSED at 35/35 phrases and 35/35 vocabulary. 11 mutations caught, 5 controls survived, 0 duplicate strings across all 35 scenarios"
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 36
-  completed_plans: 27
+  completed_plans: 28
 ---
 
 # Project State
@@ -23,31 +23,33 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-23)
 
 **Core value:** A learner can practice any real-life English scenario end-to-end — with an AI tutor that corrects them in context — and their progress is never lost.
-**Current focus:** Phase 03 — every-scenario-practicable (executing, plan 03 of 11 complete)
+**Current focus:** Phase 03 — every-scenario-practicable (executing, plan 04 of 11 complete)
 
 ## Current Position
 
 Phase: 03 (every-scenario-practicable) — IN PROGRESS
-Plan: 3 of 11 complete
-Status: 03-03 complete on `main`. All of Work & Professional and all of Practical Life are now at
-D-04's floors, so coverage reads **27/35 scenarios with phrases · 25/35 with vocabulary · 0/52 pairs
-written · 52 pending**. Twenty-five of the thirty-five scenarios — every scenario a learner would
-use in a working week — carry their own phrases and vocabulary and feed spaced repetition. **No
-work scenario is served the per-world generic set any more.** The eight still without phrases are
-all five of Reading & Ideas and all five of Sounding Native minus the two already curated
-(`native/idioms`, `native/pronunciation`); plan 03-04 finishes them and is what closes CONT-02.
-**CONT-02 is deliberately still In Progress** — 03-02 and 03-03 both carry it in frontmatter and
-neither may tick it at 27 of 35. Next action is executing 03-04. **The exported surface plans 03–11
-depend on is recorded in `03-01-SUMMARY.md`; coverage numbers and the merge baseline in
-`03-02-SUMMARY.md`; the authoring rules and the duplicate-scan method in `03-03-SUMMARY.md`** —
-read the summaries, not the plans.
-Last activity: 2026-08-01 — 03-03 executed: Work and Practical authored (156 new items). 10
-mutations caught with their expected assertion label, 5 controls survived, 2 applier refusals
-confirmed. Across all 35 scenarios: 162 phrase texts, 200 terms, 162 glosses and 200 examples, with
-**zero repeats** in any of the four. The three widened review surfaces from 03-02 have still **not**
-been seen in a browser (WINDOWS.md id 30).
+Plan: 4 of 11 complete
+Status: 03-04 complete on `main`. **CONT-02 is CLOSED.** All five Reading & Ideas scenarios and all
+five Sounding Native scenarios reached D-04's floors, so coverage reads **35/35 scenarios with
+phrases · 35/35 with vocabulary · 0/52 pairs written · 52 pending**. Every one of the thirty-five
+scenarios now carries phrases and vocabulary written for it and feeds spaced repetition, and **no
+scenario is served the per-world generic set any more** — the honest warm-up panel introduced at
+03-01 is now unreachable, which is why that regression note has been removed from Blockers/Concerns
+rather than re-tallied (its named evidence, `COVERAGE_TOTALS.scenariosWithPhrases === 35`, reads
+true). `getPhrases` and its `WORLD_FALLBACK` still exist in `phrases.ts` and are now dead for
+scenario pages; **plan 03-11 deletes them**, and until it does the module's own header says so.
+CONT-01 is untouched and remains **0/52 pairs** — plans 03-05 through 03-10 own it. Next action is
+executing 03-05. **The exported surface plans 05–11 depend on is recorded in `03-01-SUMMARY.md`;
+coverage numbers and the merge baseline in `03-02-SUMMARY.md`; the authoring rules and the
+duplicate-scan method in `03-03-SUMMARY.md`** — read the summaries, not the plans.
+Last activity: 2026-08-01 — 03-04 executed: Reading & Ideas and Sounding Native authored (128 new
+items; 48 phrases and 80 cards). 11 mutations caught with their expected assertion label, 5 controls
+survived, 2 applier refusals confirmed, 18 declared = 18 executed. Across all 35 scenarios: 210
+phrase texts, 280 terms, 210 glosses and 280 examples, with **zero repeats** in any of the four. The
+ten new scenario pages and the three widened review surfaces from 03-02 have still **not** been seen
+in a browser (WINDOWS.md ids 30, 31).
 
-Progress: [████████░░] 75% (3 of 6 phases; 27 of 36 plans)
+Progress: [████████░░] 78% (3 of 6 phases; 28 of 36 plans)
 
 ## Performance Metrics
 
@@ -95,6 +97,7 @@ Progress: [████████░░] 75% (3 of 6 phases; 27 of 36 plans)
 | Phase 03 P01 | ~95min | 2 tasks | 11 files |
 | Phase 03 P02 | ~70min | 3 tasks | 7 files |
 | Phase 03 P03 | ~65min | 2 tasks | 2 files |
+| Phase 03 P04 | ~70min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -201,6 +204,11 @@ Recent decisions affecting current work:
 - [Phase ?]: 03-03: a shared REQUEST FRAME across scenarios is legitimate reuse, a shared SITUATION is not — 'I'd like … please' teaches the same A2 structure in two places on purpose, but a third instance was rewritten to 'This needs escalating, I'm afraid' to vary register rather than nouns
 - [Phase ?]: 03-03: a mutation is 'caught' only when the EXPECTED assertion label appears in the output — exit code 1 alone lets a mutation trip an unrelated assertion and look caught for the wrong reason
 - [Phase ?]: 03-03: mutation anchors are EXTRACTED from the real file by unique substring at generation time, not hand-typed — a stale hand-copied anchor is what made 03-02's M9 unreproducible
+- [Phase ?]: 03-04: CONT-02 ticked only after asserting COVERAGE_TOTALS.scenariosWithPhrases === 35 and scenariosWithVocabulary === 35 — the assertion runs BEFORE the tick, never after
+- [Phase ?]: 03-04: Sounding Native authored to CONT-02's floors at its declared CEFR levels only; the deeper idiom/phrasal-verb/pronunciation/register depth is CONT-04 and stays with Phase 4
+- [Phase ?]: 03-04: native/register's phrases are three CONTRASTING PAIRS rather than a flat list — a register is a dial, and one line cannot show a dial moving
+- [Phase ?]: 03-04: native/pronunciation's tongue-twister shape was deliberately NOT spread to the other four native scenarios; its vocabulary deck is the metalanguage instead
+- [Phase ?]: 03-04: verb-skeleton overlap between the phrasal-verbs deck and the rest of the corpus is structural, not authoring fatigue — every phrasal verb shares a verb with some other phrasal verb in a 280-term corpus
 
 ### Pending Todos
 
@@ -220,26 +228,6 @@ Recent decisions affecting current work:
   the OS recording indicator. Worth one real-device glance in plan 12.
 
 ### Blockers/Concerns
-
-- **03-01: twenty-six scenarios lost their speaking warm-up on that commit, and
-  the last of them does not get one back until plan 03-04.** As of 03-03 the
-  number is **eight**, not twenty-six (26 → 18 at 03-02 → 8 here) — the note
-  stays open until the evidence below says otherwise, and the tally is updated
-  rather than the note cleared. Deliberate, and the one thing in Phase 3
-  that a mid-phase stop makes visibly *worse*, so it is recorded here rather than
-  only in 03-01-PLAN.md, which a reader resuming mid-phase would not open.
-  What happened: `ScenarioView` used to call `getPhrases`, whose per-world
-  fallback hands every scenario in a world the same three generic lines — two
-  scenarios receiving the identical exercise, which is exactly what D-01 was
-  chosen to prevent. It now calls the strict `getScenarioPhrases`, which returns
-  nothing for a scenario with no curated set, and those scenarios render an
-  honest "not ready yet" panel with a link to the global speaking room instead.
-  **27 of 35 scenarios have their own set today** (03-03 delivered the 27/35 it
-  was scheduled to; the eight left are all of Reading & Ideas and all of
-  Sounding Native). **Plan 03-04 closes this** (03-04 to 35/35); at that point the panel is
-  unreachable and `getPhrases` itself is deleted by plan 03-11. Remove this entry
-  on the evidence — `COVERAGE_TOTALS.scenariosWithPhrases === 35` — not on memory.
-  A temporary reduction in what is shown, for an increase in what is true.
 
 - Brownfield fragility (see .planning/codebase/CONCERNS.md): progress PUT is unvalidated and fire-and-forget; JSON.parse on stored progress can throw — addressed by Phase 2
 - IP constraint (Phase 1): third-party CELPIP study material is format reference only — no text may be copied into the app; Celpip.zip is gitignored
@@ -266,6 +254,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-08-01T01:51:46.120Z
-Stopped at: 03-03 complete on main — Work & Professional and Practical Life at D-04's floors: 27/35 phrases, 25/35 vocabulary, 0/52 pairs. verify-scenario-content 2737 -> 4529. No work scenario gets the per-world generic set any more. Next is 03-04, which takes phrases to 35/35 and is the ONLY plan allowed to tick CONT-02. 8 scenarios are still on the honest warm-up panel (26 -> 18 -> 8). The three widened review surfaces from 03-02 remain unobserved in a browser (WINDOWS.md id 30).
+Last session: 2026-08-01T02:22:52.074Z
+Stopped at: 03-04 complete on main — CONT-02 CLOSED. Reading & Ideas and Sounding Native at D-04's floors: 35/35 phrases, 35/35 vocabulary, 0/52 pairs. verify-scenario-content 4529 -> 6019. No scenario is served the per-world generic set any more, so 03-01's honest-panel regression note is REMOVED from Blockers/Concerns on its named evidence. getPhrases/WORLD_FALLBACK are now dead code, deleted by plan 03-11. Next is 03-05 (grammar), the first of the six CONT-01 skill plans. The ten new scenario pages remain unobserved in a browser (WINDOWS.md id 31).
 Resume file: None
