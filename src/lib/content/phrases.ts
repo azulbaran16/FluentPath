@@ -196,6 +196,54 @@ const SETS: Record<string, Phrase[]> = {
     { id: "exchange-it-for-a-bigger-size", text: "Could I exchange it for a bigger size?", es: "¿Podría cambiarlo por una talla más grande?", tip: "'Exchange' es cambiar por otro artículo; 'refund', que te devuelvan el dinero." },
     { id: "is-this-on-sale", text: "Is this on sale, or is that the full price?", es: "¿Esto está rebajado o es el precio normal?", tip: "'On sale' = rebajado. 'For sale' = en venta. No los mezcles." },
   ],
+  // The one scenario where she cannot see the other person. These six are the
+  // lines that survive a bad line: getting volume, spelling out, reading a
+  // number back, and ending a call without either party guessing.
+  "practical/phone-calls": [
+    { id: "could-you-speak-up", text: "Could you speak up a little? The line's not great.", es: "¿Puedes hablar un poco más alto? La línea no es buena.", tip: "'Speak up' es subir el volumen; 'slow down', bajar la velocidad. No son lo mismo." },
+    { id: "let-me-spell-that", text: "Let me spell that for you: B for Bravo, A for Alpha.", es: "Te lo deletreo: B de Bravo, A de Alfa.", tip: "En inglés se deletrea con palabras; decir solo la letra no se entiende por teléfono." },
+    { id: "so-thats-double-seven", text: "So that's double seven, four, one — is that right?", es: "Entonces es siete siete, cuatro, uno, ¿correcto?", tip: "'Double seven' = 77. Los dígitos repetidos se agrupan así al leerlos en voz alta." },
+    { id: "is-this-a-good-time", text: "Is this a good time, or shall I call back later?", es: "¿Te pillo bien, o te llamo luego?" },
+    { id: "we-got-cut-off", text: "Sorry, I think we got cut off.", es: "Perdona, creo que se cortó.", tip: "'Get cut off' es que se corte la llamada; 'hang up' es colgar a propósito." },
+    { id: "ill-let-you-go", text: "I'll let you go — thanks for your time.", es: "Te dejo; gracias por tu tiempo.", tip: "La fórmula fija para cerrar una llamada sin parecer brusco." },
+  ],
+  // The written half (a support ticket) is plan 03-06's. These are spoken:
+  // what she says to a human who is following a script on the other end.
+  "practical/tech-support": [
+    { id: "worked-fine-until", text: "It worked fine until the update on Tuesday.", es: "Funcionaba bien hasta la actualización del martes.", tip: "Dar el momento en que empezó ahorra media conversación." },
+    { id: "every-time-i", text: "It happens every time I open a second tab.", es: "Pasa cada vez que abro una segunda pestaña.", tip: "'Every time I…' describe un patrón reproducible; es lo primero que te van a pedir." },
+    { id: "that-didnt-fix-it", text: "That didn't fix it — same message.", es: "Eso no lo ha solucionado; el mismo mensaje." },
+    { id: "stay-on-the-line", text: "Can you stay on the line while I try it?", es: "¿Puede quedarse en línea mientras lo pruebo?" },
+    { id: "reference-number", text: "Could I have a reference number for this?", es: "¿Me da un número de referencia?", tip: "Pedirlo al final de cada llamada evita empezar de cero en la siguiente." },
+    { id: "this-needs-escalating", text: "This needs escalating, I'm afraid.", es: "Me temo que esto hay que escalarlo.", tip: "'It needs escalating' afirma en vez de pedir, y esa sola palabra hace más que cinco frases de queja." },
+  ],
+  // B2, and the READING half (a lease) belongs to plan 03-07. These six are a
+  // spoken viewing checklist: the questions that decide whether she signs.
+  "practical/housing": [
+    { id: "much-damp-in-winter", text: "Is there much damp in the winter?", es: "¿Entra mucha humedad en invierno?", tip: "La pregunta que más dinero ahorra en una visita, y la que casi nadie hace." },
+    { id: "responsible-for-repairs", text: "Who's responsible for repairs — you or the landlord?", es: "¿Quién se encarga de las reparaciones, usted o el propietario?" },
+    { id: "how-much-notice", text: "How much notice do I have to give if I leave early?", es: "¿Con cuánta antelación tengo que avisar si me voy antes?", tip: "'Give notice' es avisar formalmente; sin plazo claro puedes perder la fianza." },
+    { id: "see-the-meter-readings", text: "Could I see the meter readings before I sign?", es: "¿Puedo ver las lecturas de los contadores antes de firmar?", tip: "Anotarlas el día de entrada evita pagar el consumo del inquilino anterior." },
+    { id: "when-could-i-move-in", text: "When could I move in, realistically?", es: "¿Cuándo podría mudarme, siendo realistas?", tip: "'Realistically' pide la fecha verdadera, no la del anuncio." },
+    { id: "boiler-last-serviced", text: "When was the boiler last serviced?", es: "¿Cuándo se revisó la caldera por última vez?", tip: "'Serviced' es la revisión; 'repaired', la avería. Preguntar por la primera evita la segunda." },
+  ],
+  "practical/banking": [
+    { id: "monthly-fee-on-this-account", text: "Is there a monthly fee on this account?", es: "¿Esta cuenta tiene comisión mensual?", tip: "'A fee' es una comisión; 'a fine', una multa. En un banco no los confundas." },
+    { id: "payment-i-didnt-make", text: "There's a payment here I didn't make.", es: "Hay un cargo aquí que yo no he hecho.", tip: "Empieza por el hecho; la palabra 'fraud' asusta y ralentiza la gestión." },
+    { id: "freeze-the-card", text: "Can I freeze the card from the app, or do you have to do it?", es: "¿Puedo bloquear la tarjeta desde la app o tienen que hacerlo ustedes?" },
+    { id: "how-long-to-clear", text: "How long will the transfer take to clear?", es: "¿Cuánto tarda en hacerse efectiva la transferencia?", tip: "'To clear' es que el dinero quede realmente disponible, no solo enviado." },
+    { id: "im-a-bit-overdrawn", text: "I think I'm a bit overdrawn this month.", es: "Creo que estoy un poco en números rojos este mes.", tip: "'Overdrawn' es tener saldo negativo; el permiso para tenerlo es 'an overdraft'." },
+    { id: "print-me-the-transactions", text: "Could you print me the last three months of transactions?", es: "¿Me puede imprimir los movimientos de los últimos tres meses?" },
+  ],
+  // A2 and staying A2: short, concrete, produceable at a desk under pressure.
+  "practical/appointments": [
+    { id: "make-an-appointment", text: "I'd like to make an appointment, please.", es: "Quisiera pedir cita, por favor.", tip: "Se dice 'make an appointment', nunca 'take an appointment'." },
+    { id: "first-free-slot", text: "When's your first free slot?", es: "¿Cuál es el primer hueco que tiene?", tip: "'A slot' es un hueco en la agenda." },
+    { id: "is-the-morning-possible", text: "Is the morning possible?", es: "¿Puede ser por la mañana?" },
+    { id: "do-i-need-to-bring-anything", text: "Do I need to bring anything?", es: "¿Tengo que llevar algo?" },
+    { id: "cant-make-it-on-friday", text: "I can't make it on Friday.", es: "El viernes no puedo.", tip: "'Make it' es poder ir. Es lo que se dice para cancelar." },
+    { id: "can-i-come-earlier", text: "Can I come earlier?", es: "¿Puedo venir antes?" },
+  ],
   "native/idioms": [
     { id: "piece-of-cake", text: "It's a piece of cake.", es: "Es pan comido.", tip: "Idiom: algo muy fácil." },
     { id: "call-it-a-day", text: "Let's call it a day.", es: "Dejémoslo por hoy." },

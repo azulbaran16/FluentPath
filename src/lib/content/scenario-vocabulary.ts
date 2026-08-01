@@ -1062,6 +1062,268 @@ const DECKS: Record<string, ScenarioVocabCard[]> = {
       example: "There was one person at the checkout and a queue of nine.",
     },
   ],
+
+  // The phrases are what she SAYS into the handset. These cards are the state
+  // the call can be in — on hold, cut off, in a voicemail — which is what the
+  // other end will tell her is happening.
+  "practical/phone-calls": [
+    {
+      id: "on-hold",
+      term: "on hold",
+      es: "en espera",
+      example: "I was on hold for twenty minutes and then the line went dead.",
+    },
+    {
+      id: "hang-up",
+      term: "hang up",
+      es: "colgar",
+      example: "Don't hang up — I'm transferring you now.",
+    },
+    {
+      id: "landline",
+      term: "a landline",
+      es: "un teléfono fijo",
+      example: "The signal's bad in here; call me on the landline.",
+    },
+    {
+      id: "transfer-a-call",
+      term: "transfer a call",
+      es: "pasar una llamada",
+      example: "She transferred the call and I had to explain it all again.",
+    },
+    {
+      id: "extension",
+      term: "an extension",
+      es: "una extensión",
+      example: "Her extension is two-oh-four.",
+    },
+    {
+      id: "voicemail",
+      term: "voicemail",
+      es: "el buzón de voz",
+      example: "I left a voicemail, but she never checks it.",
+    },
+    {
+      id: "get-through",
+      term: "get through",
+      es: "conseguir contactar",
+      example: "I tried four times before I got through to a human.",
+    },
+    {
+      id: "cold-call",
+      term: "a cold call",
+      es: "una llamada comercial no solicitada",
+      example: "I don't answer numbers I don't know — they're all cold calls.",
+    },
+  ],
+
+  "practical/tech-support": [
+    {
+      id: "crash",
+      term: "crash",
+      es: "colgarse, cerrarse de golpe",
+      example: "The app crashes the moment I upload a photo.",
+    },
+    {
+      id: "freeze",
+      term: "freeze",
+      es: "quedarse congelado",
+      example: "The screen froze and the cursor stopped moving.",
+    },
+    {
+      id: "error-message",
+      term: "an error message",
+      es: "un mensaje de error",
+      example: "Read me the error message exactly as it appears.",
+    },
+    {
+      id: "reboot",
+      term: "reboot",
+      es: "reiniciar",
+      example: "Reboot it and tell me if the light turns green.",
+    },
+    {
+      id: "glitch",
+      term: "a glitch",
+      es: "un fallo puntual",
+      example: "It was a glitch, not a fault — it hasn't happened since.",
+    },
+    {
+      id: "log-out",
+      term: "log someone out",
+      es: "cerrarle la sesión a alguien",
+      example: "It logs me out every ten minutes for no reason.",
+    },
+    {
+      id: "workaround",
+      term: "a workaround",
+      es: "una solución provisional",
+      example: "There's a workaround, but it isn't a fix.",
+    },
+    {
+      id: "be-down",
+      term: "be down",
+      es: "estar caído (un servicio)",
+      example: "The whole system's been down since nine this morning.",
+    },
+  ],
+
+  // B2. The nouns on the paperwork, not the questions at the viewing — the
+  // phrases already cover what she asks out loud.
+  "practical/housing": [
+    {
+      id: "landlord",
+      term: "a landlord",
+      es: "el casero, el propietario",
+      example: "The landlord lives abroad, so an agency handles everything.",
+    },
+    {
+      id: "tenancy-agreement",
+      term: "a tenancy agreement",
+      es: "un contrato de arrendamiento",
+      example: "Read the tenancy agreement before you transfer anything.",
+    },
+    {
+      id: "utilities",
+      term: "the utilities",
+      es: "los suministros (luz, agua, gas)",
+      example: "The rent looks cheap until you add the utilities.",
+    },
+    {
+      id: "inventory",
+      term: "an inventory",
+      es: "el inventario de entrada",
+      example: "Photograph everything on the inventory the day you move in.",
+    },
+    {
+      id: "break-clause",
+      term: "a break clause",
+      es: "una cláusula de salida anticipada",
+      example: "There's a break clause at six months, which is why I took it.",
+    },
+    {
+      id: "unfurnished",
+      term: "unfurnished",
+      es: "sin muebles",
+      example: "It's unfurnished, so budget for a bed and a fridge.",
+    },
+    {
+      id: "viewing",
+      term: "a viewing",
+      es: "una visita a la vivienda",
+      example: "We had three viewings booked on the same afternoon.",
+    },
+    {
+      id: "estate-agent",
+      term: "an estate agent",
+      es: "un agente inmobiliario",
+      example: "The estate agent turned up late with the wrong keys.",
+    },
+  ],
+
+  "practical/banking": [
+    {
+      id: "current-account",
+      term: "a current account (UK) / a checking account (US)",
+      es: "una cuenta corriente",
+      example: "You'll need a current account before they set up the salary payment.",
+    },
+    {
+      id: "direct-debit",
+      term: "a direct debit",
+      es: "una domiciliación bancaria",
+      example: "The gym takes it by direct debit on the first of the month.",
+    },
+    {
+      id: "standing-order",
+      term: "a standing order",
+      es: "una orden de pago periódica",
+      example: "Rent goes out by standing order, not direct debit.",
+    },
+    {
+      id: "overdraft",
+      term: "an overdraft",
+      es: "un descubierto autorizado",
+      example: "The first five hundred of the overdraft is interest-free.",
+    },
+    {
+      id: "sort-code",
+      term: "a sort code (UK) / a routing number (US)",
+      es: "el código de la entidad bancaria",
+      example: "They need the sort code and the account number, nothing else.",
+    },
+    {
+      id: "balance",
+      term: "the balance",
+      es: "el saldo",
+      example: "Check the balance before the rent goes out on Friday.",
+    },
+    {
+      id: "withdraw",
+      term: "withdraw",
+      es: "sacar dinero",
+      example: "There's a limit on how much you can withdraw in one day.",
+    },
+    {
+      id: "interest",
+      term: "interest",
+      es: "los intereses",
+      example: "The account pays almost no interest, but it's free to run.",
+    },
+  ],
+
+  // A2, and the examples stay A2 too: one clause, present or past simple, a
+  // concrete noun. A card a learner cannot say back is not a card.
+  "practical/appointments": [
+    {
+      id: "waiting-list",
+      term: "a waiting list",
+      es: "una lista de espera",
+      example: "There's a waiting list of three weeks.",
+    },
+    {
+      id: "cancel",
+      term: "cancel",
+      es: "cancelar",
+      example: "Please cancel it if you can't come.",
+    },
+    {
+      id: "reschedule",
+      term: "reschedule",
+      es: "cambiar de fecha",
+      example: "Can we reschedule for next Monday?",
+    },
+    {
+      id: "receptionist",
+      term: "the receptionist",
+      es: "el recepcionista",
+      example: "Ask the receptionist when you arrive.",
+    },
+    {
+      id: "reminder",
+      term: "a reminder",
+      es: "un recordatorio",
+      example: "They send a reminder by text the day before.",
+    },
+    {
+      id: "available",
+      term: "available",
+      es: "libre, disponible",
+      example: "Is the doctor available on Thursday?",
+    },
+    {
+      id: "running-late",
+      term: "be running late",
+      es: "ir con retraso",
+      example: "The doctor is running twenty minutes late.",
+    },
+    {
+      id: "check-up",
+      term: "a check-up",
+      es: "una revisión",
+      example: "It's only a check-up. It takes ten minutes.",
+    },
+  ],
 };
 
 /**
