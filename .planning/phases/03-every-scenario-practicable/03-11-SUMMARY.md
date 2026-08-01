@@ -69,7 +69,7 @@ content, and none was rounded up.
 |---|---|---|
 | 1 | `c0e9a79` | `WORLD_FALLBACK` and `getPhrases` deleted, twelve call sites repointed, the replacement invariant asserted, WINDOWS 39/41 and three tautological id lines closed, `AGENTS.md`, the ledger |
 | 2 | — | **The browser pass, performed by the coordinator** against `next start -p 3117`, signed in. Results in §5 |
-| 3 | `<task3>` | CONT-01 and CONT-02 given the status the pass earned; the ledger set to what was and was not observed |
+| 3 | `5328519` | CONT-01 and CONT-02 given the status the pass earned; the ledger set to what was and was not observed |
 
 ---
 
