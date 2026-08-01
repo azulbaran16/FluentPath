@@ -388,6 +388,370 @@ const DECKS: Record<string, ScenarioVocabCard[]> = {
     },
   ],
 
+  // The phrases here are what SHE says in the room. These cards are the words
+  // the PROCESS uses around her — the ones in the job ad, the recruiter's call
+  // and the contract — which is where a B2 candidate actually gets lost.
+  "work/interviews": [
+    {
+      id: "shortlist",
+      term: "a shortlist",
+      es: "la lista de finalistas",
+      example: "You're on the shortlist, so expect a call this week.",
+    },
+    {
+      id: "track-record",
+      term: "a track record",
+      es: "una trayectoria demostrable",
+      example: "She has a track record of turning failing teams around.",
+    },
+    {
+      id: "transferable-skills",
+      term: "transferable skills",
+      es: "competencias transferibles",
+      example: "Most of my transferable skills come from managing volunteers.",
+    },
+    {
+      id: "hands-on",
+      term: "hands-on",
+      es: "práctico, con implicación directa",
+      example: "The role is very hands-on for the first six months.",
+    },
+    {
+      id: "good-fit",
+      term: "to be a good fit",
+      es: "encajar bien",
+      example: "They liked me but said I wasn't a good fit for that team.",
+    },
+    {
+      id: "probation-period",
+      term: "a probation period",
+      es: "el periodo de prueba",
+      example: "There's a six-month probation period on every new contract.",
+    },
+    {
+      id: "notice-period",
+      term: "a notice period",
+      es: "el plazo de preaviso",
+      example: "I'd have to work a month's notice period before I could start.",
+    },
+    {
+      id: "salary-expectations",
+      term: "salary expectations",
+      es: "las expectativas salariales",
+      example: "They asked about my salary expectations before the second round.",
+    },
+  ],
+
+  "work/meetings": [
+    {
+      id: "agenda",
+      term: "the agenda",
+      es: "el orden del día",
+      example: "Can we add one item to the agenda before we start?",
+    },
+    {
+      id: "action-points",
+      term: "action points",
+      es: "las tareas acordadas",
+      example: "Let's finish with the action points and who owns each one.",
+    },
+    {
+      id: "take-the-minutes",
+      term: "take the minutes",
+      es: "levantar acta",
+      example: "Someone needs to take the minutes — I did it last time.",
+    },
+    {
+      id: "talk-over-someone",
+      term: "talk over someone",
+      es: "pisarle la palabra a alguien",
+      example: "On video calls people talk over each other constantly.",
+    },
+    {
+      id: "on-mute",
+      term: "on mute",
+      es: "con el micrófono silenciado",
+      example: "You're on mute — we can see you but we can't hear you.",
+    },
+    {
+      id: "run-over",
+      term: "run over",
+      es: "alargarse más de la cuenta",
+      example: "The demo ran over by twenty minutes and we skipped the budget.",
+    },
+    {
+      id: "show-of-hands",
+      term: "a show of hands",
+      es: "una votación a mano alzada",
+      example: "Let's have a show of hands: who's in favour?",
+    },
+    {
+      id: "touch-base",
+      term: "touch base",
+      es: "hacer una puesta en común breve",
+      example: "I'll touch base with you on Thursday before the client call.",
+    },
+  ],
+
+  // The writing half of this scenario belongs to plan 03-06. These cards are
+  // the machinery a learner has to RECOGNISE in someone else's message.
+  "work/emails": [
+    {
+      id: "subject-line",
+      term: "the subject line",
+      es: "el asunto",
+      example: "Put the deadline in the subject line and people actually read it.",
+    },
+    {
+      id: "attachment",
+      term: "an attachment",
+      es: "un archivo adjunto",
+      example: "The attachment didn't come through — could you resend it?",
+    },
+    {
+      id: "out-of-office",
+      term: "an out-of-office",
+      es: "una respuesta automática de ausencia",
+      example: "His out-of-office says he's back on the ninth.",
+    },
+    {
+      id: "bounce-back",
+      term: "bounce back",
+      es: "ser devuelto (un correo)",
+      example: "The email bounced back — that address doesn't exist any more.",
+    },
+    {
+      id: "recipient",
+      term: "the recipient",
+      es: "el destinatario",
+      example: "Check the recipient twice before you send anything sensitive.",
+    },
+    {
+      id: "flag-something",
+      term: "flag something",
+      es: "marcar algo para no perderlo",
+      example: "I flagged your message so it wouldn't disappear down the list.",
+    },
+    {
+      id: "sign-off",
+      term: "a sign-off",
+      es: "la despedida de un correo",
+      example: "'Kind regards' is a safe sign-off with a client you've never met.",
+    },
+    {
+      id: "snowed-under",
+      term: "snowed under",
+      es: "hasta arriba de trabajo",
+      example: "Apologies for the slow reply — I've been snowed under all week.",
+    },
+  ],
+
+  "work/presentations": [
+    {
+      id: "slide-deck",
+      term: "a slide deck",
+      es: "una presentación (el conjunto de diapositivas)",
+      example: "Send me the slide deck the night before, not five minutes before.",
+    },
+    {
+      id: "signpost",
+      term: "signpost",
+      es: "ir anunciando la estructura",
+      example: "Good speakers signpost constantly so nobody gets lost.",
+    },
+    {
+      id: "q-and-a",
+      term: "the Q&A",
+      es: "el turno de preguntas",
+      example: "We overran, so the Q&A was cut to four minutes.",
+    },
+    {
+      id: "handout",
+      term: "a handout",
+      es: "un documento de apoyo que se reparte",
+      example: "There's a handout at the back with all the figures.",
+    },
+    {
+      id: "go-off-on-a-tangent",
+      term: "go off on a tangent",
+      es: "irse por las ramas",
+      example: "He went off on a tangent about the office move and lost the room.",
+    },
+    {
+      id: "lose-your-train-of-thought",
+      term: "lose your train of thought",
+      es: "perder el hilo",
+      example: "I lost my train of thought halfway through the second slide.",
+    },
+    {
+      id: "dry-run",
+      term: "a dry run",
+      es: "un ensayo previo",
+      example: "The dry run on Tuesday cut it from forty minutes to twenty-five.",
+    },
+    {
+      id: "filler-word",
+      term: "a filler word",
+      es: "una muletilla",
+      example: "Her only filler word is 'so', and she uses it once a minute.",
+    },
+  ],
+
+  // C1. The words that let a learner push back without closing the door — a
+  // vocabulary of positions and trades rather than of disagreement.
+  "work/negotiating": [
+    {
+      id: "sticking-point",
+      term: "a sticking point",
+      es: "un punto de fricción",
+      example: "The only sticking point left is who pays for shipping.",
+    },
+    {
+      id: "deal-breaker",
+      term: "a deal-breaker",
+      es: "una condición innegociable",
+      example: "Exclusivity is a deal-breaker for us, I'm afraid.",
+    },
+    {
+      id: "meet-someone-halfway",
+      term: "meet someone halfway",
+      es: "llegar a un punto medio",
+      example: "We'll meet you halfway on the fee if you sign this month.",
+    },
+    {
+      id: "concession",
+      term: "a concession",
+      es: "una concesión",
+      example: "That's the third concession we've made and we've had none back.",
+    },
+    {
+      id: "leverage",
+      term: "leverage",
+      es: "poder de negociación",
+      example: "Once they knew we had another offer, we had real leverage.",
+    },
+    {
+      id: "walk-away",
+      term: "walk away",
+      es: "levantarse de la mesa",
+      example: "Being willing to walk away is worth more than any argument.",
+    },
+    {
+      id: "ballpark-figure",
+      term: "a ballpark figure",
+      es: "una cifra aproximada",
+      example: "Give me a ballpark figure and I'll tell you if it's worth continuing.",
+    },
+    {
+      id: "counter-offer",
+      term: "a counter-offer",
+      es: "una contraoferta",
+      example: "Their counter-offer was barely different, so we let it sit a week.",
+    },
+  ],
+
+  "work/networking": [
+    {
+      id: "elevator-pitch",
+      term: "an elevator pitch",
+      es: "una presentación de treinta segundos",
+      example: "Her elevator pitch is two sentences and you remember both.",
+    },
+    {
+      id: "work-the-room",
+      term: "work the room",
+      es: "moverse por la sala hablando con todos",
+      example: "He worked the room for an hour and left with nine cards.",
+    },
+    {
+      id: "lead",
+      term: "a lead",
+      es: "un contacto con posible recorrido",
+      example: "That conversation turned into our best lead of the year.",
+    },
+    {
+      id: "follow-up",
+      term: "follow up",
+      es: "dar seguimiento",
+      example: "Follow up within two days or the conversation is wasted.",
+    },
+    {
+      id: "warm-introduction",
+      term: "a warm introduction",
+      es: "una presentación hecha por alguien de confianza",
+      example: "A warm introduction beats a cold email every single time.",
+    },
+    {
+      id: "peer",
+      term: "a peer",
+      es: "alguien de tu mismo nivel profesional",
+      example: "It helps to have peers outside your own company.",
+    },
+    {
+      id: "put-a-face-to-a-name",
+      term: "put a face to a name",
+      es: "poner cara a un nombre",
+      example: "It's good to finally put a face to the name.",
+    },
+    {
+      id: "on-my-radar",
+      term: "on my radar",
+      es: "presente, en mente",
+      example: "I'll keep you on my radar if anything opens up.",
+    },
+  ],
+
+  "work/feedback": [
+    {
+      id: "constructive-criticism",
+      term: "constructive criticism",
+      es: "crítica constructiva",
+      example: "There's a difference between constructive criticism and venting.",
+    },
+    {
+      id: "blind-spot",
+      term: "a blind spot",
+      es: "un punto ciego sobre uno mismo",
+      example: "Interrupting people was a blind spot until someone told me.",
+    },
+    {
+      id: "sugarcoat",
+      term: "sugarcoat",
+      es: "endulzar, suavizar de más",
+      example: "Don't sugarcoat it — I'd rather know now.",
+    },
+    {
+      id: "defensive",
+      term: "defensive",
+      es: "a la defensiva",
+      example: "The moment he got defensive, the conversation was over.",
+    },
+    {
+      id: "performance-review",
+      term: "a performance review",
+      es: "una evaluación de desempeño",
+      example: "Nothing in a performance review should ever be a surprise.",
+    },
+    {
+      id: "take-on-board",
+      term: "take something on board",
+      es: "asumir algo, tenerlo en cuenta",
+      example: "She took the note on board and rewrote the whole section.",
+    },
+    {
+      id: "praise",
+      term: "praise",
+      es: "elogios, reconocimiento",
+      example: "Praise in public, criticise in private.",
+    },
+    {
+      id: "call-someone-out",
+      term: "call someone out",
+      es: "señalar públicamente a alguien",
+      example: "Calling someone out in a meeting rarely changes behaviour.",
+    },
+  ],
+
   // A2. Short examples, concrete nouns, and only structures an A2 learner can
   // produce at a counter under pressure.
   "travel/airport": [

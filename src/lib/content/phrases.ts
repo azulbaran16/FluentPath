@@ -101,6 +101,53 @@ const SETS: Record<string, Phrase[]> = {
     { id: "circle-back", text: "Let's circle back to this later.", es: "Volvamos a esto más tarde." },
     { id: "to-sum-up", text: "So, to sum up...", es: "Entonces, para resumir..." },
   ],
+  // B1, and this scenario's WRITING half belongs to plan 03-06. These six are
+  // the spoken half only: talking ABOUT a message — chasing it, resending it,
+  // owning a mistake in it — on a call or across a desk.
+  "work/emails": [
+    { id: "did-you-get-my-email", text: "Did you get my email from Friday?", es: "¿Te llegó mi correo del viernes?", tip: "En el habla se dice 'did you get', casi nunca 'have you received'." },
+    { id: "put-it-in-writing", text: "I'll put it in writing so we both have it.", es: "Te lo mando por escrito para que quede constancia.", tip: "'Put it in writing' cierra un acuerdo verbal sin desconfiar de nadie." },
+    { id: "copy-you-in", text: "I'll copy you in on the thread.", es: "Te pongo en copia en el hilo.", tip: "'Copy someone in' (UK) = 'CC someone' (US)." },
+    { id: "landed-in-your-spam", text: "It might have landed in your spam folder.", es: "Puede que haya caído en tu carpeta de spam." },
+    { id: "hit-reply-all", text: "I hit reply all by mistake.", es: "Le di a «responder a todos» sin querer.", tip: "'Hit' es pulsar un botón: hit send, hit reply, hit delete." },
+    { id: "gentle-nudge", text: "I'll send them a gentle nudge.", es: "Les mando un recordatorio suave.", tip: "'A nudge' suena mucho mejor que un tercer 'reminder'." },
+  ],
+  "work/presentations": [
+    { id: "bear-with-me", text: "Bear with me while I find the right slide.", es: "Un momento, que busco la diapositiva.", tip: "'Bear with me' es la fórmula fija para pedir paciencia en público." },
+    { id: "three-things", text: "There are three things I want you to take away from this.", es: "Hay tres cosas que quiero que os llevéis de esto.", tip: "Anunciar el número al principio hace que la sala te siga." },
+    { id: "outside-my-area", text: "That's outside my area, but I'll find out and get back to you.", es: "Eso se sale de mi área, pero lo averiguo y te digo.", tip: "En el turno de preguntas, admitirlo cuesta menos que improvisar." },
+    { id: "does-that-answer", text: "Does that answer your question?", es: "¿Responde eso a tu pregunta?", tip: "Cierra cada respuesta con esto y recuperas el control de la sala." },
+    { id: "shape-of-the-line", text: "Don't worry about reading the numbers — the shape of the line is the point.", es: "No os preocupéis por leer los números; lo importante es la forma de la curva." },
+    { id: "leave-you-with-one-thought", text: "I'll leave you with one thought.", es: "Os dejo con una idea.", tip: "Un cierre con contenido; nunca termines con 'that's it'." },
+  ],
+  // C1. Concession and counter-offer, not assertion: every line either buys
+  // information, trades something, or marks a limit without shutting the door.
+  "work/negotiating": [
+    { id: "struggle-to-justify", text: "I'd struggle to justify that internally.", es: "Me costaría justificarlo internamente.", tip: "Rechaza sin culpar a nadie: el obstáculo es la organización, no tú." },
+    { id: "any-movement-on", text: "Is there any movement on the price?", es: "¿Hay margen en el precio?", tip: "'Movement' pregunta si algo es negociable sin llegar a pedir un descuento." },
+    { id: "if-we-absorbed-the-shipping", text: "If we absorbed the shipping, could you commit to twelve months?", es: "Si nosotros asumimos el envío, ¿os comprometeríais a doce meses?", tip: "La condicional pone la concesión y la contrapartida en la misma frase." },
+    { id: "as-far-as-i-can-go", text: "That's about as far as I can go.", es: "Hasta ahí puedo llegar.", tip: "Marca un límite sin cerrar la conversación." },
+    { id: "not-far-apart", text: "We're not far apart on this.", es: "No estamos tan lejos.", tip: "Reencuadra el desacuerdo como algo prácticamente resuelto." },
+    { id: "on-that-basis", text: "On that basis, I think we've got a deal.", es: "Sobre esa base, creo que tenemos un acuerdo.", tip: "'On that basis' fija exactamente lo acordado justo antes de cerrar." },
+  ],
+  "work/networking": [
+    { id: "whats-brought-you-here", text: "So what's brought you here today?", es: "¿Y qué te trae por aquí?", tip: "El arranque estándar en un evento: pregunta por el motivo, no por el cargo." },
+    { id: "im-the-one-who", text: "I'm the one who keeps the data from falling over.", es: "Soy el que evita que los datos se vengan abajo.", tip: "Una imagen se recuerda; un cargo, no." },
+    { id: "do-you-two-know-each-other", text: "Do you two know each other? Ana, this is Marc.", es: "¿Os conocéis? Ana, este es Marc.", tip: "Presentar a dos personas es la forma más rápida de hacerte útil en una sala." },
+    { id: "pick-your-brain", text: "I'd love to pick your brain about that sometime.", es: "Me encantaría que me contaras más sobre eso algún día.", tip: "'Pick someone's brain' halaga; 'ask you for advice' obliga." },
+    { id: "have-you-got-a-card", text: "Have you got a card, or shall I find you on LinkedIn?", es: "¿Tienes tarjeta, o te busco en LinkedIn?" },
+    { id: "i-wont-keep-you", text: "I won't keep you — I can see you're being pulled away.", es: "No te entretengo, que veo que te reclaman.", tip: "La salida elegante de un evento: te vas tú, no te echan." },
+  ],
+  // B2, and deliberately both halves: three lines for giving feedback and three
+  // for taking it, because the second half is the one nobody rehearses.
+  "work/feedback": [
+    { id: "can-i-be-straight-with-you", text: "Can I be straight with you about the report?", es: "¿Puedo ser franco contigo sobre el informe?", tip: "Anunciar la franqueza baja la guardia; empezar a criticar la sube." },
+    { id: "two-things-worked", text: "Two things worked, and there's one I'd change.", es: "Dos cosas funcionaron y hay una que yo cambiaría.", tip: "Anunciar la estructura evita que el elogio suene a preámbulo del golpe." },
+    { id: "came-across-as", text: "I don't think you meant it this way, but it came across as dismissive.", es: "No creo que fuera tu intención, pero sonó despectivo.", tip: "'Come across as' describe el efecto, no la intención: por eso se acepta." },
+    { id: "that-one-stings", text: "That one stings a bit, but you're right.", es: "Eso escuece un poco, pero tienes razón.", tip: "Reconocer la incomodidad y aceptar la crítica a la vez desarma la conversación." },
+    { id: "let-me-sit-with-that", text: "Let me sit with that for a day before I respond.", es: "Déjame darle una vuelta antes de responderte.", tip: "Gana tiempo sin rechazar la crítica ni aceptarla en caliente." },
+    { id: "what-would-that-look-like", text: "What would that look like in practice?", es: "¿Y eso cómo se traduciría en la práctica?", tip: "Convierte una crítica vaga en algo accionable sin discutirla." },
+  ],
   "travel/airport": [
     { id: "check-this-bag", text: "I'd like to check this bag.", es: "Quisiera documentar esta maleta.", tip: "'Check a bag' es facturarla; la de mano es 'carry-on'." },
     { id: "window-seat", text: "I'd like a window seat, please.", es: "Quisiera un asiento de ventana, por favor." },
