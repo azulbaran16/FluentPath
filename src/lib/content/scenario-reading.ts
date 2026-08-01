@@ -749,6 +749,214 @@ const BANK: Record<string, AuthoredPassage> = {
       },
     ],
   },
+
+  /* ───────────────────── native/idioms · C1 ─────────────────────
+   * The deck and the phrase set between them already TEACH fourteen
+   * expressions — a piece of cake, under the weather, the last straw, bite the
+   * bullet, on the ball and the rest — one per card, each in a sentence built to
+   * display it. Not one of those fourteen appears below, because a passage that
+   * paraded them again would be the deck read aloud (T-03-19) and would test a
+   * memorised gloss rather than a reading.
+   *
+   * So the expressions here do work instead. Every question asks what one of
+   * them means IN THIS TEXT, and the star is the chair's "cross that bridge":
+   * the dictionary gives it as later, and everything around it turns it into a
+   * refusal. The GLOSSARY IS SILENT on all four expressions the questions ask
+   * the reader to recover, and glosses only what would block her on the way —
+   * the committee vocabulary and the two idioms nothing is asked about. Level is
+   * this scenario's own C1; Sounding Native's deeper treatment is CONT-04 and
+   * belongs to Phase 4. */
+  "native/idioms": {
+    slug: "the-committee-and-the-kitchen",
+    title: "The Committee and the Kitchen",
+    level: "C1",
+    minutes: 5,
+    body: [
+      "The village hall kitchen has needed replacing since about 2009, and for eleven of those years the committee agreed that something would have to be done, which is not at all the same as doing it. Every March somebody would raise it, everybody would nod, and the item would go into the minutes under Any Other Business, where items go to die. I sat on that committee for four of those years and I nodded along with everyone else.",
+      "What changed was the flood. When a pipe went in the January before last and took the floor out with it, the writing was on the wall for the old units, and even Ronnie, who had sat on the fence about the kitchen for a decade, allowed that patching it up a fourth time would be throwing good money after bad.",
+      "The money was the difficulty. When I asked at the April meeting what we would do if the grant fell through, the chair said we would cross that bridge when we came to it, and moved straight on to the noticeboard. The question is not in the minutes for that meeting. He caught me by the door afterwards and asked, very pleasantly, whether I would mind letting him handle the funding side.",
+      "The grant did fall through, in November, and we found out because Ronnie opened the letter by mistake. There was a meeting after that at which several people cleared the air, in the sense that they said out loud what they had been saying in the car park for a year. I put my foot in it early on by mentioning the minutes. The kitchen went in eventually, in the spring, out of the reserve fund, and nobody has drawn a line under any of it — but the ovens work, and last month the hall did three hundred lunches for the over-sixties without anybody boiling a kettle in the corridor.",
+    ],
+    glossary: [
+      {
+        word: "Any Other Business",
+        meaning:
+          "the last item on a formal agenda, kept for anything nobody put on it",
+      },
+      {
+        word: "sit on the fence",
+        meaning: "refuse to come down on either side of a question",
+      },
+      {
+        word: "throw good money after bad",
+        meaning: "spend more on something that has already failed",
+      },
+      {
+        word: "the reserve fund",
+        meaning:
+          "money an organisation keeps back for emergencies rather than for plans",
+      },
+    ],
+    questions: [
+      {
+        id: "cross-that-bridge-here",
+        q: "What is the chair doing when he says the committee will “cross that bridge when we came to it”?",
+        options: [
+          "Promising that the committee will plan for the grant failing, at a later meeting",
+          "Declining to discuss what happens if the grant fails, without saying no",
+          "Admitting that he has no idea what the committee would do",
+          "Asking the narrator to prepare an answer for the next meeting",
+        ],
+        answer: 1,
+        explain:
+          "On its own the expression means later, and people do use it honestly. What it means here is settled by what surrounds it: he moves straight on to the noticeboard, the question never reaches the minutes, and afterwards he asks — pleasantly — to be left the funding side. Three refusals, and not one of them the word no.",
+      },
+      {
+        id: "writing-on-the-wall-for-the-units",
+        q: "What does “the writing was on the wall for the old units” mean here?",
+        options: [
+          "The units had been marked up for repair",
+          "It had become obvious that the old units could not be kept",
+          "The flood had left marks on the kitchen walls",
+          "Somebody had complained about the units in writing",
+        ],
+        answer: 1,
+        explain:
+          "The sentence around it supplies the whole meaning: a burst pipe has taken the floor out, and the committee's most reluctant member accepts that patching it again would be money wasted. The reading in which something is actually written on a wall is the literal one, and with an idiom the literal reading is nearly always the trap.",
+      },
+      {
+        id: "cleared-the-air-in-what-sense",
+        q: "The writer says several people “cleared the air, in the sense that they said out loud what they had been saying in the car park for a year”. What does that qualification tell you?",
+        options: [
+          "The meeting settled the disagreement for good",
+          "The complaints finally reached the people they were about, having been made behind their backs",
+          "The committee agreed to stop discussing the kitchen",
+          "The car park was where the committee usually met",
+        ],
+        answer: 1,
+        explain:
+          "Clearing the air normally carries the sense that the argument is now over. The qualification takes that away and leaves one change only: the complaints found a new audience. The last sentence says as much from the other side — nobody has drawn a line under any of it.",
+      },
+      {
+        id: "put-my-foot-in-it",
+        q: "The writer says he “put my foot in it early on by mentioning the minutes”. What does this suggest he did?",
+        options: [
+          "Raised something true that everybody present would rather have left unsaid",
+          "Forgot that he had been the one taking the minutes",
+          "Apologised on the chair's behalf for a missing record",
+          "Read the minutes aloud and got a detail wrong",
+        ],
+        answer: 0,
+        explain:
+          "The minutes are exactly where his April question did not go, and the man who moved the meeting on is in the room. Putting your foot in it is not being wrong; it is being right at the moment when nobody wanted the subject opened.",
+      },
+    ],
+  },
+
+  /* ───────────────────── native/culture · C1 ─────────────────────
+   * The scenario's phrases are the REPAIRS a learner makes after missing a
+   * reference — "is that from something?", "that one's before my time", "I had
+   * to look it up" — and the deck is the vocabulary for talking about
+   * references (a catchphrase, an in-joke, niche, dated). Both assume the
+   * reference has already gone past. This is the text where one goes past.
+   *
+   * A letter home, because a letter is the one genre in which a writer drops
+   * references at full speed and never stops to explain: the recipient is
+   * assumed to share them. Every reference here is nevertheless INSURED by the
+   * sentences around it, which is the actual skill — a reader who has never seen
+   * the film can still recover Groundhog Day from "same letter, same fortnight,
+   * same three men", and one question tests precisely that route rather than the
+   * knowledge. The glossary stays silent on every reference a question asks her
+   * to recover; a white elephant is glossed because the question about it turns
+   * on the possessive rather than on the phrase.
+   *
+   * Nothing here restates the briefing's own examples (Achilles' heel, "that's
+   * so 2010"), and the level is this scenario's declared C1 — CONT-04's deeper
+   * native-level treatment is Phase 4's. */
+  "native/culture": {
+    slug: "everything-you-have-missed",
+    title: "Everything You Have Missed",
+    level: "C1",
+    minutes: 5,
+    body: [
+      "Dear Nadia — you have been gone four months and the town has managed a small crisis in each of them. The big one is the sculpture. The council put it up outside the library in March, eleven metres of polished steel called Aspiration, and the argument about it has now outlasted the scaffolding. My mother says it is the emperor's new clothes; my brother says it is the best thing to happen here since the bypass, which tells you rather more about my brother than about the sculpture.",
+      "Nobody will say what it cost. There was a figure in the paper, then a correction, then a longer piece explaining that the first figure had included the lighting and the second had not, and by then everybody had stopped reading. It is a white elephant, obviously, but it is our white elephant, and I notice that the people who called it a disgrace in April now give directions by it.",
+      "Dev has taken over the corner shop, which is either very brave or the third act of a story we have all watched before — the last two owners lasted a year between them. He has put in a coffee machine and a sign saying OPEN, in case the open door was ambiguous. Mum has been twice a day since it opened and reports on the coffee as though she were filing from a war zone.",
+      "And it is Groundhog Day with the bins again. Same letter, same fortnight, same three men standing outside the depot at eight in the morning. I will not tell you the rest, because it would only make you homesick, and because you have heard all of it before — which is, I suppose, the point.",
+    ],
+    glossary: [
+      {
+        word: "a white elephant",
+        meaning: "something expensive and impressive that turns out to be useless",
+      },
+      {
+        word: "a bypass",
+        meaning: "a road built around a town so that traffic does not go through it",
+      },
+      {
+        word: "to file (a report)",
+        meaning: "to send a report back to a newspaper from wherever you are",
+      },
+      {
+        word: "a depot",
+        meaning: "the yard where a service keeps its vehicles and its crews",
+      },
+    ],
+    questions: [
+      {
+        id: "recovering-groundhog-day",
+        q: "The writer says it is “Groundhog Day with the bins again”. A reader who has never seen the film can still work out what she means. From what?",
+        options: [
+          "From the sentence after it: the same letter, the same fortnight, the same three men",
+          "From the fact that bin collections are a winter problem",
+          "From the word again, which shows she has mentioned the bins before",
+          "From the paragraph about the sculpture, which is also a complaint",
+        ],
+        answer: 0,
+        explain:
+          "A dropped reference is nearly always insured by the sentence beside it, and this one is insured twice — the repetition is spelled out immediately afterwards, and the paragraph closes on having heard all of it before. The word again would tell you only that the bins have come up already, and nothing about what the reference is doing.",
+      },
+      {
+        id: "the-emperors-new-clothes",
+        q: "When the writer's mother calls the sculpture “the emperor's new clothes”, what is she saying about it?",
+        options: [
+          "That the town cannot afford something on this scale",
+          "That people are admiring a thing they can all see has nothing in it",
+          "That it will look better once the steel has weathered",
+          "That it was made by somebody well known",
+        ],
+        answer: 1,
+        explain:
+          "The reference is to a crowd praising what is not there, so the accusation falls on the admirers as much as on the object. What it cost is the next paragraph's subject and not hers, and the letter never says who made it — a reference points somewhere specific, and half of reading one is not letting it point anywhere convenient.",
+      },
+      {
+        id: "our-white-elephant",
+        q: "What is the writer conveying by calling the sculpture “a white elephant, obviously, but it is our white elephant”?",
+        options: [
+          "That she has changed her mind and now admires the sculpture",
+          "That the town has grown attached to something it still considers a mistake",
+          "That the sculpture belongs to the town rather than to the council",
+          "That other towns nearby have put up something similar",
+        ],
+        answer: 1,
+        explain:
+          "The judgement is not withdrawn — obviously keeps it in place — and the sentence turns anyway. The proof is in the clause that follows: the people who called it a disgrace in April now give directions by it, which is what belonging looks like some time before anybody will admit to it.",
+      },
+      {
+        id: "the-third-act",
+        q: "The writer calls Dev's shop “the third act of a story we have all watched before”. What is she implying?",
+        options: [
+          "That Dev is the third to try, and she expects the same ending",
+          "That the shop has already closed three times this year",
+          "That she has written to Nadia about the shop twice already",
+          "That Dev has run two other shops in the town",
+        ],
+        answer: 0,
+        explain:
+          "The clause immediately after gives the count and the ending in one breath: the last two owners lasted a year between them. A third act is where a story finishes, so the phrase predicts the finish without her ever having to write it down — which is why she puts very brave in front of it.",
+      },
+    ],
+  },
 };
 
 /* ------------------------------------------------------------------ *
