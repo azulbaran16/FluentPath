@@ -90,7 +90,11 @@ interface AuthoredWritingPrompt {
   model: string;
 }
 
+// Grouped by CEFR level, the way writing.ts itself is — the level is the
+// scenario's own, taken from curriculum.ts, never chosen by the author.
 const BANK: Record<string, AuthoredWritingPrompt> = {
+  /* ════════════════════════════ B1 ════════════════════════════ */
+
   /* ───────────────────── work/emails · B1 ─────────────────────
    * The scenario's phrases are about the MECHANICS of email (copying people
    * in, spam folders, reply-all) and its grammar set is about TONE. The task
@@ -158,6 +162,84 @@ const BANK: Record<string, AuthoredWritingPrompt> = {
     ],
     model:
       "Subject: Expense app signs me out when I attach a receipt\n\nHello,\n\nSince Tuesday the expense app has signed me out whenever I attach a photo to a claim.\n\nThese are the steps: I open a new claim, type the amount, tap “Add receipt”, and choose a photo from my gallery. The screen goes white for a second and then the login page appears. A red banner reads “Session expired. Please sign in again.” When I sign back in, the claim is empty.\n\nI expected the photo to attach and the claim to save as a draft.\n\nI have already restarted the phone, reinstalled the app, and tried a much smaller photo. It happens every time.\n\nI am on an iPhone 13, iOS 18.2, expense app version 4.6.1.\n\nThank you,\nAndrés",
+  },
+
+  /* ════════════════════════════ B2 ════════════════════════════ */
+
+  /* ───────────────────── social/complaining · B2 ─────────────────────
+   * The global writing room already has a complaint: a damaged parcel, sent to
+   * a support queue nobody in it will ever meet you. This is the other kind,
+   * and the harder one — a complaint to someone you will pass on the stairs
+   * tomorrow, where being right is not enough and the relationship has to
+   * survive the message. Hence a checklist that names the SOFTENERS rather
+   * than asking for a "polite tone" nobody can tick. */
+  "social/complaining": {
+    slug: "complain-to-a-neighbour",
+    title: "Complain to someone you will see again",
+    level: "B2",
+    task: "The neighbours above you have run their washing machine after midnight three nights this week, and the spin cycle comes straight through your bedroom ceiling. You have another year on the lease. Write them a message: say what the problem is, give the dates, ask for one specific change, and leave the door open.",
+    minWords: 90,
+    maxWords: 150,
+    checklist: [
+      "The three dates and roughly what time, so the problem is a fact and not a mood",
+      "The effect on you in one line, without the words “always”, “ridiculous” or “selfish”",
+      "A softener immediately before the request (“I'm sure you had no idea…”)",
+      "One specific, doable change — a time the machine goes off, not “be considerate”",
+      "An ending that offers to talk, so the message is a first step and not a verdict",
+    ],
+    model:
+      "Hi Marcos and Elena,\n\nI'm sorry to raise this by message — I'd rather not knock at eleven at night.\n\nThe washing machine has run after midnight three times this week: Monday, Wednesday and last night. Our bedroom is directly underneath it and the spin cycle comes through the floor, so we were awake until around one on each of those nights.\n\nI'm sure you had no idea how far it carries. Would you be able to leave the machine off after ten in the evening? Any time earlier in the day is completely fine by us.\n\nHappy to talk it through in person if that's easier.\n\nAndrés, flat 3B",
+  },
+
+  /* ───────────────────── work/presentations · B2 ─────────────────────
+   * The scenario's phrases and deck are entirely about being IN the room:
+   * signposting, Q&A, losing your train of thought. The written half is the
+   * part that survives you not being there. Of the three candidates — an
+   * abstract, a summary sent afterwards, a handover — the handover is chosen
+   * because it is unambiguous and because it is instructions rather than
+   * prose, which is a genuinely different writing skill from the other eight
+   * tasks here. */
+  "work/presentations": {
+    slug: "hand-over-the-deck",
+    title: "Hand your deck to someone else",
+    level: "B2",
+    task: "You have woken up ill on the morning of a client presentation, and a colleague has to deliver your eight-slide deck in two hours. Write her the handover note: what the deck is for, what to say on the two slides that need explaining, the question the client will certainly ask, and what to do if she cannot answer something.",
+    minWords: 110,
+    maxWords: 180,
+    checklist: [
+      "The audience, and what you want them to have agreed to by the end",
+      "Notes only on the slides that need them — not a line for all eight",
+      "The exact words to use on the number the client will challenge",
+      "The question they will ask, with its answer, in one place she can find fast",
+      "What to say when she does not know — a way out that does not invent an answer",
+    ],
+    model:
+      "Hi Priya — thank you for taking this. Everything you need is below.\n\nAudience: Delgado's operations team. What we want by the end of the hour is their sign-off to start the pilot in October.\n\nSlides 1 to 4 read themselves. Two need you:\n\nSlide 5, the cost line. Say “this is the cost of the pilot, not of the year” before anyone asks. The number looks alarming on its own.\n\nSlide 7, the timeline. October assumes their data reaches us in August. Say that out loud — it is the condition the whole plan rests on.\n\nThey will ask who carries the risk if the pilot overruns. We do, up to thirty days, and it is in clause 6 of the draft.\n\nIf anything else comes up, please say you will come back to them by Friday rather than guessing. I will pick it up tomorrow.\n\nAndrés",
+  },
+
+  /* ───────────────────── work/networking · B2 ─────────────────────
+   * The scenario's phrase set ends at the handshake. This begins two days
+   * later, when the person you met has met sixty others and remembers none of
+   * them — so the whole exercise is being identifiable in two lines and then
+   * giving before asking. Deliberately NOT a cover letter: the global writing
+   * room already has one, and the point of a follow-up is that it does not
+   * ask for a job. */
+  "work/networking": {
+    slug: "follow-up-two-days-later",
+    title: "The message you send two days later",
+    level: "B2",
+    task: "At a conference you talked for ten minutes with a senior engineer at a company you would like to work for, and she said to get in touch. Two days have passed and she has met sixty people since. Write the message: make her remember which conversation was yours, give her something before you ask for anything, and ask for one small thing — not a job.",
+    minWords: 90,
+    maxWords: 150,
+    checklist: [
+      "Where and when you met, inside the first two lines",
+      "One concrete detail from the conversation itself, so she knows which person you were",
+      "Something useful to her — a link, an answer, a name — before any request",
+      "One small request she could grant in twenty minutes, and it is not a job",
+      "An easy way out, so saying no costs her nothing",
+    ],
+    model:
+      "Subject: The database migration conversation — DevConf, Thursday\n\nHi Sofia,\n\nWe talked for ten minutes by the coffee stand at DevConf on Thursday. I was the one asking how you moved eleven services off a shared database without ever taking it offline.\n\nYou said you were still undecided about the audit tables. The write-up I promised is linked below; the section on writing to both databases at once starts on page four, and it saved us roughly three weeks.\n\nIf you have twenty minutes in the next month or so, I would like to ask you two questions about how your team chose what to move first. If your calendar says no, I completely understand — the write-up is yours either way.\n\nBest,\nAndrés",
   },
 };
 
