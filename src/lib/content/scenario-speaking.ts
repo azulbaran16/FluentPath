@@ -41,9 +41,10 @@
 // due item and a missing one are both silent failures.
 //
 // THE ID IS STILL THE COMPOSED SCENARIO ITEM ID, for uniqueness rather than for
-// scheduling: fourteen more tasks land in plan 03-10 and every other bank in
-// this phase shares one flat key space with them. Composed only by
-// `scenarioItemId`, the one author of the D-06 format.
+// scheduling: these thirty tasks were authored across two plans (03-09 wrote
+// fourteen, 03-10 the remaining sixteen) and every other bank in this phase
+// shares one flat key space with them. Composed only by `scenarioItemId`, the
+// one author of the D-06 format.
 //
 // WHY COMPOSITION IS LAZY. `review-items.ts` and the scenario banks form a
 // genuine ESM cycle. Composing at module scope would call `scenarioItemId` while
@@ -514,6 +515,94 @@ const BANK: Record<string, AuthoredSpeakingTask> = {
     ],
     success:
       "The old appointment was cancelled by its day and time, and the new one was spoken twice before you hung up.",
+  },
+
+  /* ═══════════════════ Sounding Native ═══════════════════
+   * The last five, and the ones where the boundary matters most: the deeper
+   * native-level treatment of this world is CONT-04 and belongs to Phase 4.
+   * These are authored at their declared levels and to the same shape as the
+   * other twenty-five — no more, and no less.
+   *
+   * Each one is the EXERCISE rather than the drill. The warm-up a step up the
+   * page already drills this world's phrase sets, and `native/pronunciation`'s
+   * set is six tongue-twisters: a legitimate warm-up and a poor model for a
+   * rehearsal, because nobody has ever needed to say "red lorry, yellow lorry"
+   * to another human being. So this one is word stress and connected speech
+   * inside an utterance somebody has to act on. */
+
+  "native/idioms": {
+    slug: "two-idioms-inside-one-answer",
+    title: "Two idioms inside one answer",
+    level: "C1",
+    setup:
+      "A friend asks how the new job is going. You want to sound like yourself, not like a phrasebook.",
+    moves: [
+      "Answer the question straight first, with no idiom anywhere in that sentence.",
+      "Bring two idioms into the rest of the turn, each doing work a plain sentence would do worse.",
+      "Say the turn again with both removed, and hear which parts got weaker.",
+    ],
+    success:
+      "Both idioms sat inside sentences you would have said anyway, and you can point at what each one bought you.",
+  },
+
+  "native/phrasal-verbs": {
+    slug: "the-same-fact-with-two-verbs",
+    title: "The same fact, with two verbs",
+    level: "B2",
+    setup:
+      "Something went wrong last week and you have to explain it tomorrow. Under pressure the single-word verbs arrive first and the phrasal ones go missing.",
+    moves: [
+      "Take one thing that went wrong and say it aloud using a phrasal verb.",
+      "Say that same sentence again, swapping the phrasal verb for its single-word twin.",
+      "Say which of the two you will use tomorrow, and who the other one is for.",
+    ],
+    success:
+      "One fact came out twice with two verbs, and you could name the listener each version belongs to.",
+  },
+
+  "native/pronunciation": {
+    slug: "a-voicemail-somebody-writes-down",
+    title: "A voicemail somebody writes down",
+    level: "B2",
+    setup:
+      "You are leaving a voicemail with your address and a number, for somebody who will write it down.",
+    moves: [
+      "Say the whole message at normal speed, then name the syllable you stressed in the street name.",
+      "Say the street and number again, joining the words the way they run in speech.",
+      "Say it a third time, slowing down only the parts that go onto paper.",
+    ],
+    success:
+      "You can name one stressed syllable and one place two words joined, and only the written parts slowed.",
+  },
+
+  "native/register": {
+    slug: "one-chase-up-two-dials",
+    title: "One chase-up, two dials",
+    level: "C1",
+    setup:
+      "A file promised on Monday has not arrived. You must chase two people: the colleague beside you, and the agency you pay.",
+    moves: [
+      "Say it to the colleague first, in one breath, the way you really would.",
+      "Say the same thing to the agency: slower, no “yeah”, and the date said in full.",
+      "Name three things that changed between the two, and none of them may be “more polite”.",
+    ],
+    success:
+      "Both versions carried the same date and the same ask, and your three changes were audible ones.",
+  },
+
+  "native/culture": {
+    slug: "the-reference-everyone-else-caught",
+    title: "The reference everyone else caught",
+    level: "C1",
+    setup:
+      "Four of you at lunch. Somebody lands a reference the whole table laughs at except you.",
+    moves: [
+      "Keep it moving first: react to the point being made, not to the reference you missed.",
+      "Ask what it was in one short question, and do not apologise for not knowing it.",
+      "Give something back — the nearest thing from where you grew up — and hand the turn on.",
+    ],
+    success:
+      "The question took under five seconds, nobody explained it twice, and the conversation never stopped for you.",
   },
 };
 
