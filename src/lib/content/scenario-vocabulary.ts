@@ -1592,6 +1592,283 @@ const DECKS: Record<string, ScenarioVocabCard[]> = {
       example: "It's only a check-up. It takes ten minutes.",
     },
   ],
+
+  // ── Sounding Native ───────────────────────────────────────────
+  //
+  // All five sit at their DECLARED CEFR level and at the same D-04 floors as
+  // every other scenario. The fuller native-level treatment of this world —
+  // deeper idiom work, phrasal-verb families, pronunciation drills, register
+  // and culture at native level — is CONT-04, and 03-CONTEXT defers it to
+  // Phase 4. A deck that tried to be that here would overshoot this phase and
+  // leave Phase 4 nothing to add.
+
+  // C1. The six existing PHRASES are the six best-known idioms; these are eight
+  // more, so the deck extends the set rather than glossing it a second time.
+  "native/idioms": [
+    {
+      id: "once-in-a-blue-moon",
+      term: "once in a blue moon",
+      es: "muy de vez en cuando",
+      example: "We only go into town once in a blue moon these days.",
+    },
+    {
+      id: "beat-around-the-bush",
+      term: "beat around the bush",
+      es: "andarse por las ramas",
+      example: "Stop beating around the bush and tell me what it cost.",
+    },
+    {
+      id: "bite-the-bullet",
+      term: "bite the bullet",
+      es: "hacer de tripas corazón",
+      example: "I bit the bullet and booked the flight before I changed my mind.",
+    },
+    {
+      id: "last-straw",
+      term: "the last straw",
+      es: "la gota que colma el vaso",
+      example: "Losing the keys again was the last straw.",
+    },
+    {
+      id: "arm-and-a-leg",
+      term: "cost an arm and a leg",
+      es: "costar un ojo de la cara",
+      example: "The tickets cost an arm and a leg, and it rained all weekend.",
+    },
+    {
+      id: "cat-out-of-the-bag",
+      term: "let the cat out of the bag",
+      es: "irse de la lengua",
+      example: "His brother let the cat out of the bag about the party.",
+    },
+    {
+      id: "on-the-ball",
+      term: "on the ball",
+      es: "espabilado, muy al tanto",
+      example: "Ask Marta — she's completely on the ball with the new system.",
+    },
+    {
+      id: "blessing-in-disguise",
+      term: "a blessing in disguise",
+      es: "no hay mal que por bien no venga",
+      example: "Missing that train turned out to be a blessing in disguise.",
+    },
+  ],
+
+  // B2. Eight verbs the six phrases do NOT use, so the scenario teaches
+  // fourteen rather than six twice.
+  "native/phrasal-verbs": [
+    {
+      id: "take-after",
+      term: "take after someone",
+      es: "parecerse a alguien (de familia)",
+      example: "She takes after her grandmother — same laugh, same temper.",
+    },
+    {
+      id: "pick-up-on",
+      term: "pick up on something",
+      es: "captar algo, darse cuenta de algo",
+      example: "He picked up on the fact that nobody had said yes.",
+    },
+    {
+      id: "wear-off",
+      term: "wear off",
+      es: "pasarse el efecto de algo",
+      example: "The novelty wore off after about a week.",
+    },
+    {
+      id: "fall-through",
+      term: "fall through",
+      es: "venirse abajo (un plan)",
+      example: "The whole trip fell through when the flights doubled in price.",
+    },
+    {
+      id: "put-someone-up",
+      term: "put someone up",
+      es: "alojar a alguien",
+      example: "They put me up for three nights and wouldn't take any money.",
+    },
+    {
+      id: "talk-someone-into",
+      term: "talk someone into something",
+      es: "convencer a alguien de hacer algo",
+      example: "She talked me into running it with her, and I'm still tired.",
+    },
+    {
+      id: "run-something-by",
+      term: "run something by someone",
+      es: "consultar algo con alguien",
+      example: "Let me run it by my manager before I promise anything.",
+    },
+    {
+      id: "catch-on",
+      term: "catch on",
+      es: "cuajar, ponerse de moda",
+      example: "The word caught on quickly, and now everybody says it.",
+    },
+  ],
+
+  // B2. The existing phrases here are TONGUE-TWISTERS — a legitimate shape for
+  // this scenario and a poor model for anything else, so it is deliberately not
+  // spread. The deck is the metalanguage instead: the words she needs to say
+  // what her mouth is doing wrong and to be told how to fix it.
+  "native/pronunciation": [
+    {
+      id: "word-stress",
+      term: "word stress",
+      es: "el acento tónico de una palabra",
+      example: "The word stress is on the second syllable: com-FOR-table.",
+    },
+    {
+      id: "silent-letter",
+      term: "a silent letter",
+      es: "una letra muda",
+      example: "The 'b' in 'doubt' is a silent letter — don't say it.",
+    },
+    {
+      id: "homophone",
+      term: "a homophone",
+      es: "un homófono",
+      example: "'Their' and 'there' are homophones: same sound, different word.",
+    },
+    {
+      id: "enunciate",
+      term: "enunciate",
+      es: "vocalizar, pronunciar con claridad",
+      example: "Slow down and enunciate — the endings are disappearing.",
+    },
+    {
+      id: "mumble",
+      term: "mumble",
+      es: "hablar entre dientes",
+      example: "I mumble when I'm nervous, so nobody catches my name.",
+    },
+    {
+      id: "intonation",
+      term: "intonation",
+      es: "la entonación",
+      example: "Your intonation fell, so it sounded like an order, not a question.",
+    },
+    {
+      id: "tongue-twister",
+      term: "a tongue-twister",
+      es: "un trabalenguas",
+      example: "It's a tongue-twister, and saying it slowly is the whole exercise.",
+    },
+    {
+      id: "rhyme-with",
+      term: "rhyme with",
+      es: "rimar con",
+      example: "'Tough' rhymes with 'stuff', not with 'though'.",
+    },
+  ],
+
+  // C1. The plan asks for the MARKERS that signal which register she is in —
+  // the things a listener reads the dial from — rather than more example
+  // sentences, which the contrasting phrase pairs already supply.
+  "native/register": [
+    {
+      id: "contraction",
+      term: "a contraction",
+      es: "una contracción (I'm, don't)",
+      example: "Take the contractions out and the email immediately sounds colder.",
+    },
+    {
+      id: "slang",
+      term: "slang",
+      es: "la jerga coloquial",
+      example: "It's slang, so it's fine in a text and wrong in a covering letter.",
+    },
+    {
+      id: "jargon",
+      term: "jargon",
+      es: "el argot técnico de un oficio",
+      example: "Cut the jargon — half the room doesn't work in engineering.",
+    },
+    {
+      id: "hedge",
+      term: "a hedge (sort of, kind of)",
+      es: "una fórmula para no comprometerse",
+      example: "Three hedges in one sentence and nobody knows what you decided.",
+    },
+    {
+      id: "blunt",
+      term: "blunt",
+      es: "directo hasta resultar brusco",
+      example: "That reads as blunt in English, even though it's normal in Spanish.",
+    },
+    {
+      id: "stilted",
+      term: "stilted",
+      es: "rígido, forzado",
+      example: "'I should be most grateful' sounds stilted in a message to a friend.",
+    },
+    {
+      id: "pleasantries",
+      term: "pleasantries",
+      es: "las cortesías de rigor",
+      example: "Two lines of pleasantries first, then the request. That's the pattern.",
+    },
+    {
+      id: "overfamiliar",
+      term: "overfamiliar",
+      es: "demasiado confianzudo",
+      example: "Using her first name there would come across as overfamiliar.",
+    },
+  ],
+
+  // C1. Not a list of references — those date within a year — but the words
+  // for how a reference behaves, which do not.
+  "native/culture": [
+    {
+      id: "catchphrase",
+      term: "a catchphrase",
+      es: "una frase icónica, una muletilla",
+      example: "It's a catchphrase from a sitcom, and everyone over thirty knows it.",
+    },
+    {
+      id: "household-name",
+      term: "a household name",
+      es: "un nombre que conoce todo el mundo",
+      example: "She's a household name here and completely unknown abroad.",
+    },
+    {
+      id: "in-joke",
+      term: "an in-joke",
+      es: "un chiste privado del grupo",
+      example: "Don't worry, it's an in-joke — it isn't funny to anyone else either.",
+    },
+    {
+      id: "name-drop",
+      term: "name-drop",
+      es: "soltar nombres para presumir",
+      example: "He name-dropped three directors before the starters arrived.",
+    },
+    {
+      id: "mainstream",
+      term: "mainstream",
+      es: "mayoritario, comercial",
+      example: "The band went mainstream, and their first fans have not forgiven them.",
+    },
+    {
+      id: "niche",
+      term: "niche",
+      es: "de nicho, para unos pocos",
+      example: "It's a niche reference, so half the table will just blink at you.",
+    },
+    {
+      id: "dated",
+      term: "dated",
+      es: "desfasado, que ha envejecido mal",
+      example: "That expression sounds dated now — my parents say it, I don't.",
+    },
+    {
+      id: "go-viral",
+      term: "go viral",
+      es: "hacerse viral",
+      example: "The clip went viral, and now it's a reference in its own right.",
+    },
+  ],
 };
 
 /**

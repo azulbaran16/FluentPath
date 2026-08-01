@@ -314,6 +314,21 @@ const SETS: Record<string, Phrase[]> = {
     { id: "same-page", text: "We're on the same page.", es: "Estamos de acuerdo.", tip: "Muy frecuente en el trabajo." },
     { id: "break-a-leg", text: "Break a leg!", es: "¡Mucha suerte!" },
   ],
+  // B2. Written to EXTEND the briefing, not restate it: the briefing already
+  // demonstrates separability on "turn it down" and the get up / get on /
+  // get over family, so neither appears here. One phrasal verb per line, in a
+  // sentence a learner would actually say — the briefing's own method.
+  //
+  // Depth for this world — the fuller native-level treatment — is CONT-04 and
+  // belongs to Phase 4. These six sit at the scenario's declared level.
+  "native/phrasal-verbs": [
+    { id: "put-up-with", text: "Honestly, how do you put up with that noise?", es: "En serio, ¿cómo aguantas ese ruido?", tip: "'Put up with' es aguantar. Las tres palabras van siempre juntas: nunca se separan." },
+    { id: "get-away-with", text: "He gets away with it every single time.", es: "Se sale con la suya siempre.", tip: "'Get away with' es hacer algo malo sin sufrir las consecuencias." },
+    { id: "call-it-off", text: "They called the wedding off two weeks before.", es: "Cancelaron la boda dos semanas antes.", tip: "Separable: 'call the wedding off' o 'call it off', pero jamás 'call off it'." },
+    { id: "bring-it-up", text: "I didn't want to bring it up in front of everyone.", es: "No quería sacar el tema delante de todos.", tip: "'Bring something up' es sacar un tema tú; 'come up' es que salga solo." },
+    { id: "whats-he-getting-at", text: "What are you getting at, exactly?", es: "¿A dónde quieres llegar, exactamente?", tip: "'Get at something' es insinuar algo sin llegar a decirlo." },
+    { id: "back-out-of-it", text: "They backed out of the deal at the last minute.", es: "Se echaron atrás en el acuerdo en el último momento.", tip: "'Back out of something' es retirarse de algo ya acordado." },
+  ],
   "native/pronunciation": [
     { id: "seashells", text: "She sells seashells by the seashore.", es: "(trabalenguas de la 's/sh')", tip: "Distingue /s/ de /ʃ/." },
     { id: "thirty-three-thieves", text: "The thirty-three thieves thought they thrilled the throne.", es: "(la 'th')", tip: "Saca la lengua para la /θ/." },
@@ -321,6 +336,27 @@ const SETS: Record<string, Phrase[]> = {
     { id: "peter-piper", text: "Peter Piper picked a peck of pickled peppers.", es: "(la 'p' aspirada)", tip: "Suelta aire en cada 'p' inicial." },
     { id: "brown-cow", text: "How now, brown cow.", es: "(el diptongo /aʊ/)", tip: "Abre la boca y ciérrala hacia la 'u'." },
     { id: "ship-sheep", text: "This ship is full of sheep.", es: "(la /ɪ/ corta frente a la /iː/ larga)", tip: "'Ship' corta, 'sheep' larga — cambia el significado." },
+  ],
+  // C1, and deliberately in CONTRASTING PAIRS rather than as a flat list —
+  // register is a dial, and a single line cannot show a dial moving. Three
+  // situations (a request, an apology, a refusal), each said twice.
+  "native/register": [
+    { id: "casual-send-it-over", text: "Can you send it over when you get a sec?", es: "¿Me lo pasas cuando tengas un momento?", tip: "Casual: contracción, 'a sec' y un verbo corto. Perfecto entre compañeros." },
+    { id: "formal-earliest-convenience", text: "Would you be able to forward it at your earliest convenience?", es: "¿Podría remitírmelo lo antes posible?", tip: "Formal: la misma petición. 'At your earliest convenience' es cortés y a la vez marca urgencia." },
+    { id: "casual-my-bad", text: "Sorry, my bad — I'll fix it now.", es: "Perdona, culpa mía; lo arreglo ahora.", tip: "'My bad' asume la culpa en dos palabras, y nunca se escribe a un cliente." },
+    { id: "formal-apologise-oversight", text: "I apologise for the oversight; it has been corrected.", es: "Le pido disculpas por el descuido; ya está corregido.", tip: "Formal: sin contracciones y en pasiva, que aparta a la persona del error." },
+    { id: "casual-not-going-to-work", text: "Yeah, that's not going to work for us.", es: "Ya, eso no nos va a funcionar.", tip: "Ese 'yeah' de apertura reconoce lo dicho antes de rechazarlo." },
+    { id: "formal-wont-be-possible", text: "I'm afraid that won't be possible on this occasion.", es: "Me temo que no va a ser posible en esta ocasión.", tip: "'I'm afraid' es el amortiguador estándar de una negativa formal en inglés." },
+  ],
+  // C1. Not the references themselves — those date, and the briefing already
+  // gives two — but what she says when one lands and she does not catch it.
+  "native/culture": [
+    { id: "is-that-from-something", text: "Is that from something, or did you just make it up?", es: "¿Eso es de algo, o te lo acabas de inventar?", tip: "La forma natural de preguntar por una referencia sin admitir que no la pillas." },
+    { id: "before-my-time", text: "That one's a bit before my time.", es: "Eso es un poco anterior a mi época.", tip: "Excusa impecable para no conocer una referencia: la culpa es de la fecha, no tuya." },
+    { id: "everyone-quotes-that-line", text: "Everyone quotes that line and nobody's seen the film.", es: "Todo el mundo cita esa frase y nadie ha visto la película.", tip: "Observación muy inglesa: la referencia sobrevive a su origen." },
+    { id: "had-to-look-it-up", text: "I had to look that one up afterwards.", es: "Esa la tuve que buscar después.", tip: "'Look something up' es buscarlo en un diccionario o en internet." },
+    { id: "had-to-be-there", text: "I guess you had to be there.", es: "Supongo que había que estar allí.", tip: "Se dice cuando cuentas algo gracioso y no funciona fuera de contexto." },
+    { id: "if-you-know-you-know", text: "If you know, you know.", es: "El que lo sepa, lo sabe.", tip: "Por escrito se abrevia 'IYKYK'. Marca una referencia deliberadamente de nicho." },
   ],
 };
 
