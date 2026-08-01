@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { WORLDS, SKILL_META, type Skill } from "@/lib/curriculum";
-import { LevelBadge } from "@/components/SkillPill";
+import { getScenarioCoverage } from "@/lib/scenario-coverage";
+import { LevelBadge, PendingBadge } from "@/components/SkillPill";
 import { SkillIcon, WorldIcon } from "@/lib/icons";
 import { SkillPractice } from "@/components/practice/SkillPractice";
 import { GrammarWorkspace } from "@/components/practice/GrammarWorkspace";
@@ -43,11 +44,25 @@ export default async function SkillPage({
   const s = skill as Skill;
   const meta = SKILL_META[s];
 
+  // Every scenario that DECLARES the skill stays in the list: the list is
+  // navigation, and dropping entries would make the catalogue look smaller than
+  // it is. What changes is that each one now carries whether practice for that
+  // pair has actually been written, read off the coverage registry.
   const matches = WORLDS.flatMap((w) =>
     w.scenarios
       .filter((sc) => sc.skills.includes(s))
-      .map((sc) => ({ world: w, scenario: sc })),
+      .map((sc) => ({
+        world: w,
+        scenario: sc,
+        written:
+          getScenarioCoverage(w.slug, sc.slug)?.skills.find(
+            (c) => c.skill === s,
+          )?.available ?? false,
+      })),
   );
+  // Both numbers come off the banks. Neither is written by hand, so they move
+  // on their own as the remaining skill plans land and cannot drift apart.
+  const written = matches.filter((m) => m.written).length;
 
   return (
     <div>
@@ -94,11 +109,18 @@ export default async function SkillPage({
       </section>
 
       <p className="mt-10 text-sm text-muted">
-        {matches.length} scenarios train your {meta.label.toLowerCase()}:
+        {written} of the {matches.length} scenarios that train your{" "}
+        {meta.label.toLowerCase()}{" "}
+        {written === 1 ? "has" : "have"} practice written for the situation
+        itself
+        {written < matches.length
+          ? " — the rest are on the way, and say so"
+          : ""}
+        :
       </p>
 
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
-        {matches.map(({ world, scenario }, i) => (
+        {matches.map(({ world, scenario, written: hasPractice }, i) => (
           <Link
             key={`${world.slug}/${scenario.slug}`}
             href={`/world/${world.slug}/${scenario.slug}`}
@@ -116,7 +138,10 @@ export default async function SkillPage({
             </span>
             <div className="min-w-0 flex-1">
               <h3 className="truncate font-semibold">{scenario.title}</h3>
-              <p className="text-xs text-muted">{world.title}</p>
+              <p className="flex flex-wrap items-center gap-1.5 text-xs text-muted">
+                {world.title}
+                {!hasPractice && <PendingBadge />}
+              </p>
             </div>
             <LevelBadge level={scenario.level} />
           </Link>

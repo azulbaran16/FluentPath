@@ -7,6 +7,7 @@ import { useProgress } from "@/lib/progress";
 import { getScenarioPhrases } from "@/lib/content/phrases";
 import { getScenarioLesson } from "@/lib/content/scenario-lessons";
 import { scenarioRecallItems } from "@/lib/review-items";
+import { getScenarioCoverage } from "@/lib/scenario-coverage";
 import { SkillPill, LevelBadge } from "./SkillPill";
 import { PronunciationLab } from "./practice/PronunciationLab";
 import { RecallDeck } from "./practice/RecallDeck";
@@ -32,6 +33,11 @@ export function ScenarioView({
   const phrases = getScenarioPhrases(world.slug, scenario.slug);
   const recall = scenarioRecallItems(world.slug, scenario.slug);
   const lesson = getScenarioLesson(world.slug, scenario.slug);
+  // The header pills used to be a promise: a scenario declared a skill and got
+  // a coloured pill whether or not anything was written behind it. They now
+  // read the same registry the sections below are gated on, so a pill and the
+  // panel under it can never say different things.
+  const coverage = getScenarioCoverage(world.slug, scenario.slug);
 
   function markDone() {
     complete(world.slug, scenario.slug);
@@ -156,7 +162,13 @@ export function ScenarioView({
         <div className="flex flex-wrap items-center gap-2">
           <LevelBadge level={scenario.level} />
           {scenario.skills.map((s) => (
-            <SkillPill key={s} skill={s} />
+            <SkillPill
+              key={s}
+              skill={s}
+              available={
+                coverage?.skills.find((c) => c.skill === s)?.available ?? false
+              }
+            />
           ))}
           <span className="ml-auto text-xs text-muted">~{scenario.minutes} min</span>
           {done && (
