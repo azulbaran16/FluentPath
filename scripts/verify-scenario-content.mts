@@ -73,6 +73,14 @@ import {
   scenarioReadingKeys,
 } from "../src/lib/content/scenario-reading.ts";
 import { PASSAGES } from "../src/lib/content/reading.ts";
+import {
+  getScenarioSpeaking,
+  scenarioSpeakingKeys,
+} from "../src/lib/content/scenario-speaking.ts";
+// Read by the speaking group alone, to assert that the rehearsal panel really
+// is practicable with no AI and no microphone rather than merely documented as
+// such. A builtin, so the no-new-dependency rule above still holds.
+import { readFileSync } from "node:fs";
 import { VOCAB_DECKS } from "../src/lib/content/vocabulary.ts";
 import {
   parseScenarioItemId,
@@ -1757,6 +1765,381 @@ ok(
       return getScenarioReading(w, sc) === undefined;
     }),
   canon(pendingPairs().filter((p) => p.skill === "reading")),
+);
+
+/* ------------------------------------------------------------------ *
+ * Scenario speaking (plans 03-09 and 03-10) — the rehearsal tasks.
+ *
+ * Thirty of the fifty-two pairs declare speaking, and twenty-one of them used
+ * to be handed the SAME three generic lines as every other scenario in their
+ * world. That is D-01's named failure, and this is the only skill where it
+ * actually happened — so the assertions below mechanise it rather than trusting
+ * authoring care: no two scenarios may share a task, and no two may share a
+ * move list either (T-03-20).
+ * ------------------------------------------------------------------ */
+
+const SPEAKING_MOVES = 3;
+// The measured budget. Around sixty words is the shape; a task that runs much
+// longer is a briefing in disguise and duplicates the lesson the scenario
+// already has one step up the page.
+const MIN_SPEAKING_WORDS = 40;
+const MAX_SPEAKING_WORDS = 100;
+
+function speakingWords(task: {
+  setup: string;
+  moves: readonly string[];
+  success: string;
+}): number {
+  return [task.setup, ...task.moves, task.success]
+    .join(" ")
+    .trim()
+    .split(/\s+/).length;
+}
+
+group("scenario speaking: every key names a pair that DECLARES speaking");
+
+const speakingPairKeys = new Set(
+  DECLARED_PAIRS.filter((p) => p.skill === "speaking").map((p) => p.key),
+);
+
+for (const key of scenarioSpeakingKeys()) {
+  // Iterating the curriculum can never reach a typo'd key — it would simply
+  // never be looked up, and the pair would silently report unwritten forever.
+  ok(
+    `scenario speaking: bank key ${key} is a pair that declares speaking`,
+    speakingPairKeys.has(key),
+    "a key naming no scenario, or a scenario that does not declare speaking, is content nobody will ever see",
+  );
+}
+
+ok(
+  "every scenario speaking key is spelled once",
+  duplicates(scenarioSpeakingKeys()).length === 0,
+  duplicates(scenarioSpeakingKeys()).join(", "),
+);
+
+for (const s of SCENARIOS) {
+  if (s.skills.includes("speaking")) continue;
+  ok(
+    `scenario speaking: ${s.key} has no task because it declares no speaking`,
+    getScenarioSpeaking(s.world, s.scenario) === undefined,
+    "a task on a pair the curriculum never declared is practice with no way in",
+  );
+}
+
+group("scenario speaking: the shape is uniform — three moves, every field filled");
+
+for (const s of SCENARIOS) {
+  const task = getScenarioSpeaking(s.world, s.scenario);
+  if (!task) continue;
+  ok(
+    `scenario speaking: ${s.key} has exactly ${SPEAKING_MOVES} moves`,
+    task.moves.length === SPEAKING_MOVES,
+    `${task.moves.length} move(s) — the count is the shape, not a floor`,
+  );
+  ok(
+    `scenario speaking: ${s.key} names the situation`,
+    filled(task.setup),
+    "a setup of spaces is a rehearsal with nobody in it",
+  );
+  ok(
+    `scenario speaking: ${s.key} has a title`,
+    filled(task.title),
+    task.title,
+  );
+  ok(
+    `scenario speaking: ${s.key} says how the learner knows it worked`,
+    filled(task.success),
+    "without a success line the learner has performed, not practised",
+  );
+  ok(
+    `scenario speaking: ${s.key} has no empty move`,
+    task.moves.every(filled),
+    canon(task.moves),
+  );
+  ok(
+    `scenario speaking: ${s.key} does not ask for the same move twice`,
+    duplicates(task.moves.map((m) => m.trim().toLowerCase())).length === 0,
+    "three moves that are two moves is fatigue, not a rehearsal",
+  );
+  const words = speakingWords(task);
+  ok(
+    `scenario speaking: ${s.key} sits inside the ${MIN_SPEAKING_WORDS}–${MAX_SPEAKING_WORDS} word budget`,
+    inRange(words, MIN_SPEAKING_WORDS, MAX_SPEAKING_WORDS),
+    `${words} words`,
+  );
+}
+
+group("scenario speaking: each task is written at ITS OWN scenario's level");
+
+for (const s of SCENARIOS) {
+  const task = getScenarioSpeaking(s.world, s.scenario);
+  if (!task) continue;
+  // The cheapest mechanical sign that a task has drifted away from the scenario
+  // it belongs to — a C1 rehearsal filed under an A2 situation is the shape a
+  // copied task takes.
+  ok(
+    `scenario speaking: ${s.key} is at level ${s.level}`,
+    task.level === s.level,
+    `${task.level} vs the curriculum's ${s.level}`,
+  );
+}
+
+group("scenario speaking: ids are composed, namespaced and globally unique");
+
+const scenarioSpeakingIds: string[] = [];
+
+for (const s of SCENARIOS) {
+  const task = getScenarioSpeaking(s.world, s.scenario);
+  if (!task) continue;
+  scenarioSpeakingIds.push(task.id);
+  const parsed = parseScenarioItemId(task.id);
+  ok(
+    `scenario speaking: ${task.id} parses as a scenario item`,
+    parsed !== undefined,
+    "an id the parser rejects cannot be reasoned about at all",
+  );
+  if (!parsed) continue;
+  ok(
+    `scenario speaking: ${task.id} names ITS OWN scenario`,
+    parsed.scenarioKey === s.key,
+    `${parsed.scenarioKey} vs ${s.key}`,
+  );
+  ok(
+    `scenario speaking: ${task.id} is of kind "speaking"`,
+    parsed.kind === "speaking",
+    parsed.kind,
+  );
+  ok(
+    `scenario speaking: ${task.id} is exactly what scenarioItemId composes`,
+    task.id === scenarioItemId(s.key, "speaking", parsed.localId),
+    "an id spelled by hand is an id that drifts from the one author of the format",
+  );
+  ok(
+    `scenario speaking: ${task.id} slug is not an array position`,
+    !/^\d+$/.test(parsed.localId),
+    parsed.localId,
+  );
+}
+
+ok(
+  "every scenario speaking id is unique across all scenarios",
+  duplicates(scenarioSpeakingIds).length === 0,
+  duplicates(scenarioSpeakingIds).join(", "),
+);
+ok(
+  "no scenario speaking id collides with a global grammar question id",
+  scenarioSpeakingIds.every((id) => !grammarIds.has(id)),
+  scenarioSpeakingIds.filter((id) => grammarIds.has(id)).join(", "),
+);
+ok(
+  "no scenario speaking id collides with a deck-browser card id",
+  scenarioSpeakingIds.every((id) => !deckCardIds.has(id)),
+  scenarioSpeakingIds.filter((id) => deckCardIds.has(id)).join(", "),
+);
+ok(
+  "no scenario speaking id collides with a recall item id",
+  scenarioSpeakingIds.every((id) => !new Set(composedIds).has(id)),
+  scenarioSpeakingIds.filter((id) => new Set(composedIds).has(id)).join(", "),
+);
+ok(
+  "no scenario speaking id collides with a scenario grammar id",
+  scenarioSpeakingIds.every((id) => !new Set(scenarioGrammarIds).has(id)),
+  scenarioSpeakingIds
+    .filter((id) => new Set(scenarioGrammarIds).has(id))
+    .join(", "),
+);
+ok(
+  "no scenario speaking id collides with a scenario writing id",
+  scenarioSpeakingIds.every((id) => !new Set(scenarioWritingIds).has(id)),
+  scenarioSpeakingIds
+    .filter((id) => new Set(scenarioWritingIds).has(id))
+    .join(", "),
+);
+ok(
+  "no scenario speaking id collides with a scenario reading id",
+  scenarioSpeakingIds.every((id) => !new Set(scenarioReadingIds).has(id)),
+  scenarioSpeakingIds
+    .filter((id) => new Set(scenarioReadingIds).has(id))
+    .join(", "),
+);
+
+group("scenario speaking: an unscheduled kind, proved unscheduled");
+
+// The third bank in this phase to answer "does the renderer score anything?"
+// with no, and the third to assert the negative rather than leave an omission
+// that looks like one. `SpeakingTaskPanel` awards XP and records the day's
+// activity; it never calls `recordAttempt`, so nothing writes
+// srs["…#speaking#…"]. Listing these ids would put a permanent phantom in
+// Dashboard's "Due today" count and hand ReviewHub's weak-spots drill an id
+// that resolves to nothing.
+const reviewableForSpeaking = new Set(reviewableIds());
+ok(
+  "no scenario speaking id is listed as reviewable",
+  scenarioSpeakingIds.every((id) => !reviewableForSpeaking.has(id)),
+  scenarioSpeakingIds.filter((id) => reviewableForSpeaking.has(id)).join(", "),
+);
+for (const id of scenarioSpeakingIds) {
+  ok(
+    `resolveReviewItem returns nothing for ${id}`,
+    resolveReviewItem(id) === undefined,
+    "a ticked self-check is a self-report — there is nothing to bring back and nothing that could mark it wrong",
+  );
+}
+ok(
+  "a speaking id still round-trips through the id format",
+  scenarioSpeakingIds.every(
+    (id) => parseScenarioItemId(id)?.kind === "speaking",
+  ),
+  "unscheduled is not the same as unparseable",
+);
+
+group("scenario speaking: no two scenarios are handed the same rehearsal (D-01)");
+
+// Fingerprinted WITHOUT the id, because the id names its own scenario and would
+// make every task trivially distinct — exactly how a copy-pasted task with a
+// fresh slug would slip through.
+const speakingByKey = SCENARIOS.flatMap((s) => {
+  const t = getScenarioSpeaking(s.world, s.scenario);
+  if (!t) return [];
+  return [
+    {
+      key: s.key,
+      body: canon({
+        title: t.title,
+        setup: t.setup,
+        moves: t.moves,
+        success: t.success,
+      }),
+      moves: canon(t.moves.map((m) => m.trim().toLowerCase())),
+    },
+  ];
+});
+
+for (const entry of speakingByKey) {
+  const twin = speakingByKey.find(
+    (other) => other.key !== entry.key && other.body === entry.body,
+  );
+  ok(
+    `scenario speaking: ${entry.key} is written for itself`,
+    twin === undefined,
+    twin ? `identical to ${twin.key}` : "",
+  );
+  // The sharper half. A shared MOVE LIST is what a generic set actually looks
+  // like once someone has given it a scenario-specific setup on top — the
+  // WORLD_FALLBACK failure, wearing a hat.
+  const moveTwin = speakingByKey.find(
+    (other) => other.key !== entry.key && other.moves === entry.moves,
+  );
+  ok(
+    `scenario speaking: ${entry.key} has its own three moves`,
+    moveTwin === undefined,
+    moveTwin ? `the same move list as ${moveTwin.key}` : "",
+  );
+}
+
+const allSpeakingTitles = SCENARIOS.flatMap((s) => {
+  const t = getScenarioSpeaking(s.world, s.scenario);
+  return t ? [t.title.trim().toLowerCase()] : [];
+});
+ok(
+  "no rehearsal title is repeated anywhere in the scenario speaking corpus",
+  duplicates(allSpeakingTitles).length === 0,
+  duplicates(allSpeakingTitles).join(" | "),
+);
+
+const allSpeakingSetups = SCENARIOS.flatMap((s) => {
+  const t = getScenarioSpeaking(s.world, s.scenario);
+  return t ? [t.setup.trim().toLowerCase()] : [];
+});
+ok(
+  "no rehearsal setup is repeated anywhere in the scenario speaking corpus",
+  duplicates(allSpeakingSetups).length === 0,
+  "two scenarios sharing a situation is the D-01 failure in its purest form",
+);
+
+const allSpeakingSuccess = SCENARIOS.flatMap((s) => {
+  const t = getScenarioSpeaking(s.world, s.scenario);
+  return t ? [t.success.trim().toLowerCase()] : [];
+});
+ok(
+  "no success line is repeated anywhere in the scenario speaking corpus",
+  duplicates(allSpeakingSuccess).length === 0,
+  duplicates(allSpeakingSuccess).join(" | "),
+);
+
+group("scenario speaking: practicable with no AI and no microphone");
+
+// The plan's own promise, run as a script rather than reread. T-03-21: an
+// exercise that only works once an API key is configured is not practice today,
+// and the tutor role-play that WILL give live correction is Phase 5's.
+const panelSource = readFileSync(
+  new URL("../src/components/practice/SpeakingTaskPanel.tsx", import.meta.url),
+  "utf8",
+);
+// Comments are stripped first, so the paragraphs explaining why these calls are
+// absent cannot themselves fail the assertion that they are absent.
+const panelCode = panelSource
+  .replace(/\/\*[\s\S]*?\*\//g, " ")
+  .replace(/^[ \t]*\/\/.*$/gm, " ");
+
+for (const forbidden of [
+  "fetch(",
+  "speechSynthesis",
+  "SpeechRecognition",
+  "SpeechSynthesisUtterance",
+  "getUserMedia",
+  "MediaRecorder",
+]) {
+  ok(
+    `SpeakingTaskPanel does not use ${forbidden}`,
+    !panelCode.includes(forbidden),
+    "the rehearsal must work with no network, no microphone and no API key",
+  );
+}
+// The other half of the same promise, and the one that keeps the unscheduled
+// assertion above honest at the source rather than at the id.
+ok(
+  "SpeakingTaskPanel does not call recordAttempt",
+  !panelCode.includes("recordAttempt"),
+  "a ticked self-check is not an answer; scheduling one puts an unfalsifiable item in the review queue",
+);
+ok(
+  "SpeakingTaskPanel awards XP through addSkillXp and records the day",
+  panelCode.includes("addSkillXp(\"speaking\"") &&
+    panelCode.includes("recordActivity()"),
+  "the panel must write through the progress hook, and no new progress field",
+);
+
+group("scenario speaking: the registry reports the bank, not the declaration");
+
+for (const pair of DECLARED_PAIRS.filter((p) => p.skill === "speaking")) {
+  const coverage = getScenarioCoverage(pair.world, pair.scenario);
+  const skill = coverage?.skills.find((s) => s.skill === "speaking");
+  const task = getScenarioSpeaking(pair.world, pair.scenario);
+  ok(
+    `coverage: ${pair.key} speaking availability follows the bank's CONTENTS`,
+    skill?.available === (task !== undefined),
+    canon(skill),
+  );
+  if (task) {
+    ok(
+      `coverage: ${pair.key} speaking summary is a count and a unit`,
+      skill?.summary === "1 rehearsal",
+      skill?.summary,
+    );
+  }
+}
+
+ok(
+  "every pair the registry reports as pending speaking has no bank entry",
+  pendingPairs()
+    .filter((p) => p.skill === "speaking")
+    .every((p) => {
+      const [w, sc] = p.key.split("/");
+      return getScenarioSpeaking(w, sc) === undefined;
+    }),
+  canon(pendingPairs().filter((p) => p.skill === "speaking")),
 );
 
 /* ------------------------------------------------------------------ *

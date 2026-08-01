@@ -19,6 +19,7 @@ import { getScenarioVocabulary } from "./content/scenario-vocabulary.ts";
 import { getScenarioGrammar } from "./content/scenario-grammar.ts";
 import { getScenarioWriting } from "./content/scenario-writing.ts";
 import { getScenarioReading } from "./content/scenario-reading.ts";
+import { getScenarioSpeaking } from "./content/scenario-speaking.ts";
 
 /* ------------------------------------------------------------------ *
  * The shape a bank hands the registry.
@@ -181,6 +182,14 @@ const EXERCISE_SOURCES: Partial<Record<Skill, ScenarioSkillLookup | undefined>> 
     reading: (w, s) => {
       const passage = getScenarioReading(w, s);
       return passage && { items: [passage], unit: "passage" };
+    },
+    // One rehearsal per pair. The unit is "rehearsal" rather than "task"
+    // (writing's) so the two are distinguishable in a summary string: a
+    // scenario that declares both skills reports "1 task" and "1 rehearsal",
+    // and neither reads as the other.
+    speaking: (w, s) => {
+      const rehearsal = getScenarioSpeaking(w, s);
+      return rehearsal && { items: [rehearsal], unit: "rehearsal" };
     },
   };
 

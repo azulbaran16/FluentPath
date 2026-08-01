@@ -63,6 +63,12 @@ export const SCENARIO_ITEM_SEPARATOR = "#";
  * passage is the question. It takes an id for UNIQUENESS: a scenario passage
  * and a global one now share the `Passage` shape, and an id that names its own
  * scenario cannot collide with `"coffee"` or `"market"`.
+ * `speaking` (plans 03-09/03-10) is the third, and the reason is a third one
+ * again: `SpeakingTaskPanel` awards XP once when the learner ticks all three
+ * moves of a rehearsal she has spoken aloud on her own, and records the day's
+ * activity — but a ticked box is a self-report with no correctness signal, so
+ * scheduling it would fill the queue with items nothing could ever mark wrong.
+ * It takes an id for UNIQUENESS across the thirty tasks the two plans author.
  * An unscheduled kind is deliberately absent from `reviewableIds` and returns
  * `undefined` from `resolveReviewItem`, and the harness asserts both — so
  * "unscheduled" is a proved property rather than an omission that looks like
@@ -73,7 +79,8 @@ export type ScenarioItemKind =
   | "vocab"
   | "grammar"
   | "writing"
-  | "reading";
+  | "reading"
+  | "speaking";
 
 const ITEM_KINDS: readonly ScenarioItemKind[] = [
   "phrase",
@@ -81,6 +88,7 @@ const ITEM_KINDS: readonly ScenarioItemKind[] = [
   "grammar",
   "writing",
   "reading",
+  "speaking",
 ];
 
 /** The kinds that DO enter the review queue. `reviewableIds()` sources one list
@@ -239,11 +247,12 @@ export function resolveReviewItem(id: string): ReviewItem | undefined {
   }
 
   // An UNSCHEDULED kind, stated rather than arrived at. A scenario writing task
-  // is not a review card and neither is a scenario reading passage: nothing
-  // scores either, so nothing ever schedules its id, and there is no one-screen
-  // item to hand /review. Falling through to the recall lookup below would also
-  // return undefined — by accident, and one added kind away from silently
-  // resolving to the wrong thing.
+  // is not a review card, and neither is a scenario reading passage nor a
+  // scenario speaking rehearsal: nothing scores any of them, so nothing ever
+  // schedules its id, and there is no one-screen item to hand /review. Falling
+  // through to the recall lookup below would also return undefined — by
+  // accident, and one added kind away from silently resolving to the wrong
+  // thing.
   if (!SCHEDULED_ITEM_KINDS.includes(parsed.kind)) return undefined;
 
   const item = scenarioRecallItems(worldSlug, scenarioSlug).find(
@@ -268,17 +277,19 @@ export function resolveReviewItem(id: string): ReviewItem | undefined {
  * SRS adds its ids HERE as well as gaining a branch in `resolveReviewItem`.
  *
  * The converse is equally deliberate: a bank whose items are NOT scored must
- * NOT appear here. Plan 03-06's writing tasks are the first such bank and plan
- * 03-07's reading passages are the second — nothing schedules either, so
- * listing their ids would inflate the "Due today" count with items that can
- * never be due and hand the weak-spots drill an id that resolves to nothing.
- * See `SCHEDULED_ITEM_KINDS`.
+ * NOT appear here. Plan 03-06's writing tasks are the first such bank, plan
+ * 03-07's reading passages the second and plans 03-09/03-10's speaking
+ * rehearsals the third — nothing schedules any of them, so listing their ids
+ * would inflate the "Due today" count with items that can never be due and hand
+ * the weak-spots drill an id that resolves to nothing. See
+ * `SCHEDULED_ITEM_KINDS`.
  *
- * So the rule is CONDITIONAL, and the cost of getting it wrong is symmetric:
- * omit a scored bank and its items are invisible; add an unscored one and its
- * items are permanent phantoms. Before adding a bank here, check whether its
- * renderer actually calls `recordAttempt` — `GrammarQuiz` does, `WritingDesk`
- * and `PassageReader` do not.
+ * So the rule is CONDITIONAL — three of the four exercise banks in this phase
+ * answered no — and the cost of getting it wrong is symmetric: omit a scored
+ * bank and its items are invisible; add an unscored one and its items are
+ * permanent phantoms. Before adding a bank here, check whether its renderer
+ * actually calls `recordAttempt` — `GrammarQuiz` does; `WritingDesk`,
+ * `PassageReader` and `SpeakingTaskPanel` do not.
  */
 export function reviewableIds(): string[] {
   const ids = GRAMMAR_QUESTIONS.map((q) => q.id);

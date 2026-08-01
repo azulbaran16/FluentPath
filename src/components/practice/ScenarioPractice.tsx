@@ -8,9 +8,11 @@ import { getScenarioCoverage } from "@/lib/scenario-coverage";
 import { getScenarioGrammar } from "@/lib/content/scenario-grammar";
 import { getScenarioWriting } from "@/lib/content/scenario-writing";
 import { getScenarioReading } from "@/lib/content/scenario-reading";
+import { getScenarioSpeaking } from "@/lib/content/scenario-speaking";
 import { GrammarQuiz } from "./GrammarQuiz";
 import { WritingDesk } from "./WritingDesk";
 import { PassageReader } from "./ReadingRoom";
+import { SpeakingTaskPanel } from "./SpeakingTaskPanel";
 
 // One scenario, one skill — the dispatch `SkillPractice` does globally, gated
 // on coverage the way `CelpipTabs` gates a section.
@@ -92,9 +94,17 @@ function ScenarioExercise(props: {
       if (!passage) return <NotWrittenYet skill={skill} scenario={scenario} />;
       return <PassageReader passage={passage} accent={props.accent} />;
     }
-    case "speaking":
-      // plans 03-09 / 03-10 — the scenario speaking task
-      return <NotWrittenYet skill={skill} scenario={scenario} />;
+    case "speaking": {
+      // The rehearsal brief, and it sits BETWEEN the two speaking things this
+      // page already had rather than replacing either: the warm-up above drills
+      // the scenario's own phrases, and the role-play step below is the tutor's,
+      // which is Phase 5's. This panel is the half that works today — no AI, no
+      // microphone, no network — so a scenario can be rehearsed rather than
+      // merely pronounced.
+      const rehearsal = getScenarioSpeaking(world.slug, scenario.slug);
+      if (!rehearsal) return <NotWrittenYet skill={skill} scenario={scenario} />;
+      return <SpeakingTaskPanel task={rehearsal} accent={props.accent} />;
+    }
   }
 }
 
