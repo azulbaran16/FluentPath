@@ -1,8 +1,27 @@
 // Speaking warm-up phrases per scenario, used by PronunciationLab.
-// Keyed by `${worldSlug}/${scenarioSlug}`. Scenarios without a curated
-// set fall back to a per-world generic set so every scenario works.
+// Keyed by `${worldSlug}/${scenarioSlug}`.
+//
+// TWO accessors live here on purpose and they are NOT interchangeable:
+//
+//   getScenarioPhrases()  — strict. Returns `undefined` for a scenario with no
+//                           curated set. This is the one a scenario page and
+//                           the coverage registry read, because "this scenario
+//                           has no phrases of its own" has to be sayable.
+//   getPhrases()          — lenient, kept for the global speaking page and the
+//                           speaking packs only. Falls back to a per-world
+//                           generic set. Deleted by plan 03-11 once all 35
+//                           scenarios have their own set (03-04 closes that).
 
 export interface Phrase {
+  /**
+   * Authored slug, unique WITHIN its scenario, and never derived from array
+   * position. This id becomes part of the learner's spaced-repetition key
+   * (see `scenarioItemId` in src/lib/review-items.ts), which is stored in
+   * Postgres and merged blindly by key: an id that moves when a neighbour is
+   * inserted silently re-points somebody's box-4 schedule onto a different
+   * phrase, with no way to detect it afterwards. Insert freely; never renumber.
+   */
+  id: string;
   text: string;
   es: string;
   /** quick pronunciation/usage tip */
@@ -11,94 +30,147 @@ export interface Phrase {
 
 const SETS: Record<string, Phrase[]> = {
   "social/small-talk": [
-    { text: "How's it going?", es: "¿Cómo te va?", tip: "Suena como 'hows-it-going', todo unido." },
-    { text: "What do you do for a living?", es: "¿A qué te dedicas?" },
-    { text: "I've heard so much about you.", es: "He oído mucho sobre ti." },
-    { text: "It's been a while, hasn't it?", es: "Ha pasado un tiempo, ¿no?" },
-    { text: "Anyway, it was great catching up.", es: "En fin, qué bueno ponernos al día." },
+    { id: "hows-it-going", text: "How's it going?", es: "¿Cómo te va?", tip: "Suena como 'hows-it-going', todo unido." },
+    { id: "what-do-you-do", text: "What do you do for a living?", es: "¿A qué te dedicas?" },
+    { id: "heard-so-much", text: "I've heard so much about you.", es: "He oído mucho sobre ti." },
+    { id: "been-a-while", text: "It's been a while, hasn't it?", es: "Ha pasado un tiempo, ¿no?" },
+    { id: "how-was-your-weekend", text: "How was your weekend?", es: "¿Qué tal tu fin de semana?", tip: "El arranque más seguro un lunes por la mañana." },
+    { id: "great-catching-up", text: "Anyway, it was great catching up.", es: "En fin, qué bueno ponernos al día." },
   ],
   "social/making-friends": [
-    { text: "We should hang out sometime.", es: "Deberíamos salir algún día." },
-    { text: "Do you want to grab a coffee?", es: "¿Quieres tomar un café?" },
-    { text: "What are you into?", es: "¿Qué te gusta hacer?" },
-    { text: "Let me give you my number.", es: "Déjame darte mi número." },
+    { id: "hang-out-sometime", text: "We should hang out sometime.", es: "Deberíamos salir algún día." },
+    { id: "grab-a-coffee", text: "Do you want to grab a coffee?", es: "¿Quieres tomar un café?" },
+    { id: "what-are-you-into", text: "What are you into?", es: "¿Qué te gusta hacer?" },
+    { id: "up-to-this-weekend", text: "What are you up to this weekend?", es: "¿Qué planes tienes este fin de semana?" },
+    { id: "count-me-in", text: "Count me in!", es: "¡Cuenten conmigo!", tip: "Respuesta entusiasta a una invitación." },
+    { id: "give-you-my-number", text: "Let me give you my number.", es: "Déjame darte mi número." },
   ],
   "work/interviews": [
-    { text: "Thanks for having me.", es: "Gracias por recibirme." },
-    { text: "I'd describe myself as detail-oriented.", es: "Me describiría como detallista." },
-    { text: "Could you tell me more about the role?", es: "¿Podría contarme más sobre el puesto?" },
-    { text: "I'm really excited about this opportunity.", es: "Estoy muy entusiasmado con esta oportunidad." },
-    { text: "When can I expect to hear back?", es: "¿Cuándo tendré noticias?" },
+    { id: "thanks-for-having-me", text: "Thanks for having me.", es: "Gracias por recibirme." },
+    { id: "detail-oriented", text: "I'd describe myself as detail-oriented.", es: "Me describiría como detallista." },
+    { id: "walk-you-through", text: "Let me walk you through my experience.", es: "Permítame explicarle mi experiencia paso a paso.", tip: "'Walk you through' = llevar a alguien punto por punto." },
+    { id: "more-about-the-role", text: "Could you tell me more about the role?", es: "¿Podría contarme más sobre el puesto?" },
+    { id: "excited-opportunity", text: "I'm really excited about this opportunity.", es: "Estoy muy entusiasmado con esta oportunidad." },
+    { id: "hear-back", text: "When can I expect to hear back?", es: "¿Cuándo tendré noticias?" },
   ],
   "work/meetings": [
-    { text: "Can I jump in here?", es: "¿Puedo intervenir aquí?" },
-    { text: "Just to build on that point...", es: "Solo para ampliar ese punto..." },
-    { text: "Let's circle back to this later.", es: "Volvamos a esto más tarde." },
-    { text: "So, to sum up...", es: "Entonces, para resumir..." },
+    { id: "hear-me-okay", text: "Can everyone hear me okay?", es: "¿Se me escucha bien?" },
+    { id: "jump-in-here", text: "Can I jump in here?", es: "¿Puedo intervenir aquí?" },
+    { id: "build-on-that", text: "Just to build on that point...", es: "Solo para ampliar ese punto..." },
+    { id: "park-that", text: "Let's park that for now.", es: "Dejemos eso apartado por ahora.", tip: "Aplaza un tema sin descartarlo." },
+    { id: "circle-back", text: "Let's circle back to this later.", es: "Volvamos a esto más tarde." },
+    { id: "to-sum-up", text: "So, to sum up...", es: "Entonces, para resumir..." },
   ],
   "travel/airport": [
-    { text: "I'd like a window seat, please.", es: "Quisiera un asiento de ventana, por favor." },
-    { text: "Is the flight on time?", es: "¿El vuelo va a tiempo?" },
-    { text: "Where's the baggage claim?", es: "¿Dónde está la recogida de equipaje?" },
-    { text: "I think I missed my connection.", es: "Creo que perdí mi conexión." },
+    { id: "check-this-bag", text: "I'd like to check this bag.", es: "Quisiera documentar esta maleta.", tip: "'Check a bag' es facturarla; la de mano es 'carry-on'." },
+    { id: "window-seat", text: "I'd like a window seat, please.", es: "Quisiera un asiento de ventana, por favor." },
+    { id: "flight-on-time", text: "Is the flight on time?", es: "¿El vuelo va a tiempo?" },
+    { id: "which-gate", text: "Which gate does it leave from?", es: "¿De qué puerta sale?" },
+    { id: "baggage-claim", text: "Where's the baggage claim?", es: "¿Dónde está la recogida de equipaje?" },
+    { id: "missed-connection", text: "I think I missed my connection.", es: "Creo que perdí mi conexión." },
   ],
   "travel/restaurant": [
-    { text: "Could we see the menu, please?", es: "¿Podríamos ver el menú, por favor?" },
-    { text: "What do you recommend?", es: "¿Qué recomienda?" },
-    { text: "I'll have the same, please.", es: "Yo quiero lo mismo, por favor." },
-    { text: "Could we get the check?", es: "¿Nos trae la cuenta?" },
+    { id: "table-for-two", text: "A table for two, please.", es: "Una mesa para dos, por favor." },
+    { id: "see-the-menu", text: "Could we see the menu, please?", es: "¿Podríamos ver el menú, por favor?" },
+    { id: "what-do-you-recommend", text: "What do you recommend?", es: "¿Qué recomienda?" },
+    { id: "allergic-to-nuts", text: "I'm allergic to nuts — does this have any?", es: "Soy alérgico a los frutos secos, ¿esto lleva?" },
+    { id: "have-the-same", text: "I'll have the same, please.", es: "Yo quiero lo mismo, por favor." },
+    { id: "get-the-check", text: "Could we get the check?", es: "¿Nos trae la cuenta?" },
   ],
   "travel/directions": [
-    { text: "Excuse me, how do I get to the station?", es: "Disculpe, ¿cómo llego a la estación?" },
-    { text: "Is it within walking distance?", es: "¿Se puede ir caminando?" },
-    { text: "Take the second left.", es: "Gire en la segunda a la izquierda." },
+    { id: "how-do-i-get-to", text: "Excuse me, how do I get to the station?", es: "Disculpe, ¿cómo llego a la estación?" },
+    { id: "walking-distance", text: "Is it within walking distance?", es: "¿Se puede ir caminando?" },
+    { id: "how-long-on-foot", text: "How long does it take on foot?", es: "¿Cuánto se tarda a pie?" },
+    { id: "second-left", text: "Take the second left.", es: "Gire en la segunda a la izquierda." },
+    { id: "going-the-right-way", text: "Am I going the right way?", es: "¿Voy por buen camino?" },
+    { id: "which-stop", text: "Which stop should I get off at?", es: "¿En qué parada me bajo?", tip: "'Get off' sirve para bus, tren y metro." },
   ],
   "native/idioms": [
-    { text: "It's a piece of cake.", es: "Es pan comido.", tip: "Idiom: algo muy fácil." },
-    { text: "Let's call it a day.", es: "Dejémoslo por hoy." },
-    { text: "I'm under the weather.", es: "No me siento bien." },
-    { text: "Break a leg!", es: "¡Mucha suerte!" },
+    { id: "piece-of-cake", text: "It's a piece of cake.", es: "Es pan comido.", tip: "Idiom: algo muy fácil." },
+    { id: "call-it-a-day", text: "Let's call it a day.", es: "Dejémoslo por hoy." },
+    { id: "under-the-weather", text: "I'm under the weather.", es: "No me siento bien." },
+    { id: "hit-the-nail", text: "You hit the nail on the head.", es: "Diste en el clavo." },
+    { id: "same-page", text: "We're on the same page.", es: "Estamos de acuerdo.", tip: "Muy frecuente en el trabajo." },
+    { id: "break-a-leg", text: "Break a leg!", es: "¡Mucha suerte!" },
   ],
   "native/pronunciation": [
-    { text: "She sells seashells by the seashore.", es: "(trabalenguas de la 's/sh')", tip: "Distingue /s/ de /ʃ/." },
-    { text: "The thirty-three thieves thought they thrilled the throne.", es: "(la 'th')", tip: "Saca la lengua para la /θ/." },
-    { text: "Red lorry, yellow lorry.", es: "(la 'r' y la 'l')" },
+    { id: "seashells", text: "She sells seashells by the seashore.", es: "(trabalenguas de la 's/sh')", tip: "Distingue /s/ de /ʃ/." },
+    { id: "thirty-three-thieves", text: "The thirty-three thieves thought they thrilled the throne.", es: "(la 'th')", tip: "Saca la lengua para la /θ/." },
+    { id: "red-lorry", text: "Red lorry, yellow lorry.", es: "(la 'r' y la 'l')" },
+    { id: "peter-piper", text: "Peter Piper picked a peck of pickled peppers.", es: "(la 'p' aspirada)", tip: "Suelta aire en cada 'p' inicial." },
+    { id: "brown-cow", text: "How now, brown cow.", es: "(el diptongo /aʊ/)", tip: "Abre la boca y ciérrala hacia la 'u'." },
+    { id: "ship-sheep", text: "This ship is full of sheep.", es: "(la /ɪ/ corta frente a la /iː/ larga)", tip: "'Ship' corta, 'sheep' larga — cambia el significado." },
   ],
 };
 
 const WORLD_FALLBACK: Record<string, Phrase[]> = {
   social: [
-    { text: "Nice to meet you.", es: "Encantado de conocerte." },
-    { text: "How have you been?", es: "¿Cómo has estado?" },
-    { text: "Let's keep in touch.", es: "Mantengámonos en contacto." },
+    { id: "w-social-nice-to-meet-you", text: "Nice to meet you.", es: "Encantado de conocerte." },
+    { id: "w-social-how-have-you-been", text: "How have you been?", es: "¿Cómo has estado?" },
+    { id: "w-social-keep-in-touch", text: "Let's keep in touch.", es: "Mantengámonos en contacto." },
   ],
   work: [
-    { text: "Let me get back to you on that.", es: "Te respondo sobre eso más tarde." },
-    { text: "That works for me.", es: "Me viene bien." },
-    { text: "I'll follow up by email.", es: "Te escribo por correo para dar seguimiento." },
+    { id: "w-work-get-back-to-you", text: "Let me get back to you on that.", es: "Te respondo sobre eso más tarde." },
+    { id: "w-work-works-for-me", text: "That works for me.", es: "Me viene bien." },
+    { id: "w-work-follow-up-by-email", text: "I'll follow up by email.", es: "Te escribo por correo para dar seguimiento." },
   ],
   travel: [
-    { text: "Could you help me, please?", es: "¿Podría ayudarme, por favor?" },
-    { text: "How much is it?", es: "¿Cuánto cuesta?" },
-    { text: "Where's the nearest one?", es: "¿Dónde está el más cercano?" },
+    { id: "w-travel-could-you-help-me", text: "Could you help me, please?", es: "¿Podría ayudarme, por favor?" },
+    { id: "w-travel-how-much-is-it", text: "How much is it?", es: "¿Cuánto cuesta?" },
+    { id: "w-travel-nearest-one", text: "Where's the nearest one?", es: "¿Dónde está el más cercano?" },
   ],
   academic: [
-    { text: "What's the main idea here?", es: "¿Cuál es la idea principal aquí?" },
-    { text: "In other words...", es: "En otras palabras..." },
-    { text: "That raises an interesting point.", es: "Eso plantea un punto interesante." },
+    { id: "w-academic-main-idea", text: "What's the main idea here?", es: "¿Cuál es la idea principal aquí?" },
+    { id: "w-academic-in-other-words", text: "In other words...", es: "En otras palabras..." },
+    { id: "w-academic-interesting-point", text: "That raises an interesting point.", es: "Eso plantea un punto interesante." },
   ],
   practical: [
-    { text: "I'd like to report a problem.", es: "Quisiera reportar un problema." },
-    { text: "Could you put me through to support?", es: "¿Me pasa con soporte?" },
-    { text: "Let me check and get back to you.", es: "Déjeme revisar y le aviso." },
+    { id: "w-practical-report-a-problem", text: "I'd like to report a problem.", es: "Quisiera reportar un problema." },
+    { id: "w-practical-put-me-through", text: "Could you put me through to support?", es: "¿Me pasa con soporte?" },
+    { id: "w-practical-check-and-get-back", text: "Let me check and get back to you.", es: "Déjeme revisar y le aviso." },
   ],
   native: [
-    { text: "To be honest with you...", es: "Para serte sincero..." },
-    { text: "It kind of depends.", es: "Más o menos depende." },
-    { text: "That makes total sense.", es: "Eso tiene todo el sentido." },
+    { id: "w-native-to-be-honest", text: "To be honest with you...", es: "Para serte sincero..." },
+    { id: "w-native-kind-of-depends", text: "It kind of depends.", es: "Más o menos depende." },
+    { id: "w-native-makes-total-sense", text: "That makes total sense.", es: "Eso tiene todo el sentido." },
   ],
 };
 
+/**
+ * Every key the curated bank actually holds.
+ *
+ * Exported for scripts/verify-scenario-content.mts alone: iterating the
+ * curriculum only ever finds keys that ARE scenarios, so a typo'd key like
+ * `"travel/resturant"` would sit here forever, silently serving nobody. This
+ * is how the harness sees it.
+ */
+export function scenarioPhraseKeys(): string[] {
+  return Object.keys(SETS);
+}
+
+/**
+ * The STRICT accessor: a scenario's own curated set, or nothing.
+ *
+ * Read this — never `getPhrases` — from a scenario page or from the coverage
+ * registry. `getPhrases` can never return empty, so a registry built on it
+ * would report 35 of 35 scenarios covered on the day nine of them are.
+ */
+export function getScenarioPhrases(
+  worldSlug: string,
+  scenarioSlug: string,
+): Phrase[] | undefined {
+  return SETS[`${worldSlug}/${scenarioSlug}`];
+}
+
+/**
+ * The LENIENT accessor, kept for the global speaking page and the speaking
+ * packs below, and for nothing else.
+ *
+ * Its eight remaining call sites all pass curated keys, so none of them takes
+ * the fallback branch — it stays only because deleting it now would leave the
+ * 26 scenarios that have no curated set with nothing at all, and those sets do
+ * not exist until plan 03-04. Plan 03-11 deletes it once they do.
+ */
 export function getPhrases(worldSlug: string, scenarioSlug: string): Phrase[] {
   return (
     SETS[`${worldSlug}/${scenarioSlug}`] ??
@@ -119,11 +191,11 @@ export interface SpeakingPack {
 }
 
 const TONGUE_TWISTERS: Phrase[] = [
-  { text: "She sells seashells by the seashore.", es: "(trabalenguas /s/ vs /ʃ/)", tip: "Distingue 's' de 'sh'." },
-  { text: "Red lorry, yellow lorry.", es: "(la 'r' y la 'l')", tip: "No las mezcles." },
-  { text: "The thirty-three thieves thought they thrilled the throne.", es: "(la 'th')", tip: "Saca la lengua para /θ/." },
-  { text: "I scream, you scream, we all scream for ice cream.", es: "(ritmo y enlace)", tip: "Enlaza las palabras." },
-  { text: "Could you, would you, should you?", es: "(modales débiles)", tip: "Pronuncia 'd' suave." },
+  { id: "tt-seashells", text: "She sells seashells by the seashore.", es: "(trabalenguas /s/ vs /ʃ/)", tip: "Distingue 's' de 'sh'." },
+  { id: "tt-red-lorry", text: "Red lorry, yellow lorry.", es: "(la 'r' y la 'l')", tip: "No las mezcles." },
+  { id: "tt-thirty-three-thieves", text: "The thirty-three thieves thought they thrilled the throne.", es: "(la 'th')", tip: "Saca la lengua para /θ/." },
+  { id: "tt-ice-cream", text: "I scream, you scream, we all scream for ice cream.", es: "(ritmo y enlace)", tip: "Enlaza las palabras." },
+  { id: "tt-could-would-should", text: "Could you, would you, should you?", es: "(modales débiles)", tip: "Pronuncia 'd' suave." },
 ];
 
 export const SPEAKING_PACKS: SpeakingPack[] = [

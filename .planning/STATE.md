@@ -184,6 +184,22 @@ Recent decisions affecting current work:
 
 ### Blockers/Concerns
 
+- **03-01: twenty-six scenarios lost their speaking warm-up on this commit, and
+  gain nothing back until plan 03-04.** Deliberate, and the one thing in Phase 3
+  that a mid-phase stop makes visibly *worse*, so it is recorded here rather than
+  only in 03-01-PLAN.md, which a reader resuming mid-phase would not open.
+  What happened: `ScenarioView` used to call `getPhrases`, whose per-world
+  fallback hands every scenario in a world the same three generic lines — two
+  scenarios receiving the identical exercise, which is exactly what D-01 was
+  chosen to prevent. It now calls the strict `getScenarioPhrases`, which returns
+  nothing for a scenario with no curated set, and those 26 scenarios render an
+  honest "not ready yet" panel with a link to the global speaking room instead.
+  9 of 35 scenarios have their own set today. **Plan 03-04 closes this** (03-02
+  takes it to 17/35, 03-03 to 27/35, 03-04 to 35/35); at that point the panel is
+  unreachable and `getPhrases` itself is deleted by plan 03-11. Remove this entry
+  on the evidence — `COVERAGE_TOTALS.scenariosWithPhrases === 35` — not on memory.
+  A temporary reduction in what is shown, for an increase in what is true.
+
 - Brownfield fragility (see .planning/codebase/CONCERNS.md): progress PUT is unvalidated and fire-and-forget; JSON.parse on stored progress can throw — addressed by Phase 2
 - IP constraint (Phase 1): third-party CELPIP study material is format reference only — no text may be copied into the app; Celpip.zip is gitignored
 - Startup runs `prisma db push --accept-data-loss`; any schema change in Phase 1 must be additive or first migrate to proper Prisma migrations

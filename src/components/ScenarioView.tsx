@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import type { Scenario, World } from "@/lib/curriculum";
 import { useProgress } from "@/lib/progress";
-import { getPhrases } from "@/lib/content/phrases";
+import { getScenarioPhrases } from "@/lib/content/phrases";
 import { getScenarioLesson } from "@/lib/content/scenario-lessons";
+import { scenarioRecallItems } from "@/lib/review-items";
 import { SkillPill, LevelBadge } from "./SkillPill";
 import { PronunciationLab } from "./practice/PronunciationLab";
+import { RecallDeck } from "./practice/RecallDeck";
 import { Check, MessageSquareText, Lightbulb } from "lucide-react";
 
 export function ScenarioView({
@@ -21,13 +23,109 @@ export function ScenarioView({
   const [justDone, setJustDone] = useState(false);
   const done = (ready && isDone(world.slug, scenario.slug)) || justDone;
   const accent = `var(${world.color})`;
-  const phrases = getPhrases(world.slug, scenario.slug);
+  // The STRICT accessor. `getPhrases` can never return empty — it falls back to
+  // a per-world generic set — so reading it here is what let 26 scenarios show
+  // three shared lines as though they had been written for the situation. From
+  // this commit a scenario either has its own warm-up or says it does not.
+  const phrases = getScenarioPhrases(world.slug, scenario.slug);
+  const recall = scenarioRecallItems(world.slug, scenario.slug);
   const lesson = getScenarioLesson(world.slug, scenario.slug);
 
   function markDone() {
     complete(world.slug, scenario.slug);
     setJustDone(true);
   }
+
+  // Steps are DERIVED, never numbered by hand: the recall step is omitted when
+  // a scenario has nothing of its own to recall, and later plans add one
+  // section per declared skill. A hand-written "3" would be wrong on the first
+  // scenario that skips a step.
+  const steps: { key: string; title: string; body: ReactNode }[] = [
+    {
+      key: "learn",
+      title: "Learn the essentials",
+      body: (
+        <div className="rounded-[var(--radius)] border border-line bg-card p-6 shadow-[var(--shadow-soft)]">
+          <p className="text-ink-soft">{lesson.intro}</p>
+          <ul className="mt-4 space-y-2">
+            {lesson.tips.map((tip, i) => (
+              <li key={i} className="flex gap-2.5 text-sm">
+                <Lightbulb
+                  className="mt-0.5 h-4 w-4 shrink-0"
+                  style={{ color: accent }}
+                  strokeWidth={1.75}
+                />
+                <span>{tip}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ),
+    },
+    {
+      key: "warm-up",
+      title: "Warm up & speak",
+      body: phrases ? (
+        <PronunciationLab phrases={phrases} accent={accent} onComplete={markDone} />
+      ) : (
+        <div className="rounded-[var(--radius)] border border-line bg-card p-6 shadow-[var(--shadow-soft)]">
+          <p className="text-sm text-ink-soft">
+            Warm-up phrases written for this scenario aren&apos;t ready yet.
+            Rather than hand you generic lines dressed up as practice for{" "}
+            {scenario.title.toLowerCase()}, we&apos;ll say so.
+          </p>
+          <Link
+            href="/skill/speaking"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl border border-line-strong px-4 py-2.5 text-sm font-semibold transition-colors hover:bg-paper-deep"
+          >
+            Practise speaking in the meantime →
+          </Link>
+        </div>
+      ),
+    },
+  ];
+
+  if (recall.length > 0) {
+    steps.push({
+      key: "recall",
+      title: "Lock it in",
+      body: (
+        <RecallDeck items={recall} accent={accent} title={scenario.title} />
+      ),
+    });
+  }
+
+  steps.push({
+    key: "role-play",
+    title: "Role-play the conversation",
+    body: (
+      <div className="rounded-[var(--radius)] border border-line bg-card p-6 shadow-[var(--shadow-soft)]">
+        <p className="text-sm text-ink-soft">
+          Rehearse the full conversation with Rumi, your AI Tutor — live,
+          in-character role-play with gentle grammar &amp; word-choice
+          corrections as you go.
+        </p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <Link
+            href={`/tutor?scenario=${world.slug}/${scenario.slug}`}
+            className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-paper transition-transform hover:-translate-y-0.5"
+            style={{ background: accent }}
+          >
+            <MessageSquareText className="h-4 w-4" strokeWidth={1.75} />
+            Open the AI Tutor
+          </Link>
+          <button
+            onClick={markDone}
+            disabled={done}
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-line-strong px-5 py-2.5 text-sm font-semibold transition-colors enabled:hover:bg-paper-deep disabled:opacity-60"
+          >
+            {done && <Check className="h-4 w-4" strokeWidth={2.5} />}
+            {done ? "Completed" : "Mark as done"}
+          </button>
+        </div>
+      </div>
+    ),
+  });
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -60,72 +158,15 @@ export function ScenarioView({
         <p className="mt-2 text-ink-soft">{scenario.blurb}</p>
       </header>
 
-      {/* Step 1 — Learn the essentials (mini-lesson) */}
-      <section className="mt-6">
-        <h2 className="mb-3 flex items-center gap-2 font-display text-xl font-semibold">
-          <StepNumber accent={accent}>1</StepNumber>
-          Learn the essentials
-        </h2>
-        <div className="rounded-[var(--radius)] border border-line bg-card p-6 shadow-[var(--shadow-soft)]">
-          <p className="text-ink-soft">{lesson.intro}</p>
-          <ul className="mt-4 space-y-2">
-            {lesson.tips.map((tip, i) => (
-              <li key={i} className="flex gap-2.5 text-sm">
-                <Lightbulb
-                  className="mt-0.5 h-4 w-4 shrink-0"
-                  style={{ color: accent }}
-                  strokeWidth={1.75}
-                />
-                <span>{tip}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* Step 2 — Warm up & speak (fully functional, no API) */}
-      <section className="mt-8">
-        <h2 className="mb-3 flex items-center gap-2 font-display text-xl font-semibold">
-          <StepNumber accent={accent}>2</StepNumber>
-          Warm up &amp; speak
-        </h2>
-        <PronunciationLab phrases={phrases} accent={accent} onComplete={markDone} />
-      </section>
-
-      {/* Step 3 — Role-play with the tutor */}
-      <section className="mt-8">
-        <h2 className="mb-3 flex items-center gap-2 font-display text-xl font-semibold">
-          <span className="grid h-7 w-7 place-items-center rounded-full bg-paper-deep font-display text-sm">
-            3
-          </span>
-          Role-play the conversation
-        </h2>
-        <div className="rounded-[var(--radius)] border border-line bg-card p-6 shadow-[var(--shadow-soft)]">
-          <p className="text-sm text-ink-soft">
-            Rehearse the full conversation with Rumi, your AI Tutor — live,
-            in-character role-play with gentle grammar &amp; word-choice
-            corrections as you go.
-          </p>
-          <div className="mt-4 flex flex-wrap gap-3">
-            <Link
-              href={`/tutor?scenario=${world.slug}/${scenario.slug}`}
-              className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-paper transition-transform hover:-translate-y-0.5"
-              style={{ background: accent }}
-            >
-              <MessageSquareText className="h-4 w-4" strokeWidth={1.75} />
-              Open the AI Tutor
-            </Link>
-            <button
-              onClick={markDone}
-              disabled={done}
-              className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-line-strong px-5 py-2.5 text-sm font-semibold transition-colors enabled:hover:bg-paper-deep disabled:opacity-60"
-            >
-              {done && <Check className="h-4 w-4" strokeWidth={2.5} />}
-              {done ? "Completed" : "Mark as done"}
-            </button>
-          </div>
-        </div>
-      </section>
+      {steps.map((step, index) => (
+        <section key={step.key} className={index === 0 ? "mt-6" : "mt-8"}>
+          <h2 className="mb-3 flex items-center gap-2 font-display text-xl font-semibold">
+            <StepNumber accent={accent}>{index + 1}</StepNumber>
+            {step.title}
+          </h2>
+          {step.body}
+        </section>
+      ))}
     </div>
   );
 }
