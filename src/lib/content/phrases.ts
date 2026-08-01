@@ -1,16 +1,23 @@
 // Speaking warm-up phrases per scenario, used by PronunciationLab.
 // Keyed by `${worldSlug}/${scenarioSlug}`.
 //
-// TWO accessors live here on purpose and they are NOT interchangeable:
+// ONE accessor lives here, and it is STRICT.
 //
-//   getScenarioPhrases()  — strict. Returns `undefined` for a scenario with no
-//                           curated set. This is the one a scenario page and
-//                           the coverage registry read, because "this scenario
-//                           has no phrases of its own" has to be sayable.
-//   getPhrases()          — lenient, kept for the global speaking page and the
-//                           speaking packs only. Falls back to a per-world
-//                           generic set. Deleted by plan 03-11 once all 35
-//                           scenarios have their own set (03-04 closes that).
+//   getScenarioPhrases()  — returns `undefined` for a scenario with no curated
+//                           set of its own, and a neighbour's set NEVER. It is
+//                           what the scenario page, the coverage registry, the
+//                           review items and the speaking packs all read.
+//
+// There used to be a second, lenient one (`getPhrases`) reading through a
+// per-world generic record (`WORLD_FALLBACK`) — three lines shared by every
+// scenario in a world. Both were deleted at plan 03-11, and the deletion is the
+// rule rather than a tidy-up: a scenario with no phrase set of its own must
+// FAIL rather than be handed a neighbour's, because a silent substitution is
+// indistinguishable on screen from real content and is exactly what D-01
+// rejected. What stands in its place is an assertion in
+// scripts/verify-scenario-content.mts — "every scenario in the curriculum
+// resolves to a NON-EMPTY phrase set" — which fails loudly at authoring time.
+// So: ADD A SCENARIO, ADD ITS SIX PHRASES HERE IN THE SAME CHANGE.
 
 export interface Phrase {
   /**
@@ -360,39 +367,6 @@ const SETS: Record<string, Phrase[]> = {
   ],
 };
 
-const WORLD_FALLBACK: Record<string, Phrase[]> = {
-  social: [
-    { id: "w-social-nice-to-meet-you", text: "Nice to meet you.", es: "Encantado de conocerte." },
-    { id: "w-social-how-have-you-been", text: "How have you been?", es: "¿Cómo has estado?" },
-    { id: "w-social-keep-in-touch", text: "Let's keep in touch.", es: "Mantengámonos en contacto." },
-  ],
-  work: [
-    { id: "w-work-get-back-to-you", text: "Let me get back to you on that.", es: "Te respondo sobre eso más tarde." },
-    { id: "w-work-works-for-me", text: "That works for me.", es: "Me viene bien." },
-    { id: "w-work-follow-up-by-email", text: "I'll follow up by email.", es: "Te escribo por correo para dar seguimiento." },
-  ],
-  travel: [
-    { id: "w-travel-could-you-help-me", text: "Could you help me, please?", es: "¿Podría ayudarme, por favor?" },
-    { id: "w-travel-how-much-is-it", text: "How much is it?", es: "¿Cuánto cuesta?" },
-    { id: "w-travel-nearest-one", text: "Where's the nearest one?", es: "¿Dónde está el más cercano?" },
-  ],
-  academic: [
-    { id: "w-academic-main-idea", text: "What's the main idea here?", es: "¿Cuál es la idea principal aquí?" },
-    { id: "w-academic-in-other-words", text: "In other words...", es: "En otras palabras..." },
-    { id: "w-academic-interesting-point", text: "That raises an interesting point.", es: "Eso plantea un punto interesante." },
-  ],
-  practical: [
-    { id: "w-practical-report-a-problem", text: "I'd like to report a problem.", es: "Quisiera reportar un problema." },
-    { id: "w-practical-put-me-through", text: "Could you put me through to support?", es: "¿Me pasa con soporte?" },
-    { id: "w-practical-check-and-get-back", text: "Let me check and get back to you.", es: "Déjeme revisar y le aviso." },
-  ],
-  native: [
-    { id: "w-native-to-be-honest", text: "To be honest with you...", es: "Para serte sincero..." },
-    { id: "w-native-kind-of-depends", text: "It kind of depends.", es: "Más o menos depende." },
-    { id: "w-native-makes-total-sense", text: "That makes total sense.", es: "Eso tiene todo el sentido." },
-  ],
-};
-
 /**
  * Every key the curated bank actually holds.
  *
@@ -406,34 +380,20 @@ export function scenarioPhraseKeys(): string[] {
 }
 
 /**
- * The STRICT accessor: a scenario's own curated set, or nothing.
+ * The ONLY accessor: a scenario's own curated set, or nothing.
  *
- * Read this — never `getPhrases` — from a scenario page or from the coverage
- * registry. `getPhrases` can never return empty, so a registry built on it
- * would report 35 of 35 scenarios covered on the day nine of them are.
+ * `undefined` means "this scenario has no phrases of its own" and is the whole
+ * point — the coverage registry counts what the bank HOLDS, so it could never
+ * report 35 of 35 on the day nine of them are written. There is deliberately no
+ * lenient sibling: a caller that wants a list rather than an absence coalesces
+ * to `[]` at its own call site, which shows an empty warm-up rather than
+ * another scenario's phrases.
  */
 export function getScenarioPhrases(
   worldSlug: string,
   scenarioSlug: string,
 ): Phrase[] | undefined {
   return SETS[`${worldSlug}/${scenarioSlug}`];
-}
-
-/**
- * The LENIENT accessor, kept for the global speaking page and the speaking
- * packs below, and for nothing else.
- *
- * Its eight remaining call sites all pass curated keys, so none of them takes
- * the fallback branch — it stays only because deleting it now would leave the
- * 26 scenarios that have no curated set with nothing at all, and those sets do
- * not exist until plan 03-04. Plan 03-11 deletes it once they do.
- */
-export function getPhrases(worldSlug: string, scenarioSlug: string): Phrase[] {
-  return (
-    SETS[`${worldSlug}/${scenarioSlug}`] ??
-    WORLD_FALLBACK[worldSlug] ??
-    WORLD_FALLBACK.social
-  );
 }
 
 // ── Speaking packs (for the Speaking skill page) ──────────────
@@ -455,6 +415,10 @@ const TONGUE_TWISTERS: Phrase[] = [
   { id: "tt-could-would-should", text: "Could you, would you, should you?", es: "(modales débiles)", tip: "Pronuncia 'd' suave." },
 ];
 
+// Every key below is curated and asserted non-empty by the content harness
+// ("every scenario resolves to its own phrase set"), so the `?? []` can only be
+// reached by deleting a set — in which case this pack shrinks rather than
+// silently serving another scenario's lines.
 export const SPEAKING_PACKS: SpeakingPack[] = [
   {
     id: "greetings",
@@ -462,8 +426,8 @@ export const SPEAKING_PACKS: SpeakingPack[] = [
     level: "B1",
     blurb: "Break the ice and keep a casual chat going.",
     phrases: [
-      ...getPhrases("social", "small-talk"),
-      ...getPhrases("social", "making-friends"),
+      ...(getScenarioPhrases("social", "small-talk") ?? []),
+      ...(getScenarioPhrases("social", "making-friends") ?? []),
     ],
   },
   {
@@ -472,9 +436,9 @@ export const SPEAKING_PACKS: SpeakingPack[] = [
     level: "A2",
     blurb: "Airport, restaurant and getting around.",
     phrases: [
-      ...getPhrases("travel", "airport"),
-      ...getPhrases("travel", "restaurant"),
-      ...getPhrases("travel", "directions"),
+      ...(getScenarioPhrases("travel", "airport") ?? []),
+      ...(getScenarioPhrases("travel", "restaurant") ?? []),
+      ...(getScenarioPhrases("travel", "directions") ?? []),
     ],
   },
   {
@@ -483,8 +447,8 @@ export const SPEAKING_PACKS: SpeakingPack[] = [
     level: "B2",
     blurb: "Interviews and meetings, said with confidence.",
     phrases: [
-      ...getPhrases("work", "interviews"),
-      ...getPhrases("work", "meetings"),
+      ...(getScenarioPhrases("work", "interviews") ?? []),
+      ...(getScenarioPhrases("work", "meetings") ?? []),
     ],
   },
   {
@@ -492,14 +456,17 @@ export const SPEAKING_PACKS: SpeakingPack[] = [
     title: "Tricky sounds",
     level: "B2",
     blurb: "Drills for the sounds Spanish speakers find hardest.",
-    phrases: [...getPhrases("native", "pronunciation"), ...TONGUE_TWISTERS],
+    phrases: [
+      ...(getScenarioPhrases("native", "pronunciation") ?? []),
+      ...TONGUE_TWISTERS,
+    ],
   },
   {
     id: "idioms",
     title: "Idioms",
     level: "C1",
     blurb: "Everyday expressions that make you sound native.",
-    phrases: getPhrases("native", "idioms"),
+    phrases: getScenarioPhrases("native", "idioms") ?? [],
   },
 ];
 

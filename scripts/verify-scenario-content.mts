@@ -2165,6 +2165,160 @@ ok(
   canon(pendingPairs().filter((p) => p.skill === "speaking")),
 );
 
+/* ================================================================== *
+ * NO SILENT FALLBACK — the invariant that REPLACES the deleted one
+ * (plan 03-11)
+ *
+ * `phrases.ts` used to export a lenient accessor reading through a per-world
+ * generic record. Under it, a scenario with no set of its own was handed three
+ * lines shared by every scenario in its world — indistinguishable on screen
+ * from content written for the situation, and precisely what D-01 rejected.
+ * Both are deleted. Nothing in the module can now substitute one scenario's
+ * phrases for another's, because there is nothing left to substitute FROM.
+ *
+ * That deletion is only safe while every scenario has its own set, so this is
+ * the assertion that keeps it safe. It would have been FALSE for most of this
+ * phase (9/35 at the tracer, 27/35 at 03-03) and became true at 03-04. From
+ * here it is the guard: a Phase 4 scenario added with no phrase set fails HERE,
+ * at authoring time, rather than being served a neighbour's at read time.
+ *
+ * If this fails, write the missing scenario's six phrases. Do not reintroduce
+ * a fallback, and do not relax the assertion to `!== undefined` — an empty
+ * array is a scenario with nothing to practise, which is the same lie in a
+ * quieter voice.
+ * ================================================================== */
+
+group("no silent fallback: every scenario resolves to a phrase set of its own");
+
+for (const s of SCENARIOS) {
+  const set = getScenarioPhrases(s.world, s.scenario);
+  ok(
+    `phrases: ${s.key} resolves to a NON-EMPTY set of its own`,
+    set !== undefined && set.length > 0,
+    "the per-world fallback is deleted, so this is now a hole rather than a silent substitution",
+  );
+}
+
+// Read at the source, comments stripped first — otherwise the paragraph at the
+// head of the module explaining why the fallback is gone would itself fail the
+// assertion that it is gone. Same technique as the speaking panel's promise
+// above (03-09), and the same reason.
+const phraseModuleCode = readFileSync(
+  new URL("../src/lib/content/phrases.ts", import.meta.url),
+  "utf8",
+)
+  .replace(/\/\*[\s\S]*?\*\//g, " ")
+  .replace(/^[ \t]*\/\/.*$/gm, " ");
+
+ok(
+  "the phrase module exports no lenient accessor and no per-world fallback",
+  !phraseModuleCode.includes("WORLD_FALLBACK") &&
+    !/[^A-Za-z]getPhrases\s*\(/.test(phraseModuleCode),
+  "one accessor, and it is strict — a second one that cannot return empty is how a claim outruns the bank",
+);
+
+/* ================================================================== *
+ * THE DECLARED GAPS, CLOSED (plan 03-11)
+ *
+ * Three assertions in this file were written down as having less grip than
+ * their labels imply. Each was declared rather than hidden, which is why they
+ * could be found and closed; each was left open for a stated reason, and every
+ * one of those reasons has since expired.
+ *
+ *   WINDOWS 39 (03-08) — `no passage text is repeated` fingerprints the JOINED
+ *     body, so a passage borrowing ONE paragraph from another scenario is not
+ *     caught. Mutation M23 reproduces it and SURVIVES. Left open because 03-09
+ *     held uncommitted work in this file; that work is committed.
+ *   WINDOWS 41 (03-10) — `is written for itself` fingerprints the whole task
+ *     and `has its own three moves` the whole move list, so two scenarios
+ *     sharing a SINGLE move are caught by neither. Left for "the plan that owns
+ *     the harness next", which is this one.
+ *   03-09's finding — the per-id "is exactly what scenarioItemId composes"
+ *     line recomposes from a localId parsed out of that same id, so it is
+ *     tautological. 03-09 fixed its own bank at the SOURCE and recorded that
+ *     03-05's, 03-06's and 03-07's carry the identical hole. Those three are
+ *     closed here, by the same technique.
+ *
+ * All three corpora are clean today, measured out of band before these ran:
+ * 31 reading paragraphs all distinct with a highest cross-scenario Jaccard of
+ * 0.081, and 90 moves all distinct with zero of 3,915 cross-scenario pairs at
+ * or above 0.5. So these assertions add no work — they make a property that was
+ * true by an author's care true by the gate instead, which is what Phase 4
+ * needs, since Phase 4 adds the scenarios these banks will grow by.
+ * ================================================================== */
+
+group("D-01 at a finer grain: no borrowed paragraph, no borrowed move");
+
+// WINDOWS 39. A whole-body fingerprint is the wrong grain for how a copy-paste
+// actually happens: nobody duplicates a 300-word passage, they lift a paragraph.
+const scenarioParagraphs: { key: string; index: number; text: string }[] = [];
+for (const s of SCENARIOS) {
+  const passage = getScenarioReading(s.world, s.scenario);
+  if (!passage) continue;
+  passage.body.forEach((paragraph, index) =>
+    scenarioParagraphs.push({ key: s.key, index, text: canon(paragraph.trim()) }),
+  );
+}
+for (let a = 0; a < scenarioParagraphs.length; a += 1) {
+  for (let b = a + 1; b < scenarioParagraphs.length; b += 1) {
+    const x = scenarioParagraphs[a];
+    const y = scenarioParagraphs[b];
+    if (x.key === y.key) continue;
+    ok(
+      `scenario reading: ${x.key} paragraph ${x.index} is not ${y.key} paragraph ${y.index}`,
+      x.text !== y.text,
+      "a passage that borrows ONE paragraph from another scenario is D-01's failure at the grain it really happens",
+    );
+  }
+}
+
+// WINDOWS 41. Same argument one skill over: a tired author does not hand over a
+// whole rehearsal, they reuse the move they already found the words for.
+const scenarioMoves: { key: string; index: number; text: string }[] = [];
+for (const s of SCENARIOS) {
+  const task = getScenarioSpeaking(s.world, s.scenario);
+  if (!task) continue;
+  task.moves.forEach((move, index) =>
+    scenarioMoves.push({ key: s.key, index, text: canon(move.trim()) }),
+  );
+}
+for (let a = 0; a < scenarioMoves.length; a += 1) {
+  for (let b = a + 1; b < scenarioMoves.length; b += 1) {
+    const x = scenarioMoves[a];
+    const y = scenarioMoves[b];
+    if (x.key === y.key) continue;
+    ok(
+      `scenario speaking: ${x.key} move ${x.index + 1} is not ${y.key} move ${y.index + 1}`,
+      x.text !== y.text,
+      "the task and move-list fingerprints are both whole-field, so a single borrowed move passes them",
+    );
+  }
+}
+
+group("the one-author rule, asserted at the source in every exercise bank");
+
+// 03-09's technique, applied to the three banks it identified as carrying the
+// same tautological per-id line. Whether an id was PRODUCED BY `scenarioItemId`
+// is a property of the source and cannot be recovered from the string, so it
+// is checked where it is decidable. Comments stripped first, so the paragraphs
+// explaining the rule cannot satisfy it.
+for (const [label, path, literal] of [
+  ["grammar", "../src/lib/content/scenario-grammar.ts", "#grammar#"],
+  ["writing", "../src/lib/content/scenario-writing.ts", "#writing#"],
+  ["reading", "../src/lib/content/scenario-reading.ts", "#reading#"],
+] as const) {
+  const code = readFileSync(new URL(path, import.meta.url), "utf8")
+    .replace(/\/\*[\s\S]*?\*\//g, " ")
+    .replace(/^[ \t]*\/\/.*$/gm, " ");
+  ok(
+    `the ${label} bank never spells the id format by hand`,
+    !code.includes(literal) &&
+      !/#\$\{/.test(code) &&
+      code.includes("scenarioItemId("),
+    "the id is a one-way door on live learner data, so it gets exactly one author",
+  );
+}
+
 /* ------------------------------------------------------------------ *
  * The phase's own progress meter — REPORTED, never asserted.
  *

@@ -26,10 +26,12 @@ export function ScenarioView({
   const [justDone, setJustDone] = useState(false);
   const done = (ready && isDone(world.slug, scenario.slug)) || justDone;
   const accent = `var(${world.color})`;
-  // The STRICT accessor. `getPhrases` can never return empty — it falls back to
-  // a per-world generic set — so reading it here is what let 26 scenarios show
-  // three shared lines as though they had been written for the situation. From
-  // this commit a scenario either has its own warm-up or says it does not.
+  // The strict accessor, and since 03-11 the only one. It used to have a
+  // lenient sibling that fell back to a per-world generic set and so could
+  // never return empty, which is what let 26 scenarios show three shared lines
+  // as though they had been written for the situation. That sibling and its
+  // fallback record are deleted: a scenario either has its own warm-up or says
+  // it does not.
   const phrases = getScenarioPhrases(world.slug, scenario.slug);
   const recall = scenarioRecallItems(world.slug, scenario.slug);
   const lesson = getScenarioLesson(world.slug, scenario.slug);

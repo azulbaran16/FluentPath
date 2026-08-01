@@ -44,6 +44,41 @@ Stack: Next.js 16 (App Router) · React 19 · TypeScript · Tailwind v4.
   that `onend` and by nothing else — so an over-long turn strands the learner on a screen with
   no words and no questions. `scripts/verify-celpip-content.mts` gates the ceiling at 35 words.
   A single-speaker news item is still written as many turns for this reason alone.
+- Scenario practice is per-scenario as of Fase 3 — all 35 scenarios and all 52 declared
+  scenario×skill pairs. Content is keyed by the composite scenario key `"world/scenario"`
+  across `scenario-lessons.ts`, `phrases.ts`, `scenario-vocabulary.ts`, `scenario-grammar.ts`,
+  `scenario-writing.ts`, `scenario-reading.ts` and `scenario-speaking.ts`. **Coverage is
+  derived from bank contents** (`src/lib/scenario-coverage.ts`, `EXERCISE_SOURCES`) and never
+  hand-written, so a claim cannot outrun the content: a bank that exists but is EMPTY still
+  reports its pair unwritten and the page says so. Wiring a new skill bank is one entry in
+  `EXERCISE_SOURCES`, one branch in `ScenarioPractice.tsx` — plus `reviewableIds()` **only if
+  the renderer calls `recordAttempt`**. Three of the four exercise banks do not; adding an
+  unscored id there puts a permanent phantom in the "Due today" count.
+- **There is exactly ONE phrase accessor and it is strict.** `getScenarioPhrases` returns
+  `undefined`, never a neighbour's set: the per-world fallback that used to hand every
+  unwritten scenario three shared lines was deleted at 03-11. **A new scenario added without
+  its own phrase set FAILS the content harness** ("every scenario resolves to a non-empty
+  phrase set") rather than silently borrowing one. Add a scenario, add its six phrases in the
+  same change.
+- **A spaced-repetition id is a one-way door.** Every SRS item carries an authored slug and its
+  stored key is composed by `scenarioItemId` alone as `world/scenario#kind#slug`. That string
+  is the key its Postgres `srs` entry lives under and `mergeProgress` unions keys blindly, so
+  **an id must never be renamed or renumbered once shipped** — a rename orphans live progress
+  with no migration path and no way to detect it. Insert freely; never renumber.
+- Which exercises feed the review queue is deliberate: **phrases, vocabulary and scenario
+  grammar are scheduled; writing, reading and speaking are not.** Those three compose ids for
+  uniqueness and storage scoping only (`SCHEDULED_ITEM_KINDS` in `review-items.ts`) because
+  nothing scores them — a drafted text, a comprehension question that cannot leave its passage,
+  and a ticked self-report are not answers that can come due.
+- The gate for all of it: `node --experimental-strip-types scripts/verify-scenario-content.mts`
+  (11,981 assertions). It is a low-conflict append target — one import line, one group at the
+  bottom. If it fails, fix the content; never weaken the assertion.
 - AI tutor endpoint `src/app/api/tutor/route.ts` is a stub until `ANTHROPIC_API_KEY` is set (Fase 5).
+- **A mutation sweep can poison a `.next` build that outlives it.** Sweeps restore source
+  byte-for-byte and `git status` comes back clean while the build keeps the mutation — 03-08
+  hit this (every scenario page served one passage; the minifier had dropped the rest as
+  unreachable) and diagnosed it from the build's own source map, which records what the bundler
+  read. Run sweeps in a worktree or a scratch copy, and rebuild from the committed tree before
+  making any claim from a build.
 - Design system & theme tokens in `src/app/globals.css` ("Traveler's Journal": Fraunces + Hanken Grotesk).
 - Full plan & phases: `docs/plans/2026-06-19-fluentpath-design.md`.
