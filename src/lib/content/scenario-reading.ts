@@ -547,6 +547,208 @@ const BANK: Record<string, AuthoredPassage> = {
       },
     ],
   },
+
+  /* ════════════════════════════ C1 ════════════════════════════
+   * C1 here is what the READER is asked to do, not how long the words are.
+   * No question below can be answered by locating one sentence and copying it:
+   * every answer lives in the distance between what a sentence says and what it
+   * is doing, or in the role a sentence plays in the argument around it. That is
+   * the only honest way to make a comprehension question C1, because vocabulary
+   * can always be glossed and inference cannot. */
+
+  /* ───────────────────── social/humor · C1 ─────────────────────
+   * The humour is IN the writing rather than described by it. This scenario's
+   * briefing, phrases and deck are all metalanguage — "that went over my head",
+   * deadpan, an understatement, tongue in cheek — which teach a learner to TALK
+   * about a joke she has already got. Nothing in the scenario asks her to get
+   * one. So this is a sustained deadpan essay whose literal surface is warm
+   * praise and whose meaning is a complaint, and three of its four questions
+   * turn on tone: what the sentence is doing, not what it says.
+   *
+   * The last paragraph turns the joke on the narrator, which is the same
+   * self-deprecating move the briefing calls safe and likeable — shown working
+   * rather than recommended. */
+  "social/humor": {
+    slug: "the-man-who-mows-at-seven",
+    title: "The Man Who Mows at Seven",
+    level: "C1",
+    minutes: 5,
+    body: [
+      "My neighbour Gerald mows his lawn at seven o'clock on Sunday morning. He has done this for eleven years, through drought and downpour, and I want to say at the outset that I have nothing but admiration for a man of such consistency. It cannot be easy to keep that standard up. There are Sundays when the grass is visibly shorter than it was the week before, and out he goes regardless, so that nothing is left to chance. It is a good machine, too. I looked the model up one evening, which is not, I accept, the act of an indifferent man.",
+      "I have never mentioned it to him. This is not cowardice; it is a national procedure. A grievance here is not raised, it is filed — you carry it about with you for a decade, you mention it to everybody except the person concerned, and eventually you write a short piece about it for a magazine. Once, in the ninth year, I met him at the gate and said that the lawn was looking very well. He said thank you. I consider that the matter has now been addressed.",
+      "Last spring the mowing stopped for six weeks. I noticed on the second Sunday. By the fourth I was waking at seven anyway and lying there in the enormous silence where my grievance used to be. He had been in hospital, which I found out from somebody else, in the way that one finds out everything here. He is home now, and so is the mower, and I am pleased about both — a sentence I have read back several times and have decided to leave exactly as it stands.",
+    ],
+    glossary: [
+      {
+        word: "at the outset",
+        meaning: "right at the beginning, before anything else is said",
+      },
+      {
+        word: "a grievance",
+        meaning:
+          "a complaint you feel entitled to make, whether or not you ever make it",
+      },
+      {
+        word: "left to chance",
+        meaning: "allowed to depend on luck instead of being controlled",
+      },
+      {
+        word: "the matter has been addressed",
+        meaning: "formal English for a problem that has been properly dealt with",
+      },
+    ],
+    questions: [
+      {
+        id: "admiration-that-is-not-admiration",
+        q: "The writer says he has “nothing but admiration for a man of such consistency”. What is that sentence actually doing?",
+        options: [
+          "Praising a neighbour he genuinely respects",
+          "Complaining about the mowing without ever saying so",
+          "Apologising for an argument the two of them had",
+          "Admitting that he neglects his own garden",
+        ],
+        answer: 1,
+        explain:
+          "Everything packed around the sentence contradicts it: eleven years, seven o'clock on a Sunday, and grass that is already shorter than it was. Praise this warm, this early and this specific is where an English complaint tends to hide.",
+      },
+      {
+        id: "a-grievance-is-filed",
+        q: "What does the writer mean by saying that a grievance here “is not raised, it is filed”?",
+        options: [
+          "Complaints about noise have to be submitted to the council in writing",
+          "People keep the complaint for years and tell everybody except the person responsible",
+          "A grievance is only taken seriously once it has been written down",
+          "Neighbours here settle their disagreements quickly and formally",
+        ],
+        answer: 1,
+        explain:
+          "The rest of the sentence says exactly what filing means here: carry it about for a decade, mention it to everybody except the person concerned. The joke works by borrowing the vocabulary of an office for something nobody has ever written down — until, he admits, now.",
+      },
+      {
+        id: "the-matter-has-been-addressed",
+        q: "Why is “I consider that the matter has now been addressed” funny?",
+        options: [
+          "Because Gerald finally apologised for the noise",
+          "Because the writer said the opposite of what he meant and Gerald understood him",
+          "Because a compliment about the lawn is reported as though it had been a formal complaint",
+          "Because by the ninth year the writer had forgotten what annoyed him",
+        ],
+        answer: 2,
+        explain:
+          "What actually happened is that he praised the lawn and Gerald said thank you. Wrapping that exchange in the language of a resolved dispute — the matter, addressed — is the gap between the event and the report of it, and the gap is the joke. Gerald understood nothing, which is why the second option is the tempting one and still wrong.",
+      },
+      {
+        id: "the-sentence-he-left-as-it-stands",
+        q: "In the last paragraph the writer says he has read that final sentence back several times and decided to “leave exactly as it stands”. What is he letting the reader see?",
+        options: [
+          "That he is not entirely sure he is pleased, and would rather not say so directly",
+          "That he is proud of how well the sentence is written",
+          "That he intends to show the sentence to Gerald",
+          "That he ran out of time to revise the piece",
+        ],
+        answer: 0,
+        explain:
+          "A writer only holds a sentence up to the light when he does not quite trust it. Waking at seven anyway, into a silence he calls enormous, is not the account of a man who wanted the mowing to stop, and inspecting the sentence rather than rewriting it admits the mixture without ever naming it.",
+      },
+    ],
+  },
+
+  /* ───────────────────── academic/articles · C1 ─────────────────────
+   * A long-form argument with a spine the reader has to hold across four
+   * paragraphs: the received claim, an honest concession, the turn, and the
+   * upshot. The scenario's phrases already name those moves out loud ("he's
+   * setting up the counterargument so he can knock it down", "that 'however'
+   * changes everything") and its deck supplies the words for them (a premise, a
+   * caveat, the upshot, gloss over). What no phrase can do is make her FIND one
+   * — so one question here is about the STRUCTURE of the argument rather than
+   * its content, and one asks for a conclusion the passage supports and never
+   * states, which is the deck's "ostensibly" and the phrase set's "she's not
+   * saying it outright" turned into work. */
+  "academic/articles": {
+    slug: "what-emptied-the-high-street",
+    title: "What Actually Emptied the High Street",
+    level: "C1",
+    minutes: 6,
+    body: [
+      "Ask why the high street emptied and you will be told, with a confidence that ought to be suspicious, that people started shopping online. The explanation has the shape of a good one. It names a cause, it arrives at roughly the right date, and it asks nobody to do anything. It is also, at best, a third of the answer.",
+      "Let us give the standard account its due. Online retail did take a share, and it took the most profitable share first: books, electronics, the clothing nobody needs to try on. Any shop whose stock could be photographed and posted lost something real, and a number of them lost enough to close. A retailer who tells you otherwise is defending a memory rather than a balance sheet.",
+      "The difficulty is that the decline does not follow the internet's map. Two towns forty miles apart, with the same broadband and much the same incomes, can differ by a factor of three in empty shopfronts. What separates them is not how their residents shop but what their landlords are owed. Where a parade of shops has passed to an investment fund, the rent is set by what the property has to be worth on the books rather than by what a butcher can pay; and a unit standing empty at a high notional rent can be worth more to the fund than the same unit let cheaply to a tenant who would have stayed twenty years.",
+      "None of this makes the online explanation false. It makes it comfortable. It points at a change nobody chose and asks for sympathy rather than a decision. The competing account points at leases, valuations and a tax levied on floor space, all of which were written by people who are still alive and can be telephoned. That may be why it takes longer to reach print.",
+    ],
+    glossary: [
+      {
+        word: "a parade of shops",
+        meaning: "in British English, a short row of shops built as one block",
+      },
+      {
+        word: "give something its due",
+        meaning:
+          "admit honestly what is right about a position you are about to argue against",
+      },
+      {
+        word: "notional",
+        meaning: "existing on paper as a figure, rather than being paid by anybody",
+      },
+      {
+        word: "on the books",
+        meaning: "recorded in a company's accounts, whatever is happening in fact",
+      },
+    ],
+    questions: [
+      {
+        id: "what-the-second-paragraph-does",
+        q: "What is the second paragraph doing in the argument?",
+        options: [
+          "Giving the evidence for the writer's own explanation",
+          "Conceding what is right about the explanation the writer rejects",
+          "Restating the first paragraph in more detail",
+          "Introducing a second cause unrelated to the first",
+        ],
+        answer: 1,
+        explain:
+          "“Let us give the standard account its due” announces a concession, and everything after it is the strongest version of the view the writer is about to argue against. Granting it first is what lets the next paragraph land as an objection rather than as a flat contradiction.",
+      },
+      {
+        id: "the-evidence-that-turns-it",
+        q: "Which piece of evidence does the writer use to argue that online shopping cannot be the main cause?",
+        options: [
+          "Online retail took the most profitable categories first",
+          "Shops closed even when their stock could not be photographed",
+          "Two comparable towns differ threefold in empty shopfronts",
+          "Investment funds now own most parades of shops",
+        ],
+        answer: 2,
+        explain:
+          "The two towns are the hinge of the whole piece: comparable broadband, comparable incomes, three times the difference. A cause that both towns share cannot explain an effect that varies between them. The profitable categories belong to the concession rather than to the evidence, and the passage never claims that funds own most parades of shops — only that where one does, the rent stops answering to what a tenant can pay.",
+      },
+      {
+        id: "the-conclusion-it-never-draws",
+        q: "The passage never says this. Which conclusion does its argument nevertheless support?",
+        options: [
+          "A measure aimed only at online retailers would leave most of the problem in place",
+          "Online shopping will decline once the high street recovers",
+          "Towns with faster broadband have emptier high streets",
+          "Independent shops are better run than chains",
+        ],
+        answer: 0,
+        explain:
+          "Online retail is “at best, a third of the answer” and the rest is located in rents and valuations. The passage never mentions a measure aimed at online retailers and never draws the conclusion — but if two thirds of the cause sits in a lease, an answer aimed at the other third cannot reach it. Broadband is the thing the passage deliberately holds constant between its two towns, so making it the cause runs against the one example the argument turns on.",
+      },
+      {
+        id: "why-it-takes-longer-to-reach-print",
+        q: "What is the writer implying by ending on “That may be why it takes longer to reach print”?",
+        options: [
+          "The rent explanation is harder to research, so journalists arrive at it later",
+          "An explanation that names people who could be held responsible is less comfortable to publish",
+          "Newspapers no longer employ enough specialist reporters",
+          "The writer's own article was rejected several times before it appeared",
+        ],
+        answer: 1,
+        explain:
+          "The sentence immediately before it names leases, valuations and “people who are still alive and can be telephoned”, set against an explanation the writer has just called comfortable. The point is about whom an account inconveniences, not about how long the research takes — and he declines to say it outright, which is the habit this scenario exists to train.",
+      },
+    ],
+  },
 };
 
 /* ------------------------------------------------------------------ *
