@@ -331,6 +331,190 @@ const BANK: Record<string, AuthoredSpeakingTask> = {
     success:
       "Your concession was one the other side would recognise, and your last line argued nothing new.",
   },
+
+  /* ═══════════════════ Travel & Errands ═══════════════════
+   * Six scenarios, and every one of them used to be handed the same three
+   * generic travel lines — so this world is where D-01's rejected outcome was
+   * most visible and where a copy between two entries would be most tempting.
+   * Three of the six are A2, and A2 is where a task drifts upward fastest: the
+   * moves below are doable in short, simple sentences by someone standing at a
+   * counter with a queue behind her. Each turns on the move its own scenario is
+   * named after — checking in under a change, reporting a room, ordering with
+   * an allergy, following a route, describing a symptom, returning a fault. */
+
+  "travel/airport": {
+    slug: "the-connection-you-just-lost",
+    title: "The connection you just lost",
+    level: "A2",
+    setup:
+      "Your first flight landed late and the second is gone. One desk is open, eleven people behind you.",
+    moves: [
+      "Say your flight number and the problem in one short sentence.",
+      "Ask for the next flight, then ask what time you must be at the gate.",
+      "Say the new time and the new gate back to the agent before you move away.",
+    ],
+    success:
+      "You gave the flight number first, and you walked away with a time and a gate you had said out loud.",
+  },
+
+  "travel/hotel": {
+    slug: "not-the-room-you-booked",
+    title: "Not the room you booked",
+    level: "B1",
+    setup:
+      "You booked a double room with a window. The card opens a small one facing the car park.",
+    moves: [
+      "Say what you booked and what you were given, without saying anyone lied.",
+      "Ask what else is free tonight, and how many of your nights it would cover.",
+      "If nothing is free, ask for one thing that fixes tonight and when it will arrive.",
+    ],
+    success:
+      "You described the difference rather than your mood, and left with another room or a promise you could repeat.",
+  },
+
+  "travel/restaurant": {
+    slug: "order-around-an-allergy",
+    title: "Order around an allergy",
+    level: "A2",
+    setup:
+      "Dinner with two friends. You are allergic to nuts, the menu is only in English, and the waiter is already at the table.",
+    moves: [
+      "Say your allergy first, before you talk about the dishes.",
+      "Choose one dish and ask if it has nuts in it.",
+      "If the waiter is not sure, ask him to check in the kitchen.",
+    ],
+    success:
+      "You said the word “allergic” before you ordered, and nobody at the table had to say it for you.",
+  },
+
+  "travel/directions": {
+    slug: "the-street-that-is-not-on-the-map",
+    title: "The street that is not on the map",
+    level: "A2",
+    setup:
+      "Your phone is dead, the street you want is not on the paper map in your hand, and you are late.",
+    moves: [
+      "Ask one person for the street by name, and say that you are on foot.",
+      "Ask how many minutes it takes from here.",
+      "If you did not follow it, ask them to point, and say the first turn back.",
+    ],
+    success:
+      "You left knowing the first turn and roughly how many minutes, not just which way to wave your arm.",
+  },
+
+  "travel/emergencies": {
+    slug: "a-pharmacy-in-a-hurry",
+    title: "A pharmacy in a hurry",
+    level: "B1",
+    setup:
+      "Sunday, far from home. Your throat has been bad since Friday and the pharmacist speaks quickly.",
+    moves: [
+      "Say what is wrong and since when, before you say what you want.",
+      "Say what you already take, and ask whether this is safe alongside it.",
+      "Ask her to say the dose again more slowly, and write it down while she speaks.",
+    ],
+    success:
+      "You gave the symptom and the day it started, and the dose left with you written down rather than remembered.",
+  },
+
+  "travel/shopping": {
+    slug: "a-broken-zip-and-a-receipt",
+    title: "A broken zip and a receipt",
+    level: "B1",
+    setup:
+      "The jacket you bought last week has a broken zip. You have the receipt, and a sign says exchanges only.",
+    moves: [
+      "Show the fault and say when you bought it, in that order.",
+      "Say which you want, an exchange or your money back, and why that one.",
+      "If the assistant cannot decide, ask who can and when they are next in.",
+    ],
+    success:
+      "You named one outcome instead of waiting to be offered one, and a no ended with a person and a day.",
+  },
+
+  /* ═══════════════════ Practical Life ═══════════════════
+   * Five scenarios that all used to share a generic set as well. Two of them —
+   * `phone-calls` and `tech-support` — put the learner somewhere she cannot see
+   * the other person and cannot control the pace, so one move in each is about
+   * getting something REPEATED or CONFIRMED rather than about producing more
+   * language: the skill that actually fails on a bad line is interrupting to
+   * check, not fluency. Where a scenario also declares writing, the rehearsal
+   * is the half a written brief cannot reach. */
+
+  "practical/phone-calls": {
+    slug: "a-bad-line-to-the-garage",
+    title: "A bad line to the garage",
+    level: "B1",
+    setup:
+      "A garage, about a noise your car makes. The line is poor and there is a radio playing behind them.",
+    moves: [
+      "Say who you are and why you are calling in two sentences.",
+      "The moment you lose a word, stop them there and ask for that word again, not the whole sentence.",
+      "Read the price and the day back as numbers before you hang up.",
+    ],
+    success:
+      "You stopped them the first time you lost something, not the third, and both numbers were confirmed aloud.",
+  },
+
+  "practical/tech-support": {
+    slug: "past-the-script-on-the-third-call",
+    title: "Past the script, on the third call",
+    level: "B1",
+    setup:
+      "Your internet drops every evening around nine. Two earlier calls both ended with “try restarting the router”.",
+    moves: [
+      "Give the pattern first: when it started, how often, and what sets it off.",
+      "Say what you have already tried, so they can skip that page of their script.",
+      "Ask for a reference number, and if tonight is the same, ask for an escalation.",
+    ],
+    success:
+      "You gave a pattern instead of “it does not work”, and finished the call holding a number you can quote.",
+  },
+
+  "practical/housing": {
+    slug: "twenty-minutes-to-see-a-flat",
+    title: "Twenty minutes to see a flat",
+    level: "B2",
+    setup:
+      "Twenty minutes to view a flat, an agent with three more viewings after yours, and two applicants waiting on the landing.",
+    moves: [
+      "Ask the two questions the photographs cannot answer, before you look at the rooms.",
+      "Ask who pays for what — repairs, the boiler, the water — and get one of them named.",
+      "Before you leave, ask what would make them pick somebody else's application.",
+    ],
+    success:
+      "You asked about cost and repairs while still inside the flat, and you know what the decision turns on.",
+  },
+
+  "practical/banking": {
+    slug: "a-charge-you-did-not-make",
+    title: "A charge you did not make",
+    level: "B1",
+    setup:
+      "Thirty-two euros left your account on Saturday for something you never bought. You are at the counter, the line open on your phone.",
+    moves: [
+      "Give the date, the amount and the name on the line, then say it was not you.",
+      "Ask what happens next and how long it takes, in days.",
+      "Ask whether the card should be stopped today, and who does it.",
+    ],
+    success:
+      "Three facts came before any opinion, and you left knowing a number of days and whose job the card is.",
+  },
+
+  "practical/appointments": {
+    slug: "move-friday-without-losing-it",
+    title: "Move Friday without losing it",
+    level: "A2",
+    setup:
+      "The dentist is on Friday at four and you cannot go now. The receptionist has two other calls waiting.",
+    moves: [
+      "Give your name and your appointment: the day and the time.",
+      "Say you cannot come, then ask for the first free morning.",
+      "Say the new day and time back, and ask if you must bring anything.",
+    ],
+    success:
+      "The old appointment was cancelled by its day and time, and the new one was spoken twice before you hung up.",
+  },
 };
 
 /**
