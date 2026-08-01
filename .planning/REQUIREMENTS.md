@@ -45,7 +45,7 @@ constraint as v1 — **all content original**, third-party material is format re
 
 ### Content (curriculum completeness)
 
-- [ ] **CONT-01**: Every existing scenario in all 6 worlds offers real practice in each of its applicable skills (grammar, speaking, reading, writing) — no stub, placeholder, or empty activity
+- [x] **CONT-01**: Every existing scenario in all 6 worlds offers real practice in each of its applicable skills (grammar, speaking, reading, writing) — no stub, placeholder, or empty activity
 - [x] **CONT-02**: Every scenario has scenario-specific phrases and vocabulary that feed the SRS review queue — *closed at plan 03-04: **35/35 scenarios with phrases, 35/35 with vocabulary**, 210 phrases and 280 cards, every one written for its own scenario. The SRS half closed at 03-02 (D-05: every review surface resolves scenario items). The tick rests on derivation, not on claim — `COVERAGE_TOTALS.scenariosWithPhrases === 35` and `scenariosWithVocabulary === 35` are read off the banks by `scenario-coverage.ts` and asserted by `verify-scenario-content.mts` (6019 assertions). Plans 03-02 and 03-03 each carried CONT-02 in frontmatter and each deliberately left it unticked at 17/35 and 27/35.*
 
 ### Content (curriculum expansion)
@@ -116,7 +116,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROG-03 | Phase 2 | Complete |
 | PROG-04 | Phase 2 | Complete |
 | PROG-05 | Phase 2 | Complete |
-| CONT-01 | Phase 3 | Pending |
+| CONT-01 | Phase 3 | Complete |
 | CONT-02 | Phase 3 | Complete (35/35 phrases, 35/35 vocabulary — plan 03-04) |
 | CONT-03 | Phase 4 | Pending |
 | CONT-04 | Phase 4 | Pending |
