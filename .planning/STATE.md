@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 03
 current_phase_name: every-scenario-practicable
 status: in-progress
-stopped_at: "03-07 complete on main. CONT-01's reading half opens: the single-passage reader is exported and five scenarios (travel/restaurant A2, practical/housing B2, academic/news B2, academic/stories B2, academic/summaries B2) open straight into a text written for them — no level filter, no list, no back link — with a key that explains itself on every question (18/52 pairs, 34 pending: speaking 30, reading 4, grammar 0, writing 0). READING DOES NOT SCORE: PassageReader has no recordAttempt, so 03-05's fourth edit was NOT taken and the negative is asserted, the second bank of three where the conditional rule said no. review-items.ts gained a \"reading\" kind outside SCHEDULED_ITEM_KINDS (the same Rule 3 deviation 03-06 recorded, for the same typed-parameter reason). The ReadingRoom browser function is byte-identical in the diff. verify-scenario-content 6557 -> 6815; 22 mutations caught with their expected label, 6 controls survived, 3 applier refusals, 31 declared = 31 executed. CONT-01 NOT ticked (18/52). Nobody has pressed Check answers, so the explained key is unseen (WINDOWS 37). Next is 03-08 (the four C1 passages), in the same wave as 03-09."
-last_updated: "2026-08-01T05:33:55.309Z"
+stopped_at: "03-09 complete on main. Speaking opens with a shape of its own: fourteen of the thirty pairs (all six Social + humor, all six Work, academic/debate) now offer a rehearsal — setup, three tickable moves, one success line — practicable with NO AI, NO microphone and NO network (36/52 pairs, 16 pending, all speaking). THE REHEARSAL DOES NOT RECORD ATTEMPTS: the panel calls addSkillXp(15) and recordActivity only, so speaking is the THIRD unscheduled kind, reviewableIds is unchanged, and the negative is asserted at the id AND at the panel's source. review-items.ts gained a speaking kind (the same Rule 3 deviation 03-06 and 03-07 both recorded). verify-scenario-content 6815 -> 7313; 27 mutations caught with their expected label, 6 controls survived, 3 applier refusals, 36 declared = 36 executed. One mutation survived first time and exposed a TAUTOLOGICAL id assertion, strengthened at the source. CONT-01 NOT ticked (36/52). Nobody has ticked a move, so the XP award is unseen (WINDOWS 38). Next is 03-10 (the last sixteen speaking pairs)."
+last_updated: "2026-08-01T06:10:25.646Z"
 last_activity: 2026-08-01
-last_activity_desc: "03-07 executed: the single-passage reader is EXPORTED and five of the nine scenario reading pairs are written (2,912 words, 20 questions, 20 explanations), CONT-01 at 18/52 with reading 4 pending. READING DOES NOT SCORE — PassageReader has no recordAttempt, so 03-05 fourth wiring edit was deliberately NOT taken and the negative is asserted; two banks of three now. The ReadingRoom browser function is byte-identical in the diff. verify-scenario-content 6557 -> 6815; 22 mutations caught with their expected label, 6 controls survived, 3 applier refusals, 31 declared = 31 executed"
+last_activity_desc: "03-09 executed: speaking got an exercise shape of its own and fourteen of its thirty pairs are written (1,123 words, 42 moves), CONT-01 at 36/52 with 16 pending, all speaking. THE REHEARSAL DOES NOT RECORD ATTEMPTS — the panel awards 15 speaking XP once and records the day, never recordAttempt, so speaking is the THIRD unscheduled kind; three banks of four now, and the negative is asserted at the id AND by reading the panel's own source for fetch, speech APIs and recordAttempt. Practicable with no AI, no microphone and no network; the tutor stays Phase 5's. verify-scenario-content 6815 -> 7313; 27 mutations caught with their expected label, 6 controls survived, 3 applier refusals, 36 declared = 36 executed. One mutation survived first time and exposed a TAUTOLOGICAL id assertion that 03-05, 03-06 and 03-07 all share; strengthened at the source. CONT-01 NOT ticked (36/52). Nobody has ticked a move, so the XP award is unseen (WINDOWS.md 38)."
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 36
-  completed_plans: 32
+  completed_plans: 33
 ---
 
 # Project State
@@ -23,12 +23,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-23)
 
 **Core value:** A learner can practice any real-life English scenario end-to-end — with an AI tutor that corrects them in context — and their progress is never lost.
-**Current focus:** Phase 03 — every-scenario-practicable (executing, plan 07 of 11 complete)
+**Current focus:** Phase 03 — every-scenario-practicable (executing, plan 08 of 11 complete)
 
 ## Current Position
 
 Phase: 03 (every-scenario-practicable) — IN PROGRESS
-Plan: 7 of 11 complete
+Plan: 8 of 11 complete
 Status: 03-06 complete on `main`. **CONT-02 stays closed; CONT-01's writing quarter closes.** All
 nine scenario×skill pairs that declare writing — `work/emails`, `travel/hotel`,
 `practical/tech-support`, `social/complaining`, `work/presentations`, `work/networking`,
@@ -47,9 +47,9 @@ deletes them**. Next action is executing 03-07 (reading). **The exported surface
 on is recorded in `03-01-SUMMARY.md`; the authoring rules and the duplicate-scan method in
 `03-03-SUMMARY.md`; `03-05-SUMMARY.md` §1 is the wiring recipe; and `03-06-SUMMARY.md` §1 is the
 caveat on its fourth edit.** Read the summaries, not the plans.
-Last activity: 2026-08-01 — 03-07 executed: the single-passage reader is exported and five of the nine scenario reading pairs are written (2,912 words across 5 passages, 20 questions, 76 options, 20 explanations), CONT-01 at 18/52 with reading 4 pending and speaking 30. READING DOES NOT SCORE — PassageReader has no recordAttempt, so 03-05’s fourth wiring edit (reviewableIds) was deliberately NOT taken and the negative is asserted instead; that is two banks of three where the conditional rule said no. PassageReader was EXPORTED rather than a wrapper written, onBack is optional and the article’s mt-3 moved behind it, and the ReadingRoom browser function is byte-identical in the diff. verify-scenario-content 6557 → 6815; 22 mutations caught with their expected label, 6 controls survived, 3 applier refusals, 31 declared = 31 executed. Zero exact repeats and zero above-threshold Jaccard hits anywhere in the reading corpus, including against the 18 global passages, and 0 four-word runs shared with any other authored text. Two explanations made false claims about their own examples on first draft and the content was rewritten, not the assertion. Nobody has pressed Check answers, so the explained key has never been seen (WINDOWS.md 37).
+Last activity: 2026-08-01 — 03-09 executed: speaking got the one thing it did not have, an exercise shape of its own, and fourteen of its thirty pairs (all six Social scenarios, social/humor, all six Work scenarios and academic/debate) now open a rehearsal written for their own situation — a setup naming who you are, exactly three ordered moves as a tickable self-check, and one success line to judge yourself against — 1,123 authored words at 66–80 words per task, CONT-01 at 36/52 with 16 pending, all of them speaking and all of them plan 03-10's. THE REHEARSAL TASK DOES NOT RECORD ATTEMPTS, and unlike writing and reading that was a decision rather than a reading: the panel calls addSkillXp("speaking", 15) once when the third move is ticked plus recordActivity, and never recordAttempt, because a ticked box is a self-report with no correctness signal and nothing could ever mark it wrong. So speaking is the THIRD unscheduled kind, reviewableIds() is unchanged for the third time in four banks, and the negative is asserted twice over — no speaking id is reviewable, every speaking id resolves to nothing, AND the harness reads SpeakingTaskPanel.tsx itself and asserts it contains no fetch, no speechSynthesis, no SpeechRecognition, no getUserMedia, no MediaRecorder and no recordAttempt, with comments stripped first so the paragraphs explaining the absence cannot satisfy it. That source scan is also how T-03-21 is closed: the rehearsal is practicable today with no AI, no microphone and no network, and the tutor that will give live correction stays honestly deferred to Phase 5. review-items.ts gained a "speaking" kind outside SCHEDULED_ITEM_KINDS — the identical Rule 3 deviation 03-06 and 03-07 both recorded, because scenarioItemId's kind parameter is typed. verify-scenario-content 6815 → 7313; 27 mutations caught each with its expected label, 6 controls survived, 3 applier refusals, 36 declared = 36 executed. One mutation SURVIVED on the first run and was worth the whole sweep: an id spelled by hand in the correct format passed the assertion that claims to catch exactly that, because it recomposes from the localId it just parsed out of the same id — a tautology 03-05, 03-06 and 03-07 all carry too. The assertion was strengthened at the source rather than the mutation weakened. Zero exact repeats and zero above-threshold Jaccard hits anywhere in the speaking corpus across 1,092 cross-scenario comparisons, including against the global writing room, with two shared four-word runs kept deliberately and reported. Every gate counts speaking pending pairs alone, never a global total: 03-08's four passages landed between this plan's two commits and moved none of them. CONT-01 was NOT ticked at 36/52. Nobody has ticked a move in a browser, so the single XP award has never been seen (WINDOWS.md 38). Next is 03-10, the last sixteen speaking pairs.
 
-Progress: [█████████░] 89% (3 of 6 phases; 32 of 36 plans)
+Progress: [█████████░] 92% (3 of 6 phases; 33 of 36 plans)
 
 ## Performance Metrics
 
@@ -101,6 +101,7 @@ Progress: [█████████░] 89% (3 of 6 phases; 32 of 36 plans)
 | Phase 03 P05 | 75min | 3 tasks | 8 files |
 | Phase 03 P06 | 24min | 3 tasks | 6 files |
 | Phase 03 P07 | ~55min | 2 tasks | 7 files |
+| Phase 03 P09 | ~95min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -224,6 +225,11 @@ Recent decisions affecting current work:
 - [Phase 03]: 03-07: explain and id are optional on the global ReadingQuestion and REQUIRED on ScenarioReadingQuestion — the optional pair exists only so the 18 shipped passages keep compiling
 - [Phase 03]: 03-07: the PASSAGE id is the composed D-06 id (uniqueness against bare global slugs like "coffee"); a QUESTION id is a plain authored slug, unique within its passage and a key to nothing
 - [Phase 03]: 03-07: CONT-01 was NOT ticked at 18/52 — the requirement says EVERY pair; assert the closure predicate before ticking, never after
+- [Phase 03]: 03-09: the rehearsal task does NOT record attempts — the panel calls addSkillXp and recordActivity only, so speaking is the THIRD unscheduled kind and 03-05's fourth wiring edit was again not taken, with the negative asserted
+- [Phase 03]: 03-09: the harness READS SpeakingTaskPanel.tsx and asserts no fetch, no speechSynthesis, no SpeechRecognition, no getUserMedia, no MediaRecorder and no recordAttempt — the plan's 'no AI, no microphone' promise run as a script, comments stripped first
+- [Phase 03]: 03-09: a new exercise shape, because speaking had none — setup, a TUPLE of exactly three moves, one success line, every field required; the unit is 'rehearsal' so it cannot be confused with writing's 'task'
+- [Phase 03]: 03-09: a mutation proved the per-id 'is exactly what scenarioItemId composes' assertion TAUTOLOGICAL (it recomposes from the localId it parsed out of the same id); it was strengthened at the source, and 03-05/06/07 carry the same hole
+- [Phase 03]: 03-09: CONT-01 NOT ticked at 36/52 — the requirement says EVERY pair; 16 speaking pairs remain and are plan 03-10's
 
 ### Pending Todos
 
@@ -269,6 +275,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-08-01T05:33:55.284Z
-Stopped at: 03-07 complete on main. CONT-01's reading half opens: the single-passage reader is exported and five scenarios (travel/restaurant A2, practical/housing B2, academic/news B2, academic/stories B2, academic/summaries B2) open straight into a text written for them — no level filter, no list, no back link — with a key that explains itself on every question (18/52 pairs, 34 pending: speaking 30, reading 4, grammar 0, writing 0). READING DOES NOT SCORE: PassageReader has no recordAttempt, so 03-05's fourth edit was NOT taken and the negative is asserted, the second bank of three where the conditional rule said no. review-items.ts gained a "reading" kind outside SCHEDULED_ITEM_KINDS (the same Rule 3 deviation 03-06 recorded, for the same typed-parameter reason). The ReadingRoom browser function is byte-identical in the diff. verify-scenario-content 6557 -> 6815; 22 mutations caught with their expected label, 6 controls survived, 3 applier refusals, 31 declared = 31 executed. CONT-01 NOT ticked (18/52). Nobody has pressed Check answers, so the explained key is unseen (WINDOWS 37). Next is 03-08 (the four C1 passages), in the same wave as 03-09.
+Last session: 2026-08-01T06:10:25.613Z
+Stopped at: 03-09 complete on main. Speaking opens with a shape of its own: fourteen of the thirty pairs (all six Social + humor, all six Work, academic/debate) now offer a rehearsal — setup, three tickable moves, one success line — practicable with NO AI, NO microphone and NO network (36/52 pairs, 16 pending, all speaking). THE REHEARSAL DOES NOT RECORD ATTEMPTS: the panel calls addSkillXp(15) and recordActivity only, so speaking is the THIRD unscheduled kind, reviewableIds is unchanged, and the negative is asserted at the id AND at the panel's source. review-items.ts gained a speaking kind (the same Rule 3 deviation 03-06 and 03-07 both recorded). verify-scenario-content 6815 -> 7313; 27 mutations caught with their expected label, 6 controls survived, 3 applier refusals, 36 declared = 36 executed. One mutation survived first time and exposed a TAUTOLOGICAL id assertion, strengthened at the source. CONT-01 NOT ticked (36/52). Nobody has ticked a move, so the XP award is unseen (WINDOWS 38). Next is 03-10 (the last sixteen speaking pairs).
 Resume file: None

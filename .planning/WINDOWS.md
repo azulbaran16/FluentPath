@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 29
+open_count: 32
 waived_count: 0
 fixed_count: 8
-total_count: 37
-last_updated: 2026-08-01T05:29:13.276Z
+total_count: 40
+last_updated: 2026-08-01T06:11:18.477Z
 ---
 
 # Broken Windows Ledger
@@ -52,6 +52,9 @@ last_updated: 2026-08-01T05:29:13.276Z
 | 35 | 03 | unrun-verify | src/components/practice/WritingDesk.tsx |  | 03-06: the writing desk's INTERACTIVE half is unseen by a human, and so is the multi-prompt picker path. Observed in the served HTML of a production build: all nine scenario writing pairs render their own task with NO picker row (the markup goes straight from <div> to <div class="grid gap-5 lg:grid-cols-2 ">, with no mt-4), the level badge, the word range and the 0-words counter render, and the model answer is absent from the served HTML. NOT observed: typing into the editor, the counter turning 'in range', Save draft writing to localStorage under the composed id, ticking a checklist line, and Show model answer revealing the model. Also NOT observed: the >1-prompt branch that still renders the picker - the global writing room at /skill/writing mounts WritingDesk behind a client-side tab whose default is 'Learn', so 13 prompts never reach the initial HTML and curl cannot click the tab. The branch is one boolean (prompts.length > 1) and is unchanged for that path, but it is proved by reading rather than by seeing. Owed to plan 03-11's browser pass alongside entries 29-33. | open |  | 2026-08-01T04:55:16.464Z |  |
 | 36 | 03 | stub | src/lib/scenario-coverage.ts |  | 03-06: ScenarioSkillCoverage.summary is derived, asserted and rendered NOWHERE. Grep for '.summary' across src/components and src/app returns only the two CELPIP call sites (CelpipLanding.tsx:266 and celpip/page.tsx:90); no scenario surface renders the scenario coverage summary at all. So the strings the harness pins - '5 questions' for grammar since 03-05, '1 task' for writing since 03-06 - are a contract nobody reads yet. This is not a defect in either plan (both were told to produce a count and a unit, and both do) and the assertions have teeth (mutation M18 catches a reworded unit), but a field that is asserted and unrendered can drift into being wrong for a UI that later starts rendering it. Either a surface should show it or its absence should be a deliberate, recorded decision. | open |  | 2026-08-01T04:55:30.754Z |  |
 | 37 | 03 | unrun-verify | src/components/practice/ReadingRoom.tsx |  | 03-07: nobody has CHECKED ANSWERS on a scenario reading passage, so the two things this plan built have never been seen doing their job. Observed in the served HTML of a production build: all five scenario reading pairs (travel/restaurant, practical/housing, academic/news, academic/stories, academic/summaries) render the STANDALONE passage reader as their own step - level badge, minutes, Read aloud, title, body, glossary, questions and the Check answers button - with NO back link and NO level-filter pills, and academic/summaries renders its reading passage and its DIFFERENT writing passage on one page. NOT observed: the EXPLAINED KEY. Every explanation is behind {submitted && q.explain}, so it is absent from the served HTML entirely (grep returns 0, as does the answer index) and only appears after a click curl cannot make. So 'every scenario comprehension question tells the learner why the answer is the answer' is proved by construction - the type requires it, the harness asserts it non-empty on all 20 questions, and mutation M3 catches a whitespace explanation - but not by sight. Also unobserved: that the GLOBAL reading room's own single-passage reader still shows its back link after a text is chosen from the list. The ReadingRoom browser function is byte-identical in the diff and every change is behind onBack being present, so this is proved by reading rather than by seeing. Owed to plan 03-11's browser pass alongside entries 29-35. | open |  | 2026-08-01T05:29:13.276Z |  |
+| 38 | 03 | unrun-verify | src/components/practice/SpeakingTaskPanel.tsx |  | 03-09: nobody has TICKED A MOVE, so the one thing this panel does that the writing desk does not — award XP — has never been seen doing it. Observed in the served HTML of a production build (next start, shut down afterwards, port 3000 drained to zero sockets and refusing): all fourteen written speaking pairs render the rehearsal panel as their own step, carrying the level badge, the 'say it out loud' label, the title, the setup, the three numbered moves, the 'You did it if' block with the success line, the '0 of 3 moves rehearsed' counter and the footer stating that nothing is listening; social/complaining and academic/debate each render their rehearsal AND their different writing task on one page; travel/airport still renders the honest 'Not yet available' panel for its unwritten speaking pair; and /skill/speaking reads '14 of the 30 scenarios that train your speaking have practice written for the situation itself — the rest are on the way, and say so' with the pending badge on the sixteen. NOT observed: ticking a checkbox, the line-through on a ticked move, the counter moving to 3 of 3, the 'Rehearsed' pill appearing, and the single award of 15 speaking XP with the day's activity recorded — including the T-03-22 property that unticking and re-ticking does not award again. That property is proved by construction (the awarded flag latches and is never cleared) and by mutation (M24, M25 and M26 all fire on the source scan), but not by sight. Owed to plan 03-11's browser pass alongside entries 29-37. | open |  | 2026-08-01T06:05:27.780Z |  |
+| 39 | 03 | unmet-truth | scripts/verify-scenario-content.mts |  | 03-08: the D-01 assertion 'no passage text is repeated anywhere in the scenario reading corpus' fingerprints p.body.join(' '), so it only fires when the WHOLE body matches. A scenario passage that borrows ONE paragraph from another scenario's passage is D-01's failure at a finer grain and is NOT caught - proved by mutation M23, which copies native/idioms' first paragraph over native/culture's and SURVIVES a full harness run (declared as an expected survivor rather than deleted). The corpus is clean today: an out-of-band scan over all 31 authored paragraphs finds 0 exact cross-scenario reuse and 0 pairs above Jaccard 0.5 across 426 cross-scenario paragraph pairs, and 0 shared four-word runs against any other authored text. The gap is in the assertion's reach, not in the content. NOT closed by this plan because plan 03-09 had uncommitted work in that same harness file in the same working tree at the time, and staging it would have swept up theirs. Fix is one appended assertion: fingerprint paragraphs, not just joined bodies. | open |  | 2026-08-01T06:10:57.860Z |  |
+| 40 | 03 | deviation | .planning/phases/03-every-scenario-practicable/03-08-SUMMARY.md |  | 03-08: a MUTATION SWEEP IN A SHARED WORKING TREE POISONED A PARALLEL PLAN'S PRODUCTION BUILD, silently and with no trace in git. Plan 03-09 ran npm run build at 02:00:04 while this plan's sweep had mutation M21 applied to src/lib/content/scenario-reading.ts (const authored = BANK['social/humor'] instead of BANK[key]). The sweep restored the file byte-for-byte (sha256 verified) so git was clean, but .next kept the mutation: every scenario page served 'The Man Who Mows at Seven', and the minifier had dropped eight of the nine passages from the emitted JS as unreachable. Caught only because this plan curled four pages and saw one title four times; confirmed by reading the mutated accessor back out of the build's own SOURCE MAP (the map records what the bundler read). REPAIRED by rebuilding from the clean committed tree - all nine slugs now present in the emitted JS in equal numbers and the map carries BANK[key] with zero mutated occurrences. 03-09's own browser observation (WINDOWS 38) is unaffected: it is about scenario-speaking.ts, which no mutation touched. THE STANDING HAZARD: any wave that pairs a mutation sweep with a sibling plan in one working tree can do this again in either direction, and neither plan would see it in git status. Mitigations to choose between: run sweeps in a git worktree or a copy, or assert the built accessor after any build a summary makes a claim about. | open |  | 2026-08-01T06:11:18.477Z |  |
 
 ````json
 [
@@ -497,6 +500,42 @@ last_updated: 2026-08-01T05:29:13.276Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-08-01T05:29:13.276Z",
+    "resolved_at": null
+  },
+  {
+    "id": 38,
+    "kind": "unrun-verify",
+    "phase": "03",
+    "file": "src/components/practice/SpeakingTaskPanel.tsx",
+    "line": null,
+    "description": "03-09: nobody has TICKED A MOVE, so the one thing this panel does that the writing desk does not — award XP — has never been seen doing it. Observed in the served HTML of a production build (next start, shut down afterwards, port 3000 drained to zero sockets and refusing): all fourteen written speaking pairs render the rehearsal panel as their own step, carrying the level badge, the 'say it out loud' label, the title, the setup, the three numbered moves, the 'You did it if' block with the success line, the '0 of 3 moves rehearsed' counter and the footer stating that nothing is listening; social/complaining and academic/debate each render their rehearsal AND their different writing task on one page; travel/airport still renders the honest 'Not yet available' panel for its unwritten speaking pair; and /skill/speaking reads '14 of the 30 scenarios that train your speaking have practice written for the situation itself — the rest are on the way, and say so' with the pending badge on the sixteen. NOT observed: ticking a checkbox, the line-through on a ticked move, the counter moving to 3 of 3, the 'Rehearsed' pill appearing, and the single award of 15 speaking XP with the day's activity recorded — including the T-03-22 property that unticking and re-ticking does not award again. That property is proved by construction (the awarded flag latches and is never cleared) and by mutation (M24, M25 and M26 all fire on the source scan), but not by sight. Owed to plan 03-11's browser pass alongside entries 29-37.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-01T06:05:27.780Z",
+    "resolved_at": null
+  },
+  {
+    "id": 39,
+    "kind": "unmet-truth",
+    "phase": "03",
+    "file": "scripts/verify-scenario-content.mts",
+    "line": null,
+    "description": "03-08: the D-01 assertion 'no passage text is repeated anywhere in the scenario reading corpus' fingerprints p.body.join(' '), so it only fires when the WHOLE body matches. A scenario passage that borrows ONE paragraph from another scenario's passage is D-01's failure at a finer grain and is NOT caught - proved by mutation M23, which copies native/idioms' first paragraph over native/culture's and SURVIVES a full harness run (declared as an expected survivor rather than deleted). The corpus is clean today: an out-of-band scan over all 31 authored paragraphs finds 0 exact cross-scenario reuse and 0 pairs above Jaccard 0.5 across 426 cross-scenario paragraph pairs, and 0 shared four-word runs against any other authored text. The gap is in the assertion's reach, not in the content. NOT closed by this plan because plan 03-09 had uncommitted work in that same harness file in the same working tree at the time, and staging it would have swept up theirs. Fix is one appended assertion: fingerprint paragraphs, not just joined bodies.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-01T06:10:57.860Z",
+    "resolved_at": null
+  },
+  {
+    "id": 40,
+    "kind": "deviation",
+    "phase": "03",
+    "file": ".planning/phases/03-every-scenario-practicable/03-08-SUMMARY.md",
+    "line": null,
+    "description": "03-08: a MUTATION SWEEP IN A SHARED WORKING TREE POISONED A PARALLEL PLAN'S PRODUCTION BUILD, silently and with no trace in git. Plan 03-09 ran npm run build at 02:00:04 while this plan's sweep had mutation M21 applied to src/lib/content/scenario-reading.ts (const authored = BANK['social/humor'] instead of BANK[key]). The sweep restored the file byte-for-byte (sha256 verified) so git was clean, but .next kept the mutation: every scenario page served 'The Man Who Mows at Seven', and the minifier had dropped eight of the nine passages from the emitted JS as unreachable. Caught only because this plan curled four pages and saw one title four times; confirmed by reading the mutated accessor back out of the build's own SOURCE MAP (the map records what the bundler read). REPAIRED by rebuilding from the clean committed tree - all nine slugs now present in the emitted JS in equal numbers and the map carries BANK[key] with zero mutated occurrences. 03-09's own browser observation (WINDOWS 38) is unaffected: it is about scenario-speaking.ts, which no mutation touched. THE STANDING HAZARD: any wave that pairs a mutation sweep with a sibling plan in one working tree can do this again in either direction, and neither plan would see it in git status. Mitigations to choose between: run sweeps in a git worktree or a copy, or assert the built accessor after any build a summary makes a claim about.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-01T06:11:18.477Z",
     "resolved_at": null
   }
 ]
