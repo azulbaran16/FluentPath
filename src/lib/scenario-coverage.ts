@@ -17,6 +17,7 @@ import { WORLDS, type Level, type Skill } from "./curriculum.ts";
 import { getScenarioPhrases } from "./content/phrases.ts";
 import { getScenarioVocabulary } from "./content/scenario-vocabulary.ts";
 import { getScenarioGrammar } from "./content/scenario-grammar.ts";
+import { getScenarioWriting } from "./content/scenario-writing.ts";
 
 /* ------------------------------------------------------------------ *
  * The shape a bank hands the registry.
@@ -164,6 +165,13 @@ const EXERCISE_SOURCES: Partial<Record<Skill, ScenarioSkillLookup | undefined>> 
     grammar: (w, s) => {
       const questions = getScenarioGrammar(w, s);
       return questions && { items: questions, unit: "question" };
+    },
+    // One task per pair, not a set — a writing brief is not scored, so there is
+    // no "out of N" to make plural. `items` is the single prompt in a list
+    // because `items.length` is the only thing this registry ever reads.
+    writing: (w, s) => {
+      const prompt = getScenarioWriting(w, s);
+      return prompt && { items: [prompt], unit: "task" };
     },
   };
 

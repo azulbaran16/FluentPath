@@ -51,30 +51,43 @@ export function WritingDesk({
     }
   }
 
+  // A picker with one pill is a control that does nothing: it cannot change
+  // anything, and it frames the single task below it as a menu of one. A
+  // scenario writing pair has exactly one task (scenario-writing.ts), so below
+  // two prompts the row is not rendered at all — everything else, the editor,
+  // the counter, the draft, the checklist and the model reveal, is identical.
+  const showPicker = prompts.length > 1;
+
   return (
     <div>
-      {/* prompt picker */}
-      <div className="flex flex-wrap gap-2">
-        {prompts.map((p) => (
-          <button
-            key={p.id}
-            onClick={() => setActiveId(p.id)}
-            className={`rounded-full border px-3 py-1.5 text-sm font-medium transition-colors ${
-              p.id === activeId
-                ? "text-paper"
-                : "border-line-strong hover:bg-paper-deep"
-            }`}
-            style={p.id === activeId ? { background: accent, borderColor: accent } : undefined}
-          >
-            <span className={p.id === activeId ? "opacity-80" : "text-muted"}>
-              {p.level}
-            </span>{" "}
-            {p.title}
-          </button>
-        ))}
-      </div>
+      {/* prompt picker — only when there is something to pick */}
+      {showPicker && (
+        <div className="flex flex-wrap gap-2">
+          {prompts.map((p) => (
+            <button
+              key={p.id}
+              onClick={() => setActiveId(p.id)}
+              className={`rounded-full border px-3 py-1.5 text-sm font-medium transition-colors ${
+                p.id === activeId
+                  ? "text-paper"
+                  : "border-line-strong hover:bg-paper-deep"
+              }`}
+              style={
+                p.id === activeId
+                  ? { background: accent, borderColor: accent }
+                  : undefined
+              }
+            >
+              <span className={p.id === activeId ? "opacity-80" : "text-muted"}>
+                {p.level}
+              </span>{" "}
+              {p.title}
+            </button>
+          ))}
+        </div>
+      )}
 
-      <div className="mt-4 grid gap-5 lg:grid-cols-2">
+      <div className={`grid gap-5 lg:grid-cols-2 ${showPicker ? "mt-4" : ""}`}>
         {/* task + editor */}
         <div className="rounded-[var(--radius)] border border-line bg-card p-6 shadow-[var(--shadow-soft)]">
           <div className="flex items-center gap-2">

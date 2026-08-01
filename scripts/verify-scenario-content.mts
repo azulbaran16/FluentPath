@@ -63,6 +63,11 @@ import {
   getScenarioGrammar,
   scenarioGrammarKeys,
 } from "../src/lib/content/scenario-grammar.ts";
+import {
+  getScenarioWriting,
+  scenarioWritingKeys,
+} from "../src/lib/content/scenario-writing.ts";
+import { WRITING_PROMPTS } from "../src/lib/content/writing.ts";
 import { VOCAB_DECKS } from "../src/lib/content/vocabulary.ts";
 import {
   parseScenarioItemId,
@@ -1075,6 +1080,314 @@ ok(
       return getScenarioGrammar(w, sc) === undefined;
     }),
   canon(pendingPairs().filter((p) => p.skill === "grammar")),
+);
+
+/* ================================================================== *
+ * SCENARIO WRITING (plan 03-06)
+ *
+ * What `tsc` cannot see about a writing task: a word range whose minimum is
+ * above its maximum (the desk's "in range" indicator can then never turn on), a
+ * model answer that breaks the very brief it is modelling, a checklist line that
+ * is a space, a task written at a level that is not its scenario's, an id that
+ * is not the composed form for its own scenario — and, particular to this bank,
+ * an id that gets SCHEDULED. Nothing scores a writing task, so a writing id in
+ * `reviewableIds()` would inflate the "Due today" count with an item that can
+ * never come due and hand the weak-spots drill an id that resolves to nothing.
+ * ================================================================== */
+
+/** House style in writing.ts is four or five checklist lines. Fewer than four
+ * is a brief the learner cannot check herself against, which is the entire
+ * feedback loop until the tutor lands in Phase 5. */
+const MIN_CHECKLIST_LINES = 4;
+
+/** Counted exactly the way `WritingDesk` counts it (WritingDesk.tsx:38-41), so
+ * the range this asserts is the range the learner is actually shown. A
+ * different rule here would prove a property nobody sees. */
+function wordCount(text: string): number {
+  return text.trim() ? text.trim().split(/\s+/).length : 0;
+}
+
+const WRITING_PAIR_KEYS = new Set(
+  DECLARED_PAIRS.filter((p) => p.skill === "writing").map((p) => p.key),
+);
+
+group("scenario writing: every bank key is a pair that declares writing");
+
+for (const key of scenarioWritingKeys()) {
+  ok(
+    `scenario writing: "${key}" is a real world/scenario pair`,
+    SCENARIO_KEYS.has(key),
+    "a key nothing can reach serves nobody and never fails on its own",
+  );
+  ok(
+    `scenario writing: "${key}" actually declares writing`,
+    WRITING_PAIR_KEYS.has(key),
+    "a task written for a scenario that does not teach the skill is never rendered",
+  );
+}
+
+group("scenario writing: no field renders as a gap");
+
+for (const s of SCENARIOS) {
+  const prompt = getScenarioWriting(s.world, s.scenario);
+  if (!prompt) continue;
+  ok(`scenario writing: ${prompt.id} has a title`, filled(prompt.title));
+  ok(
+    `scenario writing: ${prompt.id} has a task`,
+    filled(prompt.task),
+    "the task IS the exercise; an empty one is a blank editor with no brief",
+  );
+  ok(
+    `scenario writing: ${prompt.id} has a model answer`,
+    filled(prompt.model),
+    "the model answer is half of the only feedback loop that exists before Phase 5",
+  );
+  ok(
+    `scenario writing: ${prompt.id} offers at least ${MIN_CHECKLIST_LINES} checklist lines`,
+    prompt.checklist.length >= MIN_CHECKLIST_LINES,
+    `${prompt.checklist.length} line(s)`,
+  );
+  ok(
+    `scenario writing: ${prompt.id} has no blank checklist line`,
+    prompt.checklist.every((line) => filled(line)),
+    canon(prompt.checklist),
+  );
+  ok(
+    `scenario writing: ${prompt.id} has no repeated checklist line`,
+    duplicates(prompt.checklist.map((l) => l.trim().toLowerCase())).length === 0,
+    duplicates(prompt.checklist.map((l) => l.trim().toLowerCase())).join(" | "),
+  );
+  ok(
+    `scenario writing: ${prompt.id} is at its own scenario's level`,
+    prompt.level === s.level,
+    `${prompt.level} vs ${s.level}`,
+  );
+}
+
+group("scenario writing: the word range is a range, and the model obeys it");
+
+for (const s of SCENARIOS) {
+  const prompt = getScenarioWriting(s.world, s.scenario);
+  if (!prompt) continue;
+  ok(
+    `scenario writing: ${prompt.id} asks for more than zero words`,
+    Number.isInteger(prompt.minWords) && prompt.minWords > 0,
+    String(prompt.minWords),
+  );
+  ok(
+    `scenario writing: ${prompt.id} minimum is strictly below its maximum`,
+    Number.isInteger(prompt.maxWords) && prompt.minWords < prompt.maxWords,
+    `${prompt.minWords}–${prompt.maxWords}`,
+  );
+  // A model that breaks its own brief teaches the wrong target: the learner is
+  // told 70–120 words and shown 200, and believes the 200.
+  const modelWords = wordCount(prompt.model);
+  ok(
+    `scenario writing: ${prompt.id} model answer meets its own word range`,
+    modelWords >= prompt.minWords && modelWords <= prompt.maxWords,
+    `${modelWords} words vs ${prompt.minWords}–${prompt.maxWords}`,
+  );
+}
+
+group("scenario writing: ids are composed, namespaced and globally unique");
+
+const scenarioWritingIds: string[] = [];
+
+for (const s of SCENARIOS) {
+  const prompt = getScenarioWriting(s.world, s.scenario);
+  if (!prompt) continue;
+  scenarioWritingIds.push(prompt.id);
+  const parsed = parseScenarioItemId(prompt.id);
+  ok(
+    `scenario writing: ${prompt.id} parses as a scenario item`,
+    parsed !== undefined,
+    "an id the parser rejects cannot be reasoned about at all",
+  );
+  if (!parsed) continue;
+  ok(
+    `scenario writing: ${prompt.id} names ITS OWN scenario`,
+    parsed.scenarioKey === s.key,
+    `${parsed.scenarioKey} vs ${s.key}`,
+  );
+  ok(
+    `scenario writing: ${prompt.id} is of kind "writing"`,
+    parsed.kind === "writing",
+    parsed.kind,
+  );
+  ok(
+    `scenario writing: ${prompt.id} is exactly what scenarioItemId composes`,
+    prompt.id === scenarioItemId(s.key, "writing", parsed.localId),
+    "an id spelled by hand is an id that drifts from the one author of the format",
+  );
+  ok(
+    `scenario writing: ${prompt.id} slug is not an array position`,
+    !/^\d+$/.test(parsed.localId),
+    parsed.localId,
+  );
+}
+
+ok(
+  "every scenario writing id is unique across all scenarios",
+  duplicates(scenarioWritingIds).length === 0,
+  duplicates(scenarioWritingIds).join(", "),
+);
+// The draft key IS the id (WritingDesk.tsx:22). Two scenarios sharing one id
+// would share one draft: the learner's hotel message would open inside the
+// support ticket. T-03-14, asserted rather than trusted.
+const globalWritingIds = new Set(WRITING_PROMPTS.map((p) => p.id));
+ok(
+  "no scenario writing id collides with a GLOBAL writing prompt id",
+  scenarioWritingIds.every((id) => !globalWritingIds.has(id)),
+  scenarioWritingIds.filter((id) => globalWritingIds.has(id)).join(", "),
+);
+ok(
+  "no scenario writing id collides with a global grammar question id",
+  scenarioWritingIds.every((id) => !grammarIds.has(id)),
+  scenarioWritingIds.filter((id) => grammarIds.has(id)).join(", "),
+);
+ok(
+  "no scenario writing id collides with a deck-browser card id",
+  scenarioWritingIds.every((id) => !deckCardIds.has(id)),
+  scenarioWritingIds.filter((id) => deckCardIds.has(id)).join(", "),
+);
+ok(
+  "no scenario writing id collides with a recall item id",
+  scenarioWritingIds.every((id) => !new Set(composedIds).has(id)),
+  scenarioWritingIds.filter((id) => new Set(composedIds).has(id)).join(", "),
+);
+ok(
+  "no scenario writing id collides with a scenario grammar id",
+  scenarioWritingIds.every((id) => !new Set(scenarioGrammarIds).has(id)),
+  scenarioWritingIds.filter((id) => new Set(scenarioGrammarIds).has(id)).join(", "),
+);
+
+group("scenario writing: an unscheduled kind, proved unscheduled");
+
+// The mirror image of the grammar bank's D-05 leg. Grammar ids MUST be in
+// reviewableIds(); writing ids must NOT — nothing scores a writing task, so a
+// writing id can never come due, and listing one would add a permanent
+// phantom to Dashboard's "Due today" count and give ReviewHub's weak-spots
+// drill an id that resolves to nothing.
+const reviewable = new Set(reviewableIds());
+ok(
+  "no scenario writing id is listed as reviewable",
+  scenarioWritingIds.every((id) => !reviewable.has(id)),
+  scenarioWritingIds.filter((id) => reviewable.has(id)).join(", "),
+);
+for (const id of scenarioWritingIds) {
+  ok(
+    `resolveReviewItem returns nothing for ${id}`,
+    resolveReviewItem(id) === undefined,
+    "a writing task is a draft, not a review card — there is nothing to hand /review",
+  );
+}
+ok(
+  "a writing id still round-trips through the id format",
+  scenarioWritingIds.every(
+    (id) => parseScenarioItemId(id)?.kind === "writing",
+  ),
+  "unscheduled is not the same as unparseable: the draft key depends on this",
+);
+
+group("scenario writing: no two scenarios are handed the same task (D-01)");
+
+// Fingerprinted WITHOUT the id, because the id names its own scenario and would
+// make every task trivially distinct — exactly how a copy-pasted brief with a
+// fresh slug would slip through.
+const writingByKey = SCENARIOS.flatMap((s) => {
+  const p = getScenarioWriting(s.world, s.scenario);
+  if (!p) return [];
+  return [
+    {
+      key: s.key,
+      body: canon({
+        title: p.title,
+        task: p.task,
+        checklist: p.checklist,
+        model: p.model,
+      }),
+    },
+  ];
+});
+
+for (const entry of writingByKey) {
+  const twin = writingByKey.find(
+    (other) => other.key !== entry.key && other.body === entry.body,
+  );
+  ok(
+    `scenario writing: ${entry.key} is written for itself`,
+    twin === undefined,
+    twin ? `identical to ${twin.key}` : "",
+  );
+}
+
+const allWritingTasks = SCENARIOS.flatMap((s) => {
+  const p = getScenarioWriting(s.world, s.scenario);
+  return p ? [p.task.trim().toLowerCase()] : [];
+});
+ok(
+  "no task statement is repeated anywhere in the scenario writing corpus",
+  duplicates(allWritingTasks).length === 0,
+  duplicates(allWritingTasks).join(" | "),
+);
+
+const allWritingModels = SCENARIOS.flatMap((s) => {
+  const p = getScenarioWriting(s.world, s.scenario);
+  return p ? [p.model.trim().toLowerCase()] : [];
+});
+ok(
+  "no model answer is repeated anywhere in the scenario writing corpus",
+  duplicates(allWritingModels).length === 0,
+  "two scenarios sharing a model answer is the D-01 failure in its purest form",
+);
+
+// The other way a scenario can be handed material that is not its own: taking
+// it from the GLOBAL writing room, which is precisely what the unwritten panel
+// tells the learner it is not doing.
+const globalTasks = new Set(WRITING_PROMPTS.map((p) => p.task.trim().toLowerCase()));
+const globalModels = new Set(
+  WRITING_PROMPTS.map((p) => p.model.trim().toLowerCase()),
+);
+ok(
+  "no scenario task is a global writing prompt's task",
+  allWritingTasks.every((t) => !globalTasks.has(t)),
+  allWritingTasks.filter((t) => globalTasks.has(t)).join(" | "),
+);
+ok(
+  "no scenario model answer is a global writing prompt's model answer",
+  allWritingModels.every((m) => !globalModels.has(m)),
+  "borrowed material with a scenario title on top is the failure D-01 names",
+);
+
+group("scenario writing: the registry reports the bank, not the declaration");
+
+for (const pair of DECLARED_PAIRS.filter((p) => p.skill === "writing")) {
+  const coverage = getScenarioCoverage(pair.world, pair.scenario);
+  const skill = coverage?.skills.find((s) => s.skill === "writing");
+  const prompt = getScenarioWriting(pair.world, pair.scenario);
+  ok(
+    `coverage: ${pair.key} writing availability follows the bank's CONTENTS`,
+    skill?.available === (prompt !== undefined),
+    canon(skill),
+  );
+  if (prompt) {
+    ok(
+      `coverage: ${pair.key} writing summary is a count and a unit`,
+      skill?.summary === "1 task",
+      skill?.summary,
+    );
+  }
+}
+
+ok(
+  "every pair the registry reports as pending writing has no bank entry",
+  pendingPairs()
+    .filter((p) => p.skill === "writing")
+    .every((p) => {
+      const [w, sc] = p.key.split("/");
+      return getScenarioWriting(w, sc) === undefined;
+    }),
+  canon(pendingPairs().filter((p) => p.skill === "writing")),
 );
 
 /* ------------------------------------------------------------------ *

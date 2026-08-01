@@ -38,18 +38,46 @@ import { getScenarioGrammar } from "./content/scenario-grammar.ts";
 export const SCENARIO_ITEM_SEPARATOR = "#";
 
 /**
- * The kinds of item a scenario can put into the review queue.
+ * The kinds of item a scenario's id space has.
  *
+ * SCHEDULED kinds — items that enter the review queue:
  * `phrase` and `vocab` are recall cards (plan 03-01). `grammar` is a scored
  * exercise item (plan 03-05): the question's OWN id is the composed id, so
  * `GrammarQuiz` schedules a namespaced entry without knowing this module
- * exists. A kind added here must also gain a branch in `resolveReviewItem` and
- * a source in `reviewableIds` below, or its items are stored, merged and never
- * rendered — the D-05 failure this module exists to make impossible.
+ * exists. A SCHEDULED kind added here must also gain a branch in
+ * `resolveReviewItem` and a source in `reviewableIds` below, or its items are
+ * stored, merged and never rendered — the D-05 failure this module exists to
+ * make impossible.
+ *
+ * UNSCHEDULED kinds — items that take an id but never enter the queue:
+ * `writing` (plan 03-06). A scenario writing task is a long-form draft the
+ * learner self-checks against a checklist and a model answer; nothing scores it,
+ * so nothing ever writes `srs["…#writing#…"]` and there is no card to bring
+ * back. It takes an id from this space anyway for STORAGE, not scheduling:
+ * `WritingDesk` derives its draft key from the prompt id, so composing that id
+ * makes two scenarios' drafts structurally unable to collide (T-03-14). An
+ * unscheduled kind is deliberately absent from `reviewableIds` and returns
+ * `undefined` from `resolveReviewItem`, and the harness asserts both — so
+ * "unscheduled" is a proved property rather than an omission that looks like
+ * one.
  */
-export type ScenarioItemKind = "phrase" | "vocab" | "grammar";
+export type ScenarioItemKind = "phrase" | "vocab" | "grammar" | "writing";
 
-const ITEM_KINDS: readonly ScenarioItemKind[] = ["phrase", "vocab", "grammar"];
+const ITEM_KINDS: readonly ScenarioItemKind[] = [
+  "phrase",
+  "vocab",
+  "grammar",
+  "writing",
+];
+
+/** The kinds that DO enter the review queue. `reviewableIds()` sources one list
+ * per entry here; `resolveReviewItem` has one branch per entry. Anything in
+ * `ITEM_KINDS` and not here is unscheduled by design. */
+export const SCHEDULED_ITEM_KINDS: readonly ScenarioItemKind[] = [
+  "phrase",
+  "vocab",
+  "grammar",
+];
 
 export interface ScenarioItemId {
   /** the composite `world/scenario` key */
@@ -197,6 +225,13 @@ export function resolveReviewItem(id: string): ReviewItem | undefined {
     return question ? { kind: "grammar", id, question } : undefined;
   }
 
+  // An UNSCHEDULED kind, stated rather than arrived at. A scenario writing task
+  // is not a review card: nothing scores it, so nothing ever schedules its id,
+  // and there is no one-screen item to hand /review. Falling through to the
+  // recall lookup below would also return undefined — by accident, and one
+  // added kind away from silently resolving to the wrong thing.
+  if (!SCHEDULED_ITEM_KINDS.includes(parsed.kind)) return undefined;
+
   const item = scenarioRecallItems(worldSlug, scenarioSlug).find(
     (candidate) => candidate.id === id,
   );
@@ -217,6 +252,12 @@ export function resolveReviewItem(id: string): ReviewItem | undefined {
  * merged and scheduled correctly and then counted nowhere and drillable never —
  * D-05 again, one level up. So every scenario exercise bank that writes to the
  * SRS adds its ids HERE as well as gaining a branch in `resolveReviewItem`.
+ *
+ * The converse is equally deliberate: a bank whose items are NOT scored must
+ * NOT appear here. Plan 03-06's writing tasks are the first such bank — nothing
+ * schedules them, so listing their ids would inflate the "Due today" count with
+ * items that can never be due and hand the weak-spots drill an id that resolves
+ * to nothing. See `SCHEDULED_ITEM_KINDS`.
  */
 export function reviewableIds(): string[] {
   const ids = GRAMMAR_QUESTIONS.map((q) => q.id);

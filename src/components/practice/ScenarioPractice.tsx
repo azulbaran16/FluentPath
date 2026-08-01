@@ -6,7 +6,9 @@ import type { Scenario, Skill, World } from "@/lib/curriculum";
 import { SKILL_META } from "@/lib/curriculum";
 import { getScenarioCoverage } from "@/lib/scenario-coverage";
 import { getScenarioGrammar } from "@/lib/content/scenario-grammar";
+import { getScenarioWriting } from "@/lib/content/scenario-writing";
 import { GrammarQuiz } from "./GrammarQuiz";
+import { WritingDesk } from "./WritingDesk";
 
 // One scenario, one skill — the dispatch `SkillPractice` does globally, gated
 // on coverage the way `CelpipTabs` gates a section.
@@ -69,9 +71,15 @@ function ScenarioExercise(props: {
       if (!questions) return <NotWrittenYet skill={skill} scenario={scenario} />;
       return <GrammarQuiz questions={questions} accent={props.accent} />;
     }
-    case "writing":
-      // plan 03-06 — <WritingDesk prompts={...} accent={props.accent} />
-      return <NotWrittenYet skill={skill} scenario={scenario} />;
+    case "writing": {
+      // One prompt, handed to the same desk the global writing room uses. The
+      // desk drops its picker below two prompts, so this reads as the task it
+      // is rather than as a menu of one — and because the prompt's id names its
+      // own scenario, its saved draft cannot collide with another scenario's.
+      const prompt = getScenarioWriting(world.slug, scenario.slug);
+      if (!prompt) return <NotWrittenYet skill={skill} scenario={scenario} />;
+      return <WritingDesk prompts={[prompt]} accent={props.accent} />;
+    }
     case "reading":
       // plans 03-07 / 03-08 — <ReadingRoom passages={...} accent={props.accent} />
       return <NotWrittenYet skill={skill} scenario={scenario} />;
