@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 20
+open_count: 21
 waived_count: 0
 fixed_count: 8
-total_count: 28
-last_updated: 2026-07-31T12:06:17.747Z
+total_count: 29
+last_updated: 2026-08-01T00:27:49.960Z
 ---
 
 # Broken Windows Ledger
@@ -43,6 +43,7 @@ last_updated: 2026-07-31T12:06:17.747Z
 | 26 | 02.1 | unrun-verify | src/components/celpip/DropdownBlank.tsx |  | Successor to window 16, narrowed by the 02.1-12 browser pass. What CLOSED on desktop: the reading runner renders, a drop-down blank was answered, and the per-part clock re-arms correctly (11:00 -> 8:00 -> 9:00 -> 11:00; part 4 re-armed despite sharing part 1's 11-minute allowance, which is exactly the latent bug key={part.id} was added for). What REMAINS: no mobile pass at all - whether the native select opens as the iOS/Android system picker, and whether four inline selects sit legibly in one paragraph at phone widths, are both still unknown. | open |  | 2026-07-31T11:57:11.373Z |  |
 | 27 | 02.1 | unrun-verify | .planning/phases/02.1-celpip-remaining-skills/02.1-12-PLAN.md |  | Successor to window 24: what the 02.1-12 browser pass did NOT reach, and what therefore still blocks a clean phase close. (1) The Listening RESULTS screen and the post-answer transcript with speaker labels - automation overshot it twice. (2) The 55-minute Listening clock, untimed. (3) Speaking playback BY EAR - no human has heard a recording. (4) The OS microphone indicator going out on stop - a synthetic stream cannot show it. (5) ANY phone or Safari path - the MediaRecorder WebM->MP4 container probe has still never executed on the browser family it was written for. (6) Cross-device persistence for the three new sections - not run at all. Reading is the one section verified end to end on desktop. | open |  | 2026-07-31T11:57:21.685Z |  |
 | 28 | 02.1 | deviation | src/components/celpip/ReadingRunner.tsx |  | KNOWN LIMITATION, now spanning all four skills: close the tab from the results screen and the attempt is lost - including a full 39-minute Reading sitting. finalizeAttempt runs on results-view EXIT (Retry / Back to tasks), the pattern Phase 1 chose for Writing and that Speaking, Listening and Reading each inherited. Observed 2026-07-31 in the 02.1-12 cross-device pass: a Reading attempt did not persist because the reviewer navigated straight to sign-out rather than through an exit control. IMPROVEMENT CANDIDATE, deliberately not fixed at the gate (out of plan scope). PRECISION FOR WHOEVER FIXES IT: ProgressSync.tsx:62-69 already wires visibilitychange+pagehide, but those flush the sync QUEUE - they push state already recorded. On the results screen finalizeAttempt has not run, so there is nothing queued to flush. The fix needs finalizeAttempt itself wired to the same event pair inside ReadingRunner, ListeningPlayer and SpeakingRecorder, with care for finalizedRef and the reset-on-retry paths. Use visibilitychange/pagehide, NOT beforeunload - ProgressSync.tsx:57-61 records why the unload-time events were deliberately avoided (unreliable on mobile, being removed). | open |  | 2026-07-31T12:06:17.158Z |  |
+| 29 | 03 | unrun-verify | src/components/practice/RecallDeck.tsx |  | 03-01: the recall loop and the review flow have not been driven by a human in a browser. What WAS observed (production build, next start, served HTML): social/small-talk renders the 'Lock it in' step with its first authored card; social/dating renders the honest 'not ready yet' warm-up panel and NO generic per-world lines; both scenarios render one section per declared skill with 'Not yet available'; step numbers derive correctly (1 2 3 4 with the recall step omitted); the JSON-LD carries no 'teaches' key. What was NOT observed: (1) the interactive recall loop - Show it, Got it / Not yet, the XP float, the 'Locked in' screen; (2) /review rendering a due scenario item, because /review is auth-gated (307 to /login) and needs a signed-in session plus a populated store - this is the far end of D-05 and is proved deterministically by verify-scenario-content.mts (resolveReviewItem over every composed id, plus the schema/merge storage leg) but has never been seen; (3) the honest panel's link targets actually navigating. Owed to plan 03-11. | open |  | 2026-08-01T00:27:49.960Z |  |
 
 ````json
 [
@@ -380,6 +381,18 @@ last_updated: 2026-07-31T12:06:17.747Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-07-31T12:06:17.158Z",
+    "resolved_at": null
+  },
+  {
+    "id": 29,
+    "kind": "unrun-verify",
+    "phase": "03",
+    "file": "src/components/practice/RecallDeck.tsx",
+    "line": null,
+    "description": "03-01: the recall loop and the review flow have not been driven by a human in a browser. What WAS observed (production build, next start, served HTML): social/small-talk renders the 'Lock it in' step with its first authored card; social/dating renders the honest 'not ready yet' warm-up panel and NO generic per-world lines; both scenarios render one section per declared skill with 'Not yet available'; step numbers derive correctly (1 2 3 4 with the recall step omitted); the JSON-LD carries no 'teaches' key. What was NOT observed: (1) the interactive recall loop - Show it, Got it / Not yet, the XP float, the 'Locked in' screen; (2) /review rendering a due scenario item, because /review is auth-gated (307 to /login) and needs a signed-in session plus a populated store - this is the far end of D-05 and is proved deterministically by verify-scenario-content.mts (resolveReviewItem over every composed id, plus the schema/merge storage leg) but has never been seen; (3) the honest panel's link targets actually navigating. Owed to plan 03-11.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-01T00:27:49.960Z",
     "resolved_at": null
   }
 ]

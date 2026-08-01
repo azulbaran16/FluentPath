@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 02.1
 current_phase_name: celpip-remaining-skills
 status: in-progress
-stopped_at: "Phase 2.1 COMPLETE — all six criteria met, CELPIP-06..10 closed. Phase-exit debt: nothing has run on phone/Safari (highest priority), Speaking playback unheard, Listening results screen unobserved, finalize-on-tab-close limitation"
-last_updated: "2026-07-31T12:09:02.856Z"
+stopped_at: "03-01 complete on main — the phase's plumbing is in: D-06 ids, RecallDeck, derived coverage (9/35, 1/35, 0/52), 1084-assertion harness. Next is 03-02 (social world phrases + vocabulary). 26 scenarios are on the honest warm-up panel until 03-04."
+last_updated: "2026-08-01T00:31:20.596Z"
 last_activity: 2026-07-31
 last_activity_desc: "02.1-05 executed: the hear-once runner, its route and the news-item part. Nobody has heard it yet."
 progress:
-  total_phases: 3
+  total_phases: 4
   completed_phases: 3
-  total_plans: 25
-  completed_plans: 25
+  total_plans: 36
+  completed_plans: 26
 ---
 
 # Project State
@@ -23,16 +23,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-23)
 
 **Core value:** A learner can practice any real-life English scenario end-to-end — with an AI tutor that corrects them in context — and their progress is never lost.
-**Current focus:** Phase 02.1 — celpip-remaining-skills (executing, plans 01-05 of 12 complete)
+**Current focus:** Phase 03 — every-scenario-practicable (executing, plan 01 of 11 complete)
 
 ## Current Position
 
-Phase: 02.1 (celpip-remaining-skills) — IN PROGRESS
-Plan: 12 of 12
-Status: 02.1-05 complete on `main`; Listening is a real section on `/celpip` with one of the six exam part shapes authored. Next action is executing 02.1-06 (set 1's problem-solving and daily-conversation parts — a pure append to `SET_1_PARTS`)
-Last activity: 2026-07-31 — 02.1-05 executed: the hear-once runner, its route and the news-item part. Nobody has heard it yet.
+Phase: 03 (every-scenario-practicable) — IN PROGRESS
+Plan: 1 of 11 complete
+Status: 03-01 complete on `main`. The phase's plumbing is in and gated: D-06 composite ids
+(`world/scenario#kind#slug`), `RecallDeck` as the one recall renderer, `resolveReviewItem` so a
+scenario item reaches `/review`, and coverage derived from bank contents reporting **9/35 scenarios
+with phrases · 1/35 with vocabulary · 0/52 pairs written · 52 pending**. `social/small-talk` is
+practicable end to end. Next action is executing 03-02 (the social world's phrases and vocabulary,
+taking the meters to 17/35 and 13/35). **The exported surface plans 02–11 depend on is recorded in
+`03-01-SUMMARY.md`, not in 03-01-PLAN.md** — read the summary.
+Last activity: 2026-08-01 — 03-01 executed: the tracer. 22 mutations caught, 7 controls survived;
+`/review` still unobserved in a browser (WINDOWS.md id 29).
 
-Progress: [██████████] 100% (2 of 6 phases; 18 of 25 plans)
+Progress: [███████░░░] 72% (3 of 6 phases; 26 of 36 plans)
 
 ## Performance Metrics
 
@@ -77,6 +84,7 @@ Progress: [██████████] 100% (2 of 6 phases; 18 of 25 plans)
 | Phase 02.1 P09 | ~55min | 3 tasks | 4 files |
 | Phase 02.1 P10 | 40 | 2 tasks | 4 files |
 | Phase 02.1 P12 | 50m | 3 tasks | 5 files |
+| Phase 03 P01 | ~95min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -164,6 +172,16 @@ Recent decisions affecting current work:
 - [Phase ?]: 02.1-12 (user, 2026-07-31): the four Speaking rubric dimension names stay VERBATIM — they are the exam's own scoring axes and renaming would hurt recognition on the day. The only verbatim borrowing in the app, and a deliberate one
 - [Phase ?]: 02.1-12: the Listening caveat was never missing — it ships in the same client chunk as Speaking's and simply never uses the word 'synthesised'. Quote product copy, do not paraphrase it, in verification records
 - [Phase ?]: 02.1-12: closing the tab from a CELPIP results screen loses the attempt (finalizeAttempt runs on results-view exit, inherited by all four skills). Recorded as a known limitation and improvement candidate, deliberately NOT fixed at the phase gate
+- [Phase ?]: 03-01: the SRS id is the composite world/scenario#kind#slug (D-06 as ratified), composed ONLY by scenarioItemId in src/lib/review-items.ts — a one-way door on live Postgres progress, so nothing downstream spells the format by hand
+- [Phase ?]: 03-01: scenario vocabulary enters the SRS queue through recordAttempt, not markVocab — state.vocab stays the deck browser's boolean known-set, and CONT-02's 'feeds the queue' means real spaced repetition
+- [Phase ?]: 03-01: item ids are AUTHORED slugs, never index-derived — the deck browser's \:\ orphans every later card's progress on an insert, and 280 new cards were about to be written
+- [Phase ?]: 03-01: no field may be added to the stored {box,due} value — srsItemSchema is a closed object and sanitizeEntries strips extras silently, which is why the selection metadata lives in the id instead
+- [Phase ?]: 03-01: ReviewView resolves every due id through resolveReviewItem instead of filtering GRAMMAR_QUESTIONS — D-05 fixed, so a scenario item is rendered rather than stored, merged and invisible
+- [Phase ?]: 03-01: coverage is DERIVED from bank contents (SCENARIO_COVERAGE), mirroring celpip.ts section(): an entry whose item count is zero is dropped before availability is decided, so emptying a bank flips the pair back to unwritten with no second edit
+- [Phase ?]: 03-01: pendingPairs() returns {key, skill} and is the closing assertion of every skill plan from 03-05 — a per-skill zero is true regardless of which sibling plan in the wave merged first, where a global written-count would not be
+- [Phase ?]: 03-01: the coverage registry carries COUNTS only ({items, unit}); ScenarioPractice imports each bank module directly, so a bank's renderable TYPE never has to be invented before the bank exists
+- [Phase ?]: 03-01: getScenarioPhrases (strict) and getPhrases (lenient, world fallback) coexist until plan 03-11 — the scenario path uses only the strict one, which makes the generic branch unreachable from a scenario page from this commit onward
+- [Phase ?]: 03-01: RecallDeck snapshots its items at mount — on /review the due-derived array shrinks the moment an item is answered correctly, which would skip one item per correct answer and eventually read past the end
 
 ### Pending Todos
 
@@ -225,6 +243,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-07-31T12:09:02.829Z
-Stopped at: Phase 2.1 COMPLETE — all six criteria met, CELPIP-06..10 closed. Phase-exit debt: nothing has run on phone/Safari (highest priority), Speaking playback unheard, Listening results screen unobserved, finalize-on-tab-close limitation
+Last session: 2026-08-01T00:30:33.457Z
+Stopped at: 03-01 complete on main — the phase's plumbing is in: D-06 ids, RecallDeck, derived coverage (9/35, 1/35, 0/52), 1084-assertion harness. Next is 03-02 (social world phrases + vocabulary). 26 scenarios are on the honest warm-up panel until 03-04.
 Resume file: None
