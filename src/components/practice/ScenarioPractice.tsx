@@ -7,8 +7,10 @@ import { SKILL_META } from "@/lib/curriculum";
 import { getScenarioCoverage } from "@/lib/scenario-coverage";
 import { getScenarioGrammar } from "@/lib/content/scenario-grammar";
 import { getScenarioWriting } from "@/lib/content/scenario-writing";
+import { getScenarioReading } from "@/lib/content/scenario-reading";
 import { GrammarQuiz } from "./GrammarQuiz";
 import { WritingDesk } from "./WritingDesk";
+import { PassageReader } from "./ReadingRoom";
 
 // One scenario, one skill — the dispatch `SkillPractice` does globally, gated
 // on coverage the way `CelpipTabs` gates a section.
@@ -80,9 +82,16 @@ function ScenarioExercise(props: {
       if (!prompt) return <NotWrittenYet skill={skill} scenario={scenario} />;
       return <WritingDesk prompts={[prompt]} accent={props.accent} />;
     }
-    case "reading":
-      // plans 03-07 / 03-08 — <ReadingRoom passages={...} accent={props.accent} />
-      return <NotWrittenYet skill={skill} scenario={scenario} />;
+    case "reading": {
+      // The single-passage READER, not the reading room. A learner who arrived
+      // at one scenario has already chosen her text; a level filter and a list
+      // of eighteen others is the wrong shape for her, and the back link would
+      // have nowhere to go — which is why `onBack` is optional and omitted
+      // here. Every question carries an explanation, so the key teaches.
+      const passage = getScenarioReading(world.slug, scenario.slug);
+      if (!passage) return <NotWrittenYet skill={skill} scenario={scenario} />;
+      return <PassageReader passage={passage} accent={props.accent} />;
+    }
     case "speaking":
       // plans 03-09 / 03-10 — the scenario speaking task
       return <NotWrittenYet skill={skill} scenario={scenario} />;

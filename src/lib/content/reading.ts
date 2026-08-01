@@ -4,7 +4,30 @@
 export interface ReadingQuestion {
   q: string;
   options: string[];
+  /** index into `options` — asserted to address its own options by
+   * scripts/verify-scenario-content.mts for every scenario passage */
   answer: number;
+  /**
+   * Why the correct option is correct, shown under the key once answers are
+   * checked (ReadingRoom.tsx). OPTIONAL HERE ONLY so the eighteen passages
+   * below keep compiling untouched — a learner reading them is told she was
+   * wrong and never told why, which is the gap 03-RESEARCH named.
+   *
+   * `ScenarioReadingQuestion` (src/lib/content/scenario-reading.ts) makes it
+   * REQUIRED, because the scenario bank is where the learner is entitled to
+   * know, and Phase 2.1's lesson is that an optional field is a field an
+   * author forgets.
+   */
+  explain?: string;
+  /**
+   * A stable authored slug, unique within its passage. OPTIONAL for the same
+   * reason as `explain`. It is NOT a spaced-repetition key: a scenario reading
+   * question is scored in place and never scheduled (see the header of
+   * scenario-reading.ts). It exists so that a question can be referred to by
+   * something other than its position in an array, which is what
+   * `PassageReader` still keys its answers by.
+   */
+  id?: string;
 }
 
 export type ReadingLevel = "A2" | "B1" | "B2" | "C1";

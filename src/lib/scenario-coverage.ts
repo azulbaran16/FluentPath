@@ -18,6 +18,7 @@ import { getScenarioPhrases } from "./content/phrases.ts";
 import { getScenarioVocabulary } from "./content/scenario-vocabulary.ts";
 import { getScenarioGrammar } from "./content/scenario-grammar.ts";
 import { getScenarioWriting } from "./content/scenario-writing.ts";
+import { getScenarioReading } from "./content/scenario-reading.ts";
 
 /* ------------------------------------------------------------------ *
  * The shape a bank hands the registry.
@@ -172,6 +173,14 @@ const EXERCISE_SOURCES: Partial<Record<Skill, ScenarioSkillLookup | undefined>> 
     writing: (w, s) => {
       const prompt = getScenarioWriting(w, s);
       return prompt && { items: [prompt], unit: "task" };
+    },
+    // One passage per pair, for the same reason writing has one task: a
+    // scenario wants the text chosen for it, not a library to browse. The
+    // passage's own questions are counted nowhere here — a summary is a count
+    // and a unit, and the unit is what the learner is being offered.
+    reading: (w, s) => {
+      const passage = getScenarioReading(w, s);
+      return passage && { items: [passage], unit: "passage" };
     },
   };
 

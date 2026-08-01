@@ -73,14 +73,25 @@ export function ReadingRoom({
   return <PassageReader passage={active} accent={accent} onBack={() => setActiveId(null)} />;
 }
 
-function PassageReader({
+/**
+ * One passage, its glossary and its comprehension questions — the reader the
+ * browser above mounts once a text is chosen, and the whole exercise when a
+ * scenario mounts it directly (`ScenarioPractice.tsx`, plans 03-07 / 03-08).
+ *
+ * `onBack` is OPTIONAL for exactly that second caller: a scenario page has no
+ * list of texts to go back to, so there is nothing for the link to do. The
+ * browser above still passes one and is otherwise untouched — the level pills,
+ * the text list and the skill page behave exactly as they did.
+ */
+export function PassageReader({
   passage,
   accent,
   onBack,
 }: {
   passage: Passage;
   accent: string;
-  onBack: () => void;
+  /** omitted when this reader IS the surface rather than a page inside one */
+  onBack?: () => void;
 }) {
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [submitted, setSubmitted] = useState(false);
@@ -100,11 +111,21 @@ function PassageReader({
 
   return (
     <div>
-      <button onClick={onBack} className="text-sm text-muted hover:text-ink">
-        ← All texts
-      </button>
+      {onBack && (
+        <button onClick={onBack} className="text-sm text-muted hover:text-ink">
+          ← All texts
+        </button>
+      )}
 
-      <article className="mt-3 rounded-[var(--radius)] border border-line bg-card p-6 shadow-[var(--shadow-soft)]">
+      {/* The margin belongs to the back link, not to the article: leaving
+          `mt-3` behind when the link is not rendered opens a stray gap at the
+          top of a panel that now begins the section (03-06's lesson, in the
+          shape this component has). */}
+      <article
+        className={`${
+          onBack ? "mt-3 " : ""
+        }rounded-[var(--radius)] border border-line bg-card p-6 shadow-[var(--shadow-soft)]`}
+      >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <LevelBadge level={passage.level} />
@@ -181,6 +202,16 @@ function PassageReader({
                   );
                 })}
               </div>
+              {/* The key, explained. Scenario questions always carry one
+                  (`ScenarioReadingQuestion` requires it); the eighteen global
+                  passages carry none yet, so nothing renders for them and the
+                  reading room is unchanged for the learner who arrives from
+                  the skill page. */}
+              {submitted && q.explain && (
+                <p className="mt-2 rounded-lg bg-paper-deep/60 px-3 py-2 text-sm leading-relaxed text-ink-soft">
+                  {q.explain}
+                </p>
+              )}
             </div>
           ))}
         </div>

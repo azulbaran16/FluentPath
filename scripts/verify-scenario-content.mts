@@ -68,6 +68,11 @@ import {
   scenarioWritingKeys,
 } from "../src/lib/content/scenario-writing.ts";
 import { WRITING_PROMPTS } from "../src/lib/content/writing.ts";
+import {
+  getScenarioReading,
+  scenarioReadingKeys,
+} from "../src/lib/content/scenario-reading.ts";
+import { PASSAGES } from "../src/lib/content/reading.ts";
 import { VOCAB_DECKS } from "../src/lib/content/vocabulary.ts";
 import {
   parseScenarioItemId,
@@ -1388,6 +1393,370 @@ ok(
       return getScenarioWriting(w, sc) === undefined;
     }),
   canon(pendingPairs().filter((p) => p.skill === "writing")),
+);
+
+/* ================================================================== *
+ * SCENARIO READING — the passages (plans 03-07 and 03-08)
+ * ================================================================== */
+
+/** A passage is the most expensive item in the phase (~158 words) and the one
+ * a tired author is likeliest to thin out. Two paragraphs is the house style
+ * `reading.ts` set; two questions is the point below which "comprehension" is
+ * a coin toss dressed as an exercise; three options is the point below which
+ * guessing beats reading. */
+const MIN_READING_PARAGRAPHS = 2;
+const MIN_READING_QUESTIONS = 2;
+const MIN_READING_OPTIONS = 3;
+const MIN_READING_GLOSSARY = 2;
+
+group("scenario reading: every bank key is a pair that declares reading");
+
+const readingPairKeys = new Set(
+  DECLARED_PAIRS.filter((p) => p.skill === "reading").map((p) => p.key),
+);
+for (const key of scenarioReadingKeys()) {
+  ok(
+    `scenario reading: "${key}" is a scenario the curriculum has`,
+    SCENARIO_KEYS.has(key),
+    "a typo'd key is a passage nobody will ever be served",
+  );
+  ok(
+    `scenario reading: "${key}" actually declares reading`,
+    readingPairKeys.has(key),
+    "a passage for a pair that does not declare reading is content nothing renders",
+  );
+}
+
+group("scenario reading: no field renders as a gap, and no floor is thinned");
+
+for (const s of SCENARIOS) {
+  const passage = getScenarioReading(s.world, s.scenario);
+  if (!passage) continue;
+
+  ok(`scenario reading: ${s.key} has a title`, filled(passage.title), passage.title);
+  ok(
+    `scenario reading: ${s.key} is at its scenario's own level`,
+    passage.level === s.level,
+    `${passage.level} vs the scenario's ${s.level}`,
+  );
+  ok(
+    `scenario reading: ${s.key} gives an honest minutes estimate`,
+    inRange(passage.minutes, 1, 20),
+    String(passage.minutes),
+  );
+  ok(
+    `scenario reading: ${s.key} has at least ${MIN_READING_PARAGRAPHS} body paragraphs`,
+    passage.body.length >= MIN_READING_PARAGRAPHS,
+    `${passage.body.length} paragraph(s)`,
+  );
+  ok(
+    `scenario reading: ${s.key} has no empty paragraph`,
+    passage.body.every(filled),
+    "a paragraph of spaces renders as a hole in the text",
+  );
+  ok(
+    `scenario reading: ${s.key} glosses at least ${MIN_READING_GLOSSARY} words`,
+    passage.glossary.length >= MIN_READING_GLOSSARY,
+    `${passage.glossary.length} entr(y/ies)`,
+  );
+  ok(
+    `scenario reading: ${s.key} has no empty glossary entry`,
+    passage.glossary.every((g) => filled(g.word) && filled(g.meaning)),
+    canon(passage.glossary),
+  );
+  ok(
+    `scenario reading: ${s.key} has no repeated glossary word`,
+    duplicates(passage.glossary.map((g) => g.word.trim().toLowerCase()))
+      .length === 0,
+    duplicates(passage.glossary.map((g) => g.word.trim().toLowerCase())).join(", "),
+  );
+  ok(
+    `scenario reading: ${s.key} asks at least ${MIN_READING_QUESTIONS} questions`,
+    passage.questions.length >= MIN_READING_QUESTIONS,
+    `${passage.questions.length} question(s)`,
+  );
+
+  for (const q of passage.questions) {
+    ok(
+      `scenario reading: ${s.key}/${q.id} has a question`,
+      filled(q.q),
+      "an empty stem is a question the learner cannot answer",
+    );
+    // The field this whole plan exists for. Optional on the global shape so
+    // the eighteen existing passages compile; required here, because a
+    // learner told she was wrong and never told why has learned nothing.
+    ok(
+      `scenario reading: ${s.key}/${q.id} explains its key`,
+      filled(q.explain),
+      "an explanation of spaces is an explanation an author forgot",
+    );
+  }
+}
+
+group("scenario reading: no question is type-correct and silently wrong");
+
+for (const s of SCENARIOS) {
+  const passage = getScenarioReading(s.world, s.scenario);
+  if (!passage) continue;
+  for (const q of passage.questions) {
+    ok(
+      `scenario reading: ${s.key}/${q.id} offers at least ${MIN_READING_OPTIONS} options`,
+      q.options.length >= MIN_READING_OPTIONS,
+      `${q.options.length} option(s)`,
+    );
+    ok(
+      `scenario reading: ${s.key}/${q.id} has no empty option`,
+      q.options.every(filled),
+      canon(q.options),
+    );
+    // Both of the next two are type-correct and silently wrong: `answer` is a
+    // number whatever it points at, and two identical options make the key
+    // ambiguous while the component happily marks one of them right (T-03-11).
+    ok(
+      `scenario reading: ${s.key}/${q.id} answer indexes into its OWN options`,
+      Number.isInteger(q.answer) && q.answer >= 0 && q.answer < q.options.length,
+      `answer ${q.answer} against ${q.options.length} options`,
+    );
+    ok(
+      `scenario reading: ${s.key}/${q.id} options are distinct`,
+      duplicates(q.options.map((o) => o.trim().toLowerCase())).length === 0,
+      duplicates(q.options.map((o) => o.trim().toLowerCase())).join(" | "),
+    );
+  }
+
+  const questionIds = passage.questions.map((q) => q.id);
+  ok(
+    `scenario reading: ${s.key} question ids are unique within the passage`,
+    duplicates(questionIds).length === 0,
+    duplicates(questionIds).join(", "),
+  );
+  ok(
+    `scenario reading: ${s.key} question ids are authored, not array positions`,
+    questionIds.every((id) => filled(id) && !/^\d+$/.test(id)),
+    questionIds.join(", "),
+  );
+  ok(
+    `scenario reading: ${s.key} asks each question once`,
+    duplicates(passage.questions.map((q) => q.q.trim().toLowerCase())).length ===
+      0,
+    "the same stem twice in one passage is fatigue, not practice",
+  );
+  ok(
+    `scenario reading: ${s.key} explains each key in its own words`,
+    duplicates(passage.questions.map((q) => q.explain.trim().toLowerCase()))
+      .length === 0,
+    "one explanation pasted under two keys explains neither",
+  );
+}
+
+group("scenario reading: ids are composed, namespaced and globally unique");
+
+const scenarioReadingIds: string[] = [];
+
+for (const s of SCENARIOS) {
+  const passage = getScenarioReading(s.world, s.scenario);
+  if (!passage) continue;
+  scenarioReadingIds.push(passage.id);
+  const parsed = parseScenarioItemId(passage.id);
+  ok(
+    `scenario reading: ${passage.id} parses as a scenario item`,
+    parsed !== undefined,
+    "an id the parser rejects cannot be reasoned about at all",
+  );
+  if (!parsed) continue;
+  ok(
+    `scenario reading: ${passage.id} names ITS OWN scenario`,
+    parsed.scenarioKey === s.key,
+    `${parsed.scenarioKey} vs ${s.key}`,
+  );
+  ok(
+    `scenario reading: ${passage.id} is of kind "reading"`,
+    parsed.kind === "reading",
+    parsed.kind,
+  );
+  ok(
+    `scenario reading: ${passage.id} is exactly what scenarioItemId composes`,
+    passage.id === scenarioItemId(s.key, "reading", parsed.localId),
+    "an id spelled by hand is an id that drifts from the one author of the format",
+  );
+  ok(
+    `scenario reading: ${passage.id} slug is not an array position`,
+    !/^\d+$/.test(parsed.localId),
+    parsed.localId,
+  );
+}
+
+ok(
+  "every scenario reading id is unique across all scenarios",
+  duplicates(scenarioReadingIds).length === 0,
+  duplicates(scenarioReadingIds).join(", "),
+);
+// The reason this bank composes an id at all: a scenario passage and a global
+// one now share the `Passage` shape, and the global ids are bare slugs
+// ("coffee", "market"). Without the namespace the two banks share one flat key
+// space and nothing would notice a collision.
+const globalPassageIds = new Set(PASSAGES.map((p) => p.id));
+ok(
+  "no scenario reading id collides with a GLOBAL passage id",
+  scenarioReadingIds.every((id) => !globalPassageIds.has(id)),
+  scenarioReadingIds.filter((id) => globalPassageIds.has(id)).join(", "),
+);
+ok(
+  "no scenario reading id collides with a global grammar question id",
+  scenarioReadingIds.every((id) => !grammarIds.has(id)),
+  scenarioReadingIds.filter((id) => grammarIds.has(id)).join(", "),
+);
+ok(
+  "no scenario reading id collides with a deck-browser card id",
+  scenarioReadingIds.every((id) => !deckCardIds.has(id)),
+  scenarioReadingIds.filter((id) => deckCardIds.has(id)).join(", "),
+);
+ok(
+  "no scenario reading id collides with a recall item id",
+  scenarioReadingIds.every((id) => !new Set(composedIds).has(id)),
+  scenarioReadingIds.filter((id) => new Set(composedIds).has(id)).join(", "),
+);
+ok(
+  "no scenario reading id collides with a scenario grammar id",
+  scenarioReadingIds.every((id) => !new Set(scenarioGrammarIds).has(id)),
+  scenarioReadingIds.filter((id) => new Set(scenarioGrammarIds).has(id)).join(", "),
+);
+ok(
+  "no scenario reading id collides with a scenario writing id",
+  scenarioReadingIds.every((id) => !new Set(scenarioWritingIds).has(id)),
+  scenarioReadingIds.filter((id) => new Set(scenarioWritingIds).has(id)).join(", "),
+);
+
+group("scenario reading: an unscheduled kind, proved unscheduled");
+
+// The same mirror image plan 03-06 asserted for writing, and asserted here
+// rather than assumed because the cost of guessing wrong is symmetric.
+// `PassageReader` scores in place and never calls `recordAttempt`, so nothing
+// writes srs["…#reading#…"] — listing these ids would put a permanent phantom
+// in Dashboard's "Due today" count and hand ReviewHub's weak-spots drill an id
+// that resolves to nothing. Grammar ids MUST be reviewable; these must NOT.
+const reviewableForReading = new Set(reviewableIds());
+ok(
+  "no scenario reading id is listed as reviewable",
+  scenarioReadingIds.every((id) => !reviewableForReading.has(id)),
+  scenarioReadingIds.filter((id) => reviewableForReading.has(id)).join(", "),
+);
+for (const id of scenarioReadingIds) {
+  ok(
+    `resolveReviewItem returns nothing for ${id}`,
+    resolveReviewItem(id) === undefined,
+    "a comprehension question torn out of its passage is not a review card — the passage IS the question",
+  );
+}
+ok(
+  "a reading id still round-trips through the id format",
+  scenarioReadingIds.every((id) => parseScenarioItemId(id)?.kind === "reading"),
+  "unscheduled is not the same as unparseable",
+);
+
+group("scenario reading: no two scenarios are handed the same passage (D-01)");
+
+// Fingerprinted WITHOUT the id, because the id names its own scenario and would
+// make every passage trivially distinct — exactly how a copy-pasted text with a
+// fresh slug would slip through.
+const readingByKey = SCENARIOS.flatMap((s) => {
+  const p = getScenarioReading(s.world, s.scenario);
+  if (!p) return [];
+  return [
+    {
+      key: s.key,
+      body: canon({
+        title: p.title,
+        body: p.body,
+        glossary: p.glossary,
+        questions: p.questions.map((q) => ({
+          q: q.q,
+          options: q.options,
+          answer: q.answer,
+          explain: q.explain,
+        })),
+      }),
+    },
+  ];
+});
+
+for (const entry of readingByKey) {
+  const twin = readingByKey.find(
+    (other) => other.key !== entry.key && other.body === entry.body,
+  );
+  ok(
+    `scenario reading: ${entry.key} is written for itself`,
+    twin === undefined,
+    twin ? `identical to ${twin.key}` : "",
+  );
+}
+
+const allReadingTexts = SCENARIOS.flatMap((s) => {
+  const p = getScenarioReading(s.world, s.scenario);
+  return p ? [p.body.join(" ").trim().toLowerCase()] : [];
+});
+ok(
+  "no passage text is repeated anywhere in the scenario reading corpus",
+  duplicates(allReadingTexts).length === 0,
+  "two scenarios sharing a text is the D-01 failure in its purest form",
+);
+const allReadingTitles = SCENARIOS.flatMap((s) => {
+  const p = getScenarioReading(s.world, s.scenario);
+  return p ? [p.title.trim().toLowerCase()] : [];
+});
+ok(
+  "no passage title is repeated anywhere in the scenario reading corpus",
+  duplicates(allReadingTitles).length === 0,
+  duplicates(allReadingTitles).join(" | "),
+);
+
+// The other way a scenario can be handed material that is not its own: taking
+// it from the GLOBAL reading room, which is precisely what the unwritten panel
+// tells the learner it is not doing.
+const globalTexts = new Set(
+  PASSAGES.map((p) => p.body.join(" ").trim().toLowerCase()),
+);
+const globalTitles = new Set(PASSAGES.map((p) => p.title.trim().toLowerCase()));
+ok(
+  "no scenario passage is a global reading-room passage",
+  allReadingTexts.every((t) => !globalTexts.has(t)),
+  allReadingTexts.filter((t) => globalTexts.has(t)).join(" | "),
+);
+ok(
+  "no scenario passage takes a global reading-room title",
+  allReadingTitles.every((t) => !globalTitles.has(t)),
+  allReadingTitles.filter((t) => globalTitles.has(t)).join(" | "),
+);
+
+group("scenario reading: the registry reports the bank, not the declaration");
+
+for (const pair of DECLARED_PAIRS.filter((p) => p.skill === "reading")) {
+  const coverage = getScenarioCoverage(pair.world, pair.scenario);
+  const skill = coverage?.skills.find((s) => s.skill === "reading");
+  const passage = getScenarioReading(pair.world, pair.scenario);
+  ok(
+    `coverage: ${pair.key} reading availability follows the bank's CONTENTS`,
+    skill?.available === (passage !== undefined),
+    canon(skill),
+  );
+  if (passage) {
+    ok(
+      `coverage: ${pair.key} reading summary is a count and a unit`,
+      skill?.summary === "1 passage",
+      skill?.summary,
+    );
+  }
+}
+
+ok(
+  "every pair the registry reports as pending reading has no bank entry",
+  pendingPairs()
+    .filter((p) => p.skill === "reading")
+    .every((p) => {
+      const [w, sc] = p.key.split("/");
+      return getScenarioReading(w, sc) === undefined;
+    }),
+  canon(pendingPairs().filter((p) => p.skill === "reading")),
 );
 
 /* ------------------------------------------------------------------ *

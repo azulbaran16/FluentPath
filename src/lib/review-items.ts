@@ -55,19 +55,32 @@ export const SCENARIO_ITEM_SEPARATOR = "#";
  * so nothing ever writes `srs["…#writing#…"]` and there is no card to bring
  * back. It takes an id from this space anyway for STORAGE, not scheduling:
  * `WritingDesk` derives its draft key from the prompt id, so composing that id
- * makes two scenarios' drafts structurally unable to collide (T-03-14). An
- * unscheduled kind is deliberately absent from `reviewableIds` and returns
+ * makes two scenarios' drafts structurally unable to collide (T-03-14).
+ * `reading` (plan 03-07) is unscheduled for a different reason: `PassageReader`
+ * scores its comprehension questions in place and explains the key, but it
+ * never calls `recordAttempt` — and a comprehension question torn out of its
+ * passage could not be answered in a review card even if it did, because the
+ * passage is the question. It takes an id for UNIQUENESS: a scenario passage
+ * and a global one now share the `Passage` shape, and an id that names its own
+ * scenario cannot collide with `"coffee"` or `"market"`.
+ * An unscheduled kind is deliberately absent from `reviewableIds` and returns
  * `undefined` from `resolveReviewItem`, and the harness asserts both — so
  * "unscheduled" is a proved property rather than an omission that looks like
  * one.
  */
-export type ScenarioItemKind = "phrase" | "vocab" | "grammar" | "writing";
+export type ScenarioItemKind =
+  | "phrase"
+  | "vocab"
+  | "grammar"
+  | "writing"
+  | "reading";
 
 const ITEM_KINDS: readonly ScenarioItemKind[] = [
   "phrase",
   "vocab",
   "grammar",
   "writing",
+  "reading",
 ];
 
 /** The kinds that DO enter the review queue. `reviewableIds()` sources one list
@@ -226,10 +239,11 @@ export function resolveReviewItem(id: string): ReviewItem | undefined {
   }
 
   // An UNSCHEDULED kind, stated rather than arrived at. A scenario writing task
-  // is not a review card: nothing scores it, so nothing ever schedules its id,
-  // and there is no one-screen item to hand /review. Falling through to the
-  // recall lookup below would also return undefined — by accident, and one
-  // added kind away from silently resolving to the wrong thing.
+  // is not a review card and neither is a scenario reading passage: nothing
+  // scores either, so nothing ever schedules its id, and there is no one-screen
+  // item to hand /review. Falling through to the recall lookup below would also
+  // return undefined — by accident, and one added kind away from silently
+  // resolving to the wrong thing.
   if (!SCHEDULED_ITEM_KINDS.includes(parsed.kind)) return undefined;
 
   const item = scenarioRecallItems(worldSlug, scenarioSlug).find(
@@ -254,10 +268,17 @@ export function resolveReviewItem(id: string): ReviewItem | undefined {
  * SRS adds its ids HERE as well as gaining a branch in `resolveReviewItem`.
  *
  * The converse is equally deliberate: a bank whose items are NOT scored must
- * NOT appear here. Plan 03-06's writing tasks are the first such bank — nothing
- * schedules them, so listing their ids would inflate the "Due today" count with
- * items that can never be due and hand the weak-spots drill an id that resolves
- * to nothing. See `SCHEDULED_ITEM_KINDS`.
+ * NOT appear here. Plan 03-06's writing tasks are the first such bank and plan
+ * 03-07's reading passages are the second — nothing schedules either, so
+ * listing their ids would inflate the "Due today" count with items that can
+ * never be due and hand the weak-spots drill an id that resolves to nothing.
+ * See `SCHEDULED_ITEM_KINDS`.
+ *
+ * So the rule is CONDITIONAL, and the cost of getting it wrong is symmetric:
+ * omit a scored bank and its items are invisible; add an unscored one and its
+ * items are permanent phantoms. Before adding a bank here, check whether its
+ * renderer actually calls `recordAttempt` — `GrammarQuiz` does, `WritingDesk`
+ * and `PassageReader` do not.
  */
 export function reviewableIds(): string[] {
   const ids = GRAMMAR_QUESTIONS.map((q) => q.id);
