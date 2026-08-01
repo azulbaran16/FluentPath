@@ -387,6 +387,317 @@ const DECKS: Record<string, ScenarioVocabCard[]> = {
       example: "Calling minus ten 'a bit chilly' is classic English understatement.",
     },
   ],
+
+  // A2. Short examples, concrete nouns, and only structures an A2 learner can
+  // produce at a counter under pressure.
+  "travel/airport": [
+    {
+      id: "boarding-pass",
+      term: "a boarding pass",
+      es: "la tarjeta de embarque",
+      example: "Have your boarding pass ready at the gate.",
+    },
+    {
+      id: "carry-on",
+      term: "a carry-on",
+      es: "el equipaje de mano",
+      example: "My carry-on was too big, so I had to check it.",
+    },
+    {
+      id: "delayed",
+      term: "delayed",
+      es: "retrasado",
+      example: "Our flight is delayed by two hours.",
+    },
+    {
+      id: "go-through-security",
+      term: "go through security",
+      es: "pasar el control de seguridad",
+      example: "Go through security early — the queue is long.",
+    },
+    {
+      id: "layover",
+      term: "a layover",
+      es: "una escala",
+      example: "We have a short layover in Lisbon.",
+    },
+    {
+      id: "aisle-seat",
+      term: "an aisle seat",
+      es: "un asiento de pasillo",
+      example: "I always ask for an aisle seat on long flights.",
+    },
+    {
+      id: "one-way-ticket",
+      term: "a one-way ticket",
+      es: "un billete de ida",
+      example: "I only booked a one-way ticket.",
+    },
+    {
+      id: "take-off",
+      term: "take off",
+      es: "despegar",
+      example: "The plane takes off at six.",
+    },
+  ],
+
+  "travel/hotel": [
+    {
+      id: "double-room",
+      term: "a double room",
+      es: "una habitación doble",
+      example: "We booked a double room with a balcony.",
+    },
+    {
+      id: "en-suite",
+      term: "en suite",
+      es: "con baño privado",
+      example: "All the rooms here are en suite.",
+    },
+    {
+      id: "front-desk",
+      term: "the front desk",
+      es: "la recepción",
+      example: "Leave the key at the front desk when you go out.",
+    },
+    {
+      id: "housekeeping",
+      term: "housekeeping",
+      es: "el servicio de limpieza",
+      example: "Housekeeping comes around eleven, so hang the sign up.",
+    },
+    {
+      id: "deposit",
+      term: "a deposit",
+      es: "un depósito, una fianza",
+      example: "They took a fifty-euro deposit on the card.",
+    },
+    {
+      id: "fully-booked",
+      term: "fully booked",
+      es: "completo, sin plazas",
+      example: "The hotel was fully booked, so we tried the one next door.",
+    },
+    {
+      id: "amenities",
+      term: "the amenities",
+      es: "los servicios e instalaciones",
+      example: "The gym and the pool are the only amenities.",
+    },
+    {
+      id: "vacancy",
+      term: "a vacancy",
+      es: "una habitación libre",
+      example: "The sign outside said 'no vacancies'.",
+    },
+  ],
+
+  "travel/restaurant": [
+    {
+      id: "starter",
+      term: "a starter",
+      es: "un entrante",
+      example: "We shared a starter and then had pasta.",
+    },
+    {
+      id: "main-course",
+      term: "the main course",
+      es: "el plato principal",
+      example: "The main course took forty minutes to arrive.",
+    },
+    {
+      id: "the-bill",
+      term: "the bill (UK) / the check (US)",
+      es: "la cuenta",
+      example: "In London, ask for the bill, not the check.",
+    },
+    {
+      id: "a-tip",
+      term: "a tip",
+      es: "una propina",
+      example: "We left a small tip on the table.",
+    },
+    {
+      id: "takeaway",
+      term: "a takeaway (UK) / takeout (US)",
+      es: "comida para llevar",
+      example: "Let's get a takeaway tonight.",
+    },
+    {
+      id: "book-a-table",
+      term: "book a table",
+      es: "reservar mesa",
+      example: "Should we book a table for eight?",
+    },
+    {
+      id: "server",
+      term: "the server / the waiter",
+      es: "el camarero",
+      example: "The server was very patient with us.",
+    },
+    {
+      id: "side",
+      term: "a side",
+      es: "una guarnición",
+      example: "Can I get a side of rice?",
+    },
+  ],
+
+  "travel/directions": [
+    {
+      id: "roundabout",
+      term: "a roundabout",
+      es: "una rotonda",
+      example: "Go past the roundabout and turn right.",
+    },
+    {
+      id: "crossroads",
+      term: "a crossroads (UK) / an intersection (US)",
+      es: "un cruce",
+      example: "Wait for me at the crossroads.",
+    },
+    {
+      id: "block",
+      term: "a block",
+      es: "una manzana, una cuadra",
+      example: "The bank is two blocks from here.",
+    },
+    {
+      id: "traffic-lights",
+      term: "the traffic lights",
+      es: "el semáforo",
+      example: "Turn left at the traffic lights.",
+    },
+    {
+      id: "pavement",
+      term: "the pavement (UK) / the sidewalk (US)",
+      es: "la acera",
+      example: "Walk along the pavement for two minutes.",
+    },
+    {
+      id: "get-lost",
+      term: "get lost",
+      es: "perderse",
+      example: "I got lost twice looking for the museum.",
+    },
+    {
+      id: "around-the-corner",
+      term: "just around the corner",
+      es: "aquí al lado, muy cerca",
+      example: "The station is just around the corner.",
+    },
+    {
+      id: "platform",
+      term: "the platform",
+      es: "el andén",
+      example: "The train leaves from platform four.",
+    },
+  ],
+
+  // The phrases here are what SHE says. These cards are what the pharmacist,
+  // the doctor and the police officer say BACK — which is the half a learner
+  // never rehearses and the half that decides whether she understands.
+  "travel/emergencies": [
+    {
+      id: "prescription",
+      term: "a prescription",
+      es: "una receta médica",
+      example: "You'll need a prescription for that one.",
+    },
+    {
+      id: "painkillers",
+      term: "painkillers",
+      es: "analgésicos",
+      example: "Take these painkillers twice a day with food.",
+    },
+    {
+      id: "rash",
+      term: "a rash",
+      es: "un sarpullido",
+      example: "How long have you had the rash?",
+    },
+    {
+      id: "symptoms",
+      term: "symptoms",
+      es: "los síntomas",
+      example: "Describe your symptoms from the beginning.",
+    },
+    {
+      id: "dizzy",
+      term: "dizzy",
+      es: "mareado",
+      example: "Do you feel dizzy when you stand up?",
+    },
+    {
+      id: "statement",
+      term: "a statement",
+      es: "una declaración",
+      example: "We'll need a statement before you leave.",
+    },
+    {
+      id: "police-report",
+      term: "a police report",
+      es: "una denuncia policial",
+      example: "Your insurer will ask for a police report.",
+    },
+    {
+      id: "emergency-room",
+      term: "the emergency room / A&E",
+      es: "urgencias",
+      example: "Go straight to the emergency room, not the clinic.",
+    },
+  ],
+
+  "travel/shopping": [
+    {
+      id: "fitting-room",
+      term: "a fitting room",
+      es: "un probador",
+      example: "The fitting rooms are at the back, past the shoes.",
+    },
+    {
+      id: "sold-out",
+      term: "sold out",
+      es: "agotado",
+      example: "That size is sold out online too.",
+    },
+    {
+      id: "bargain",
+      term: "a bargain",
+      es: "una ganga",
+      example: "Twelve euros for a coat is a bargain.",
+    },
+    {
+      id: "discount",
+      term: "a discount",
+      es: "un descuento",
+      example: "Students get a ten per cent discount here.",
+    },
+    {
+      id: "in-stock",
+      term: "in stock",
+      es: "disponible, en existencias",
+      example: "Let me check whether we have it in stock.",
+    },
+    {
+      id: "warranty",
+      term: "a warranty",
+      es: "una garantía",
+      example: "The headphones still have six months of warranty.",
+    },
+    {
+      id: "browse",
+      term: "browse",
+      es: "mirar sin comprar",
+      example: "She likes to browse the market before buying anything.",
+    },
+    {
+      id: "checkout",
+      term: "the checkout / the till",
+      es: "la caja",
+      example: "There was one person at the checkout and a queue of nine.",
+    },
+  ],
 };
 
 /**

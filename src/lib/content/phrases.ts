@@ -109,6 +109,14 @@ const SETS: Record<string, Phrase[]> = {
     { id: "baggage-claim", text: "Where's the baggage claim?", es: "¿Dónde está la recogida de equipaje?" },
     { id: "missed-connection", text: "I think I missed my connection.", es: "Creo que perdí mi conexión." },
   ],
+  "travel/hotel": [
+    { id: "any-rooms-available", text: "Do you have any rooms available for tonight?", es: "¿Tienen habitaciones libres para esta noche?" },
+    { id: "leave-my-bags-here", text: "Could I leave my bags here until check-in?", es: "¿Puedo dejar las maletas aquí hasta la hora de entrada?", tip: "'Check-in' es también la HORA a partir de la cual puedes subir." },
+    { id: "is-breakfast-included", text: "Is breakfast included?", es: "¿El desayuno está incluido?" },
+    { id: "room-next-door-is-noisy", text: "The room next door is really noisy — could you move us?", es: "La habitación de al lado hace mucho ruido, ¿nos podrían cambiar?" },
+    { id: "wifi-password", text: "What's the Wi-Fi password?", es: "¿Cuál es la contraseña del wifi?" },
+    { id: "settle-the-bill", text: "We're checking out — could we settle the bill?", es: "Nos vamos; ¿podemos pagar la cuenta?", tip: "'Settle the bill' es la fórmula del mostrador al marcharse." },
+  ],
   "travel/restaurant": [
     { id: "table-for-two", text: "A table for two, please.", es: "Una mesa para dos, por favor." },
     { id: "see-the-menu", text: "Could we see the menu, please?", es: "¿Podríamos ver el menú, por favor?" },
@@ -124,6 +132,22 @@ const SETS: Record<string, Phrase[]> = {
     { id: "second-left", text: "Take the second left.", es: "Gire en la segunda a la izquierda." },
     { id: "going-the-right-way", text: "Am I going the right way?", es: "¿Voy por buen camino?" },
     { id: "which-stop", text: "Which stop should I get off at?", es: "¿En qué parada me bajo?", tip: "'Get off' sirve para bus, tren y metro." },
+  ],
+  "travel/emergencies": [
+    { id: "without-a-prescription", text: "Do you have something for this without a prescription?", es: "¿Tiene algo para esto sin receta?", tip: "Lo que se vende así se llama 'over the counter'." },
+    { id: "im-on-medication", text: "I'm on medication for my blood pressure.", es: "Estoy tomando medicación para la tensión.", tip: "'To be ON medication' es la fórmula fija — no 'take medication'." },
+    { id: "wallet-has-been-stolen", text: "My wallet's been stolen.", es: "Me han robado la cartera.", tip: "La pasiva evita decir quién; es lo natural al denunciar." },
+    { id: "report-it-for-insurance", text: "I need to report it for my insurance.", es: "Necesito denunciarlo para el seguro." },
+    { id: "been-like-this-since", text: "It's been like this since yesterday morning.", es: "Está así desde ayer por la mañana.", tip: "El present perfect es lo que un médico espera oír para 'desde cuándo'." },
+    { id: "is-it-serious", text: "Is it serious? Should I see a doctor?", es: "¿Es grave? ¿Debería ver a un médico?" },
+  ],
+  "travel/shopping": [
+    { id: "could-i-try-this-on", text: "Could I try this on?", es: "¿Me lo puedo probar?", tip: "'Try on' es solo para ropa; para lo demás, 'try out'." },
+    { id: "come-in-another-colour", text: "Does this come in another colour?", es: "¿Lo tienen en otro color?" },
+    { id: "whats-your-return-policy", text: "What's your return policy?", es: "¿Cuál es la política de devoluciones?" },
+    { id: "can-i-pay-by-card", text: "Can I pay by card?", es: "¿Puedo pagar con tarjeta?" },
+    { id: "exchange-it-for-a-bigger-size", text: "Could I exchange it for a bigger size?", es: "¿Podría cambiarlo por una talla más grande?", tip: "'Exchange' es cambiar por otro artículo; 'refund', que te devuelvan el dinero." },
+    { id: "is-this-on-sale", text: "Is this on sale, or is that the full price?", es: "¿Esto está rebajado o es el precio normal?", tip: "'On sale' = rebajado. 'For sale' = en venta. No los mezcles." },
   ],
   "native/idioms": [
     { id: "piece-of-cake", text: "It's a piece of cake.", es: "Es pan comido.", tip: "Idiom: algo muy fácil." },
