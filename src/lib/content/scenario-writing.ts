@@ -241,6 +241,95 @@ const BANK: Record<string, AuthoredWritingPrompt> = {
     model:
       "Subject: The database migration conversation — DevConf, Thursday\n\nHi Sofia,\n\nWe talked for ten minutes by the coffee stand at DevConf on Thursday. I was the one asking how you moved eleven services off a shared database without ever taking it offline.\n\nYou said you were still undecided about the audit tables. The write-up I promised is linked below; the section on writing to both databases at once starts on page four, and it saved us roughly three weeks.\n\nIf you have twenty minutes in the next month or so, I would like to ask you two questions about how your team chose what to move first. If your calendar says no, I completely understand — the write-up is yours either way.\n\nBest,\nAndrés",
   },
+
+  /* ───────────────────── academic/summaries · B2 ─────────────────────
+   * The source text is PART OF THE TASK and is original prose written for this
+   * exercise — a summary task that borrows its passage would put someone
+   * else's writing into the app under a heading that says the practice was
+   * written for this scenario. It is one paragraph on purpose: the desk
+   * renders `task` as a single paragraph, so a passage with line breaks would
+   * lose them silently.
+   *
+   * The passage is built to be summarisable: one idea (adding capacity
+   * generates the demand that fills it), two examples that must be cut, and
+   * one term that must be KEPT because it is the idea rather than decoration.
+   * The checklist turns "in your own words" into something the learner can
+   * actually check — a four-word-run test she can run against the passage —
+   * instead of an instruction she can only feel she has obeyed. */
+  "academic/summaries": {
+    slug: "summarise-induced-demand",
+    title: "Summarise a passage in your own words",
+    level: "B2",
+    task: "Summarise the passage below in your own words. Keep the main idea; leave out the examples. — “For thirty years the standard advice to city planners was that wider roads cure congestion: more lanes carry more cars per hour, so the queues get shorter. Cities widened their approach roads accordingly, and for a year or two the traffic did move faster. Then it slowed again. Drivers who had been avoiding the road came back to it, some who had been taking the train switched to the car, and journeys nobody used to make at all — a second trip to the shops, a longer commute from a cheaper suburb — became worth making. Within about five years most widened roads were carrying more cars at the same crawling speed as before. Planners call this induced demand, and the name matters, because it reframes a road not as a container that can be made bigger but as a price that can be made cheaper. A few cities are now quietly testing the reverse.”",
+    minWords: 55,
+    maxWords: 90,
+    checklist: [
+      "A first sentence that gives the main idea on its own, with nothing before it",
+      "No run of four or more words copied from the passage — check it against the passage, line by line",
+      "Both examples gone: the second trip to the shops and the cheaper suburb",
+      "The term “induced demand” kept, because it is the idea and not decoration",
+      "Nothing added that the passage does not say, including your own opinion of it",
+    ],
+    model:
+      "Widening a road was long believed to cure congestion, and for a short while it does. But easier driving lures back the drivers who once kept away, pulls other people off the train, and makes journeys worth taking that were not worth taking before. After roughly five years the wider road holds more traffic and moves just as slowly. The effect is known as induced demand: extra capacity behaves less like a container being enlarged than like a price being lowered.",
+  },
+
+  /* ════════════════════════════ C1 ════════════════════════════ */
+
+  /* ───────────────────── academic/debate · C1 ─────────────────────
+   * C1 because of the MOVE it demands, not because of long words. The
+   * scenario's own phrases already teach spotting a straw man and conceding a
+   * point out loud; the written version asks for the harder half of that — to
+   * state the opposing case in a form its own supporters would sign, then give
+   * something up for real. "Of course there are downsides" is the failure this
+   * task is built to catch, so the checklist names it. Deliberately not an
+   * essay with two balanced halves: the global writing room already has one of
+   * those, and it is a different exercise. */
+  "academic/debate": {
+    slug: "concede-the-strongest-objection",
+    title: "Concede the strongest point against you",
+    level: "C1",
+    task: "Argue one side of this: should a city be allowed to close its centre to cars without putting it to a public vote? Then state the strongest argument against you — the version its best advocate would recognise, not a weak one you can knock down — concede what is genuinely true in it, and show why your position survives anyway.",
+    minWords: 150,
+    maxWords: 240,
+    checklist: [
+      "Your claim in the first two sentences, worded so that someone could disagree with it",
+      "Two reasons, each resting on something concrete rather than on a stronger adjective",
+      "The counter-argument put in words its own supporters would accept",
+      "A real concession: name what you have given up, never “of course there are downsides”",
+      "A close that says why the claim holds after the concession, and introduces no new claim",
+    ],
+    model:
+      "A city should be able to close its centre to cars without holding a referendum. My reason is not that the public would decide wrongly, but that the question is poorly suited to a vote. Street space is a shared resource whose costs fall largely on people who do not drive: children walking to school, anyone with asthma, the shopkeeper whose door stands four metres from a queue of idling engines. A referendum weights those interests by turnout, and turnout on transport questions leans heavily towards households that already own a car.\n\nThe strongest objection is not that drivers would be inconvenienced. It is that officials nobody elected should not redraw the terms of daily life for people who have arranged their work, their childcare and their mortgages around driving. That is a serious claim about consent, and I concede it: a ban imposed at three months' notice on a suburb with one bus an hour is an injustice, whatever its air-quality figures say.\n\nWhat the objection does not establish is that a vote is the remedy. Consent can be earned with time and alternatives — several years of notice, a bus that actually runs, an exemption for deliveries and for blue badges — and those are the conditions I would attach, rather than a ballot.",
+  },
+
+  /* ───────────────────── native/register · C1 ─────────────────────
+   * The scenario IS the difference between two registers, so a single message
+   * cannot test it: the same facts have to be written twice and the checklist
+   * has to compare the versions rather than judge each on its own. Every line
+   * below is therefore a DIFFERENCE — contractions in one and none in the
+   * other, a phrasal verb against its single-word twin, an apology carried by
+   * one word in one version and by a whole formula in the other. The one line
+   * that is not a difference is the one that matters most: the facts must be
+   * identical, because softening bad news out of the polite version is the
+   * real-world failure this scenario exists to prevent. */
+  "native/register": {
+    slug: "same-news-two-registers",
+    title: "The same news, written twice",
+    level: "C1",
+    task: "Thursday's workshop is cancelled and will not be rescheduled this quarter. Write that news twice, with the same facts in both: once for the team channel where everyone knows you, and once for the external partner who paid to attend. Label the two versions.",
+    minWords: 140,
+    maxWords: 240,
+    checklist: [
+      "The same three facts in both versions — cancelled, why, what happens next — with nothing softened out of either",
+      "Three or more contractions in the casual version and not one in the formal version",
+      "A different opening and a different sign-off, neither borrowed from the other version",
+      "One act described with a phrasal verb in the casual version and a single-word verb in the formal one",
+      "The formal version apologises without using the word “sorry”; the casual one apologises in a single word",
+    ],
+    model:
+      "CASUAL — team channel\n\nHey all — Thursday's workshop is off, I'm afraid. We've only filled four of the twelve places and Rafa is away until August, so we're not going to run it this quarter. Nothing's lost: I'll hang on to the materials and we'll pick it up in the autumn. Sorry for the short notice — shout if you'd already booked travel and I'll sort it out.\n\nFORMAL — external partner\n\nDear Ms Okonkwo,\n\nI am writing to inform you that the workshop scheduled for Thursday will not take place, and that we will not be rescheduling it during this quarter. Enrolment reached four of the twelve available places, and the facilitator is unavailable until August.\n\nThe materials will be retained and the workshop offered again in the autumn, at which point I will contact you directly. Please accept my apologies for the disruption to your plans; should you have incurred travel costs, we will of course reimburse them.\n\nKind regards,\nAndrés Zulbaran",
+  },
 };
 
 /* ------------------------------------------------------------------ *
