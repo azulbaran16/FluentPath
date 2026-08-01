@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 03
 current_phase_name: every-scenario-practicable
 status: in-progress
-stopped_at: "03-05 complete on main. CONT-01 moves off zero: all 4 grammar pairs written (4/52 pairs, 48 pending: speaking 30, writing 9, reading 9, grammar 0). scenario-grammar.ts holds 20 questions composed through scenarioItemId LAZILY (review-items <-> bank is a real ESM cycle). reviewableIds() had to be extended too, or Dashboard's due count and ReviewHub's weak-spots drill would never see a scenario exercise. SkillPill takes availability; /skill/[skill] reports written-out-of-declared. verify-scenario-content 6019 -> 6355; 18 mutations caught, 5 controls survived, 3 applier refusals. CONT-01 NOT ticked (4/52). Nobody has answered a question in a browser (WINDOWS 33); WorldView still counts declarations (WINDOWS 34). Next is 03-06 (writing)."
-last_updated: "2026-08-01T04:25:23.323Z"
+stopped_at: "03-06 complete on main. CONT-01's writing quarter closes: all 9 pairs that declare writing have a brief, a checklist and an original model answer written for their own scenario (13/52 pairs, 39 pending: speaking 30, reading 9, grammar 0, writing 0). WritingDesk hides its picker below two prompts. Writing ids ARE composed through scenarioItemId — for draft-key scoping, not scheduling — and are proved UNSCHEDULED: no writing id is reviewable, every one resolves to nothing. 03-05's four-edit rule is CONDITIONAL on the bank writing to the SRS; 03-07 and 03-09 must check their renderer for recordAttempt first. review-items.ts gained a \"writing\" kind and SCHEDULED_ITEM_KINDS (a Rule 3 deviation: scenarioItemId's kind parameter is typed). verify-scenario-content 6355 -> 6557; 18 mutations caught, 6 controls survived, 3 applier refusals, 27 declared = 27 executed. CONT-01 NOT ticked (13/52). Nobody has typed into a writing desk (WINDOWS 35); the coverage summary field is rendered nowhere (WINDOWS 36). Next is 03-07 (reading)."
+last_updated: "2026-08-01T04:59:18.869Z"
 last_activity: 2026-08-01
-last_activity_desc: "03-05 executed: all 4 scenario grammar pairs written (20 questions) — CONT-01 moves off zero to 4/52, grammar 0 pending. GrammarQuiz untouched: the question id IS the composed D-06 id. reviewableIds() extended so the due count and the weak-spots drill see scenario exercises. Pills and skill pages now count what is written, not what is declared. verify-scenario-content 6019 -> 6355; 18 mutations caught, 5 controls survived, 3 applier refusals, 26 declared = 26 executed"
+last_activity_desc: "03-06 executed: all 9 scenario writing pairs written (2,378 words — 9 briefs, 45 checklist lines, 9 model answers), CONT-01 at 13/52 with writing 0 pending. The desk hides its picker below two prompts. Writing ids are composed for draft-key scoping but proved UNSCHEDULED: reviewableIds() was deliberately not extended and the negative is asserted. verify-scenario-content 6355 -> 6557; 18 mutations caught with their expected label, 6 controls survived, 3 applier refusals, 27 declared = 27 executed"
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 36
-  completed_plans: 30
+  completed_plans: 31
 ---
 
 # Project State
@@ -23,37 +23,33 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-23)
 
 **Core value:** A learner can practice any real-life English scenario end-to-end — with an AI tutor that corrects them in context — and their progress is never lost.
-**Current focus:** Phase 03 — every-scenario-practicable (executing, plan 05 of 11 complete)
+**Current focus:** Phase 03 — every-scenario-practicable (executing, plan 06 of 11 complete)
 
 ## Current Position
 
 Phase: 03 (every-scenario-practicable) — IN PROGRESS
-Plan: 5 of 11 complete
-Status: 03-05 complete on `main`. **CONT-02 stays closed and CONT-01 moves off zero.** All four
-scenario×skill pairs that declare grammar — `social/small-talk`, `work/interviews`, `work/emails`,
-`native/phrasal-verbs` — now have five questions written for their own situation, so coverage reads
-**35/35 scenarios with phrases · 35/35 with vocabulary · 4/52 pairs written · 48 pending**
-(speaking 30, writing 9, reading 9, **grammar 0**). `GrammarQuiz` was not touched: each question's
-`id` IS its composed D-06 id, so the existing quiz schedules a namespaced SRS entry and reports the
-scenario's grammar topic to weak spots by itself — the ROADMAP's third criterion, inherited rather
-than built. **`CONT-01` is NOT ticked in REQUIREMENTS.md** and must not be until 52/52; the
-requirement says *every* pair. `getPhrases` and its `WORLD_FALLBACK` still exist in `phrases.ts` and
-are still dead for scenario pages; **plan 03-11 deletes them**. Next action is executing 03-06
-(writing). **The exported surface plans 06–11 depend on is recorded in `03-01-SUMMARY.md`; the
-authoring rules and the duplicate-scan method in `03-03-SUMMARY.md`; and `03-05-SUMMARY.md` §1 is
-the wiring recipe plans 06, 07 and 09 should copy rather than rediscover — it is FOUR edits, not
-three, because `reviewableIds()` is what `Dashboard`'s due count and `ReviewHub`'s weak-spots drill
-are built from.** Read the summaries, not the plans.
-Last activity: 2026-08-01 — 03-05 executed: 20 grammar questions across 4 pairs, composed lazily
-through `scenarioItemId` because `review-items.ts` ⇄ `scenario-grammar.ts` is a real ESM cycle.
-`SkillPill` takes an availability flag and `/skill/[skill]` reports written-out-of-declared, both
-derived. verify-scenario-content **6019 → 6355**. 18 mutations caught with their expected assertion
-label, 5 controls survived, 3 applier refusals, 26 declared = 26 executed. Zero duplicate grammar
-prompts, explanations or option sets; the only repeated distractors are bare auxiliaries, which a
-closed word class makes unavoidable. **Nobody has answered one of these questions in a browser**
-(WINDOWS.md 33), and `WorldView.tsx`'s pills still count declarations (WINDOWS.md 34).
+Plan: 6 of 11 complete
+Status: 03-06 complete on `main`. **CONT-02 stays closed; CONT-01's writing quarter closes.** All
+nine scenario×skill pairs that declare writing — `work/emails`, `travel/hotel`,
+`practical/tech-support`, `social/complaining`, `work/presentations`, `work/networking`,
+`academic/summaries`, `academic/debate`, `native/register` — now have a brief written for their own
+situation, with a checklist and an original model answer, so coverage reads
+**35/35 scenarios with phrases · 35/35 with vocabulary · 13/52 pairs written · 39 pending**
+(speaking 30, reading 9, **grammar 0, writing 0**). `WritingDesk`'s only change is that it hides its
+prompt picker below two prompts, so a scenario's single task reads as a task rather than as a menu
+of one. **A writing id is composed but UNSCHEDULED**: nothing scores a writing task, so
+`reviewableIds()` was deliberately NOT extended and the negative is asserted instead — 03-05's
+four-edit rule is *conditional* on the bank writing to the SRS, and plans 03-07 and 03-09 must check
+their own renderer for `recordAttempt` before copying it. **`CONT-01` is NOT ticked in
+REQUIREMENTS.md** and must not be until 52/52; the requirement says *every* pair. `getPhrases` and
+its `WORLD_FALLBACK` still exist in `phrases.ts` and are still dead for scenario pages; **plan 03-11
+deletes them**. Next action is executing 03-07 (reading). **The exported surface plans 07–11 depend
+on is recorded in `03-01-SUMMARY.md`; the authoring rules and the duplicate-scan method in
+`03-03-SUMMARY.md`; `03-05-SUMMARY.md` §1 is the wiring recipe; and `03-06-SUMMARY.md` §1 is the
+caveat on its fourth edit.** Read the summaries, not the plans.
+Last activity: 2026-08-01 — 03-06 executed: all 9 scenario writing pairs written (2,378 words: 9 briefs, 45 checklist lines, 9 model answers), the desk hides its picker below two prompts, and writing ids are composed for draft-key scoping but proved UNSCHEDULED — no writing id is reviewable and every one resolves to nothing. verify-scenario-content 6355 → 6557; 18 mutations caught with their expected label, 6 controls survived, 3 applier refusals, 27 declared = 27 executed. Zero exact repeats and zero above-threshold Jaccard hits anywhere in the writing corpus, including against the 13 global prompts. One model answer broke its own checklist on first draft and the content was rewritten, not the assertion. Nobody has typed into a scenario writing desk (WINDOWS.md 35) and the coverage `summary` field is still rendered nowhere (WINDOWS.md 36).
 
-Progress: [████████░░] 83% (3 of 6 phases; 30 of 36 plans)
+Progress: [█████████░] 86% (3 of 6 phases; 31 of 36 plans)
 
 ## Performance Metrics
 
@@ -103,6 +99,7 @@ Progress: [████████░░] 83% (3 of 6 phases; 30 of 36 plans)
 | Phase 03 P03 | ~65min | 2 tasks | 2 files |
 | Phase 03 P04 | ~70min | 2 tasks | 2 files |
 | Phase 03 P05 | 75min | 3 tasks | 8 files |
+| Phase 03 P06 | 24min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -219,6 +216,8 @@ Recent decisions affecting current work:
 - [Phase ?]: 03-05: wiring a scenario exercise bank is FOUR edits, not three — registry, resolver, dispatch AND reviewableIds(); Dashboard and ReviewHub build their due count and weak-spots drill from that list, so an omitted id is scheduled and then counted nowhere
 - [Phase ?]: 03-05: grammar topic strings are an id space, not display copy — 8 of 20 questions reuse a global bank topic EXACTLY so weakTopics aggregates instead of fragmenting; the 7 new strings (Question tags, Echo questions, had better, Hedging with would, Indirect questions, Phrasal verb separability/particles, Phrasal verbs vs formal verbs) are permanent
 - [Phase ?]: 03-05: CONT-01 was deliberately NOT ticked at 4/52 — the requirement says EVERY pair; assert the closure predicate before ticking, never after (the discipline 03-02 and 03-03 had to apply in reverse)
+- [Phase ?]: 03-06: writing ids are composed but UNSCHEDULED — nothing scores a writing task, so reviewableIds() was deliberately not extended and the negative is asserted instead
+- [Phase ?]: 03-06: 03-05's fourth-edit rule is CONDITIONAL on the bank writing to the SRS — plans 03-07 and 03-09 must check their renderer for recordAttempt before copying it
 
 ### Pending Todos
 
@@ -264,6 +263,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-08-01T04:23:37.619Z
-Stopped at: 03-05 complete on main. CONT-01 moves off zero: all 4 grammar pairs written (4/52 pairs, 48 pending: speaking 30, writing 9, reading 9, grammar 0). scenario-grammar.ts holds 20 questions composed through scenarioItemId LAZILY (review-items <-> bank is a real ESM cycle). reviewableIds() had to be extended too, or Dashboard's due count and ReviewHub's weak-spots drill would never see a scenario exercise. SkillPill takes availability; /skill/[skill] reports written-out-of-declared. verify-scenario-content 6019 -> 6355; 18 mutations caught, 5 controls survived, 3 applier refusals. CONT-01 NOT ticked (4/52). Nobody has answered a question in a browser (WINDOWS 33); WorldView still counts declarations (WINDOWS 34). Next is 03-06 (writing).
+Last session: 2026-08-01T04:59:18.845Z
+Stopped at: Completed 03-06-PLAN.md
 Resume file: None
