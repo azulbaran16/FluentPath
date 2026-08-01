@@ -16,6 +16,7 @@
 import { WORLDS, type Level, type Skill } from "./curriculum.ts";
 import { getScenarioPhrases } from "./content/phrases.ts";
 import { getScenarioVocabulary } from "./content/scenario-vocabulary.ts";
+import { getScenarioGrammar } from "./content/scenario-grammar.ts";
 
 /* ------------------------------------------------------------------ *
  * The shape a bank hands the registry.
@@ -159,7 +160,12 @@ export function buildScenarioCoverage(
  * speaking 03-09 and 03-10.
  */
 const EXERCISE_SOURCES: Partial<Record<Skill, ScenarioSkillLookup | undefined>> =
-  {};
+  {
+    grammar: (w, s) => {
+      const questions = getScenarioGrammar(w, s);
+      return questions && { items: questions, unit: "question" };
+    },
+  };
 
 /** Coverage over the real banks, built once at module load and pure, so a
  * server component and a client component see the identical array. */

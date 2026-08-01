@@ -5,6 +5,8 @@ import { PenLine } from "lucide-react";
 import type { Scenario, Skill, World } from "@/lib/curriculum";
 import { SKILL_META } from "@/lib/curriculum";
 import { getScenarioCoverage } from "@/lib/scenario-coverage";
+import { getScenarioGrammar } from "@/lib/content/scenario-grammar";
+import { GrammarQuiz } from "./GrammarQuiz";
 
 // One scenario, one skill — the dispatch `SkillPractice` does globally, gated
 // on coverage the way `CelpipTabs` gates a section.
@@ -57,11 +59,16 @@ function ScenarioExercise(props: {
   skill: Skill;
   accent: string;
 }) {
-  const { scenario, skill } = props;
+  const { world, scenario, skill } = props;
   switch (skill) {
-    case "grammar":
-      // plan 03-05 — <GrammarQuiz questions={getScenarioGrammar(...)} accent={props.accent} />
-      return <NotWrittenYet skill={skill} scenario={scenario} />;
+    case "grammar": {
+      // The questions carry their own composed ids, so the quiz below schedules
+      // a namespaced SRS entry and reports the scenario's grammar topic to
+      // weak spots without a single line of scenario-awareness in it.
+      const questions = getScenarioGrammar(world.slug, scenario.slug);
+      if (!questions) return <NotWrittenYet skill={skill} scenario={scenario} />;
+      return <GrammarQuiz questions={questions} accent={props.accent} />;
+    }
     case "writing":
       // plan 03-06 — <WritingDesk prompts={...} accent={props.accent} />
       return <NotWrittenYet skill={skill} scenario={scenario} />;

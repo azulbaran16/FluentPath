@@ -59,6 +59,10 @@ import {
   type ScenarioVocabCard,
 } from "../src/lib/content/scenario-vocabulary.ts";
 import { GRAMMAR_QUESTIONS } from "../src/lib/content/grammar.ts";
+import {
+  getScenarioGrammar,
+  scenarioGrammarKeys,
+} from "../src/lib/content/scenario-grammar.ts";
 import { VOCAB_DECKS } from "../src/lib/content/vocabulary.ts";
 import {
   parseScenarioItemId,
@@ -314,10 +318,19 @@ ok(
   duplicates(reviewableIds()).length === 0,
   duplicates(reviewableIds()).join(", "),
 );
+// Scenario EXERCISE ids (plan 03-05 onward). These are composed ids too, but
+// they are not recall items, so `composedIds` above cannot see them — and
+// reviewableIds() has to list them or the "Due today" count and the weak-spots
+// drill silently drop every scenario exercise the learner has scheduled.
+// Plans 03-06 through 03-10 extend this list with their own bank.
+const exerciseIds = SCENARIOS.flatMap((s) =>
+  (getScenarioGrammar(s.world, s.scenario) ?? []).map((q) => q.id),
+);
 ok(
-  "reviewableIds() covers both key spaces",
-  reviewableIds().length === grammarIds.size + composedIds.length,
-  `${reviewableIds().length} vs ${grammarIds.size} + ${composedIds.length}`,
+  "reviewableIds() covers every key space",
+  reviewableIds().length ===
+    grammarIds.size + composedIds.length + exerciseIds.length,
+  `${reviewableIds().length} vs ${grammarIds.size} + ${composedIds.length} + ${exerciseIds.length}`,
 );
 
 group("ids: composition and parsing are inverses");
@@ -803,6 +816,265 @@ ok(
 ok(
   "emptying one bank flips the scenario back to incomplete, with no second edit",
   emptiedBank.complete === false,
+);
+
+/* ================================================================== *
+ * SCENARIO GRAMMAR — the grammar quarter of D-01 (plan 03-05)
+ *
+ * `tsc` proves a question has the right FIELDS and is blind to every way one
+ * can be type-correct and silently wrong: an `answer` that indexes past its
+ * own `options`, two identical options, a prompt with no gap for the answer to
+ * go in, a topic that no longer matches the string the learner's stored
+ * attempts were filed under, and — worst, because it is invisible and
+ * permanent — an id that is not the composed form for its own scenario.
+ * ================================================================== */
+
+/** D-04's ratified floor for a scenario×skill grammar pair. */
+const MIN_GRAMMAR_QUESTIONS = 5;
+
+/** The gap `GrammarQuiz` splits the prompt on (GrammarQuiz.tsx:28). */
+const GAP = "___";
+
+const GRAMMAR_PAIR_KEYS = new Set(
+  DECLARED_PAIRS.filter((p) => p.skill === "grammar").map((p) => p.key),
+);
+
+group("scenario grammar: every bank key is a pair that declares grammar");
+
+for (const key of scenarioGrammarKeys()) {
+  ok(
+    `scenario grammar: "${key}" is a real world/scenario pair`,
+    SCENARIO_KEYS.has(key),
+    "a key nothing can reach serves nobody and never fails on its own",
+  );
+  ok(
+    `scenario grammar: "${key}" actually declares grammar`,
+    GRAMMAR_PAIR_KEYS.has(key),
+    "questions written for a scenario that does not teach the skill are never rendered",
+  );
+}
+
+group("scenario grammar: every present set meets D-04's floor");
+
+for (const s of SCENARIOS) {
+  const questions = getScenarioGrammar(s.world, s.scenario);
+  if (!questions) continue;
+  ok(
+    `scenario grammar: ${s.key} holds at least ${MIN_GRAMMAR_QUESTIONS}`,
+    questions.length >= MIN_GRAMMAR_QUESTIONS,
+    `${questions.length} question(s)`,
+  );
+}
+
+group("scenario grammar: no question is type-correct and silently wrong");
+
+for (const s of SCENARIOS) {
+  for (const q of getScenarioGrammar(s.world, s.scenario) ?? []) {
+    ok(`scenario grammar: ${q.id} has a prompt`, filled(q.prompt));
+    ok(
+      `scenario grammar: ${q.id} marks the gap with ${GAP}`,
+      q.prompt.includes(GAP),
+      "a prompt with no gap renders as a sentence with nowhere to put the answer",
+    );
+    ok(
+      `scenario grammar: ${q.id} offers at least two options`,
+      Array.isArray(q.options) && q.options.length >= 2,
+      canon(q.options),
+    );
+    ok(
+      `scenario grammar: ${q.id} has no blank option`,
+      q.options.every((o) => filled(o)),
+      canon(q.options),
+    );
+    ok(
+      `scenario grammar: ${q.id} options are distinct`,
+      duplicates(q.options.map((o) => o.trim().toLowerCase())).length === 0,
+      duplicates(q.options.map((o) => o.trim().toLowerCase())).join(", "),
+    );
+    ok(
+      `scenario grammar: ${q.id} answer indexes into its OWN options`,
+      inRange(q.answer, 0, q.options.length - 1),
+      `answer ${String(q.answer)} of ${q.options.length} option(s)`,
+    );
+    ok(
+      `scenario grammar: ${q.id} has an explanation`,
+      filled(q.explain),
+      "an explanation is required at the type level because an optional one is one an author forgets",
+    );
+    ok(
+      `scenario grammar: ${q.id} carries a topic`,
+      filled(q.topic),
+      "the topic is the key weakTopics() groups the learner's history by",
+    );
+    ok(
+      `scenario grammar: ${q.id} is at its own scenario's level`,
+      q.level === s.level,
+      `${q.level} vs ${s.level}`,
+    );
+  }
+}
+
+group("scenario grammar: ids are composed, namespaced and globally unique");
+
+const scenarioGrammarIds: string[] = [];
+
+for (const s of SCENARIOS) {
+  const questions = getScenarioGrammar(s.world, s.scenario) ?? [];
+  const localIds: string[] = [];
+  for (const q of questions) {
+    scenarioGrammarIds.push(q.id);
+    const parsed = parseScenarioItemId(q.id);
+    ok(
+      `scenario grammar: ${q.id} parses as a scenario item`,
+      parsed !== undefined,
+      "an id the parser rejects is stored, merged and never resolved again",
+    );
+    if (!parsed) continue;
+    localIds.push(parsed.localId);
+    ok(
+      `scenario grammar: ${q.id} names ITS OWN scenario`,
+      parsed.scenarioKey === s.key,
+      `${parsed.scenarioKey} vs ${s.key}`,
+    );
+    ok(
+      `scenario grammar: ${q.id} is of kind "grammar"`,
+      parsed.kind === "grammar",
+      parsed.kind,
+    );
+    ok(
+      `scenario grammar: ${q.id} is exactly what scenarioItemId composes`,
+      q.id === scenarioItemId(s.key, "grammar", parsed.localId),
+      "an id spelled by hand is an id that drifts from the one author of the format",
+    );
+    ok(
+      `scenario grammar: ${q.id} slug is not an array position`,
+      !/^\d+$/.test(parsed.localId),
+      parsed.localId,
+    );
+  }
+  if (localIds.length > 0) {
+    ok(
+      `scenario grammar: ${s.key} has no duplicate slug`,
+      duplicates(localIds).length === 0,
+      duplicates(localIds).join(", "),
+    );
+  }
+}
+
+ok(
+  "every scenario grammar id is unique across all scenarios",
+  duplicates(scenarioGrammarIds).length === 0,
+  duplicates(scenarioGrammarIds).join(", "),
+);
+ok(
+  "no scenario grammar id collides with a GLOBAL grammar question id",
+  scenarioGrammarIds.every((id) => !grammarIds.has(id)),
+  scenarioGrammarIds.filter((id) => grammarIds.has(id)).join(", "),
+);
+ok(
+  "no scenario grammar id collides with a deck-browser card id",
+  scenarioGrammarIds.every((id) => !deckCardIds.has(id)),
+  scenarioGrammarIds.filter((id) => deckCardIds.has(id)).join(", "),
+);
+ok(
+  "no scenario grammar id collides with a recall item id",
+  scenarioGrammarIds.every((id) => !new Set(composedIds).has(id)),
+  scenarioGrammarIds.filter((id) => new Set(composedIds).has(id)).join(", "),
+);
+
+group("scenario grammar: a due question resolves back to itself (D-05)");
+
+for (const s of SCENARIOS) {
+  for (const q of getScenarioGrammar(s.world, s.scenario) ?? []) {
+    const resolved = resolveReviewItem(q.id);
+    ok(
+      `resolveReviewItem resolves ${q.id}`,
+      resolved?.kind === "grammar" && resolved.question === q,
+      canon(resolved),
+    );
+  }
+}
+ok(
+  "reviewableIds() lists every scenario grammar id",
+  scenarioGrammarIds.every((id) => new Set(reviewableIds()).has(id)),
+  "an id missing here is scheduled correctly and then counted nowhere",
+);
+ok(
+  "a scenario grammar id no bank can emit resolves to nothing",
+  resolveReviewItem("social/small-talk#grammar#never-authored") === undefined,
+);
+
+group("scenario grammar: no two scenarios are handed the same questions (D-01)");
+
+// Compared WITHOUT the id, because the id names its own scenario and would
+// make every set trivially distinct — which is exactly how a copy-pasted set
+// with fresh slugs would slip through.
+const grammarSetsByKey = SCENARIOS.filter(
+  (s) => getScenarioGrammar(s.world, s.scenario) !== undefined,
+).map((s) => ({
+  key: s.key,
+  body: canon(
+    (getScenarioGrammar(s.world, s.scenario) ?? []).map((q) => ({
+      topic: q.topic,
+      prompt: q.prompt,
+      options: q.options,
+      answer: q.answer,
+      explain: q.explain,
+    })),
+  ),
+}));
+
+for (const entry of grammarSetsByKey) {
+  const twin = grammarSetsByKey.find(
+    (other) => other.key !== entry.key && other.body === entry.body,
+  );
+  ok(
+    `scenario grammar: ${entry.key} is written for itself`,
+    twin === undefined,
+    twin ? `identical to ${twin.key}` : "",
+  );
+}
+
+const allPrompts = SCENARIOS.flatMap((s) =>
+  (getScenarioGrammar(s.world, s.scenario) ?? []).map((q) =>
+    q.prompt.trim().toLowerCase(),
+  ),
+);
+ok(
+  "no prompt is repeated anywhere in the scenario grammar corpus",
+  duplicates(allPrompts).length === 0,
+  duplicates(allPrompts).join(" | "),
+);
+
+group("scenario grammar: the registry reports the bank, not the declaration");
+
+for (const pair of DECLARED_PAIRS.filter((p) => p.skill === "grammar")) {
+  const coverage = getScenarioCoverage(pair.world, pair.scenario);
+  const skill = coverage?.skills.find((s) => s.skill === "grammar");
+  const questions = getScenarioGrammar(pair.world, pair.scenario);
+  ok(
+    `coverage: ${pair.key} grammar availability follows the bank's CONTENTS`,
+    skill?.available === ((questions?.length ?? 0) > 0),
+    canon(skill),
+  );
+  if (questions && questions.length > 0) {
+    ok(
+      `coverage: ${pair.key} grammar summary is a count and a unit`,
+      skill?.summary === `${questions.length} questions`,
+      skill?.summary,
+    );
+  }
+}
+
+ok(
+  "every pair the registry reports as pending grammar has no bank entry",
+  pendingPairs()
+    .filter((p) => p.skill === "grammar")
+    .every((p) => {
+      const [w, sc] = p.key.split("/");
+      return getScenarioGrammar(w, sc) === undefined;
+    }),
+  canon(pendingPairs().filter((p) => p.skill === "grammar")),
 );
 
 /* ------------------------------------------------------------------ *

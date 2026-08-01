@@ -17,6 +17,11 @@ import { WORLDS, getScenario, type Level, type Skill } from "./curriculum.ts";
 import { getScenarioPhrases } from "./content/phrases.ts";
 import { getScenarioVocabulary } from "./content/scenario-vocabulary.ts";
 import { GRAMMAR_QUESTIONS, type GrammarQuestion } from "./content/grammar.ts";
+// A deliberate ESM cycle: the bank composes its ids through `scenarioItemId`
+// above and this module resolves them back. It is safe because the bank builds
+// its ids on first ACCESS rather than at module scope — see the header of
+// scenario-grammar.ts, which explains the temporal-dead-zone trap avoided.
+import { getScenarioGrammar } from "./content/scenario-grammar.ts";
 
 /* ------------------------------------------------------------------ *
  * The id (D-06, ratified 2026-07-31).
@@ -32,10 +37,19 @@ import { GRAMMAR_QUESTIONS, type GrammarQuestion } from "./content/grammar.ts";
  */
 export const SCENARIO_ITEM_SEPARATOR = "#";
 
-/** The kinds of item a scenario can put into the review queue. */
-export type ScenarioItemKind = "phrase" | "vocab";
+/**
+ * The kinds of item a scenario can put into the review queue.
+ *
+ * `phrase` and `vocab` are recall cards (plan 03-01). `grammar` is a scored
+ * exercise item (plan 03-05): the question's OWN id is the composed id, so
+ * `GrammarQuiz` schedules a namespaced entry without knowing this module
+ * exists. A kind added here must also gain a branch in `resolveReviewItem` and
+ * a source in `reviewableIds` below, or its items are stored, merged and never
+ * rendered — the D-05 failure this module exists to make impossible.
+ */
+export type ScenarioItemKind = "phrase" | "vocab" | "grammar";
 
-const ITEM_KINDS: readonly ScenarioItemKind[] = ["phrase", "vocab"];
+const ITEM_KINDS: readonly ScenarioItemKind[] = ["phrase", "vocab", "grammar"];
 
 export interface ScenarioItemId {
   /** the composite `world/scenario` key */
@@ -172,6 +186,17 @@ export function resolveReviewItem(id: string): ReviewItem | undefined {
   const parsed = parseScenarioItemId(id);
   if (!parsed) return undefined;
   const [worldSlug, scenarioSlug] = parsed.scenarioKey.split("/");
+
+  // A scenario grammar question resolves to the SAME `grammar` variant a global
+  // one does, so /review, the weak-spots drill and the mistake notebook render
+  // it through `GrammarQuiz` with no branch of their own.
+  if (parsed.kind === "grammar") {
+    const question = (getScenarioGrammar(worldSlug, scenarioSlug) ?? []).find(
+      (candidate) => candidate.id === id,
+    );
+    return question ? { kind: "grammar", id, question } : undefined;
+  }
+
   const item = scenarioRecallItems(worldSlug, scenarioSlug).find(
     (candidate) => candidate.id === id,
   );
@@ -181,9 +206,17 @@ export function resolveReviewItem(id: string): ReviewItem | undefined {
 /**
  * Every id every bank can currently emit.
  *
- * Used by the harness to prove global uniqueness across the two key spaces —
- * the collision this phase's id format was chosen to make impossible is worth
+ * Used by the harness to prove global uniqueness across the key spaces — the
+ * collision this phase's id format was chosen to make impossible is worth
  * proving on every run rather than reasoning about once.
+ *
+ * It is also load-bearing at runtime, and this is the part a later plan must
+ * not forget: `Dashboard` and `ReviewHub` both build their "Due today" count by
+ * filtering the due set through this list, and `ReviewHub`'s weak-spots drill
+ * is built by resolving every id in it. An id this function omits is stored,
+ * merged and scheduled correctly and then counted nowhere and drillable never —
+ * D-05 again, one level up. So every scenario exercise bank that writes to the
+ * SRS adds its ids HERE as well as gaining a branch in `resolveReviewItem`.
  */
 export function reviewableIds(): string[] {
   const ids = GRAMMAR_QUESTIONS.map((q) => q.id);
@@ -191,6 +224,12 @@ export function reviewableIds(): string[] {
     for (const scenario of world.scenarios) {
       for (const item of scenarioRecallItems(world.slug, scenario.slug)) {
         ids.push(item.id);
+      }
+      // Scenario exercises. Plan 03-05 (grammar); plans 03-06 through 03-10
+      // append their own bank here if it schedules items.
+      for (const question of getScenarioGrammar(world.slug, scenario.slug) ??
+        []) {
+        ids.push(question.id);
       }
     }
   }
