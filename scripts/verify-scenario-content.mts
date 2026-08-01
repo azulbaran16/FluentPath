@@ -421,11 +421,29 @@ for (const s of SCENARIOS) {
   }
 }
 
-ok(
-  "a scenario with neither bank entry yields an empty deck, never a fallback",
-  scenarioRecallItems("social", "dating").length === 0,
-  `${scenarioRecallItems("social", "dating").length} item(s)`,
+// DERIVED, never named. Plan 03-01 wrote `social/dating` here as the worked
+// example of a scenario with no bank entry; plan 03-02 authored that scenario,
+// and a true assertion became a false alarm on content that was correct. Every
+// genuinely unwritten scenario is exercised instead, so this keeps binding as
+// the banks fill and no plan has to remember to move it.
+//
+// It runs out at 03-04, when all 35 have both banks — and nothing is lost when
+// it does: `recall: <key> yields its phrases then its vocabulary` in the loop
+// above asserts `items.length === phrases.length + cards.length` for all 35
+// scenarios permanently, of which "0 + 0 yields 0" is the case named here.
+const unwritten = SCENARIOS.filter(
+  (s) =>
+    getScenarioPhrases(s.world, s.scenario) === undefined &&
+    getScenarioVocabulary(s.world, s.scenario) === undefined,
 );
+for (const s of unwritten) {
+  const deck = scenarioRecallItems(s.world, s.scenario);
+  ok(
+    `a scenario with neither bank entry yields an empty deck, never a fallback: ${s.key}`,
+    deck.length === 0,
+    `${deck.length} item(s)`,
+  );
+}
 ok(
   "a scenario the curriculum does not have yields an empty deck",
   scenarioRecallItems("nowhere", "nothing").length === 0,
