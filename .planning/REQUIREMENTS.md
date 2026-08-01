@@ -45,8 +45,8 @@ constraint as v1 — **all content original**, third-party material is format re
 
 ### Content (curriculum completeness)
 
-- [x] **CONT-01**: Every existing scenario in all 6 worlds offers real practice in each of its applicable skills (grammar, speaking, reading, writing) — no stub, placeholder, or empty activity
-- [x] **CONT-02**: Every scenario has scenario-specific phrases and vocabulary that feed the SRS review queue — *closed at plan 03-04: **35/35 scenarios with phrases, 35/35 with vocabulary**, 210 phrases and 280 cards, every one written for its own scenario. The SRS half closed at 03-02 (D-05: every review surface resolves scenario items). The tick rests on derivation, not on claim — `COVERAGE_TOTALS.scenariosWithPhrases === 35` and `scenariosWithVocabulary === 35` are read off the banks by `scenario-coverage.ts` and asserted by `verify-scenario-content.mts` (6019 assertions). Plans 03-02 and 03-03 each carried CONT-02 in frontmatter and each deliberately left it unticked at 17/35 and 27/35.*
+- [x] **CONT-01**: Every existing scenario in all 6 worlds offers real practice in each of its applicable skills (grammar, speaking, reading, writing) — no stub, placeholder, or empty activity — *closed at plan 03-10 on a derived predicate (`pairsWritten === 52 && pairsTotal === 52 && pendingPairs().length === 0`, asserted in its own command before the tick), and **confirmed at the 03-11 gate by a human in a browser** on 2026-08-01. What was SEEN: a scenario grammar quiz answered end to end, with four wrong answers reaching Weak spots by name with an accuracy figure and a drill behind each; a scenario reading passage submitted with **Check answers**, rendering `1 / 4 correct.` and the authored explanations — the first time an explained key has rendered anywhere in this app; and scenario steps deriving honestly (`social/small-talk` at six steps, `academic/news` serving its own passage, its own 1/6 warm-up and its own 1/14 deck). What remains UNOBSERVED and is open by name in `.planning/WINDOWS.md`: typing into a scenario writing desk (35) and ticking a rehearsal move with its single-award property (38). Neither is missing content — both are the interactive half of a surface whose static render and whose data are proved — so the requirement closes and the observation debt is carried explicitly rather than rounded up.*
+- [x] **CONT-02**: Every scenario has scenario-specific phrases and vocabulary that feed the SRS review queue — *closed at plan 03-04: **35/35 scenarios with phrases, 35/35 with vocabulary**, 210 phrases and 280 cards, every one written for its own scenario. The SRS half closed at 03-02 (D-05: every review surface resolves scenario items). The tick rests on derivation, not on claim — `COVERAGE_TOTALS.scenariosWithPhrases === 35` and `scenariosWithVocabulary === 35` are read off the banks by `scenario-coverage.ts` and asserted by `verify-scenario-content.mts` (6019 assertions). Plans 03-02 and 03-03 each carried CONT-02 in frontmatter and each deliberately left it unticked at 17/35 and 27/35. **Confirmed at the 03-11 gate**: the SRS leg was driven by a human in a browser — a due scenario item resolved and rendered in `/review` on 2026-08-01, and at the gate pass scenario attempts were recorded under their composite ids with `{topic, tries, wrong, resolved, level}` and scheduled in `srs` at box 1, which is the whole of "feed the SRS review queue" observed rather than asserted. Not re-run at the gate: the badge-agreement check (dashboard due count vs the review hub's badge vs the list) and clearing a mistake by re-answering it — both carried in `.planning/WINDOWS.md` 42.*
 
 ### Content (curriculum expansion)
 
@@ -116,8 +116,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROG-03 | Phase 2 | Complete |
 | PROG-04 | Phase 2 | Complete |
 | PROG-05 | Phase 2 | Complete |
-| CONT-01 | Phase 3 | Complete |
-| CONT-02 | Phase 3 | Complete (35/35 phrases, 35/35 vocabulary — plan 03-04) |
+| CONT-01 | Phase 3 | Complete (52/52 pairs — plan 03-10; browser-confirmed at the 03-11 gate, 2026-08-01) |
+| CONT-02 | Phase 3 | Complete (35/35 phrases, 35/35 vocabulary — plan 03-04; SRS leg browser-confirmed at the 03-11 gate) |
 | CONT-03 | Phase 4 | Pending |
 | CONT-04 | Phase 4 | Pending |
 | CONT-05 | Phase 4 | Pending |

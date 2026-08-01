@@ -2,21 +2,23 @@
 phase: 03-every-scenario-practicable
 plan: 11
 subsystem: scenario-content
-tags: [gate, verification, d-01, deletion, declared-gaps, mutation-testing, browser-pass-owed]
-status: in-progress
+tags: [gate, verification, d-01, deletion, declared-gaps, mutation-testing, browser-pass, phase-closing]
+status: complete
 requires:
   - src/lib/content/phrases.ts (getScenarioPhrases, the strict accessor — plan 03-01)
   - src/lib/scenario-coverage.ts (COVERAGE_TOTALS, pendingPairs, buildScenarioCoverage — 03-01)
   - scripts/verify-scenario-content.mts (the phase's content gate — 03-01, appended by 02…10)
   - .planning/phases/03-every-scenario-practicable/03-01-SUMMARY.md … 03-10-SUMMARY.md
 provides:
+  - "CONT-01 and CONT-02 closed — Phase 3 complete"
   - "src/lib/content/phrases.ts — ONE accessor, and it is strict; WORLD_FALLBACK and getPhrases deleted"
   - "scripts/verify-scenario-content.mts — the no-silent-fallback invariant, plus WINDOWS 39, WINDOWS 41 and 03-09's tautological id line closed; 11,981 assertions"
   - "AGENTS.md — the banks, the derivation, the id one-way door, the scheduled/unscheduled split, the one-accessor rule and the build-poisoning hazard"
 affects:
   - src/components/practice/SkillPractice.tsx (the global speaking warm-up reads the strict accessor)
   - src/components/ScenarioView.tsx (a comment describing a function that no longer exists)
-  - .planning/WINDOWS.md (39 and 41 closed; 34 restated; 42–45 opened)
+  - .planning/WINDOWS.md (29, 33, 37, 39, 41 closed; 44 waived; 34 restated; 43, 45, 46, 47, 48 opened)
+  - .planning/REQUIREMENTS.md (CONT-01 and CONT-02 annotated with what the browser pass saw and what it did not)
 tech-stack:
   added: []
   patterns:
@@ -39,11 +41,13 @@ decisions:
   - "WINDOWS 39 and 41 and 03-05/06/07's tautological id line were CLOSED here rather than assessed and left: this plan owns the harness, both stated blockers had expired, and each is a trap aimed squarely at Phase 4"
   - "WorldView.tsx was deliberately NOT fixed: at 52/52 it is not a live overclaim, the plan does not own the file, and a UI change at a gate is a change nobody in this run can look at"
   - "The near-duplication read-through found NO duplicate exercise and TWO design echoes, both judged defensible and both recorded with numbers so Phase 4 sees them before writing"
-  - "CONT-01 and CONT-02 were NOT re-examined: their status is Task 3's, and Task 3 is preconditioned on the browser pass"
+  - "CONT-01 and CONT-02 close, each annotated IN THE REQUIREMENT with what the browser pass saw and what it did not, so the tick is auditable rather than assumed"
+  - "The two design echoes were ratified as STATED DESIGN DECISIONS at the gate and the ledger entry waived, not left open as debt"
+  - "Nothing the pass did not reach was rounded up: four checklist items stay open by name, including the phone pass this project has never run"
 metrics:
-  duration: ~105min
-  tasks: 1 of 3 (Task 2 is a blocking human checkpoint)
-  commits: 1
+  duration: ~135min
+  tasks: 3
+  commits: 3
   completed: 2026-08-01
 ---
 
@@ -54,17 +58,18 @@ impressions. The last silent fallback is deleted rather than left unreachable, t
 gaps this phase declared about itself are closed, the derivation control is re-proved against
 full banks, and the payload the phase made non-theoretical is measured.
 
-**The human half has not been run.** Task 2 is a blocking checkpoint and nothing below claims
-a browser observation. CONT-01 and CONT-02 are untouched by this plan; Task 3 sets their final
-status from the pass.
+**The browser pass was then run by a human**, and it earned two of the three ROADMAP criteria
+outright — including the one this phase could only prove by construction. **CONT-01 and CONT-02
+close.** Four checklist items were not reached and are open by name; none of them is missing
+content, and none was rounded up.
 
 ## What shipped
 
 | Task | Commit | What |
 |---|---|---|
 | 1 | `c0e9a79` | `WORLD_FALLBACK` and `getPhrases` deleted, twelve call sites repointed, the replacement invariant asserted, WINDOWS 39/41 and three tautological id lines closed, `AGENTS.md`, the ledger |
-| 2 | — | **BLOCKING CHECKPOINT — not performed.** Ordered checklist below |
-| 3 | — | Not reached. Preconditioned on Task 2 |
+| 2 | — | **The browser pass, performed by the coordinator** against `next start -p 3117`, signed in. Results in §5 |
+| 3 | `<task3>` | CONT-01 and CONT-02 given the status the pass earned; the ledger set to what was and was not observed |
 
 ---
 
@@ -327,9 +332,120 @@ Spanish"* is written for this learner and could not have come from anywhere else
 
 ---
 
+## 5. The browser pass (Task 2) — what a human saw
+
+Run by the coordinator against `next start -p 3117`, signed in, on 2026-08-01. Recorded as
+reported; nothing here is my observation.
+
+### Criterion 3 — the one this phase could only prove by construction
+
+Five scenario grammar questions answered in `social/small-talk`, **four wrong on purpose**. All
+four topics reached **Weak spots by name** — *Question tags · Past simple · Echo questions ·
+Present simple vs continuous* — each with an accuracy figure (`Echo questions · 0%`) and a **drill
+behind it**. `attempts` recorded `{topic, tries, wrong, resolved, level}` under the composite ids,
+and `srs` scheduled them at **box 1**.
+
+This is the far end of D-05 and D-06 together: a mistake made inside a scenario, stored under an
+id that names that scenario, aggregating into a topic the learner can then drill. Every plan from
+03-05 onward proved it deterministically and none had seen it. **WINDOWS 33 closes.**
+
+### The explained key rendered — the first time in this app
+
+`academic/news`, four questions answered, **Check answers** → `1 / 4 correct.` with the authored
+explanations in the DOM. Verified properly: two `explain:` strings were pulled straight out of
+`scenario-reading.ts` and asserted present, rather than guessed at by wording. **WINDOWS 37
+closes**, and with it the claim 03-07 and 03-08 could only make by construction — *every scenario
+comprehension question tells the learner why the answer is the answer.*
+
+### Steps are derived and honest
+
+`social/small-talk` renders six steps including *Lock it in*, *Practise speaking* and *Practise
+grammar*. `academic/news` renders its own passage, its own warm-up (1/6) and its own deck (1/14).
+
+### A false alarm, chased down rather than filed
+
+The first two answers produced *"No weak spots yet"* and *"No open mistakes"* — and that is
+**correct behaviour**: both had been answered correctly (`wrong: 0, resolved: true`). Recorded
+here so the next reader does not re-open it. It also means both empty branches of the weak-spots
+tab and the mistakes notebook were seen working, which 03-02 listed as unobserved.
+
+### The badge reading, settled as a rule and left open as one narrow question
+
+Observed: **Due today 4 · Your mistakes 2 · Weak spots 4**, against an `attempts` store read as
+holding four entries with `wrong: 1, resolved: false`.
+
+**The rule is intentional and needs no further work.** The three badges answer three different
+questions and are *meant* to disagree:
+
+| Badge | Source | Predicate |
+|---|---|---|
+| Due today | `dueReviewIds()` over `srs` | box/due — independent of `attempts` entirely |
+| Weak spots | `weakTopics()` (`progress.ts:386`) | `wrong > 0` **regardless of `resolved`** — a topic you fixed once is still a topic you got wrong, which is the point of a recommendation |
+| Your mistakes | `openMistakeIds()` (`progress.ts:405`) | `wrong > 0 && !resolved` — clears on a correct re-answer, and the empty state says so: *"Get it right again and it clears automatically"* |
+
+The badge and the view call the **same function** (`ReviewHub.tsx:42`, `MistakesView.tsx:27`), so
+they cannot drift from each other.
+
+**What is not settled, and it is one step wide.** Run against a state of exactly four
+wrong-and-unresolved `social/small-talk` grammar attempts, the code yields **four**, not two — all
+four ids resolve through `resolveReviewItem`, across four distinct topics. So either two entries
+were `resolved: true` at the instant the badge rendered and `false` when the store was later read
+— and **4 / 2 / 4 is precisely what two wrong-then-right items produce**, which is checklist item
+2d, the one the reviewer was working through — or there is a real mismatch. **Ledger entry 47**
+carries the predicates and the single next step: answer two wrongly, read the badge and the store
+*at the same instant*, confirm 2/2. It does not need re-deriving.
+
+### A near-miss worth recording, because the answer is reassuring rather than obvious
+
+The reviewer's own regex looked for the explanations by searching for *because / the passage /
+Why:* and found nothing, then warned that any assertion phrased that way would be weaker than it
+looks. **Checked: no assertion anywhere in the harness matches explanation prose.** Explanations
+are gated by `filled(q.explain)` and by distinctness within a passage, and by nothing else;
+mutations M4, M8 and M9 are what give those teeth. Measured over the live bank: of the 36
+explanations, **0** contain "because", **0** contain "Why:", and only **7** contain "the passage"
+— they are written as substantive prose rather than to a formula, which is why the regex missed
+them and is arguably the better teaching. **Ledger entry 48**, so nobody later adds a
+wording-shaped assertion believing it is a tightening.
+
+### Not reached — open by name, not rounded up
+
+Typing into a writing desk (**35**) · ticking a rehearsal move and the no-double-award property
+(**38**) · `ScenarioSkillCoverage.summary` (**36**) · `WorldView` pills (**34**) · the empty-a-bank
+honesty demo on a served page · the two neighbour side-by-sides · **any phone pass, for anything,
+in this project**. All carried in **ledger entry 46** with the checklist preserved below.
+
+---
+
+## 6. Task 3 — the requirements close, and what the tick asserts
+
+**CONT-01 — complete.** Closed at 03-10 on a derived predicate asserted in its own command before
+the tick, and **confirmed in a browser** here. What the tick asserts: every scenario in all six
+worlds offers a real, scenario-specific exercise in each skill it declares — 52 of 52, derived,
+no stub and no placeholder — and that a human has now driven two of the four skills end to end
+(grammar through to weak topics, reading through to the explained key). What it does **not**
+assert: that anyone has typed into a writing desk or ticked a rehearsal move. Both are the
+interactive half of a surface whose static render and whose data are proved, and both stay open
+in the ledger. No content is missing, which is what separates this from 02.1-02's decision to
+leave CELPIP-10 open — there the *content* was absent, and the requirement's own wording rested
+on it.
+
+**CONT-02 — complete.** Closed at 03-04 on `scenariosWithPhrases === 35 && scenariosWithVocabulary
+=== 35`, and its SRS leg — the half a script cannot establish — confirmed twice: a due scenario
+item resolved and rendered in `/review` on 2026-08-01, and at this pass scenario attempts were
+recorded under their composite ids and scheduled at box 1. Not re-run: the badge-agreement check
+and clearing a mistake by re-answering it, both in entry 46.
+
+**Ledger at the close of Phase 3:** 33 open, 1 waived, 14 fixed, 48 total. Closed by this plan:
+**29** (the recall loop and the review flow — items 1 and 2 driven, item 3 moot at 52/52), **33**,
+**37**, **39**, **41**. Waived: **44**, the two design echoes, ratified as stated design decisions
+rather than debt. Restated because their status changed while their code did not: **34**.
+Opened: **43**, **45**, **46**, **47**, **48**.
+
+---
+
 ## Deviations from Plan
 
-**Three, all recorded rather than absorbed.**
+**Four, all recorded rather than absorbed.**
 
 ### 1. [Rule 2 — missing critical functionality] The three declared gaps were CLOSED, not merely assessed
 
@@ -372,19 +488,30 @@ Spanish"* is written for this learner and could not have come from anywhere else
   CAUGHT. M-A was re-anchored line-wise and then caught properly. Both hazards were already
   documented by 03-02 and 03-03; I reproduced them both in one run.
 
-### Not a deviation, but the thing this plan must get right
+### 4. [Rule 1 — bug] The two design echoes were reported for a decision, not fixed quietly
 
-**`REQUIREMENTS.md` is untouched.** CONT-01 and CONT-02 are already ticked (03-10 and 03-04, each
-after asserting its predicate). Neither was re-examined here, because **that is Task 3's job and
-Task 3 is preconditioned on the browser pass.** Marking, or confirming, a requirement on the
-strength of a green script alone is the overclaim this phase's derivation exists to make
-impossible — and 02.1-02 set the precedent by leaving CELPIP-10 open when its structure was
-satisfied and its content was not.
+- The near-duplication read-through found two repetitions of exercise **design** (§4). Neither is
+  a D-01 failure and rewriting either is content work, so both were **reported by name with
+  numbers** rather than acted on — the plan's own instruction, and the boundary 03-CONTEXT draws
+  around scope reduction as a decision to bring back rather than take.
+- **Outcome:** the coordinator reviewed both arguments and **accepted them as stated design
+  decisions.** Entry 44 is therefore **waived** with that reason recorded, not left open as debt.
+  It stands as a design record aimed at Phase 4, along with the `native/idioms` flag, which CONT-04
+  will either deepen or inherit.
 
-**The state tooling was not run**, because this plan does not complete the phase. It is recorded
-instead: eight consecutive plans hand-corrected it, and the root cause plus three further specific
-bugs are now consolidated in one place as ledger entry **45** rather than scattered across eight
-summaries.
+### Not a deviation, but the thing this plan had to get right
+
+**`REQUIREMENTS.md` was untouched until Task 3.** CONT-01 and CONT-02 were already ticked (03-10
+and 03-04, each after asserting its predicate), and neither was re-examined at Task 1 — confirming
+a requirement on the strength of a green script alone is the overclaim this phase's derivation
+exists to make impossible. Both now carry, in the requirement itself, **what the browser pass saw
+and what it did not**, so the tick is auditable rather than assumed.
+
+**The state tooling defect is recorded rather than absorbed a ninth time.** Eight consecutive
+plans hand-corrected it; the root cause (a line-oriented read of a hard-wrapped paragraph, taking
+the first physical line only) plus three further specific bugs and 03-07's blanket-replace warning
+are consolidated as ledger entry **45**, in one place a fix can start from instead of scattered
+across eight summaries.
 
 ---
 
@@ -432,18 +559,21 @@ expire by themselves).
 
 ---
 
-# THE BROWSER PASS — the ordered checklist (Task 2)
+# THE CHECKLIST — what it earned, and what it still owes
 
-**Nothing below has been observed.** Run `npm run build` (already done — the current `.next` is
-built from the committed tree and verified un-poisoned), then:
+**Items 1 (partly), 3 and 4b are DONE** (§5). Items **2c/2d, 4a, 4c, 4d, 5, 6 and 7 remain** and
+are carried as ledger entry **46**. Preserved in full below so the remainder can be picked up
+without rebuilding it.
 
 ```
-npx next start -p 3117
+npm run build && npx next start -p 3117     # sign in first: 2, 3 and 5 need a session
 ```
 
-Sign in first: items 2, 3 and 5 need a session. Port 3000 is free; 3117 avoids it entirely.
+Ports **3000 and 3117 are both free** as of this summary — the `next start` left on 3117 (PID
+40108) was killed and confirmed dead (`curl` → HTTP 000). The only node processes still running
+are the Playwright MCP, which are the reviewer's tooling and were left alone.
 
-### 1 — ROADMAP criterion 1: real practice in every skill a scenario offers
+### 1 — ROADMAP criterion 1 — PARTLY DONE (steps derived and honest on two scenarios; 1a/1b/1c not individually reported)
 
 | # | URL | What to confirm |
 |---|---|---|
@@ -451,7 +581,7 @@ Sign in first: items 2, 3 and 5 need a session. Port 3000 is free; 3117 avoids i
 | 1b | `http://localhost:3117/world/native/phrasal-verbs` | Declares **Grammar + Speaking**. A **five-question quiz about phrasal verbs** — separability, particles, `postpone → put off` — not generic grammar |
 | 1c | `http://localhost:3117/world/travel/directions` **and** `http://localhost:3117/world/travel/airport`, side by side | Same world. Their **phrases** and their **rehearsals** must be different. Airport is *The connection you just lost*; directions is *The street that is not on the map* |
 
-### 2 — ROADMAP criterion 2: phrases and vocabulary reach the review queue (WINDOWS 29, 30)
+### 2 — ROADMAP criterion 2 — 2a/2b DONE (2026-08-01, closed WINDOWS 29); **2c and 2d STILL OWED**
 
 | # | Where | What to do, then confirm |
 |---|---|---|
@@ -460,14 +590,14 @@ Sign in first: items 2, 3 and 5 need a session. Port 3000 is free; 3117 avoids i
 | 2c | dashboard **and** `/review` | The dashboard's **due count** and the review hub's **"Due today"** badge both include them, and **the two numbers agree with the list** |
 | 2d | `/review` → **"Your mistakes"** | The ones you got wrong are there. Answer one correctly — it **clears** |
 
-### 3 — ROADMAP criterion 3: grammar mistakes reach weak topics (WINDOWS 33 — the one proved only by construction)
+### 3 — ROADMAP criterion 3 — **DONE.** Four topics reached Weak spots by name. WINDOWS 33 closed
 
 | # | Where | What to do, then confirm |
 |---|---|---|
 | 3a | `http://localhost:3117/world/social/small-talk`, step 5 | Answer **two questions wrongly on purpose**. Confirm the explanation panel appears and the option you picked is marked — **nobody has ever answered one of these** |
 | 3b | `/review` → **"Weak spots"** | **"Question tags"** is named, and the drill it offers **actually contains questions** |
 
-### 4 — The four things nobody has ever done (WINDOWS 35, 37, 38, 43)
+### 4 — The four nobody had ever done: **4b DONE** (the explained key rendered; WINDOWS 37 closed). **4a, 4c, 4d STILL OWED**
 
 | # | URL | What to do |
 |---|---|---|
@@ -476,14 +606,14 @@ Sign in first: items 2, 3 and 5 need a session. Port 3000 is free; 3117 avoids i
 | 4c | `http://localhost:3117/world/travel/airport` | **Tick all three moves.** Line-through on tick · counter reaches **3 of 3** · **Rehearsed** pill · **15 speaking XP awarded ONCE**. Then **untick and re-tick** — it must **not** award again (T-03-22, proved only by construction) |
 | 4d | `http://localhost:3117/skill/speaking` | Open a pack and confirm it has **phrases in it**. The five packs were repointed onto the strict accessor in this commit and their titles render, but their **contents have never been seen** — they sit behind a client tab `curl` cannot click |
 
-### 5 — The honesty mechanism, seen rather than trusted
+### 5 — The honesty mechanism — **STILL OWED** (proved in a scratch copy against full banks; not seen on a served page)
 
 Ask me to temporarily empty one scenario's exercise entry. The pair must say its practice is
 **not written yet**, offer the global skill room instead, and **disappear from that page's
 structured data** — and restoring it must bring it back **with no other edit**. I have proved this
 in a scratch copy against the full banks (52/52 → 51/52 and back); this is seeing it on the page.
 
-### 6 — Two neighbours, read side by side (T-03-25, the second pair of eyes)
+### 6 — Two neighbours side by side — **STILL OWED.** The executor's read-through stands as the phase's reader pass and was accepted; this was the second pair of eyes
 
 | # | Open in two tabs | Read against each other |
 |---|---|---|
@@ -491,7 +621,7 @@ in a scratch copy against the full banks (52/52 → 51/52 and back); this is see
 | 6b | `/world/travel/shopping` **and** `/world/practical/banking` | Both **rehearsals** written in plan 10, both at a counter |
 | 6c | **my own additions**, worth two more minutes: `/world/native/idioms` and `/world/native/phrasal-verbs` — the two rehearsals whose **drill design** is closest (§4 above) — and `/world/travel/restaurant`, whose rehearsal is built on its own phrase set and is the closest same-page echo I found |
 
-### 7 — On a phone (never done, for anything, in this project)
+### 7 — On a phone — **STILL OWED.** Never done, for anything, in this project
 
 Open **one** scenario on a real phone. Confirm the recall deck's buttons are **tappable**, the
 passage is **readable**, and the **writing editor is usable at phone width**. This is the device
@@ -504,6 +634,7 @@ the beta user practises on, and nothing from Phase 2.1 or Phase 3 has run on one
 - `work/negotiating` (C1) and `academic/articles` (C1) carry the **longest lines in the corpus**.
   Check they do not break badly in a card.
 
-**Report anything that reads as a placeholder, any two scenarios that feel like the same exercise
-with different words, and anything that claims practice you cannot find.** Then Task 3 records
-what the pass earned — and leaves anything it did not reach open, with a name.
+**Task 3 is done:** CONT-01 and CONT-02 carry the status the pass earned, each annotated with what
+was seen and what was not, and everything unreached is open in `.planning/WINDOWS.md` by name —
+entry **46** for the checklist remainder, **47** for the one narrow badge question, **48** for the
+explanation-wording near-miss. Phase 3 closes here.
