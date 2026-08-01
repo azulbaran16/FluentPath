@@ -46,7 +46,7 @@ constraint as v1 — **all content original**, third-party material is format re
 ### Content (curriculum completeness)
 
 - [ ] **CONT-01**: Every existing scenario in all 6 worlds offers real practice in each of its applicable skills (grammar, speaking, reading, writing) — no stub, placeholder, or empty activity
-- [ ] **CONT-02**: Every scenario has scenario-specific phrases and vocabulary that feed the SRS review queue — *in progress: 17/35 scenarios with phrases, 13/35 with vocabulary as of plan 03-02. The SRS half is DONE (D-05 closed at 03-02: every review surface resolves scenario items). Completes at plan 03-04, on the evidence `COVERAGE_TOTALS.scenariosWithPhrases === 35`.*
+- [ ] **CONT-02**: Every scenario has scenario-specific phrases and vocabulary that feed the SRS review queue — *in progress: 27/35 scenarios with phrases, 25/35 with vocabulary as of plan 03-03. The SRS half is DONE (D-05 closed at 03-02: every review surface resolves scenario items). Completes at plan 03-04, on the evidence `COVERAGE_TOTALS.scenariosWithPhrases === 35`. Plans 03-02 and 03-03 both carry CONT-02 in their frontmatter and neither may tick it — "**every** scenario" is false at 27 of 35, and a completed checkbox here is the overclaim D-03 exists to prevent.*
 
 ### Content (curriculum expansion)
 
@@ -117,7 +117,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROG-04 | Phase 2 | Complete |
 | PROG-05 | Phase 2 | Complete |
 | CONT-01 | Phase 3 | Pending |
-| CONT-02 | Phase 3 | In Progress (17/35 phrases, 13/35 vocabulary) |
+| CONT-02 | Phase 3 | In Progress (27/35 phrases, 25/35 vocabulary) |
 | CONT-03 | Phase 4 | Pending |
 | CONT-04 | Phase 4 | Pending |
 | CONT-05 | Phase 4 | Pending |

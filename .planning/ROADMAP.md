@@ -202,13 +202,13 @@ stable item ids, the review-queue resolution fix (D-05), the derived coverage re
 content harness — are front-loaded into the tracer, before any bulk authoring. Every plan states what
 the learner gains if execution stops right after it.
 
-**Plans**: 2/11 plans executed
+**Plans**: 3/11 plans executed
 
 Plans:
 
 - [x] 03-01-PLAN.md — Tracer: one scenario practicable end to end — stable ids, derived coverage, and the review loop that shows them
 - [x] 03-02-PLAN.md — Review surfaces resolve across banks (D-05 closed) + CONT-02 for Social & Travel
-- [ ] 03-03-PLAN.md — CONT-02: Work & Professional and Practical Life — 12 scenarios
+- [x] 03-03-PLAN.md — CONT-02: Work & Professional and Practical Life — 12 scenarios
 - [ ] 03-04-PLAN.md — CONT-02: Reading & Ideas and Sounding Native — 10 scenarios; CONT-02 closes
 - [ ] 03-05-PLAN.md — CONT-01: Grammar — the quiz wiring and all four grammar pairs; pills and skill pages stop counting promises
 - [ ] 03-06-PLAN.md — CONT-01: Writing — single-task desk and all nine writing pairs
@@ -264,6 +264,6 @@ Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5
 | 1. CELPIP Writing Practice | 6/6 | Complete | 2026-07-28 |
 | 2. Server-Side Progress | 7/7 | Complete | 2026-07-30 |
 | 2.1 CELPIP Remaining Skills | 12/12 | Complete | 2026-07-31 |
-| 3. Every Scenario Practicable | 2/11 | In Progress|  |
+| 3. Every Scenario Practicable | 3/11 | In Progress|  |
 | 4. Full Curriculum Expansion | 0/TBD | Not started | - |
 | 5. AI Tutor End-to-End | 0/TBD | Not started | - |
