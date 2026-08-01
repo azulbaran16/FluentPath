@@ -14,7 +14,7 @@ FluentPath is live but incomplete: practice modes, accounts, and billing exist, 
 - [x] **Phase 1: CELPIP Writing Practice** - Free exam-prep section at `/celpip`: original Task 1/Task 2 bank, real-exam simulator (timer, word count), model answers + descriptor-based self-evaluation
 - [x] **Phase 2: Server-Side Progress** - Postgres becomes the authoritative, validated, retry-safe home of learner progress across devices
 - [x] **Phase 2.1: CELPIP Remaining Skills** (INSERTED 2026-07-30, URGENT) - Reading and Listening built to depth, Speaking to a usable minimum, before the beta user's exam
-- [ ] **Phase 3: Every Scenario Practicable** - Audit and fill content so all existing scenarios offer real practice in every applicable skill, feeding SRS and weak topics
+- [x] **Phase 3: Every Scenario Practicable** - Audit and fill content so all existing scenarios offer real practice in every applicable skill, feeding SRS and weak topics
 - [ ] **Phase 4: Full Curriculum Expansion** - Expand the 6 worlds to their complete designed topic coverage with graduated B1–C1 and native-level content
 - [ ] **Phase 5: AI Tutor End-to-End** - Real Claude tutor live in production: scenario role-play, gentle correction, graceful gating/errors, progress credit
 
