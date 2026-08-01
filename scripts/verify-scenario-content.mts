@@ -76,6 +76,13 @@ import {
   type ProgressState,
 } from "../src/lib/progress-schema.ts";
 import { mergeProgress } from "../src/lib/progress-merge.ts";
+import {
+  COVERAGE_TOTALS,
+  SCENARIO_COVERAGE,
+  buildScenarioCoverage,
+  getScenarioCoverage,
+  pendingPairs,
+} from "../src/lib/scenario-coverage.ts";
 
 /* ------------------------------------------------------------------ *
  * Shared harness. Every group below uses these and nothing else.
@@ -581,6 +588,205 @@ ok(
   due.filter((id) => resolveReviewItem(id) === undefined).join(", "),
 );
 
+/* ================================================================== *
+ * COVERAGE — the derived registry (plan 03-01, task 2)
+ * ================================================================== */
+
+group("coverage: every number is read off a bank, never typed");
+
+ok(
+  "the registry has one entry per scenario, in curriculum order",
+  canon(SCENARIO_COVERAGE.map((c) => c.key)) === canon(SCENARIOS.map((s) => s.key)),
+  canon(SCENARIO_COVERAGE.map((c) => c.key)),
+);
+for (const s of SCENARIOS) {
+  const entry = getScenarioCoverage(s.world, s.scenario);
+  ok(`coverage: ${s.key} is resolvable by its slugs`, entry !== undefined);
+  if (!entry) continue;
+  ok(
+    `coverage: ${s.key} phrase count equals the bank's length`,
+    entry.phrases === (getScenarioPhrases(s.world, s.scenario) ?? []).length,
+    `${entry.phrases}`,
+  );
+  ok(
+    `coverage: ${s.key} vocabulary count equals the bank's length`,
+    entry.vocabulary === (getScenarioVocabulary(s.world, s.scenario) ?? []).length,
+    `${entry.vocabulary}`,
+  );
+  ok(
+    `coverage: ${s.key} lists exactly the skills it declares, in order`,
+    canon(entry.skills.map((k) => k.skill)) === canon(s.skills),
+    canon(entry.skills.map((k) => k.skill)),
+  );
+  ok(
+    `coverage: ${s.key} carries its own title and level`,
+    entry.title === s.title && entry.level === s.level,
+  );
+  for (const pair of entry.skills) {
+    ok(
+      `coverage: ${s.key}:${pair.skill} summary is empty exactly when unavailable`,
+      pair.available ? filled(pair.summary) : pair.summary === "",
+      `available=${pair.available} summary=${JSON.stringify(pair.summary)}`,
+    );
+  }
+}
+ok(
+  "coverage: nothing sets `complete` — it is the conjunction of the banks",
+  SCENARIO_COVERAGE.every(
+    (c) =>
+      c.complete ===
+      (c.phrases > 0 && c.vocabulary > 0 && c.skills.every((s) => s.available)),
+  ),
+  SCENARIO_COVERAGE.filter(
+    (c) =>
+      c.complete !==
+      (c.phrases > 0 && c.vocabulary > 0 && c.skills.every((s) => s.available)),
+  )
+    .map((c) => c.key)
+    .join(", "),
+);
+
+group("coverage: the totals and the written/unwritten identity");
+
+ok(
+  "COVERAGE_TOTALS.pairsTotal is the curriculum's 52 declared pairs",
+  COVERAGE_TOTALS.pairsTotal === DECLARED_PAIRS.length &&
+    COVERAGE_TOTALS.pairsTotal === 52,
+  `${COVERAGE_TOTALS.pairsTotal}`,
+);
+ok(
+  "every registry pair is a pair the curriculum declares",
+  canon(
+    SCENARIO_COVERAGE.flatMap((c) => c.skills.map((s) => `${c.key}:${s.skill}`)).sort(),
+  ) === canon(DECLARED_PAIRS.map((p) => `${p.key}:${p.skill}`).sort()),
+);
+ok(
+  "written + unwritten equals the declared total",
+  COVERAGE_TOTALS.pairsWritten + pendingPairs().length ===
+    COVERAGE_TOTALS.pairsTotal,
+  `${COVERAGE_TOTALS.pairsWritten} + ${pendingPairs().length} vs ${COVERAGE_TOTALS.pairsTotal}`,
+);
+ok(
+  "COVERAGE_TOTALS.scenariosWithPhrases counts the banks, not the accessor",
+  COVERAGE_TOTALS.scenariosWithPhrases ===
+    SCENARIOS.filter((s) => getScenarioPhrases(s.world, s.scenario)).length,
+  `${COVERAGE_TOTALS.scenariosWithPhrases}`,
+);
+ok(
+  "COVERAGE_TOTALS.scenariosWithVocabulary counts the banks",
+  COVERAGE_TOTALS.scenariosWithVocabulary ===
+    SCENARIOS.filter((s) => getScenarioVocabulary(s.world, s.scenario)).length,
+  `${COVERAGE_TOTALS.scenariosWithVocabulary}`,
+);
+
+group("coverage: the pending selector is neither short nor long");
+
+// Plans 03-05 through 03-10 each read a ZERO out of this selector as proof of
+// completion. A selector that is one pair short would let a skill plan close
+// with an unwritten pair; one pair long would make a finished plan look
+// unfinished and get the assertion loosened. Both directions, therefore.
+const pending = pendingPairs();
+const declaredUnavailable = SCENARIO_COVERAGE.flatMap((c) =>
+  c.skills.filter((s) => !s.available).map((s) => `${c.key}:${s.skill}`),
+);
+ok(
+  "pendingPairs() has exactly declared-minus-written entries",
+  pending.length === COVERAGE_TOTALS.pairsTotal - COVERAGE_TOTALS.pairsWritten,
+  `${pending.length}`,
+);
+ok(
+  "every pending pair carries a key and a skill",
+  pending.every((p) => filled(p.key) && filled(p.skill)),
+);
+ok(
+  "every pending pair is declared by the curriculum",
+  pending.every((p) =>
+    DECLARED_PAIRS.some((d) => d.key === p.key && d.skill === p.skill),
+  ),
+  pending
+    .filter(
+      (p) => !DECLARED_PAIRS.some((d) => d.key === p.key && d.skill === p.skill),
+    )
+    .map((p) => `${p.key}:${p.skill}`)
+    .join(", "),
+);
+ok(
+  "every declared-and-unavailable pair appears in pendingPairs()",
+  canon(pending.map((p) => `${p.key}:${p.skill}`)) === canon(declaredUnavailable),
+  canon(pending.map((p) => `${p.key}:${p.skill}`)),
+);
+
+group("coverage: driven by a stub — the properties the real banks cannot show");
+
+// The real banks can only ever demonstrate the state they are in today. These
+// four cases are the ones the whole plan set rests on, and every one of them is
+// a state no bank is in right now.
+const STUB_KEY = "social/small-talk";
+const stubList = (n: number) => Array.from({ length: n }, (_, i) => i);
+const stubFor = (
+  key: string,
+  phrases: number,
+  vocabulary: number,
+  skills: Partial<Record<Skill, number | undefined>>,
+) =>
+  buildScenarioCoverage({
+    phrases: (w, s) => (`${w}/${s}` === key ? stubList(phrases) : undefined),
+    vocabulary: (w, s) => (`${w}/${s}` === key ? stubList(vocabulary) : undefined),
+    exercises: Object.fromEntries(
+      (Object.keys(skills) as Skill[]).map((skill) => [
+        skill,
+        (w: string, s: string) => {
+          if (`${w}/${s}` !== key) return undefined;
+          const count = skills[skill];
+          // `undefined` = no bank entry. A NUMBER — including 0 — is a bank
+          // entry that exists; 0 is the emptied-bank control below.
+          return count === undefined
+            ? undefined
+            : { items: stubList(count), unit: "item" };
+        },
+      ]),
+    ),
+  }).find((c) => c.key === key)!;
+
+// social/small-talk declares speaking and grammar.
+const bothWritten = stubFor(STUB_KEY, 6, 8, { speaking: 3, grammar: 5 });
+ok(
+  "a scenario with phrases, vocabulary and every declared skill is complete",
+  bothWritten.complete === true,
+  canon(bothWritten),
+);
+const oneSkillShort = stubFor(STUB_KEY, 6, 8, { speaking: 3 });
+ok(
+  "a scenario one declared skill short reports INCOMPLETE",
+  oneSkillShort.complete === false &&
+    oneSkillShort.skills.filter((s) => s.available).length === 1,
+  canon(oneSkillShort.skills),
+);
+ok(
+  "no vocabulary means incomplete even with every skill written",
+  stubFor(STUB_KEY, 6, 0, { speaking: 3, grammar: 5 }).complete === false,
+);
+ok(
+  "no phrases means incomplete even with every skill written",
+  stubFor(STUB_KEY, 0, 8, { speaking: 3, grammar: 5 }).complete === false,
+);
+
+// THE CONTROL. A bank wired but EMPTY must still report its pair unwritten —
+// this is what lets plans 03-05 through 03-10 wire a renderer before its
+// content exists without the page lying in the meantime, and it is the one
+// property no assertion over the real banks can reach today.
+const emptiedBank = stubFor(STUB_KEY, 6, 8, { speaking: 0, grammar: 5 });
+const emptiedSpeaking = emptiedBank.skills.find((s) => s.skill === "speaking");
+ok(
+  "a bank that EXISTS but is EMPTY still reports its pair unwritten",
+  emptiedSpeaking?.available === false && emptiedSpeaking.summary === "",
+  canon(emptiedBank.skills),
+);
+ok(
+  "emptying one bank flips the scenario back to incomplete, with no second edit",
+  emptiedBank.complete === false,
+);
+
 /* ------------------------------------------------------------------ *
  * The phase's own progress meter — REPORTED, never asserted.
  *
@@ -601,6 +807,10 @@ const withVocabulary = SCENARIOS.filter(
 console.log("");
 console.log(`  phrases:    ${withPhrases}/${SCENARIOS.length} scenarios`);
 console.log(`  vocabulary: ${withVocabulary}/${SCENARIOS.length} scenarios`);
+console.log(
+  `  pairs:      ${COVERAGE_TOTALS.pairsWritten}/${COVERAGE_TOTALS.pairsTotal} written` +
+    ` (${pendingPairs().length} pending)`,
+);
 
 if (failures > 0) {
   console.error(

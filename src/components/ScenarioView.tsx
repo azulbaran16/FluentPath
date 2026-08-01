@@ -10,6 +10,8 @@ import { scenarioRecallItems } from "@/lib/review-items";
 import { SkillPill, LevelBadge } from "./SkillPill";
 import { PronunciationLab } from "./practice/PronunciationLab";
 import { RecallDeck } from "./practice/RecallDeck";
+import { ScenarioPractice } from "./practice/ScenarioPractice";
+import { SKILL_META } from "@/lib/curriculum";
 import { Check, MessageSquareText, Lightbulb } from "lucide-react";
 
 export function ScenarioView({
@@ -91,6 +93,20 @@ export function ScenarioView({
       title: "Lock it in",
       body: (
         <RecallDeck items={recall} accent={accent} title={scenario.title} />
+      ),
+    });
+  }
+
+  // One section per DECLARED skill, in curriculum order. Before this, the page
+  // rendered the same three steps for all 35 scenarios and never read
+  // `scenario.skills` below the header — which is why 22 pairs promised a skill
+  // in a pill and in structured data while rendering nothing at all.
+  for (const skill of scenario.skills) {
+    steps.push({
+      key: `skill-${skill}`,
+      title: `Practise ${SKILL_META[skill].label.toLowerCase()}`,
+      body: (
+        <ScenarioPractice world={world} scenario={scenario} skill={skill} />
       ),
     });
   }
