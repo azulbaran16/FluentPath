@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 32
+open_count: 33
 waived_count: 0
 fixed_count: 8
-total_count: 40
-last_updated: 2026-08-01T06:11:18.477Z
+total_count: 41
+last_updated: 2026-08-01T06:45:16.756Z
 ---
 
 # Broken Windows Ledger
@@ -55,6 +55,7 @@ last_updated: 2026-08-01T06:11:18.477Z
 | 38 | 03 | unrun-verify | src/components/practice/SpeakingTaskPanel.tsx |  | 03-09: nobody has TICKED A MOVE, so the one thing this panel does that the writing desk does not — award XP — has never been seen doing it. Observed in the served HTML of a production build (next start, shut down afterwards, port 3000 drained to zero sockets and refusing): all fourteen written speaking pairs render the rehearsal panel as their own step, carrying the level badge, the 'say it out loud' label, the title, the setup, the three numbered moves, the 'You did it if' block with the success line, the '0 of 3 moves rehearsed' counter and the footer stating that nothing is listening; social/complaining and academic/debate each render their rehearsal AND their different writing task on one page; travel/airport still renders the honest 'Not yet available' panel for its unwritten speaking pair; and /skill/speaking reads '14 of the 30 scenarios that train your speaking have practice written for the situation itself — the rest are on the way, and say so' with the pending badge on the sixteen. NOT observed: ticking a checkbox, the line-through on a ticked move, the counter moving to 3 of 3, the 'Rehearsed' pill appearing, and the single award of 15 speaking XP with the day's activity recorded — including the T-03-22 property that unticking and re-ticking does not award again. That property is proved by construction (the awarded flag latches and is never cleared) and by mutation (M24, M25 and M26 all fire on the source scan), but not by sight. Owed to plan 03-11's browser pass alongside entries 29-37. | open |  | 2026-08-01T06:05:27.780Z |  |
 | 39 | 03 | unmet-truth | scripts/verify-scenario-content.mts |  | 03-08: the D-01 assertion 'no passage text is repeated anywhere in the scenario reading corpus' fingerprints p.body.join(' '), so it only fires when the WHOLE body matches. A scenario passage that borrows ONE paragraph from another scenario's passage is D-01's failure at a finer grain and is NOT caught - proved by mutation M23, which copies native/idioms' first paragraph over native/culture's and SURVIVES a full harness run (declared as an expected survivor rather than deleted). The corpus is clean today: an out-of-band scan over all 31 authored paragraphs finds 0 exact cross-scenario reuse and 0 pairs above Jaccard 0.5 across 426 cross-scenario paragraph pairs, and 0 shared four-word runs against any other authored text. The gap is in the assertion's reach, not in the content. NOT closed by this plan because plan 03-09 had uncommitted work in that same harness file in the same working tree at the time, and staging it would have swept up theirs. Fix is one appended assertion: fingerprint paragraphs, not just joined bodies. | open |  | 2026-08-01T06:10:57.860Z |  |
 | 40 | 03 | deviation | .planning/phases/03-every-scenario-practicable/03-08-SUMMARY.md |  | 03-08: a MUTATION SWEEP IN A SHARED WORKING TREE POISONED A PARALLEL PLAN'S PRODUCTION BUILD, silently and with no trace in git. Plan 03-09 ran npm run build at 02:00:04 while this plan's sweep had mutation M21 applied to src/lib/content/scenario-reading.ts (const authored = BANK['social/humor'] instead of BANK[key]). The sweep restored the file byte-for-byte (sha256 verified) so git was clean, but .next kept the mutation: every scenario page served 'The Man Who Mows at Seven', and the minifier had dropped eight of the nine passages from the emitted JS as unreachable. Caught only because this plan curled four pages and saw one title four times; confirmed by reading the mutated accessor back out of the build's own SOURCE MAP (the map records what the bundler read). REPAIRED by rebuilding from the clean committed tree - all nine slugs now present in the emitted JS in equal numbers and the map carries BANK[key] with zero mutated occurrences. 03-09's own browser observation (WINDOWS 38) is unaffected: it is about scenario-speaking.ts, which no mutation touched. THE STANDING HAZARD: any wave that pairs a mutation sweep with a sibling plan in one working tree can do this again in either direction, and neither plan would see it in git status. Mitigations to choose between: run sweeps in a git worktree or a copy, or assert the built accessor after any build a summary makes a claim about. | open |  | 2026-08-01T06:11:18.477Z |  |
+| 41 | 03 | deviation | scripts/verify-scenario-content.mts |  | 03-10: A DECLARED GRANULARITY GAP in the speaking D-01 assertions, in the spirit of WINDOWS 39. 'scenario speaking: <key> is written for itself' fingerprints the whole task body (title+setup+moves+success) and 'has its own three moves' fingerprints the whole three-move list, both by byte-identity after canonicalisation. So TWO SCENARIOS SHARING A SINGLE MOVE ARE CAUGHT BY NEITHER, and neither is a near-duplicate that differs by one word. Mutation M17 (one scenario given another's entire move list) fires; a one-move borrow would not. Not a shipped defect: scan 1 shows 90 moves / 90 distinct and scan 2 shows 0 of 3,915 cross-scenario move pairs above Jaccard 0.5, so the corpus is clean out of band. Related, and also declared: 'every scenario speaking id is unique across all scenarios' cannot be falsified from the DATA at all, because every id is composed from a scenario key that is unique by construction - it only fails if the accessor stops using the scenario key, which mutation M12-key catches on a different label. Both assertions imply more grip over authored content than they have. The fix for the first is a per-move cross-scenario check in the speaking group; left for the plan that owns the harness. | open |  | 2026-08-01T06:45:16.756Z |  |
 
 ````json
 [
@@ -536,6 +537,18 @@ last_updated: 2026-08-01T06:11:18.477Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-08-01T06:11:18.477Z",
+    "resolved_at": null
+  },
+  {
+    "id": 41,
+    "kind": "deviation",
+    "phase": "03",
+    "file": "scripts/verify-scenario-content.mts",
+    "line": null,
+    "description": "03-10: A DECLARED GRANULARITY GAP in the speaking D-01 assertions, in the spirit of WINDOWS 39. 'scenario speaking: <key> is written for itself' fingerprints the whole task body (title+setup+moves+success) and 'has its own three moves' fingerprints the whole three-move list, both by byte-identity after canonicalisation. So TWO SCENARIOS SHARING A SINGLE MOVE ARE CAUGHT BY NEITHER, and neither is a near-duplicate that differs by one word. Mutation M17 (one scenario given another's entire move list) fires; a one-move borrow would not. Not a shipped defect: scan 1 shows 90 moves / 90 distinct and scan 2 shows 0 of 3,915 cross-scenario move pairs above Jaccard 0.5, so the corpus is clean out of band. Related, and also declared: 'every scenario speaking id is unique across all scenarios' cannot be falsified from the DATA at all, because every id is composed from a scenario key that is unique by construction - it only fails if the accessor stops using the scenario key, which mutation M12-key catches on a different label. Both assertions imply more grip over authored content than they have. The fix for the first is a per-move cross-scenario check in the speaking group; left for the plan that owns the harness.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-01T06:45:16.756Z",
     "resolved_at": null
   }
 ]
