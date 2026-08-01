@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 24
+open_count: 26
 waived_count: 0
 fixed_count: 8
-total_count: 32
-last_updated: 2026-08-01T02:24:03.538Z
+total_count: 34
+last_updated: 2026-08-01T04:19:19.508Z
 ---
 
 # Broken Windows Ledger
@@ -47,6 +47,8 @@ last_updated: 2026-08-01T02:24:03.538Z
 | 30 | 03 | unrun-verify | src/components/practice/ReviewHub.tsx |  | 03-02: the three widened review surfaces have not been seen by a human. Dashboard's due count, ReviewHub's 'Due today' badge, the weak-spots drill (both the mixed grammar+recall case and the 'nothing to drill yet' branch) and MistakesView's new compact recall card are gated ONLY by three grep guards, tsc/lint/build, and an inline node proof that the weak-spots selection returns 3 grammar + 14 recall items for a mixed weak set against the real banks. There is no committed assertion over any of these components, because they are React and this repo has no test runner (TEST-01, v2). All four need a signed-in session with a populated srs/attempts store to reach. NOTE: the user drove 03-01's far end in a browser on 2026-08-01 and reported /review resolving and rendering a real scenario item, which closes items (1) and (2) of ledger entry 29 - 03-11 inherits a smaller debt than 29 states. Owed to plan 03-11. | open |  | 2026-08-01T01:12:52.055Z |  |
 | 31 | 03 | unrun-verify | src/lib/content/phrases.ts |  | 03-03: the twelve new Work and Practical scenario pages have not been opened by a human. The RENDER PATH is observed (03-01 saw a curated scenario render its 'Lock it in' step from the same accessors, and the user drove /review in a browser on 2026-08-01) and the CONTENT is gated by 4529 committed assertions plus a 17-mutation sweep, so this is a low-risk gap rather than an unproven one. What no one has looked at: the six phrases and eight cards on each of work/emails, work/presentations, work/negotiating, work/networking, work/feedback, work/interviews, work/meetings, practical/phone-calls, practical/tech-support, practical/housing, practical/banking and practical/appointments as they actually read on screen - line breaks, the length of the longer C1 negotiating lines in the card, and whether the Spanish glosses sit well next to the English. Editorial, not structural. Owed to plan 03-11's browser pass, which is already visiting these surfaces for entries 29 and 30. | open |  | 2026-08-01T01:53:21.055Z |  |
 | 32 | 03 | unrun-verify | src/lib/content/phrases.ts |  | 03-04: the ten new Reading & Ideas and Sounding Native scenario pages have not been opened by a human. The RENDER PATH is observed (03-01 saw a curated scenario render its 'Lock it in' step through these same accessors, and the user drove /review in a browser on 2026-08-01) and the CONTENT is gated by 6019 committed assertions plus an 18-mutation sweep with 11 caught, 5 controls survived and 2 applier refusals, so this is an editorial gap rather than an unproven one. What nobody has looked at: the six phrases and eight cards on each of academic/news, academic/articles, academic/stories, academic/summaries, academic/debate, native/idioms, native/phrasal-verbs, native/pronunciation, native/register and native/culture as they actually read on screen. Two things are specific to this batch and worth a deliberate glance: native/register's phrases are three CONTRASTING PAIRS and the pairing is only legible if the casual and formal lines sit adjacent in the rendered order, and the C1 articles and debate lines are the longest in the corpus. Owed to plan 03-11's browser pass, which is already visiting these surfaces for entries 29, 30 and 31. | open |  | 2026-08-01T02:24:03.538Z |  |
+| 33 | 03 | unrun-verify | src/lib/content/scenario-grammar.ts |  | 03-05: no human has ANSWERED a scenario grammar question in a browser. The four quizzes were observed in the SERVED HTML of a production build (social/small-talk renders step 5 'Practise grammar' with the topic pill 'Question tags', the counter '1 / 5', the prompt 'It's freezing out there today,' and its four options, with the gap showing ____ rather than the answer), and the harness proves the wiring deterministically: every composed id resolves through resolveReviewItem as kind 'grammar', reviewableIds() lists all 20, and GrammarQuiz's untouched recordAttempt(q.id, isRight, {topic, level, chosen}) is what populates weakTopics. But the INTERACTIVE half is unseen: picking an option, the XpFloat, the explanation panel and the 'Ask the tutor why' link, the results screen, and the far end - a wrong answer on social/small-talk#grammar#weather-question-tag appearing under 'Question tags' in /review's weak spots and being drillable there. That last one is ROADMAP criterion 3 for Phase 3 and it is inherited rather than built, so it is proved by construction and not by observation. Needs a signed-in session. Owed to plan 03-11's browser pass, alongside entries 29, 30, 31 and 32. | open |  | 2026-08-01T04:19:04.700Z |  |
+| 34 | 03 | stub | src/components/WorldView.tsx |  | 03-05: the world page's scenario cards still render SkillPill without an availability flag, so they count DECLARATIONS. Plan 03-05 gave SkillPill an optional 'available' prop and wired it in ScenarioView and on /skill/[skill]; WorldView.tsx was NOT in that plan's files_modified and was deliberately left alone rather than expanding scope quietly. The consequence today: /world/social shows a solid 'Speaking' pill on a scenario whose speaking practice is not written, while the scenario page one click deeper shows the same pill muted. The fix is three lines (import getScenarioCoverage, pass available per skill) and the prop already exists and defaults to true. Self-closing as plans 03-06 through 03-10 land, in the sense that the overclaim disappears when every pair is written - but it is an overclaim until then, which is precisely what D-03 forbids. | open |  | 2026-08-01T04:19:19.508Z |  |
 
 ````json
 [
@@ -432,6 +434,30 @@ last_updated: 2026-08-01T02:24:03.538Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-08-01T02:24:03.538Z",
+    "resolved_at": null
+  },
+  {
+    "id": 33,
+    "kind": "unrun-verify",
+    "phase": "03",
+    "file": "src/lib/content/scenario-grammar.ts",
+    "line": null,
+    "description": "03-05: no human has ANSWERED a scenario grammar question in a browser. The four quizzes were observed in the SERVED HTML of a production build (social/small-talk renders step 5 'Practise grammar' with the topic pill 'Question tags', the counter '1 / 5', the prompt 'It's freezing out there today,' and its four options, with the gap showing ____ rather than the answer), and the harness proves the wiring deterministically: every composed id resolves through resolveReviewItem as kind 'grammar', reviewableIds() lists all 20, and GrammarQuiz's untouched recordAttempt(q.id, isRight, {topic, level, chosen}) is what populates weakTopics. But the INTERACTIVE half is unseen: picking an option, the XpFloat, the explanation panel and the 'Ask the tutor why' link, the results screen, and the far end - a wrong answer on social/small-talk#grammar#weather-question-tag appearing under 'Question tags' in /review's weak spots and being drillable there. That last one is ROADMAP criterion 3 for Phase 3 and it is inherited rather than built, so it is proved by construction and not by observation. Needs a signed-in session. Owed to plan 03-11's browser pass, alongside entries 29, 30, 31 and 32.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-01T04:19:04.700Z",
+    "resolved_at": null
+  },
+  {
+    "id": 34,
+    "kind": "stub",
+    "phase": "03",
+    "file": "src/components/WorldView.tsx",
+    "line": null,
+    "description": "03-05: the world page's scenario cards still render SkillPill without an availability flag, so they count DECLARATIONS. Plan 03-05 gave SkillPill an optional 'available' prop and wired it in ScenarioView and on /skill/[skill]; WorldView.tsx was NOT in that plan's files_modified and was deliberately left alone rather than expanding scope quietly. The consequence today: /world/social shows a solid 'Speaking' pill on a scenario whose speaking practice is not written, while the scenario page one click deeper shows the same pill muted. The fix is three lines (import getScenarioCoverage, pass available per skill) and the prop already exists and defaults to true. Self-closing as plans 03-06 through 03-10 land, in the sense that the overclaim disappears when every pair is written - but it is an overclaim until then, which is precisely what D-03 forbids.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-01T04:19:19.508Z",
     "resolved_at": null
   }
 ]

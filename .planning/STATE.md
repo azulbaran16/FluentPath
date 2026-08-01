@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 03
 current_phase_name: every-scenario-practicable
 status: in-progress
-stopped_at: "03-04 complete on main — CONT-02 CLOSED. Reading & Ideas and Sounding Native at D-04's floors: 35/35 phrases, 35/35 vocabulary, 0/52 pairs. verify-scenario-content 4529 -> 6019. No scenario is served the per-world generic set any more, so 03-01's honest-panel regression note is REMOVED from Blockers/Concerns on its named evidence. getPhrases/WORLD_FALLBACK are now dead code, deleted by plan 03-11. Next is 03-05 (grammar), the first of the six CONT-01 skill plans. The ten new scenario pages remain unobserved in a browser (WINDOWS.md id 31)."
-last_updated: "2026-08-01T02:22:59.051Z"
+stopped_at: "03-05 complete on main. CONT-01 moves off zero: all 4 grammar pairs written (4/52 pairs, 48 pending: speaking 30, writing 9, reading 9, grammar 0). scenario-grammar.ts holds 20 questions composed through scenarioItemId LAZILY (review-items <-> bank is a real ESM cycle). reviewableIds() had to be extended too, or Dashboard's due count and ReviewHub's weak-spots drill would never see a scenario exercise. SkillPill takes availability; /skill/[skill] reports written-out-of-declared. verify-scenario-content 6019 -> 6355; 18 mutations caught, 5 controls survived, 3 applier refusals. CONT-01 NOT ticked (4/52). Nobody has answered a question in a browser (WINDOWS 33); WorldView still counts declarations (WINDOWS 34). Next is 03-06 (writing)."
+last_updated: "2026-08-01T04:25:23.323Z"
 last_activity: 2026-08-01
-last_activity_desc: "03-04 executed: Reading & Ideas and Sounding Native authored (128 new items). CONT-02 CLOSED at 35/35 phrases and 35/35 vocabulary. 11 mutations caught, 5 controls survived, 0 duplicate strings across all 35 scenarios"
+last_activity_desc: "03-05 executed: all 4 scenario grammar pairs written (20 questions) — CONT-01 moves off zero to 4/52, grammar 0 pending. GrammarQuiz untouched: the question id IS the composed D-06 id. reviewableIds() extended so the due count and the weak-spots drill see scenario exercises. Pills and skill pages now count what is written, not what is declared. verify-scenario-content 6019 -> 6355; 18 mutations caught, 5 controls survived, 3 applier refusals, 26 declared = 26 executed"
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 36
-  completed_plans: 28
+  completed_plans: 30
 ---
 
 # Project State
@@ -23,33 +23,37 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-23)
 
 **Core value:** A learner can practice any real-life English scenario end-to-end — with an AI tutor that corrects them in context — and their progress is never lost.
-**Current focus:** Phase 03 — every-scenario-practicable (executing, plan 04 of 11 complete)
+**Current focus:** Phase 03 — every-scenario-practicable (executing, plan 05 of 11 complete)
 
 ## Current Position
 
 Phase: 03 (every-scenario-practicable) — IN PROGRESS
-Plan: 4 of 11 complete
-Status: 03-04 complete on `main`. **CONT-02 is CLOSED.** All five Reading & Ideas scenarios and all
-five Sounding Native scenarios reached D-04's floors, so coverage reads **35/35 scenarios with
-phrases · 35/35 with vocabulary · 0/52 pairs written · 52 pending**. Every one of the thirty-five
-scenarios now carries phrases and vocabulary written for it and feeds spaced repetition, and **no
-scenario is served the per-world generic set any more** — the honest warm-up panel introduced at
-03-01 is now unreachable, which is why that regression note has been removed from Blockers/Concerns
-rather than re-tallied (its named evidence, `COVERAGE_TOTALS.scenariosWithPhrases === 35`, reads
-true). `getPhrases` and its `WORLD_FALLBACK` still exist in `phrases.ts` and are now dead for
-scenario pages; **plan 03-11 deletes them**, and until it does the module's own header says so.
-CONT-01 is untouched and remains **0/52 pairs** — plans 03-05 through 03-10 own it. Next action is
-executing 03-05. **The exported surface plans 05–11 depend on is recorded in `03-01-SUMMARY.md`;
-coverage numbers and the merge baseline in `03-02-SUMMARY.md`; the authoring rules and the
-duplicate-scan method in `03-03-SUMMARY.md`** — read the summaries, not the plans.
-Last activity: 2026-08-01 — 03-04 executed: Reading & Ideas and Sounding Native authored (128 new
-items; 48 phrases and 80 cards). 11 mutations caught with their expected assertion label, 5 controls
-survived, 2 applier refusals confirmed, 18 declared = 18 executed. Across all 35 scenarios: 210
-phrase texts, 280 terms, 210 glosses and 280 examples, with **zero repeats** in any of the four. The
-ten new scenario pages and the three widened review surfaces from 03-02 have still **not** been seen
-in a browser (WINDOWS.md ids 30, 31).
+Plan: 5 of 11 complete
+Status: 03-05 complete on `main`. **CONT-02 stays closed and CONT-01 moves off zero.** All four
+scenario×skill pairs that declare grammar — `social/small-talk`, `work/interviews`, `work/emails`,
+`native/phrasal-verbs` — now have five questions written for their own situation, so coverage reads
+**35/35 scenarios with phrases · 35/35 with vocabulary · 4/52 pairs written · 48 pending**
+(speaking 30, writing 9, reading 9, **grammar 0**). `GrammarQuiz` was not touched: each question's
+`id` IS its composed D-06 id, so the existing quiz schedules a namespaced SRS entry and reports the
+scenario's grammar topic to weak spots by itself — the ROADMAP's third criterion, inherited rather
+than built. **`CONT-01` is NOT ticked in REQUIREMENTS.md** and must not be until 52/52; the
+requirement says *every* pair. `getPhrases` and its `WORLD_FALLBACK` still exist in `phrases.ts` and
+are still dead for scenario pages; **plan 03-11 deletes them**. Next action is executing 03-06
+(writing). **The exported surface plans 06–11 depend on is recorded in `03-01-SUMMARY.md`; the
+authoring rules and the duplicate-scan method in `03-03-SUMMARY.md`; and `03-05-SUMMARY.md` §1 is
+the wiring recipe plans 06, 07 and 09 should copy rather than rediscover — it is FOUR edits, not
+three, because `reviewableIds()` is what `Dashboard`'s due count and `ReviewHub`'s weak-spots drill
+are built from.** Read the summaries, not the plans.
+Last activity: 2026-08-01 — 03-05 executed: 20 grammar questions across 4 pairs, composed lazily
+through `scenarioItemId` because `review-items.ts` ⇄ `scenario-grammar.ts` is a real ESM cycle.
+`SkillPill` takes an availability flag and `/skill/[skill]` reports written-out-of-declared, both
+derived. verify-scenario-content **6019 → 6355**. 18 mutations caught with their expected assertion
+label, 5 controls survived, 3 applier refusals, 26 declared = 26 executed. Zero duplicate grammar
+prompts, explanations or option sets; the only repeated distractors are bare auxiliaries, which a
+closed word class makes unavoidable. **Nobody has answered one of these questions in a browser**
+(WINDOWS.md 33), and `WorldView.tsx`'s pills still count declarations (WINDOWS.md 34).
 
-Progress: [████████░░] 78% (3 of 6 phases; 28 of 36 plans)
+Progress: [████████░░] 83% (3 of 6 phases; 30 of 36 plans)
 
 ## Performance Metrics
 
@@ -98,6 +102,7 @@ Progress: [████████░░] 78% (3 of 6 phases; 28 of 36 plans)
 | Phase 03 P02 | ~70min | 3 tasks | 7 files |
 | Phase 03 P03 | ~65min | 2 tasks | 2 files |
 | Phase 03 P04 | ~70min | 2 tasks | 2 files |
+| Phase 03 P05 | 75min | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -209,6 +214,11 @@ Recent decisions affecting current work:
 - [Phase ?]: 03-04: native/register's phrases are three CONTRASTING PAIRS rather than a flat list — a register is a dial, and one line cannot show a dial moving
 - [Phase ?]: 03-04: native/pronunciation's tongue-twister shape was deliberately NOT spread to the other four native scenarios; its vocabulary deck is the metalanguage instead
 - [Phase ?]: 03-04: verb-skeleton overlap between the phrasal-verbs deck and the rest of the corpus is structural, not authoring fatigue — every phrasal verb shares a verb with some other phrasal verb in a 280-term corpus
+- [Phase ?]: 03-05: a scenario exercise's question id IS its composed D-06 id, so GrammarQuiz needed no change at all — ROADMAP criterion 3 (mistakes reaching weak topics) is inherited from the existing engine, not built
+- [Phase ?]: 03-05: an exercise bank that is also resolved by review-items.ts must compose its ids LAZILY — the two form a real ESM cycle and eager composition hits SCENARIO_ITEM_SEPARATOR's temporal dead zone depending on nothing but import order
+- [Phase ?]: 03-05: wiring a scenario exercise bank is FOUR edits, not three — registry, resolver, dispatch AND reviewableIds(); Dashboard and ReviewHub build their due count and weak-spots drill from that list, so an omitted id is scheduled and then counted nowhere
+- [Phase ?]: 03-05: grammar topic strings are an id space, not display copy — 8 of 20 questions reuse a global bank topic EXACTLY so weakTopics aggregates instead of fragmenting; the 7 new strings (Question tags, Echo questions, had better, Hedging with would, Indirect questions, Phrasal verb separability/particles, Phrasal verbs vs formal verbs) are permanent
+- [Phase ?]: 03-05: CONT-01 was deliberately NOT ticked at 4/52 — the requirement says EVERY pair; assert the closure predicate before ticking, never after (the discipline 03-02 and 03-03 had to apply in reverse)
 
 ### Pending Todos
 
@@ -254,6 +264,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-08-01T02:22:52.074Z
-Stopped at: 03-04 complete on main — CONT-02 CLOSED. Reading & Ideas and Sounding Native at D-04's floors: 35/35 phrases, 35/35 vocabulary, 0/52 pairs. verify-scenario-content 4529 -> 6019. No scenario is served the per-world generic set any more, so 03-01's honest-panel regression note is REMOVED from Blockers/Concerns on its named evidence. getPhrases/WORLD_FALLBACK are now dead code, deleted by plan 03-11. Next is 03-05 (grammar), the first of the six CONT-01 skill plans. The ten new scenario pages remain unobserved in a browser (WINDOWS.md id 31).
+Last session: 2026-08-01T04:23:37.619Z
+Stopped at: 03-05 complete on main. CONT-01 moves off zero: all 4 grammar pairs written (4/52 pairs, 48 pending: speaking 30, writing 9, reading 9, grammar 0). scenario-grammar.ts holds 20 questions composed through scenarioItemId LAZILY (review-items <-> bank is a real ESM cycle). reviewableIds() had to be extended too, or Dashboard's due count and ReviewHub's weak-spots drill would never see a scenario exercise. SkillPill takes availability; /skill/[skill] reports written-out-of-declared. verify-scenario-content 6019 -> 6355; 18 mutations caught, 5 controls survived, 3 applier refusals. CONT-01 NOT ticked (4/52). Nobody has answered a question in a browser (WINDOWS 33); WorldView still counts declarations (WINDOWS 34). Next is 03-06 (writing).
 Resume file: None
