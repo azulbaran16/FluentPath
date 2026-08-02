@@ -326,8 +326,22 @@ const SETS: Record<string, Phrase[]> = {
   // get over family, so neither appears here. One phrasal verb per line, in a
   // sentence a learner would actually say — the briefing's own method.
   //
-  // Depth for this world — the fuller native-level treatment — is CONT-04 and
-  // belongs to Phase 4. These six sit at the scenario's declared level.
+  // Phase 4 (CONT-04) took this set from six to eighteen, and the twelve
+  // additions are authored on a DIFFERENT rule from the first six: the unit is
+  // verb + particle + SENSE, not verb + particle. Ten of the twelve are a
+  // second or third sense of a verb this scenario already teaches somewhere —
+  // `bring up` (raise a child, not raise a topic), `catch on` (understand, not
+  // become popular), `pick up`, `run into`, `fall out`, `take on`, `get away`,
+  // `look into`, `make up for`, `turn up` — because the frequent phrasal verbs
+  // are heavily polysemous and what a C1 learner still gets wrong is the sense,
+  // not the verb (04-RESEARCH §1.4: Gardner & Davies 2007; PHaVE 2015). The tip
+  // is where the senses are told apart, and every one of the eighteen carries
+  // one: a native-level tip says who says it, to whom, and what it costs to get
+  // that wrong, never a Spanish gloss.
+  //
+  // Nothing here repeats the briefing, the eight existing cards or the five
+  // grammar questions. The six original phrases are UNTOUCHED and always will
+  // be: every id below is a live spaced-repetition key.
   "native/phrasal-verbs": [
     { id: "put-up-with", text: "Honestly, how do you put up with that noise?", es: "En serio, ¿cómo aguantas ese ruido?", tip: "'Put up with' es aguantar. Las tres palabras van siempre juntas: nunca se separan." },
     { id: "get-away-with", text: "He gets away with it every single time.", es: "Se sale con la suya siempre.", tip: "'Get away with' es hacer algo malo sin sufrir las consecuencias." },
@@ -335,6 +349,18 @@ const SETS: Record<string, Phrase[]> = {
     { id: "bring-it-up", text: "I didn't want to bring it up in front of everyone.", es: "No quería sacar el tema delante de todos.", tip: "'Bring something up' es sacar un tema tú; 'come up' es que salga solo." },
     { id: "whats-he-getting-at", text: "What are you getting at, exactly?", es: "¿A dónde quieres llegar, exactamente?", tip: "'Get at something' es insinuar algo sin llegar a decirlo." },
     { id: "back-out-of-it", text: "They backed out of the deal at the last minute.", es: "Se echaron atrás en el acuerdo en el último momento.", tip: "'Back out of something' es retirarse de algo ya acordado." },
+    { id: "get-away-for-a-few-days", text: "We're trying to get away for a few days before term starts.", es: "Estamos intentando escaparnos unos días antes de que empiece el curso.", tip: "'Get away' a secas es irse de escapada; con 'with' es librarse del castigo. A tu jefa dile el primero: el segundo le cuenta que te has salido con la tuya." },
+    { id: "brought-up-in-leeds", text: "She was brought up in Leeds, so she says 'bath' the short way.", es: "Se crio en Leeds, así que dice 'bath' con la 'a' corta.", tip: "Segundo sentido de 'bring up': criar. Casi siempre en pasiva — 'I was brought up…' —, y contado así suena a biografía; 'my parents educated me' suena a expediente académico." },
+    { id: "catch-on-understand", text: "Don't spell it out — he'll catch on.", es: "No se lo expliques con detalle: ya lo pillará.", tip: "Aquí 'catch on' es entender, no ponerse de moda. Dicho de alguien presente es un cumplido; con retintín ('he finally caught on') es una pulla que se nota." },
+    { id: "taken-on-too-much", text: "I've taken on too much this month, honestly.", es: "La verdad es que he asumido demasiado este mes.", tip: "'Take on' es aceptar carga de trabajo. Ante un jefe reconoce un límite y suena responsable; el formal 'assume' aquí suena a informe escrito, no a persona hablando." },
+    { id: "ran-into-at-the-airport", text: "You'll never guess who I ran into at the airport.", es: "No te imaginas con quién me encontré en el aeropuerto.", tip: "'Run into' es toparse con alguien por casualidad. Si habías quedado con esa persona no vale, y usarlo igualmente le dice a tu oyente que el encuentro no te importaba." },
+    { id: "fell-out-over-something", text: "They fell out over something and neither will say what.", es: "Se enemistaron por algo y ninguno de los dos dice por qué.", tip: "'Fall out with someone' es romper la relación, no discutir un rato. Dicho de dos compañeros delante de terceros ya es cotilleo, así que se dice bajito o no se dice." },
+    { id: "wound-up-staying", text: "We wound up staying till two in the morning.", es: "Acabamos quedándonos hasta las dos de la mañana.", tip: "'Wind up' (/waɪnd/, pasado 'wound' /waʊnd/) es acabar de una forma que no planeaste. En una anécdota suena divertido; de un contrato, a desastre." },
+    { id: "picked-up-in-a-kitchen", text: "I picked up most of my Italian in a kitchen.", es: "Casi todo el italiano lo aprendí en una cocina.", tip: "'Pick up' un idioma es cogerlo sin estudiarlo. Presume de facilidad, así que dicho de algo que sí estudiaste suena a falsa modestia y el nativo lo nota." },
+    { id: "went-through-with-it", text: "I nearly cancelled, but I went through with it.", es: "Casi lo cancelo, pero al final seguí adelante.", tip: "'Go through with' es cumplir lo que te daba miedo; 'go through' a secas es pasar por un mal trago. Sobra o falta la preposición y pasas de valiente a víctima." },
+    { id: "turned-up-an-hour-late", text: "He turned up an hour late with no explanation.", es: "Apareció una hora tarde y sin dar explicaciones.", tip: "'Turn up' es aparecer, normalmente sin avisar. De una persona es un reproche contenido; de algo perdido es alivio: 'it turned up in the car'." },
+    { id: "look-into-it", text: "Leave it with me and I'll look into it.", es: "Déjamelo a mí y lo miro.", tip: "'Look into' es investigar, y en atención al cliente es la frase que compra tiempo sin prometer solución. 'Look over' es solo echar un vistazo: prometer eso a un cliente enfadado le suena a que no piensas hacer nada." },
+    { id: "make-up-for-last-week", text: "Let me buy lunch to make up for last week.", es: "Déjame invitarte a comer para compensar lo de la semana pasada.", tip: "'Make up for' es compensar; 'make up' a secas es inventarse algo y 'make up with someone' es reconciliarse. Ofrecer compensación reconoce la deuda sin tener que pedir perdón otra vez." },
   ],
   "native/pronunciation": [
     { id: "seashells", text: "She sells seashells by the seashore.", es: "(trabalenguas de la 's/sh')", tip: "Distingue /s/ de /ʃ/." },
