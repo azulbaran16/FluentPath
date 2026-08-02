@@ -241,12 +241,34 @@ at the same depth as the other five
 **Requirements**: CONT-04
 **Success Criteria** (what must be TRUE):
 
-  1. Each world's scenario list covers its complete designed topic set (e.g., Social includes humor and favors; Work includes networking and feedback; Practical includes housing and bank)
-  2. A learner can practice native-level material in Sounding Native: idioms, phrasal verbs, pronunciation drills, and register/culture
-  3. Every new scenario ships fully practicable across its applicable skills from day one — no stub content
-  4. Content difficulty spans B1–C1 so learners at different levels find appropriately graduated material
+  1. Each world's scenario list covers its complete designed topic set (e.g., Social includes humor and favors; Work includes networking and feedback; Practical includes housing and bank) — *ALREADY SATISFIED on the 2026-08-01 measurement recorded in CONT-03; this phase adds no scenario, so this criterion is not live work here*
+  2. A learner can practice native-level material in Sounding Native: idioms, phrasal verbs, pronunciation drills, and register/culture — **the phase's only live criterion (CONT-04)**
+  3. Every new scenario ships fully practicable across its applicable skills from day one — no stub content — *no new scenario is added by this phase; the equivalent invariant that IS live here is that no skill declaration lands without its bank entry in the same commit (plan 04-08), and that zero pairs are pending at the gate*
+  4. Content difficulty spans B1–C1 so learners at different levels find appropriately graduated material — *ALREADY SATISFIED on the 2026-08-01 measurement recorded in CONT-05; every item this phase authors sits at its scenario's declared level (B2 ×2, C1 ×3)*
 
-**Plans**: TBD
+**Plans**: 9 plans
+
+Sequencing: tracer first — one scenario carried through every layer (bank, derived coverage, SRS ids,
+renderer, advertised session length, gate) before any bulk authoring, so the machinery is proved at
+28 items rather than at 130. Every plan is its own wave: they all append to the content harness and
+most touch `curriculum.ts`, so there is no honest parallelism here. The dearest scenario
+(`native/idioms`, a re-selection rather than an extension) is planned after the machine is proved and
+behind two blocking decisions, because retiring a live spaced-repetition id is a one-way door on a
+learner's stored progress. Container and declaration changes are last but one, so that if execution
+stops earlier nothing is left declared-and-unwritten. Every plan states what the learner gains if
+work stops right after it.
+
+Plans:
+
+- [ ] 04-01-PLAN.md — Tracer: `native/phrasal-verbs` recall depth end to end, the batched deck (D-03), and the phase's two missing gates — payload and id stability
+- [ ] 04-02-PLAN.md — `native/phrasal-verbs` grammar 5 → 15: particle, sense, register and fixedness; the topic strings gated
+- [ ] 04-03-PLAN.md — `native/idioms` re-selected (D-04): the retirement decision and the warm-up to 18, with the translation-tip defect gated
+- [ ] 04-04-PLAN.md — `native/idioms`: the deck to 24 and the briefing stops teaching from its own phrase bank
+- [ ] 04-05-PLAN.md — `native/register`: nine situations on the dial as contrasting pairs, a 24-card marker deck, the pairing gated
+- [ ] 04-06-PLAN.md — `native/culture`: 18 phrases and 24 cards of machinery, not of references — depth that does not date
+- [ ] 04-07-PLAN.md — `native/pronunciation`: deliberately the smallest of the five, with the reason written into the banks
+- [ ] 04-08-PLAN.md — Containers and declarations: the world page stops counting promises, and the priced options are decided in the open
+- [ ] 04-09-PLAN.md — Phase gate: full suite, a mutation per new assertion, the reader pass, the browser pass, CONT-04
 
 ### Phase 5: AI Tutor End-to-End
 
