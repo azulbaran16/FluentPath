@@ -83,6 +83,28 @@ those skills, not a gap. Only declared pairs exist, and all 52 are written.
   from bank contents (`scenario-coverage.ts`, `EXERCISE_SOURCES`), so a claim cannot outrun the
   content. Depth must not be asserted anywhere it is not written.
 
+### Ratified after research (2026-08-01)
+
+- **D-03 — the recall deck is batched.** Research measured that tripling the phrase/vocabulary
+  floor produces a **42-card linear sitting** against the scenario's own "~10 min" promise.
+  The user chose to batch the deck rather than restate the promise or cap the content. This
+  **amends D-01**: it is a component change, deliberately taken, because otherwise more content
+  makes the experience worse rather than better. Keep it minimal — batching, not a redesign.
+
+- **D-04 — `native/idioms` is re-selected, not merely extended.** Research established that the
+  fourteen current items are almost exactly the classic "core idioms", which is the *rarest*
+  phraseology in English (none of 104 reaches the top 5,000 items; 0.14–0.25 per million
+  words). So volume cannot fix it: weak items are replaced using frequency and register
+  criteria, against material a C1 learner actually still gets wrong. The bar already exists
+  inside the scenario — its own reading passage uses better material than its phrase set.
+
+  **The one-way-door caveat, and it is not optional.** An SRS id is the key live progress is
+  stored under (`AGENTS.md`). **Deleting an item is safe** — its stored entry simply goes
+  unreferenced. **Re-pointing an id is not**: reusing an existing id for different content
+  silently transfers a learner's box and due date onto material she has never seen. So a
+  replacement is *delete the old id, add a new one with its own slug* — never edit the content
+  behind an existing id. The beta user may already have studied some of these.
+
 ### Claude's Discretion
 
 - How much is "native-level" per scenario — the floor to aim for, given Phase 3's was 6 phrases
