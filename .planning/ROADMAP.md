@@ -246,7 +246,7 @@ at the same depth as the other five
   3. Every new scenario ships fully practicable across its applicable skills from day one — no stub content — *no new scenario is added by this phase; the equivalent invariant that IS live here is that no skill declaration lands without its bank entry in the same commit (plan 04-08), and that zero pairs are pending at the gate*
   4. Content difficulty spans B1–C1 so learners at different levels find appropriately graduated material — *ALREADY SATISFIED on the 2026-08-01 measurement recorded in CONT-05; every item this phase authors sits at its scenario's declared level (B2 ×2, C1 ×3)*
 
-**Plans**: 9 plans
+**Plans**: 1/9 plans executed
 
 Sequencing: tracer first — one scenario carried through every layer (bank, derived coverage, SRS ids,
 renderer, advertised session length, gate) before any bulk authoring, so the machinery is proved at
@@ -260,7 +260,7 @@ work stops right after it.
 
 Plans:
 
-- [ ] 04-01-PLAN.md — Tracer: `native/phrasal-verbs` recall depth end to end, the batched deck (D-03), and the phase's two missing gates — payload and id stability
+- [x] 04-01-PLAN.md — Tracer: `native/phrasal-verbs` recall depth end to end, the batched deck (D-03), and the phase's two missing gates — payload and id stability
 - [ ] 04-02-PLAN.md — `native/phrasal-verbs` grammar 5 → 15: particle, sense, register and fixedness; the topic strings gated
 - [ ] 04-03-PLAN.md — `native/idioms` re-selected (D-04): the retirement decision and the warm-up to 18, with the translation-tip defect gated
 - [ ] 04-04-PLAN.md — `native/idioms`: the deck to 24 and the briefing stops teaching from its own phrase bank
@@ -303,5 +303,5 @@ Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5
 | 2. Server-Side Progress | 7/7 | Complete | 2026-07-30 |
 | 2.1 CELPIP Remaining Skills | 12/12 | Complete | 2026-07-31 |
 | 3. Every Scenario Practicable | 11/11 | In Progress|  |
-| 4. Full Curriculum Expansion | 0/TBD | Not started | - |
+| 4. Full Curriculum Expansion | 1/9 | In Progress|  |
 | 5. AI Tutor End-to-End | 0/TBD | Not started | - |
