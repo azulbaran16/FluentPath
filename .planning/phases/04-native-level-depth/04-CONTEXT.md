@@ -41,14 +41,21 @@ that measurement, recorded inside each requirement in `REQUIREMENTS.md`.
 <measured_starting_point>
 ## What the five scenarios hold today (measured 2026-08-01)
 
-| Bank | Native scenarios covered | Items (approx) |
+| Bank | Native scenarios covered | Items |
 |---|---|---|
-| phrases | 5/5 | 84 |
-| vocabulary | 5/5 | 81 |
-| speaking rehearsals | 5/5 | 15 |
-| reading | 2/5 | 6 |
-| grammar | 1/5 | 5 |
-| writing | 1/5 | 2 |
+| phrases | 5/5 | **30** |
+| vocabulary | 5/5 | **40** |
+| speaking rehearsals | 5/5 | **5** (one per scenario, 3 moves each) |
+| reading | 2/5 | 2 passages |
+| grammar | 1/5 | 5 questions |
+| writing | 1/5 | 1 task |
+
+> **Corrected 2026-08-01.** This table first read 84 / 81 / 15. Those were my numbers and they
+> were wrong: the counting script scanned a fixed window from each key and overlapped into
+> neighbouring scenarios, and "15 rehearsals" was 15 *moves* across 5 rehearsals. Research
+> caught it and reported the discrepancy rather than quietly using its own figures. The
+> practical consequence: **the phase is ~2.5× larger than this document originally implied**
+> if depth is expressed as a multiple of what exists today.
 
 These are Phase 3's **floors**, not depth — six phrases and eight cards per scenario, one
 rehearsal each. Phase 3's own gate said so unprompted: `native/idioms` is original but "reads
