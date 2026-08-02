@@ -105,6 +105,10 @@ import {
   getScenarioCoverage,
   pendingPairs,
 } from "../src/lib/scenario-coverage.ts";
+import {
+  RECALL_BATCH_CEILING,
+  recallBatches,
+} from "../src/lib/recall-batches.ts";
 
 /* ------------------------------------------------------------------ *
  * Shared harness. Every group below uses these and nothing else.
@@ -2319,6 +2323,243 @@ for (const [label, path, literal] of [
   );
 }
 
+/* ================================================================== *
+ * PHASE 4 (plan 04-01) — the deck's batching, the advertised sitting,
+ * and the saturated payload.
+ *
+ * Three groups appended under the header's two-edit rule. The first two close
+ * the Wave-0 gaps 04-RESEARCH named; the third turns 03-11's hand-measured
+ * payload figure into a gate.
+ * ================================================================== */
+
+group("the recall deck arrives in batches (D-03)");
+
+// The chunking has ONE author (src/lib/recall-batches.ts) and the properties
+// are asserted on that pure function rather than on the component, so they stay
+// proved when the component is restyled. Synthetic lengths first, because a
+// property is easier to falsify on lengths the content does not happen to have.
+for (let n = 0; n <= 60; n += 1) {
+  const input = Array.from({ length: n }, (_, k) => k);
+  const batches = recallBatches(input);
+
+  ok(
+    `batches(${n}): concatenating the batches reproduces the input, in order`,
+    canon(batches.flat()) === canon(input),
+    canon(batches.map((b) => b.length)),
+  );
+  ok(
+    `batches(${n}): no batch is empty`,
+    batches.every((b) => b.length > 0),
+    canon(batches.map((b) => b.length)),
+  );
+  ok(
+    `batches(${n}): no batch exceeds the ceiling of ${RECALL_BATCH_CEILING}`,
+    batches.every((b) => b.length <= RECALL_BATCH_CEILING),
+    canon(batches.map((b) => b.length)),
+  );
+
+  if (n === 0) {
+    ok(
+      "batches(0): an empty deck yields NO batches, not one empty batch",
+      batches.length === 0,
+      `${batches.length} batch(es)`,
+    );
+    continue;
+  }
+
+  // The property that keeps the thirty scenarios this phase never touches
+  // byte-identical on screen: at or below the ceiling there is no batching.
+  if (n <= RECALL_BATCH_CEILING) {
+    ok(
+      `batches(${n}): a deck at or below the ceiling is ONE uninterrupted run`,
+      batches.length === 1 && batches[0].length === n,
+      canon(batches.map((b) => b.length)),
+    );
+  }
+
+  ok(
+    `batches(${n}): the fewest batches that all fit`,
+    batches.length === Math.ceil(n / RECALL_BATCH_CEILING),
+    `${batches.length} vs ${Math.ceil(n / RECALL_BATCH_CEILING)}`,
+  );
+  // Evenness, stated as a property rather than as sizes: the longest and the
+  // shortest batch differ by at most one card, so the last batch is never a
+  // stub of one or two after a full one.
+  const lengths = batches.map((b) => b.length);
+  ok(
+    `batches(${n}): sized as evenly as the length allows`,
+    Math.max(...lengths) - Math.min(...lengths) <= 1,
+    canon(lengths),
+  );
+}
+
+// The same properties over the decks that actually ship, so this is proved on
+// the content and not only on the abstraction.
+for (const s of SCENARIOS) {
+  const deck = scenarioRecallItems(s.world, s.scenario);
+  const batches = recallBatches(deck);
+  ok(
+    `${s.key}: its real ${deck.length}-card deck batches losslessly and in order`,
+    canon(batches.flat()) === canon(deck) &&
+      batches.every(
+        (b) => b.length > 0 && b.length <= RECALL_BATCH_CEILING,
+      ) &&
+      batches.length === Math.ceil(deck.length / RECALL_BATCH_CEILING),
+    canon(batches.map((b) => b.length)),
+  );
+}
+
+// 03-09's source-read technique, applied to the renderer: whether the component
+// DELEGATES the chunking is a property of the source and cannot be recovered
+// from behaviour at this level. Comments stripped first, so the paragraph above
+// the call explaining the rule cannot satisfy it.
+{
+  const deckSource = readFileSync(
+    new URL("../src/components/practice/RecallDeck.tsx", import.meta.url),
+    "utf8",
+  )
+    .replace(/\/\*[\s\S]*?\*\//g, " ")
+    .replace(/^[ \t]*\/\/.*$/gm, " ");
+  ok(
+    "the deck component calls the one chunking author",
+    deckSource.includes("recallBatches(") &&
+      deckSource.includes("@/lib/recall-batches"),
+    "RecallDeck must consume src/lib/recall-batches.ts",
+  );
+  ok(
+    "the deck component does not spell its own chunking arithmetic",
+    !deckSource.includes("Math.ceil(") && !deckSource.includes("Math.floor("),
+    "a second author of the split is a second behaviour; the batching is inherited by ALL FOUR callers of the one recall renderer and there is deliberately no prop to opt one out",
+  );
+}
+
+group("the advertised sitting is not contradicted by what the page mounts");
+
+/* The budget, stated so a later reader does not have to infer it.
+ *
+ * TWO PROPERTIES OF IT ARE DELIBERATE AND MUST NOT BE "CORRECTED" AWAY:
+ *
+ *  1. The comparison is `>=`, so EXACTLY ZERO SLACK PASSES. A scenario sitting
+ *     precisely at its budget is making a claim it can keep, not breaking one.
+ *
+ *  2. THE BUDGET DELIBERATELY DOUBLE-COUNTS THE WARM-UP PHRASES. A scenario's
+ *     recall deck is its phrases PLUS its vocabulary (scenarioRecallItems), so
+ *     every warm-up phrase is charged twice: 20 seconds as a warm-up line in
+ *     PronunciationLab and 15 seconds again as a card in RecallDeck. That is
+ *     not an oversight. It makes the budget CONSERVATIVE, which is the only
+ *     direction an honesty invariant is allowed to err in. Removing the double
+ *     count would lower every scenario's required minutes and WEAKEN THIS
+ *     ASSERTION, which this repo forbids.
+ *
+ * When a scenario fails this, the fix is to raise ITS `minutes` to the smallest
+ * whole minute that clears it — a one-line honesty correction. Never lower a
+ * rate. */
+const SECONDS_PER_WARMUP_PHRASE = 20;
+const SECONDS_PER_RECALL_CARD = 15;
+
+for (const world of WORLDS) {
+  for (const scenario of world.scenarios) {
+    const key = `${world.slug}/${scenario.slug}`;
+    const phrases = (getScenarioPhrases(world.slug, scenario.slug) ?? []).length;
+    const cards = scenarioRecallItems(world.slug, scenario.slug).length;
+    const needed =
+      phrases * SECONDS_PER_WARMUP_PHRASE + cards * SECONDS_PER_RECALL_CARD;
+    const advertised = scenario.minutes * 60;
+    ok(
+      `${key}: its advertised ${scenario.minutes} min covers ${phrases} warm-up phrase(s) and a ${cards}-card deck`,
+      advertised >= needed,
+      `advertised ${advertised}s, needs ${needed}s — raise minutes to ${Math.ceil(needed / 60)}`,
+    );
+  }
+}
+
+group("the saturated payload stays under the cap the route enforces");
+
+/* 03-11 measured this by hand and recorded it in a summary line. A summary line
+ * is not a gate, and this phase spends the headroom — so the construction is
+ * reproduced here and asserted on every run, against the ROUTE'S OWN constant
+ * read out of its source rather than a number retyped here, so the two cannot
+ * drift. A 413 is a permanent drop in the sync queue, not a retry, so exceeding
+ * this is silent unrecoverable loss of a snapshot. */
+const routeSource = readFileSync(
+  new URL("../src/app/api/progress/route.ts", import.meta.url),
+  "utf8",
+)
+  .replace(/\/\*[\s\S]*?\*\//g, " ")
+  .replace(/^[ \t]*\/\/.*$/gm, " ");
+const capExpression = /MAX_BODY_BYTES\s*=\s*([0-9_ *]+);/.exec(routeSource)?.[1];
+// Parsed as a product of integers rather than eval'd: the route writes it as
+// `1024 * 1024`, and reading the shape keeps the harness honest about what it
+// found instead of silently accepting anything.
+const cap = capExpression
+  ?.split("*")
+  .map((part) => Number(part.replace(/_/g, "").trim()))
+  .reduce((a, b) => a * b, 1);
+ok(
+  "the route's body cap is readable from its own source",
+  typeof cap === "number" && Number.isFinite(cap) && cap > 0,
+  `MAX_BODY_BYTES parsed as: ${capExpression ?? "NOT FOUND"}`,
+);
+
+const saturatedIds = reviewableIds();
+const longestTitle = SCENARIOS.reduce(
+  (longest, s) => (s.title.length > longest.length ? s.title : longest),
+  "",
+);
+const saturated: ProgressState = {
+  ...EMPTY,
+  completed: Object.fromEntries(SCENARIOS.map((s) => [s.key, true as const])),
+  xp: Number.MAX_SAFE_INTEGER,
+  skillXp: {
+    grammar: Number.MAX_SAFE_INTEGER,
+    speaking: Number.MAX_SAFE_INTEGER,
+    reading: Number.MAX_SAFE_INTEGER,
+    writing: Number.MAX_SAFE_INTEGER,
+  },
+  streak: Number.MAX_SAFE_INTEGER,
+  lastActive: today(),
+  level: "C1",
+  srs: Object.fromEntries(
+    saturatedIds.map((id) => [id, { box: 5, due: addDays(180) }]),
+  ),
+  vocab: Object.fromEntries(
+    VOCAB_DECKS.flatMap((deck) =>
+      deck.cards.map((card) => [card.id, true as const]),
+    ),
+  ),
+  attempts: Object.fromEntries(
+    saturatedIds.map((id) => [
+      id,
+      {
+        topic: longestTitle,
+        level: "C1",
+        tries: Number.MAX_SAFE_INTEGER,
+        wrong: Number.MAX_SAFE_INTEGER,
+        resolved: true,
+        lastWrongOption: 3,
+        updatedAt: today(),
+      },
+    ]),
+  ),
+  todayXp: Number.MAX_SAFE_INTEGER,
+  xpDay: today(),
+  goalXp: Number.MAX_SAFE_INTEGER,
+  updatedAt: new Date().toISOString(),
+};
+
+// Serialised the way the sync queue does it: `{ progress: <state> }`
+// (sync-queue.ts ENDPOINTS.progress.envelope), measured in UTF-8 bytes the way
+// the route does (`Buffer.byteLength(text, "utf8")`).
+const saturatedBytes = Buffer.byteLength(
+  JSON.stringify({ progress: saturated }),
+  "utf8",
+);
+ok(
+  "a fully saturated ProgressState fits under the route's body cap",
+  typeof cap === "number" && saturatedBytes < cap,
+  `${saturatedBytes} B against a ${cap ?? "?"} B cap`,
+);
+
 /* ------------------------------------------------------------------ *
  * The phase's own progress meter — REPORTED, never asserted.
  *
@@ -2342,6 +2583,16 @@ console.log(`  vocabulary: ${withVocabulary}/${SCENARIOS.length} scenarios`);
 console.log(
   `  pairs:      ${COVERAGE_TOTALS.pairsWritten}/${COVERAGE_TOTALS.pairsTotal} written` +
     ` (${pendingPairs().length} pending)`,
+);
+// Printed, not asserted, on top of the assertion above: the headroom is what
+// this phase is spending, so it should be visible on every run rather than
+// recoverable only from a failure.
+console.log(
+  `  payload:    ${saturatedBytes.toLocaleString("en-US")} B saturated over` +
+    ` ${saturatedIds.length} scheduled id(s)` +
+    (typeof cap === "number"
+      ? ` — ${((saturatedBytes / cap) * 100).toFixed(1)}% of the ${cap.toLocaleString("en-US")} B cap`
+      : ""),
 );
 
 if (failures > 0) {
