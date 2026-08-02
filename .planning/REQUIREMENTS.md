@@ -50,9 +50,9 @@ constraint as v1 — **all content original**, third-party material is format re
 
 ### Content (curriculum expansion)
 
-- [ ] **CONT-03**: Each of the 6 worlds covers its full designed topic list with scenarios (e.g., Social includes humor and favors; Work includes networking and feedback; Practical includes housing and bank)
+- [x] **CONT-03**: Each of the 6 worlds covers its full designed topic list with scenarios — *satisfied as measured 2026-08-01: the design doc's topic list and `curriculum.ts` match one-for-one in all six worlds (Social 7, Work 7, Travel 6, Reading & Ideas 5, Practical 5, Sounding Native 5 = 35). The requirement's own examples — humor, favors, networking, feedback, housing, banking — all exist. Nothing was built for this; Phases 1–3 satisfied it as a side effect.*
 - [ ] **CONT-04**: Sounding Native world delivers native-level content: idioms, phrasal verbs, pronunciation drills, and register/culture
-- [ ] **CONT-05**: New content is graduated across CEFR levels (B1–C1) so difficulty progresses with the learner
+- [x] **CONT-05**: New content is graduated across CEFR levels (B1–C1) so difficulty progresses with the learner — *satisfied as measured 2026-08-01: the 35 scenarios span A2 ×4, B1 ×11, B2 ×13, C1 ×7, and Phase 3 authored every exercise at its scenario's declared level.*
 
 ### Tutor (AI tutor end-to-end)
 
@@ -118,9 +118,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROG-05 | Phase 2 | Complete |
 | CONT-01 | Phase 3 | Complete (52/52 pairs — plan 03-10; browser-confirmed at the 03-11 gate, 2026-08-01) |
 | CONT-02 | Phase 3 | Complete (35/35 phrases, 35/35 vocabulary — plan 03-04; SRS leg browser-confirmed at the 03-11 gate) |
-| CONT-03 | Phase 4 | Pending |
+| CONT-03 | Phase 4 | Complete (measured, not built — see requirement) |
 | CONT-04 | Phase 4 | Pending |
-| CONT-05 | Phase 4 | Pending |
+| CONT-05 | Phase 4 | Complete (measured, not built — see requirement) |
 | TUTOR-01 | Phase 5 | Pending |
 | TUTOR-02 | Phase 5 | Pending |
 | TUTOR-03 | Phase 5 | Pending |

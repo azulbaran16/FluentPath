@@ -15,7 +15,7 @@ FluentPath is live but incomplete: practice modes, accounts, and billing exist, 
 - [x] **Phase 2: Server-Side Progress** - Postgres becomes the authoritative, validated, retry-safe home of learner progress across devices
 - [x] **Phase 2.1: CELPIP Remaining Skills** (INSERTED 2026-07-30, URGENT) - Reading and Listening built to depth, Speaking to a usable minimum, before the beta user's exam
 - [x] **Phase 3: Every Scenario Practicable** - Audit and fill content so all existing scenarios offer real practice in every applicable skill, feeding SRS and weak topics
-- [ ] **Phase 4: Full Curriculum Expansion** - Expand the 6 worlds to their complete designed topic coverage with graduated B1–C1 and native-level content
+- [ ] **Phase 4: Native-Level Depth** (RESCOPED 2026-08-01) - CONT-03 and CONT-05 were satisfied as a side effect of Phases 1–3 and closed on measurement; what remains is CONT-04 alone: native-level depth in Sounding Native
 - [ ] **Phase 5: AI Tutor End-to-End** - Real Claude tutor live in production: scenario role-play, gentle correction, graceful gating/errors, progress credit
 
 ## Phase Details
@@ -218,11 +218,27 @@ Plans:
 - [x] 03-10-PLAN.md — CONT-01: Speaking — the last 16 pairs; CONT-01 closes at 52/52
 - [x] 03-11-PLAN.md — Phase gate: full suite, measured payload, derivation control re-proved, browser + phone pass
 
-### Phase 4: Full Curriculum Expansion
+### Phase 4: Native-Level Depth (RESCOPED 2026-08-01)
 
-**Goal**: The curriculum covers the full designed scope — every world's complete topic list, native-level Sounding Native material, and difficulty graduated across B1–C1
-**Depends on**: Phase 3 (extends the fully-practicable content baseline and reuses its content patterns)
-**Requirements**: CONT-03, CONT-04, CONT-05
+**Rescoped on measurement, not on opinion.** Before planning, the design doc's topic list was
+compared against `curriculum.ts` world by world. They match one-for-one — 35 designed topics,
+35 scenarios — so **CONT-03 was already satisfied**, including every example the requirement
+itself named (humor, favors, networking, feedback, housing, banking). Levels already span
+A2 x4, B1 x11, B2 x13, C1 x7, so **CONT-05 was already satisfied** too. Phases 1-3 closed both
+as a side effect; nothing was built for either. Both are marked Complete in REQUIREMENTS.md
+with that measurement recorded inside the requirement, so the tick is auditable.
+
+**What actually remains is CONT-04 alone.** Sounding Native's five scenarios carry Phase 3's
+floors — six phrases, eight vocabulary cards, a rehearsal each, two reading passages — but not
+native-level depth. Phase 3's own gate flagged this unprompted: `native/idioms` is original but
+"reads like any ELT textbook", and plan 03-04 deliberately held that world to floors because
+depth belongs in this phase.
+
+**Goal**: A learner reaching Sounding Native finds genuinely native-level material — idioms,
+phrasal verbs, pronunciation drills, and register/culture — rather than a fifth world sitting
+at the same depth as the other five
+**Depends on**: Phase 3 (extends its floors in that world)
+**Requirements**: CONT-04
 **Success Criteria** (what must be TRUE):
 
   1. Each world's scenario list covers its complete designed topic set (e.g., Social includes humor and favors; Work includes networking and feedback; Practical includes housing and bank)
