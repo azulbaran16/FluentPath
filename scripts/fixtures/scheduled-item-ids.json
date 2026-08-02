@@ -117,6 +117,7 @@
     "native/phrasal-verbs#phrase#brought-up-in-leeds": "54c93d97600636538c8eb24b2e46fe5695cc65e88cf97e345dfec17be4e91e6f",
     "native/phrasal-verbs#phrase#call-it-off": "68fafba4b7d13bcf911f69853ad2db179a9b61ea89da0f10b4810307118b0d94",
     "native/phrasal-verbs#phrase#catch-on-understand": "40751b55721bd873954391c105cda21f4a25c61706d3b079446ed0693698b49c",
+    "native/phrasal-verbs#phrase#didnt-think-wed-pull-it-off": "b11a363f707fd5ddbc8f4c5ad46a0a05f72d05f9410acd10c369f86b0a896b4a",
     "native/phrasal-verbs#phrase#fell-out-over-something": "5b162fe4435578810fe0ac855d1b59717a362829b4c592644d36316826624441",
     "native/phrasal-verbs#phrase#get-away-for-a-few-days": "15d136e1566e3f5f8c8f2078eb4ef54a0b0f004271d97cc015a0770ebd716822",
     "native/phrasal-verbs#phrase#get-away-with": "d48efea0ec67a071b47c81cbeb3868cc2b1f5a361b89449f55e8279dc3037df1",
@@ -124,20 +125,35 @@
     "native/phrasal-verbs#phrase#make-up-for-last-week": "ffaf2114ae4e3540f444ed3b98ee7fa7534dc4674a83e7b5510b2cb340032f5b",
     "native/phrasal-verbs#phrase#picked-up-in-a-kitchen": "49a152e28db8b4bd045668add37d21328338d4de367651de5afee977e6f72e4d",
     "native/phrasal-verbs#phrase#put-up-with": "4afff87b5e4425ccf53a9354fe2efd79eca045f333aa805a36430e0b7d232c15",
-    "native/phrasal-verbs#phrase#ran-into-at-the-airport": "3d6999c473358bf56a868a47f2bead8c1e8f5cccbf36612577694df1fb789520",
     "native/phrasal-verbs#phrase#taken-on-too-much": "33690b59a1b681e876c9103cdfe367f34052bdd7fc3c04d4dae854303a33bf96",
     "native/phrasal-verbs#phrase#turned-up-an-hour-late": "b04dbc9efceaeabf9b77b01f081312c60f07d445a03f8b759c81d39110fc63cd",
     "native/phrasal-verbs#phrase#went-through-with-it": "fb1c387b0f429cbeeaa75c99044987dc22afda80f9f92a5d3f06dc7a735d329e",
     "native/phrasal-verbs#phrase#whats-he-getting-at": "48d9e8b6510d5a2401cb5e7f36333939b0a64f839455ac507cf4006c9147407d",
     "native/phrasal-verbs#phrase#wound-up-staying": "51eb60196d3b06050806e6c069daf254b15d750f2f8be8e7cf78bea149905c9e",
+    "native/phrasal-verbs#vocab#break-down-machine": "70f43aa86b68771c9c027c0d2c7806a14c4c973fd745f4e96642e0b1a94e289c",
+    "native/phrasal-verbs#vocab#break-down-person": "a8af7ea83348e1a1b5916c86b82278cf5b06ce7db7c3f26f3c40ab0087843b73",
     "native/phrasal-verbs#vocab#catch-on": "c06ebdea391462f61d686deadbcfb86e6a6e76324c55ae0ae13fa8501a23179e",
+    "native/phrasal-verbs#vocab#come-across-find": "a3c168482bfaf4e0acad7aab7816a95739421db04bbc833ccf7bfb06d9853460",
     "native/phrasal-verbs#vocab#fall-through": "76a6fc92fc6d3bcc08f11f6ad00d998a5d5f224ae576f08326afa441599209c7",
+    "native/phrasal-verbs#vocab#go-off-alarm": "7f97039da926bf55dc18fe2dd0a69021f5fd8ae56659ddbde4186999a66bbe30",
+    "native/phrasal-verbs#vocab#go-off-food": "72fa440608af032994e1ce99dd4ac11aefd2af17a84d928ea4feb5a6a89f3557",
+    "native/phrasal-verbs#vocab#hold-up-delay": "ddb389b06ea4f5f041551d2a310a025e2ab2eed7bad2654c2551f55a43692237",
     "native/phrasal-verbs#vocab#pick-up-on": "7daa292e6f03fd4be0c95b15fde6abe5ee79621ba51abf039a8d65f56a03373e",
     "native/phrasal-verbs#vocab#put-someone-up": "1abbe6203e1b4e0355260fe9e87b10c7c4c3baaa2b9f84b7beb68109c82987de",
     "native/phrasal-verbs#vocab#run-something-by": "fe06b95add2c3f4c4b82fb4e7314bb07b434e27385770cbfe7dd80c1ed9ab408",
+    "native/phrasal-verbs#vocab#set-off-journey": "b1745bad85c83a8b81b5c6bf2ec8a05f088f58b225c5718e6281e8bf74c8c6ea",
+    "native/phrasal-verbs#vocab#set-up-arrange": "aa524810ca30a8b6252a85c02e7a8acc324a3d60ef12e566718f15d28ade3aab",
+    "native/phrasal-verbs#vocab#sort-out-fix": "36a6e032275652773d872c4143beb5db42437d9f0ebdbbd4bd8fbbd269c265c4",
     "native/phrasal-verbs#vocab#take-after": "17c58820be693d6cfcaed75d0033e74f3b3bbc2cebdd9d57a772ff7501951434",
+    "native/phrasal-verbs#vocab#take-in-absorb": "fa5fc07028363a03f43e791c4e05e4a463ebf7e0541581c4f8001a9fe93e9ca2",
+    "native/phrasal-verbs#vocab#take-in-deceive": "b67971e9a160334478dd1f4a92e0a5e3bf1633410a8e50f0b585aec3a5db7d5d",
+    "native/phrasal-verbs#vocab#take-up-hobby": "a3306019fd187abdc420ca63d265393e38e1419c4ece69292df7ae4d63ad0b31",
     "native/phrasal-verbs#vocab#talk-someone-into": "7e66abace555f2d9487fdd3de8202cd1a32014bda8ba1567caef90892e5b414c",
+    "native/phrasal-verbs#vocab#turn-out-transpire": "c4c3bd848eceb5dd9ed745d3ded000615b467b2204232c93fbdf53349a2c4570",
     "native/phrasal-verbs#vocab#wear-off": "401b7d612fab57359f21993c3bfdaae214161abc94deef69db432c8d12475655",
+    "native/phrasal-verbs#vocab#work-out-calculate": "fe9599f09410f2af1da123c06d4d83bd79f25f159f01f1de4586adfd77df3c5d",
+    "native/phrasal-verbs#vocab#work-out-exercise": "265cceb33dd1269c8dc32f0008ac2a86bed1e9e7638768a46d426fdcbb093810",
+    "native/phrasal-verbs#vocab#work-out-turn-out-well": "af92753a6849230bbef8c887786627d05f29209f5f3cfe6029ca63168c25e120",
     "native/pronunciation#phrase#brown-cow": "9dc684f867a0fe4ce00a39273e9321f82f7cc12ff3d77e6619b6ef2e502f102f",
     "native/pronunciation#phrase#peter-piper": "c2de19c74598227e7cd6e55e7b09d2780f0baef3697cda2e300e6fc65d1bb471",
     "native/pronunciation#phrase#red-lorry": "31126993c30341eaa40550ef4a0c5953d12b51451626bc47b159536edd7100bf",
@@ -532,5 +548,10 @@
     "work/presentations#vocab#signpost": "f5a8f0a8884cf1e00ee4c5827d678cdb08519231880c9ed87f2a7c548f52aa7d",
     "work/presentations#vocab#slide-deck": "c95de31b40b2fa085e9f347601455d4e2502aef119c73a695c4eadf1f02ea480"
   },
-  "retired": []
+  "retired": [
+    {
+      "id": "native/phrasal-verbs#phrase#ran-into-at-the-airport",
+      "reason": "04-01 Task 3: duplicated social/small-talk#vocab#run-into — same phrasal verb, same sense, same example frame (D-01). Retired rather than edited in place: the replacement carries its own slug (didnt-think-wed-pull-it-off). Committed at 1595c88, never deployed."
+    }
+  ]
 }

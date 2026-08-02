@@ -1655,8 +1655,24 @@ const DECKS: Record<string, ScenarioVocabCard[]> = {
     },
   ],
 
-  // B2. Eight verbs the six phrases do NOT use, so the scenario teaches
-  // fourteen rather than six twice.
+  // B2. The first eight cards were authored on a "one verb per card" rule —
+  // eight verbs the six phrases did not use. Phase 4 (CONT-04) took the deck to
+  // twenty-four and the sixteen additions are authored on a DIFFERENT rule,
+  // which is what makes them native-level rather than merely more:
+  //
+  //   THE UNIT IS VERB + PARTICLE + SENSE, NOT VERB + PARTICLE.
+  //
+  // Where a frequent verb carries two or three distinct dominant senses, there
+  // is one card per SENSE, the `term` names the sense in parentheses, and the
+  // `example` is written so it could not be reworded into the other sense.
+  // `take in`, `go off` and `break down` each get two; `work out` gets three.
+  // That is how the published frequency lists present them (PHaVE 2015:
+  // 150 phrasal verbs carrying 280 dominant senses), and it is the failure a C1
+  // learner actually still has — she knows the verb and picks the wrong sense.
+  //
+  // Nothing here repeats the eighteen phrases, the eight cards above, the five
+  // grammar questions or the briefing. The eight original ids are UNTOUCHED:
+  // `vocab` is a scheduled kind, so each is a live key in learner data.
   "native/phrasal-verbs": [
     {
       id: "take-after",
@@ -1705,6 +1721,106 @@ const DECKS: Record<string, ScenarioVocabCard[]> = {
       term: "catch on",
       es: "cuajar, ponerse de moda",
       example: "The word caught on quickly, and now everybody says it.",
+    },
+    {
+      id: "come-across-find",
+      term: "come across something (find it by chance)",
+      // Deliberately NOT "encontrarse algo por casualidad": `es` is the FRONT of
+      // the recall card, and social/small-talk's `run-into` card already fronts
+      // "encontrarse por casualidad". Two near-identical fronts expecting
+      // different answers is a defect the byte-identity harness cannot see.
+      es: "dar con algo sin ir buscándolo",
+      example: "I came across an old photo of the two of them at the back of a drawer.",
+    },
+    {
+      id: "hold-up-delay",
+      term: "hold something up (delay it)",
+      es: "retrasar algo, dejarlo parado",
+      example: "The whole move was held up by one missing signature.",
+    },
+    {
+      id: "go-off-alarm",
+      term: "go off (an alarm, a bomb)",
+      es: "sonar de golpe, estallar",
+      example: "The fire alarm went off during the exam and nobody moved.",
+    },
+    {
+      id: "go-off-food",
+      term: "go off (food that has spoiled)",
+      es: "echarse a perder, ponerse malo un alimento",
+      example: "The milk has gone off, so it's black tea or nothing.",
+    },
+    {
+      id: "take-in-absorb",
+      term: "take something in (absorb what you are told)",
+      es: "asimilar información",
+      example: "There was too much in that briefing to take in at one sitting.",
+    },
+    {
+      id: "take-up-hobby",
+      term: "take something up (start doing it regularly)",
+      es: "aficionarse a algo, empezar a practicarlo",
+      example: "He has taken up running, which none of us saw coming.",
+    },
+    {
+      id: "work-out-calculate",
+      term: "work something out (calculate it, puzzle it out)",
+      es: "calcular algo, deducir algo",
+      example: "It took me most of the meeting to work out who actually decided things.",
+    },
+    {
+      id: "work-out-turn-out-well",
+      term: "work out (end up fine in the end)",
+      es: "salir bien, acabar arreglándose",
+      example: "Stop rehearsing the disaster — these things usually work out.",
+    },
+    {
+      id: "work-out-exercise",
+      term: "work out (train at a gym)",
+      es: "entrenar, hacer ejercicio",
+      example: "He works out before work, which explains the alarm at five.",
+    },
+    {
+      id: "set-up-arrange",
+      term: "set something up (arrange or organise it)",
+      es: "organizar algo, montarlo",
+      example: "I've set up a call with them for Thursday afternoon.",
+    },
+    {
+      id: "set-off-journey",
+      term: "set off (start a journey)",
+      es: "ponerse en camino, salir de viaje",
+      example: "We set off at six to get ahead of the traffic on the ring road.",
+    },
+    {
+      id: "break-down-machine",
+      term: "break down (a machine stops working)",
+      es: "averiarse, estropearse",
+      example: "The car broke down twenty minutes short of the ferry.",
+    },
+    {
+      id: "break-down-person",
+      term: "break down (a person loses their composure)",
+      es: "derrumbarse, romper a llorar",
+      example: "He broke down halfway through the speech and everybody waited.",
+    },
+    {
+      id: "take-in-deceive",
+      term: "take somebody in (fool them completely)",
+      es: "engañar a alguien, colárselo",
+      example: "Don't be taken in by the first quote — ask two more firms.",
+    },
+    {
+      id: "sort-out-fix",
+      term: "sort something out (fix or settle a problem)",
+      es: "arreglar un asunto, solucionar un lío",
+      example: "We can't ship anything until somebody sorts out the licence.",
+    },
+    {
+      id: "turn-out-transpire",
+      term: "turn out (prove to be the case in the end)",
+      es: "resultar que, acabar siendo",
+      example: "It turned out we had been in the same class for a year.",
     },
   ],
 
