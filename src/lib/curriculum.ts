@@ -133,7 +133,7 @@ export const WORLDS: World[] = [
     color: "--plum",
     scenarios: [
       { slug: "idioms", title: "Idioms & expressions", blurb: "Use everyday idioms correctly and naturally.", level: "C1", skills: ["speaking", "reading"], minutes: 10 },
-      { slug: "phrasal-verbs", title: "Phrasal verbs", blurb: "Master the verbs natives can't live without.", level: "B2", skills: ["grammar", "speaking"], minutes: 17 },
+      { slug: "phrasal-verbs", title: "Phrasal verbs", blurb: "Master the verbs natives can't live without.", level: "B2", skills: ["grammar", "speaking"], minutes: 24 },
       { slug: "pronunciation", title: "Pronunciation & accent", blurb: "Tricky sounds, word stress, intonation, connected speech.", level: "B2", skills: ["speaking"], minutes: 10 },
       { slug: "register", title: "Register: formal ↔ casual", blurb: "Switch tone for the situation, from texts to contracts.", level: "C1", skills: ["writing", "speaking"], minutes: 9 },
       { slug: "culture", title: "Culture & references", blurb: "Catch the references natives drop in conversation.", level: "C1", skills: ["reading", "speaking"], minutes: 10 },

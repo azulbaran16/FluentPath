@@ -2441,6 +2441,9 @@ group("the advertised sitting is not contradicted by what the page mounts");
  *
  *  1. The comparison is `>=`, so EXACTLY ZERO SLACK PASSES. A scenario sitting
  *     precisely at its budget is making a claim it can keep, not breaking one.
+ *     Two scenarios sit at exactly zero as this is written — `social/small-talk`
+ *     and `native/phrasal-verbs` — and NEITHER is to be "corrected" upward.
+ *     Only NEGATIVE slack is a failure and only negative slack gets fixed.
  *
  *  2. THE BUDGET DELIBERATELY DOUBLE-COUNTS THE WARM-UP PHRASES. A scenario's
  *     recall deck is its phrases PLUS its vocabulary (scenarioRecallItems), so
@@ -2449,24 +2452,36 @@ group("the advertised sitting is not contradicted by what the page mounts");
  *     not an oversight. It makes the budget CONSERVATIVE, which is the only
  *     direction an honesty invariant is allowed to err in. Removing the double
  *     count would lower every scenario's required minutes and WEAKEN THIS
- *     ASSERTION, which this repo forbids.
+ *     ASSERTION, which this repo forbids. It is also why a scenario at nominal
+ *     zero slack still has real headroom underneath it: the margin is in the
+ *     rates, not in a rounded-up `minutes`.
+ *
+ * 04-02 added the THIRD rate. A scenario that also mounts a grammar quiz spends
+ * more than its phrases and its deck, so `GrammarQuiz` is charged too — 30
+ * seconds per question, which is reading a gapped sentence, weighing four
+ * options and reading the explanation afterwards. Both properties above carry
+ * forward unchanged across that extension.
  *
  * When a scenario fails this, the fix is to raise ITS `minutes` to the smallest
  * whole minute that clears it — a one-line honesty correction. Never lower a
  * rate. */
 const SECONDS_PER_WARMUP_PHRASE = 20;
 const SECONDS_PER_RECALL_CARD = 15;
+const SECONDS_PER_GRAMMAR_QUESTION = 30;
 
 for (const world of WORLDS) {
   for (const scenario of world.scenarios) {
     const key = `${world.slug}/${scenario.slug}`;
     const phrases = (getScenarioPhrases(world.slug, scenario.slug) ?? []).length;
     const cards = scenarioRecallItems(world.slug, scenario.slug).length;
+    const questions = (getScenarioGrammar(world.slug, scenario.slug) ?? []).length;
     const needed =
-      phrases * SECONDS_PER_WARMUP_PHRASE + cards * SECONDS_PER_RECALL_CARD;
+      phrases * SECONDS_PER_WARMUP_PHRASE +
+      cards * SECONDS_PER_RECALL_CARD +
+      questions * SECONDS_PER_GRAMMAR_QUESTION;
     const advertised = scenario.minutes * 60;
     ok(
-      `${key}: its advertised ${scenario.minutes} min covers ${phrases} warm-up phrase(s) and a ${cards}-card deck`,
+      `${key}: its advertised ${scenario.minutes} min covers ${phrases} warm-up phrase(s), a ${cards}-card deck and ${questions} question(s)`,
       advertised >= needed,
       `advertised ${advertised}s, needs ${needed}s — raise minutes to ${Math.ceil(needed / 60)}`,
     );
@@ -2559,6 +2574,145 @@ ok(
   typeof cap === "number" && saturatedBytes < cap,
   `${saturatedBytes} B against a ${cap ?? "?"} B cap`,
 );
+
+/* ================================================================== *
+ * PHASE 4 (plan 04-02) — the topic strings behind the grammar banks.
+ *
+ * One group appended under the header's two-edit rule.
+ * ================================================================== */
+
+group("scenario grammar: the topic strings are the recorded ones, exactly");
+
+/* WHY A WRITTEN-OUT SET AND NOT A SHAPE CHECK.
+ *
+ * `recordAttempt` stores the topic a question was answered under and
+ * `weakTopics()` groups the learner's whole history by that EXACT string
+ * (src/lib/progress.ts). So the string is a stable identifier in live learner
+ * data, not display copy, and there are two silent failures it can suffer:
+ *
+ *   - a near-variant — "Phrasal verb particle", "Phrasal Verb Particles",
+ *     "Phrasal verb  particles" — SPLITS one learner's accumulated weak spot
+ *     into two half-populated ones, permanently, with nothing to detect it;
+ *   - a topic that ought to aggregate with the GLOBAL bank
+ *     (src/lib/content/grammar.ts) but is spelled a hair differently
+ *     FRAGMENTS the same teaching point across two surfaces.
+ *
+ * Neither is type-incorrect, neither renders wrong, and neither can be
+ * recovered after a learner has answered under both spellings. The header of
+ * scenario-grammar.ts already states this rule in prose; writing the sets out
+ * here makes it a rule the GATE holds rather than one the next author has to
+ * have read. Adding a question with a mistyped topic now fails loudly.
+ *
+ * TO ADD A TOPIC: change the set below in the same commit, deliberately, and
+ * treat the new string as permanent from that commit — exactly as an id is. */
+const RECORDED_TOPICS: Record<string, string[]> = {
+  "social/small-talk": [
+    "Echo questions",
+    "Past simple",
+    "Present simple vs continuous",
+    "Question tags",
+    "had better",
+  ],
+  "work/interviews": [
+    "Hedging with would",
+    "Indirect questions",
+    "Past perfect",
+    "Present perfect continuous",
+    "Second conditional",
+  ],
+  "work/emails": [
+    "First conditional",
+    "Gerund vs infinitive",
+    "Modals",
+    "Passive voice",
+    "Past continuous",
+  ],
+  // 04-02 introduced exactly one new permanent string here, "Phrasal verb
+  // senses", and copied the other three character for character from the five
+  // questions that predate it.
+  "native/phrasal-verbs": [
+    "Phrasal verb particles",
+    "Phrasal verb senses",
+    "Phrasal verb separability",
+    "Phrasal verbs vs formal verbs",
+  ],
+};
+
+const grammarDeclaringKeys = SCENARIOS.filter(
+  (s) => getScenarioGrammar(s.world, s.scenario) !== undefined,
+).map((s) => s.key);
+
+ok(
+  "every scenario that declares grammar has its topic set recorded here",
+  grammarDeclaringKeys.every((key) => key in RECORDED_TOPICS),
+  grammarDeclaringKeys.filter((key) => !(key in RECORDED_TOPICS)).join(", ") ||
+    "a scenario whose topics are not written out is a scenario whose topics nothing gates",
+);
+ok(
+  "no topic set is recorded for a scenario that has no grammar bank",
+  Object.keys(RECORDED_TOPICS).every((key) =>
+    grammarDeclaringKeys.includes(key),
+  ),
+  Object.keys(RECORDED_TOPICS)
+    .filter((key) => !grammarDeclaringKeys.includes(key))
+    .join(", "),
+);
+
+for (const s of SCENARIOS) {
+  const questions = getScenarioGrammar(s.world, s.scenario);
+  if (!questions) continue;
+  const recorded = RECORDED_TOPICS[s.key];
+  if (!recorded) continue;
+  const actual = [...new Set(questions.map((q) => q.topic))].sort();
+  ok(
+    `scenario grammar: ${s.key}'s distinct topics are exactly the recorded set`,
+    canon(actual) === canon([...recorded].sort()),
+    `bank: ${canon(actual)}\n      recorded: ${canon([...recorded].sort())} — a topic string is the key weakTopics() groups a learner's history by, so a near-variant splits it in two permanently. Change the recorded set deliberately, in the same commit, or fix the typo.`,
+  );
+}
+
+/* Character-for-character agreement with the global bank. Compared through a
+ * normalisation that is DELIBERATELY LOSSY — case, punctuation and runs of
+ * whitespace all collapse — because the failure being hunted is a string that
+ * MEANS the same and IS not the same. Two topics that normalise together must
+ * therefore be byte-identical; two that normalise apart are simply different
+ * teaching points and are left alone. */
+const normaliseTopic = (topic: string) =>
+  topic
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+
+const globalTopicsByNormal = new Map<string, Set<string>>();
+for (const q of GRAMMAR_QUESTIONS) {
+  const n = normaliseTopic(q.topic);
+  if (!globalTopicsByNormal.has(n)) globalTopicsByNormal.set(n, new Set());
+  globalTopicsByNormal.get(n)?.add(q.topic);
+}
+
+const scenarioTopicsByNormal = new Map<string, Set<string>>();
+for (const s of SCENARIOS) {
+  for (const q of getScenarioGrammar(s.world, s.scenario) ?? []) {
+    const n = normaliseTopic(q.topic);
+    if (!scenarioTopicsByNormal.has(n)) scenarioTopicsByNormal.set(n, new Set());
+    scenarioTopicsByNormal.get(n)?.add(q.topic);
+  }
+}
+
+for (const [n, spellings] of scenarioTopicsByNormal) {
+  ok(
+    `scenario grammar: "${[...spellings][0]}" has ONE spelling across every scenario bank`,
+    spellings.size === 1,
+    `${canon([...spellings])} — two scenarios spelling one teaching point differently fragment a single learner's history across both`,
+  );
+  const globalSpellings = globalTopicsByNormal.get(n);
+  if (!globalSpellings) continue;
+  ok(
+    `scenario grammar: "${[...spellings][0]}" matches the global bank character for character`,
+    globalSpellings.size === 1 && globalSpellings.has([...spellings][0]),
+    `scenario: ${canon([...spellings])} vs global: ${canon([...globalSpellings])} — the same teaching point on two surfaces has to be the same STRING, or a learner's weak spot is counted twice at half strength`,
+  );
+}
 
 /* ------------------------------------------------------------------ *
  * The phase's own progress meter — REPORTED, never asserted.
