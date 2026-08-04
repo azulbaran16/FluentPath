@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 37
+open_count: 39
 waived_count: 1
 fixed_count: 14
-total_count: 52
-last_updated: 2026-08-04T05:20:58.283Z
+total_count: 54
+last_updated: 2026-08-04T05:54:56.778Z
 ---
 
 # Broken Windows Ledger
@@ -67,6 +67,8 @@ last_updated: 2026-08-04T05:20:58.283Z
 | 50 | 04 | deviation | .planning/STATE.md |  | 04-01: WINDOWS 45 recurred for a tenth consecutive plan. state.advance-plan left current_phase at 03, wrote total_phases: 5 for a 6-phase project, and left the prose Progress line contradicting its own frontmatter (36 of 36 vs 37 of 45). Corrected by hand; the root cause in the tooling is still unfixed. | open |  | 2026-08-02T06:16:03.890Z |  |
 | 51 | 04 | deviation | .planning/STATE.md |  | 04-02: WINDOWS 45 recurred for an ELEVENTH consecutive plan and regressed rather than merely staling. state.advance-plan rewrote current_phase 04 -> 03 and total_phases 6 -> 5, and reported 'current_plan 11 / total_plans 11 / last_plan / ready_for_verification' -- it read PHASE 03's plan count while the project is on phase 04, plan 2 of 9. state.update-progress DELETED the informative Progress parenthetical outright ('37 of 45 plans (4 of 6 phases complete; Phase 4 has 9 plans written and 1 executed)' -> a bare '84%'), which is bug (a) escalated from stale to destructive. state.add-decision stamped [Phase ?] on all three new rows again. All corrected by hand; the 107 historical [Phase ?] rows were counted before and after to prove the blanket-replace trap of WINDOWS 45 was avoided. The last_activity_desc workaround (one physical line, written LAST) held again and parses as JSON. The Current Position body and Current focus were ALSO still describing Phase 03 plan 11 of 11 with 03-06 prose, pre-existing and never advanced by the tool -- rewritten by hand this run. Eleven plans is past the point where absorbing it again is reasonable. | open |  | 2026-08-04T05:20:57.768Z |  |
 | 52 | 04 | deviation | src/lib/content/grammar.ts |  | 04-02: six PRE-EXISTING exact duplicates in the grammar corpus, found by the mandated corpus scan and deliberately NOT fixed (every one is a committed id, so each costs a retirement under the 04-01 gate). The cross-surface one is the notable case: work/emails#grammar#look-forward-to-gerund's prompt is byte-identical to global b8's ('I look forward to ___ from you.'), so a learner answers the same question twice under two ids and only one namespaces to her scenario -- D-01 at the grammar grain. The other five are wholly inside src/lib/content/grammar.ts (a8==a17, a5==a21, c4==c14, c6==c18 explain, d3==d11). Full detail in .planning/phases/04-native-level-depth/deferred-items.md. No assertion was added either: it would fail on arrival, and a gate that fails on arrival gets disabled rather than fixed. | open |  | 2026-08-04T05:20:58.283Z |  |
+| 53 | 04 | deviation | src/lib/content/scenario-lessons.ts | 125 | native/idioms briefing tip[0] quotes two phrases retired at 04-03 (piece-of-cake, under-the-weather) and quotes them as expression=gloss; 04-04 owns the briefing | open |  | 2026-08-04T05:54:44.298Z |  |
+| 54 | 04 | deviation | src/lib/content/scenario-vocabulary.ts | 1607 | native/idioms 8 vocabulary cards recommended for retirement at 04-03 but MIN_VOCAB_CARDS=8 makes it illegal until replacements land; carried to 04-04, needs its own human approval | open |  | 2026-08-04T05:54:56.778Z |  |
 
 ````json
 [
@@ -692,6 +694,30 @@ last_updated: 2026-08-04T05:20:58.283Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-08-04T05:20:58.283Z",
+    "resolved_at": null
+  },
+  {
+    "id": 53,
+    "kind": "deviation",
+    "phase": "04",
+    "file": "src/lib/content/scenario-lessons.ts",
+    "line": 125,
+    "description": "native/idioms briefing tip[0] quotes two phrases retired at 04-03 (piece-of-cake, under-the-weather) and quotes them as expression=gloss; 04-04 owns the briefing",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-04T05:54:44.298Z",
+    "resolved_at": null
+  },
+  {
+    "id": 54,
+    "kind": "deviation",
+    "phase": "04",
+    "file": "src/lib/content/scenario-vocabulary.ts",
+    "line": 1607,
+    "description": "native/idioms 8 vocabulary cards recommended for retirement at 04-03 but MIN_VOCAB_CARDS=8 makes it illegal until replacements land; carried to 04-04, needs its own human approval",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-04T05:54:56.778Z",
     "resolved_at": null
   }
 ]
