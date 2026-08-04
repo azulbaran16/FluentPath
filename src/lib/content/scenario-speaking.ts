@@ -530,6 +530,35 @@ const BANK: Record<string, AuthoredSpeakingTask> = {
    * to another human being. So this one is word stress and connected speech
    * inside an utterance somebody has to act on. */
 
+  /* 04-08 option E — THE ONE REHEARSAL IN THIS WORLD MOVED OFF CONTRASTIVE
+   * REPETITION, and the reasons the other three keep theirs.
+   *
+   * The 03-11 gate recorded that four of the five Sounding Native rehearsals are
+   * the same drill — say it, say it again differently, name what changed — with
+   * `native/culture` the only escape, and ratified it as a stated design
+   * decision rather than debt, because comparison is the only self-markable
+   * device for style with nobody listening. That ratification stands. What it
+   * also said is that the shape demonstrably supports another design, and this
+   * is the one place where changing it costs nothing pedagogically.
+   *
+   * WHY THIS ONE. Contrast is not this scenario's subject. `native/register` IS
+   * the formal↔casual dial, `native/phrasal-verbs` IS the phrasal/single-word
+   * twin, and `native/pronunciation`'s three passes are the only self-marking
+   * available to a scenario whose scorer cannot hear what it drills (04-07).
+   * In all three, "say it again differently" is the thing being taught. Here the
+   * subject is using idioms like yourself rather than like a phrasebook, and
+   * saying the turn twice was a device borrowed from the neighbours rather than
+   * one this scenario needed. The world goes from four of five to three of five.
+   *
+   * THE DEVICE INSTEAD: predict-then-check, with a count and a ban. Nothing is
+   * said twice. The failure it exposes is the one D-04 named — reaching for an
+   * idiom because it is the only phrase you have — and it is checkable alone,
+   * because counting to two needs no listener.
+   *
+   * The slug is UNCHANGED and the title still describes the drill. A speaking id
+   * is unscheduled (SCHEDULED_ITEM_KINDS is phrase/vocab/grammar), so no
+   * learner's stored schedule is keyed by it and nothing in the id fixture moves;
+   * this rewrite is safe on live data in a way no other bank in this phase is. */
   "native/idioms": {
     slug: "two-idioms-inside-one-answer",
     title: "Two idioms inside one answer",
@@ -537,12 +566,12 @@ const BANK: Record<string, AuthoredSpeakingTask> = {
     setup:
       "A friend asks how the new job is going. You want to sound like yourself, not like a phrasebook.",
     moves: [
-      "Answer the question straight first, with no idiom anywhere in that sentence.",
-      "Bring two idioms into the rest of the turn, each doing work a plain sentence would do worse.",
-      "Say the turn again with both removed, and hear which parts got weaker.",
+      "Before you say anything, name out loud the two idioms you are going to spend.",
+      "Answer for a full minute and spend exactly those two — if a third turns up, let it go past.",
+      "Say where each one landed, and whether you reached for it because it fitted or because it was the only phrase you had.",
     ],
     success:
-      "Both idioms sat inside sentences you would have said anyway, and you can point at what each one bought you.",
+      "Exactly the two you named arrived, each inside a sentence you would have said anyway, and neither was there to fill a gap.",
   },
 
   "native/phrasal-verbs": {

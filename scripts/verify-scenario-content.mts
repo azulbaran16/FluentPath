@@ -3399,15 +3399,85 @@ group("04-08: what the declarations decision added");
     ),
     "a question restating a live vocabulary card is volume, not depth",
   );
-  // A register set whose right answer is always the formal option teaches that
-  // formal is correct, which is the opposite of this scenario's first line.
-  const casualAnswers = (registerGrammar ?? []).filter((q) =>
-    ["got let go", "Seen", "'m not", "am not"].includes(q.options[q.answer]),
-  ).length;
+  /* A register set whose right answer is always the formal option teaches that
+   * formal is correct and casual is sloppy, which is the opposite of this
+   * scenario's first line. So the DIRECTION of each answer is pinned.
+   *
+   * The expected answer is written out per slug rather than counted off a list
+   * of option strings. An earlier draft of this assertion counted "casual
+   * answers" by testing whether the selected option appeared in a list that held
+   * BOTH "'m not" and "am not" — so `full-form-as-emphasis` satisfied it whichever
+   * way its answer pointed, and a mutation that flipped two answers survived.
+   * Pinning the exact string per slug is what makes each flip fail. */
+  const EXPECTED_ANSWER: Record<string, string> = {
+    "full-form-as-emphasis": "am not",
+    "ellipsis-casual-speech": "Seen",
+    "negative-inversion-formal-notice": "did we agree",
+    "get-passive-casual": "got let go",
+    "must-in-written-notice": "must",
+  };
+  // The two whose correct answer is the CASUAL form. `full-form-as-emphasis` is
+  // deliberately in NEITHER list: its setting is casual but its answer is the
+  // full form, which is the whole point of that question and would be miscounted
+  // as either.
+  const CASUAL_FORM = ["ellipsis-casual-speech", "get-passive-casual"];
+  const FORMAL_FORM = ["negative-inversion-formal-notice", "must-in-written-notice"];
+  const slugOf = (id: string) => id.split("#").pop() ?? "";
+  for (const q of registerGrammar ?? []) {
+    ok(
+      `native/register#${slugOf(q.id)}: its answer is the option the teaching point requires`,
+      q.options[q.answer] === EXPECTED_ANSWER[slugOf(q.id)],
+      `selected "${q.options[q.answer]}", expected "${EXPECTED_ANSWER[slugOf(q.id)]}"`,
+    );
+  }
   ok(
     "the register set runs in BOTH directions, not only towards formal",
-    casualAnswers >= 2,
-    `${casualAnswers} of ${registerGrammar?.length ?? 0} questions have an answer that is the CASUAL choice — the dial goes both ways`,
+    CASUAL_FORM.every(
+      (s) =>
+        (registerGrammar ?? []).find((q) => slugOf(q.id) === s)?.options[
+          (registerGrammar ?? []).find((q) => slugOf(q.id) === s)!.answer
+        ] === EXPECTED_ANSWER[s],
+    ) &&
+      FORMAL_FORM.every(
+        (s) =>
+          (registerGrammar ?? []).find((q) => slugOf(q.id) === s)?.options[
+            (registerGrammar ?? []).find((q) => slugOf(q.id) === s)!.answer
+          ] === EXPECTED_ANSWER[s],
+      ),
+    "two answers must be the CASUAL form and two the FORMAL one — the dial goes both ways",
+  );
+}
+
+/* 04-08 option E: the Sounding Native rehearsal echo, held at THREE of five.
+ *
+ * The 03-11 gate ratified contrastive repetition as a stated design decision and
+ * that ratification stands — this is not an assertion that the shape is wrong.
+ * It is an assertion that `native/idioms` specifically has been moved off it, so
+ * the change cannot be quietly reverted, and a REPORTED count of the rest so the
+ * gate's standing instruction ("do not make Sounding Native five of five") is
+ * visible on every run rather than remembered. */
+{
+  const REPEAT = /\bagain\b|\bsame (sentence|thing|turn|fact)\b|a third time/i;
+  const idioms = getScenarioSpeaking("native", "idioms");
+  ok(
+    "native/idioms' rehearsal does not instruct a repetition",
+    !!idioms && !idioms.moves.some((m) => REPEAT.test(m)),
+    `moves: ${idioms?.moves.join(" | ")} — 04-08 moved this one onto predict-then-check with a count and a ban; contrast is not this scenario's subject the way it is register's, phrasal-verbs' and pronunciation's`,
+  );
+  const nativeRehearsals = SCENARIOS.filter((s) => s.world === "native")
+    .map((s) => getScenarioSpeaking(s.world, s.scenario))
+    .filter((t): t is NonNullable<typeof t> => !!t);
+  const contrastive = nativeRehearsals.filter((t) =>
+    t.moves.some((m) => REPEAT.test(m)),
+  ).length;
+  ok(
+    "Sounding Native is not five of five contrastive-repetition rehearsals",
+    contrastive <= 4,
+    `${contrastive} of ${nativeRehearsals.length} — the 03-11 gate's standing instruction to Phase 4`,
+  );
+  console.log(
+    `  rehearsals: ${contrastive}/${nativeRehearsals.length} Sounding Native rehearsals are contrastive repetition` +
+      ` — reported, and ratified at the 03-11 gate`,
   );
 }
 

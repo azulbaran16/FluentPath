@@ -462,12 +462,17 @@ const BANK: Record<string, AuthoredGrammarQuestion[]> = {
    * split between recognition and production that native/pronunciation's deck
    * and warm-up already run on.
    *
-   * AND IT RUNS IN BOTH DIRECTIONS. Three of the five have a CASUAL answer.
+   * AND IT RUNS IN BOTH DIRECTIONS. Two of the five have a CASUAL form as the
+   * right answer (ellipsis-casual-speech, get-passive-casual) and two have a
+   * FORMAL one (negative-inversion-formal-notice, must-in-written-notice).
    * A register set whose right answer is always the more formal option teaches
    * that formal is correct and casual is sloppy, which is the opposite of this
    * scenario — the dial goes both ways, and the briefing says so in its first
-   * line. Two of the five are cases where both options are perfectly
-   * grammatical and only the reader decides, which is the actual C1 skill. */
+   * line. The fifth, full-form-as-emphasis, is in NEITHER group on purpose: its
+   * setting is casual and its answer is the full form, which is the direction
+   * learners never expect and which either group would miscount. In two of the
+   * five both options are perfectly grammatical and only the reader decides,
+   * which is the actual C1 skill. */
   "native/register": [
     {
       slug: "full-form-as-emphasis",
