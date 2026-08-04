@@ -126,7 +126,7 @@ The ambiguity is gone, so the next session does not need a conversation — it n
 one-way architectural choice (a second, unkeyed card space) plus a licensing question, and it
 should go to the user as a priced menu the way 04-08's container options did.
 
-Only then a milestone: .
+Only then a milestone: `/gsd-new-milestone`.
 
 ## Sources
 
