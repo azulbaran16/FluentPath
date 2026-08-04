@@ -1595,63 +1595,213 @@ const DECKS: Record<string, ScenarioVocabCard[]> = {
 
   // ── Sounding Native ───────────────────────────────────────────
   //
-  // All five sit at their DECLARED CEFR level and at the same D-04 floors as
-  // every other scenario. The fuller native-level treatment of this world —
-  // deeper idiom work, phrasal-verb families, pronunciation drills, register
-  // and culture at native level — is CONT-04, and 03-CONTEXT defers it to
-  // Phase 4. A deck that tried to be that here would overshoot this phase and
-  // leave Phase 4 nothing to add.
+  // Phase 3 held all five of these to the same D-04 floors as every other
+  // scenario — six phrases, eight cards — and said so, because the fuller
+  // native-level treatment of the world is CONT-04. Phase 4 IS that treatment
+  // and it lands one scenario at a time, so this block no longer describes all
+  // five alike: `phrasal-verbs` and `idioms` have had it (24 cards each) and
+  // `pronunciation`, `register` and `culture` still sit at the floor. Read each
+  // deck's own header for which rule it was authored under.
 
-  // C1. The six existing PHRASES are the six best-known idioms; these are eight
-  // more, so the deck extends the set rather than glossing it a second time.
+  // C1. The eight cards this deck used to hold were the canonical "core idiom"
+  // list — once in a blue moon, beat around the bush, let the cat out of the bag
+  // and the rest. Grant (2005) searched 104 of those in the BNC and found that
+  // NONE reaches the top 5,000 multiword items (0.14–0.25 per million words), so
+  // they are the rarest phraseology in English, and adding twenty more of them
+  // would have made the deck bigger and no more native. All eight were retired
+  // by an explicit human decision at 04-04 — six of them existed nowhere else in
+  // the app, so that decision deleted material rather than merely de-duplicating
+  // it, and it was taken with that fact stated. The twenty-four below are
+  // authored on a different rule, and the rule is what makes them native-level:
+  //
+  //   THE PHRASES ARE WHOLE TURNS; THESE ARE THE CHUNKS YOU DROP INSIDE A
+  //   SENTENCE YOU BUILD YOURSELF.
+  //
+  // That division is why the deck does not restate the warm-up. `phrases.ts`
+  // holds eighteen complete things to say — "I wouldn't go that far", "The
+  // timing isn't ideal". A card here is a noun phrase or a verb phrase that has
+  // to be fitted into a sentence of the learner's own, which is the harder and
+  // commoner production problem, and none of the eighteen appears in any field
+  // below.
+  //
+  // Selected on 04-RESEARCH §1's criteria, in the same order the warm-up was:
+  //
+  //   1. FREQUENT rather than dictionary-attested — expressions a native would
+  //      produce this month. `now and again` is here and `once in a blue moon`
+  //      is not, and those two mean roughly the same thing: that swap is the
+  //      whole re-selection in one line.
+  //   2. FIGURATIVE, NOT CORE IDIOM (Grant & Bauer 2004). `play it by ear` and
+  //      `move the goalposts` are figuratives — the parts visibly contribute, so
+  //      they are both frequent and teachable. `let the cat out of the bag` is a
+  //      core idiom, which is the class this deck was rescued from.
+  //   3. THE SENSE IS PINNED, because `ScenarioVocabCard` is {id, term, es,
+  //      example} and has NOWHERE TO PUT A REGISTER NOTE — unlike a phrase,
+  //      which carries a `tip`. That shape leaves exactly two levers, so both
+  //      are used deliberately: a polysemous form NAMES its sense in the term's
+  //      parenthesis (`down the line (later, not now)`), and every `example` is
+  //      built so it could not be reworded to carry the other sense.
+  //   4. CHOSEN BECAUSE A C1 LEARNER GETS THAT PARTICULAR THING WRONG. For this
+  //      scenario that is MIS-PLACEMENT — deploying an expression where a plain
+  //      sentence belongs — so the last six cards are deliberately the dullest
+  //      in the deck. Their value IS being unremarkable, and a learner who
+  //      reaches for one of them instead of a colourful idiom has learned the
+  //      thing this scenario exists to teach.
+  //
+  // Four strands of six. Nothing here appears in the scenario's reading passage,
+  // and nothing glosses one of the four expressions that passage deliberately
+  // withholds — both gated in scripts/verify-scenario-content.mts, so a future
+  // addition that breaks either fails loudly rather than quietly.
   "native/idioms": [
+    // ── The state a thing is in: the chunk that says it exactly ──
     {
-      id: "once-in-a-blue-moon",
-      term: "once in a blue moon",
-      es: "muy de vez en cuando",
-      example: "We only go into town once in a blue moon these days.",
+      id: "up-in-the-air",
+      term: "up in the air",
+      es: "en el aire, sin decidir todavía",
+      example: "The date's still up in the air — they haven't booked the room.",
     },
     {
-      id: "beat-around-the-bush",
-      term: "beat around the bush",
-      es: "andarse por las ramas",
-      example: "Stop beating around the bush and tell me what it cost.",
+      id: "a-grey-area",
+      term: "a grey area",
+      es: "una zona gris: ni permitido ni prohibido",
+      example: "Working from another country is a grey area in most contracts.",
     },
     {
-      id: "bite-the-bullet",
-      term: "bite the bullet",
-      es: "hacer de tripas corazón",
-      example: "I bit the bullet and booked the flight before I changed my mind.",
+      id: "on-the-back-burner",
+      term: "put something on the back burner",
+      es: "aparcar algo sin descartarlo",
+      example: "We've put the redesign on the back burner until the summer.",
     },
     {
-      id: "last-straw",
-      term: "the last straw",
-      es: "la gota que colma el vaso",
-      example: "Losing the keys again was the last straw.",
+      id: "a-non-starter",
+      term: "a non-starter",
+      es: "algo descartado de entrada",
+      example: "That idea's a non-starter — the budget closed in March.",
     },
     {
-      id: "arm-and-a-leg",
-      term: "cost an arm and a leg",
-      es: "costar un ojo de la cara",
-      example: "The tickets cost an arm and a leg, and it rained all weekend.",
+      id: "in-the-pipeline",
+      term: "in the pipeline",
+      es: "ya previsto y en marcha",
+      example: "There are two more hires in the pipeline for the autumn.",
     },
     {
-      id: "cat-out-of-the-bag",
-      term: "let the cat out of the bag",
-      es: "irse de la lengua",
-      example: "His brother let the cat out of the bag about the party.",
+      id: "a-foregone-conclusion",
+      term: "a foregone conclusion",
+      es: "algo decidido de antemano",
+      example: "By the time we sat down, the vote was a foregone conclusion.",
+    },
+
+    // ── Judging something without committing yourself ────────────
+    {
+      id: "hit-and-miss",
+      term: "hit and miss",
+      es: "irregular: unas veces sale y otras no",
+      example: "Their coffee is hit and miss, depending on who's working.",
     },
     {
-      id: "on-the-ball",
-      term: "on the ball",
-      es: "espabilado, muy al tanto",
-      example: "Ask Marta — she's completely on the ball with the new system.",
+      id: "a-mixed-bag",
+      term: "a mixed bag",
+      es: "de todo un poco, desigual",
+      example: "You get a mixed bag at that market — two good stalls and four tired ones.",
     },
     {
-      id: "blessing-in-disguise",
-      term: "a blessing in disguise",
-      es: "no hay mal que por bien no venga",
-      example: "Missing that train turned out to be a blessing in disguise.",
+      id: "par-for-the-course",
+      term: "par for the course",
+      es: "lo habitual aquí, por desgracia",
+      example: "Nobody complains about the twenty-minute wait; it's par for the course.",
+    },
+    {
+      id: "a-long-shot",
+      term: "a long shot",
+      es: "poco probable, pero se intenta igual",
+      example: "It's a long shot, but I'll ask whether they'd hold the room.",
+    },
+    {
+      id: "a-pinch-of-salt",
+      term: "take something with a pinch of salt",
+      es: "no tomárselo al pie de la letra",
+      example: "He does exaggerate, so take the figure with a pinch of salt.",
+    },
+    {
+      id: "a-bit-of-a-stretch",
+      term: "a bit of a stretch",
+      es: "una interpretación algo forzada",
+      example: "Calling one bad Monday a crisis is a bit of a stretch.",
+    },
+
+    // ── What people do to each other, and what naming it costs ───
+    {
+      id: "move-the-goalposts",
+      term: "move the goalposts",
+      es: "cambiar las reglas a mitad de partido",
+      example: "They moved the goalposts twice after we'd already signed.",
+    },
+    {
+      id: "a-quiet-word",
+      term: "have a quiet word (with someone)",
+      es: "hablarlo en privado, sin exponer a nadie",
+      example: "Rather than raise it in the meeting, she had a quiet word with him afterwards.",
+    },
+    {
+      id: "let-something-slide",
+      term: "let something slide (not enforce it)",
+      es: "dejar algo pasar en vez de exigirlo",
+      example: "I let the first two late deliveries slide, and now it's every week.",
+    },
+    {
+      id: "keep-someone-in-the-loop",
+      term: "keep someone in the loop",
+      es: "mantener a alguien al corriente",
+      example: "Send it to both of us and keep me in the loop while I'm away.",
+    },
+    {
+      id: "a-heads-up",
+      term: "a heads-up",
+      es: "un aviso previo",
+      example: "Thanks for the heads-up — I'd have walked into that meeting cold.",
+    },
+    {
+      id: "hold-it-against-someone",
+      term: "hold something against someone",
+      es: "guardárselo a alguien, tenérselo en cuenta",
+      example: "She decided not to come, and nobody here holds it against her.",
+    },
+
+    // ── The unremarkable ones: their value is not being noticed ──
+    {
+      id: "for-the-time-being",
+      term: "for the time being",
+      es: "por ahora, de momento",
+      example: "For the time being we're using the old system, and nobody minds.",
+    },
+    {
+      id: "now-and-again",
+      term: "now and again",
+      es: "de vez en cuando",
+      example: "We still see each other now and again, though less than we used to.",
+    },
+    {
+      id: "down-the-line",
+      term: "down the line (later, not now)",
+      es: "más adelante",
+      example: "Six months down the line, you'll be glad you kept the receipts.",
+    },
+    {
+      id: "play-it-by-ear",
+      term: "play it by ear (decide as you go)",
+      es: "improvisar sobre la marcha",
+      example: "Let's not book anything for Sunday — we'll play it by ear.",
+    },
+    {
+      id: "off-the-record",
+      term: "off the record",
+      es: "extraoficialmente, que no conste",
+      example: "Off the record, nobody expects that deadline to hold.",
+    },
+    {
+      id: "sooner-rather-than-later",
+      term: "sooner rather than later",
+      es: "cuanto antes, sin declarar urgencia",
+      example: "It needs deciding sooner rather than later, before the prices change.",
     },
   ],
 

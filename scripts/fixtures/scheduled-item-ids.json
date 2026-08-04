@@ -111,14 +111,30 @@
     "native/idioms#phrase#to-be-fair-she-did": "7a6bd684893c9e595369fbd2e2493051f6b6fd3d05ce33d61fe8487c2e313126",
     "native/idioms#phrase#true-up-to-a-point": "cc6470e4ffaf1fc869b9475b9bc427adad0c5633e279266dc1210491e95d36ac",
     "native/idioms#phrase#wouldnt-go-that-far": "bc04ae538957a8d698a85e14b12c03c000fdc6177227394aad183eaf56324d6b",
-    "native/idioms#vocab#arm-and-a-leg": "de37cb6bf6055fc99710ddd737445603db3a75b7345104f31085f369154322a4",
-    "native/idioms#vocab#beat-around-the-bush": "3465fbf32db01889f8bf4d171cdfb77ee64c0e9bbbdd023ee0b0e81599f88a9b",
-    "native/idioms#vocab#bite-the-bullet": "9694b05119bba72c83808b1f6bfbea12d30d9679072b9a8eaf4e414091e4371f",
-    "native/idioms#vocab#blessing-in-disguise": "b60016d23cc8132b2b563c7fcd4133225fc5fb24a139df832eaca2ad2bc34410",
-    "native/idioms#vocab#cat-out-of-the-bag": "061fb5fb8db93aacd4acf9dbb6cdff99515985b5f9e03ff9bf36570a43f33054",
-    "native/idioms#vocab#last-straw": "615014fe04630d984ceb9b15d35c3c033961e214983cdc1f3f79e0aed763b1fa",
-    "native/idioms#vocab#on-the-ball": "a0011af3648ffd8a72bc7d87c79eccbcb162a5eeb0de0d0c8a14a2f3cb3665d4",
-    "native/idioms#vocab#once-in-a-blue-moon": "3721b701c1e84e5c0c2d2c1d1f632c685c04a76f5321e53fa0db9299685bf926",
+    "native/idioms#vocab#a-bit-of-a-stretch": "8263f4760b9c4ed0dafb2df2d17edc771a08c7c52d390f382969670168a14bd4",
+    "native/idioms#vocab#a-foregone-conclusion": "13611dfc2c9cd7c79f0f3ee5c8cefa53852b99c2ca2a41628d1e011552d5aebd",
+    "native/idioms#vocab#a-grey-area": "55f342262f1437ce138a6f764030befec9487057a53a445643c61f2f91cadacf",
+    "native/idioms#vocab#a-heads-up": "be729ae524c40ede767898b7c443735f6372c9e447f848e22e5c9970eda1db0e",
+    "native/idioms#vocab#a-long-shot": "25655eb910afbe593e92a93d4bc2114f478c22734664051fe35e3ef56069d416",
+    "native/idioms#vocab#a-mixed-bag": "3c57c82277fcaa0252ed7823a1203bbc88ac9d4d6e1dea06e179b8d5387c453c",
+    "native/idioms#vocab#a-non-starter": "c4b93fc72807361d6c2014a1c279d73f7c5eedb7953c693ccce78c8b37cc6587",
+    "native/idioms#vocab#a-pinch-of-salt": "0ee90d6dd271a916ff0950d71a9fa3113da9ffc129aba09fc1ff9c9ece2dec9e",
+    "native/idioms#vocab#a-quiet-word": "ea72487067f5fe8150623d6c44e8ac4ecf6843067d6363e9362d323704725573",
+    "native/idioms#vocab#down-the-line": "707db456863531fda514eea862fd2d7edde24fe79aaa0553812b1681448159f6",
+    "native/idioms#vocab#for-the-time-being": "aef129bca01c6333553c71f44af733a1a31e7395ff663f833cb39bb25eeb9e20",
+    "native/idioms#vocab#hit-and-miss": "0c67c83641c7e78df2d617a916dda8703d2990c912288ffe1bf9fe3986ff2434",
+    "native/idioms#vocab#hold-it-against-someone": "239f03a6003d04a6f80ebc85ec437f3a6856e8177af8187982dfd67e8db8abe4",
+    "native/idioms#vocab#in-the-pipeline": "9632dd441e24c8376af76ab04b6bc7609fdd9ebfee6ae671dc61d3c0b6bd44e2",
+    "native/idioms#vocab#keep-someone-in-the-loop": "f88f9f7b32ca289842520c32fae6236afd36a19b42885f18d4bae8a073a667dd",
+    "native/idioms#vocab#let-something-slide": "27f782805c1798a67e5147f0ac8ab668c6e86ce9c6568e61b38bbe8683537d0d",
+    "native/idioms#vocab#move-the-goalposts": "92249b99c68549aa9c02d96f4f054a7f9a93373e163f462b4484db9426004fc0",
+    "native/idioms#vocab#now-and-again": "0b0d1440ef9383665268f32eea137c0efc557fcdee9d3b86c1a22223c8cf94eb",
+    "native/idioms#vocab#off-the-record": "52a40d0cbff63b701708a2aad8d0c5f1a9d96526f9f6763c8caea75b1c31e4fa",
+    "native/idioms#vocab#on-the-back-burner": "085d06bd2d349f3c4c07507a7759718d7d7f6c5c7a6f314ebab5b5b33fd46277",
+    "native/idioms#vocab#par-for-the-course": "51dca7040112c16108e154595b45dda99175d20a570907d06d0949fa66927fb8",
+    "native/idioms#vocab#play-it-by-ear": "875e9faa97d055d47a94b86f5f38b6ec09f91f43e8cba33eecbf4eb854484ef2",
+    "native/idioms#vocab#sooner-rather-than-later": "c32adac7378b623772e94be7d6610e83b14747e44b77df56591d97357981d427",
+    "native/idioms#vocab#up-in-the-air": "19d056628bec86cb3fd970481038385488f7b528cf7f024b3c5cc024f5de708a",
     "native/phrasal-verbs#grammar#fixed-form-get-rid-of": "23372cfcb5aa46fe15e357612f65dce457bd0873b5b5c4b33e11038c4248ffc2",
     "native/phrasal-verbs#grammar#inseparable-do-without": "ee7bf5759a371c5cfdde7184f004bdc83ba3c013815454dc700cd23a842d4689",
     "native/phrasal-verbs#grammar#particle-drag-on": "7bd4bfe2ff55f1700610d2ae64766adfb6335070f8300f79a78e1c9f74e59add",
@@ -594,6 +610,38 @@
     {
       "id": "native/idioms#phrase#under-the-weather",
       "reason": "04-03 Task 1, approved as `retire-recommended`. Core-idiom class, and carried no tip. Quoted verbatim in the scenario's own briefing tip and taught again in the global vocabulary deck `idioms` with the same gloss — the same canonical item on three surfaces at once, which is what 03-11's gate meant by \"reads like any ELT textbook\"."
+    },
+    {
+      "id": "native/idioms#vocab#arm-and-a-leg",
+      "reason": "04-04 Task 1, approved by the user as `stands` after being shown the asymmetry with the phrase decision: SIX of these eight exist NOWHERE ELSE in the corpus, so retiring them deletes the expression from the product rather than merely de-duplicating it. That fact did NOT carry over from 04-03 (where 5 of 14 survived in the global decks) and the decision was taken with it stated. Selection ground shared by all eight: the canonical \"core idiom\" class — Grant (2005) found none of 104 such items reaches the top 5,000 multiword units in the BNC (0.14–0.25 per million words), the rarest phraseology in English, so volume could not fix this deck and re-selection was the only move. `ScenarioVocabCard` has no `tip` field and the fixture hash covers every field, so a KEPT card could never have been improved either — it would have stayed exactly as weak as it was, permanently. Hyperbolic core idiom. The C1 failure with it is mis-placement — reaching for colour where a plain sentence belongs — which is the exact failure this scenario now exists to teach against, and the card modelled the failure rather than the fix. Existed nowhere else in the corpus; the expression leaves the app."
+    },
+    {
+      "id": "native/idioms#vocab#beat-around-the-bush",
+      "reason": "04-04 Task 1, approved by the user as `stands` after being shown the asymmetry with the phrase decision: SIX of these eight exist NOWHERE ELSE in the corpus, so retiring them deletes the expression from the product rather than merely de-duplicating it. That fact did NOT carry over from 04-03 (where 5 of 14 survived in the global decks) and the decision was taken with it stated. Selection ground shared by all eight: the canonical \"core idiom\" class — Grant (2005) found none of 104 such items reaches the top 5,000 multiword units in the BNC (0.14–0.25 per million words), the rarest phraseology in English, so volume could not fix this deck and re-selection was the only move. `ScenarioVocabCard` has no `tip` field and the fixture hash covers every field, so a KEPT card could never have been improved either — it would have stayed exactly as weak as it was, permanently. Fully opaque core idiom. 04-RESEARCH §1.5 names it as the OTHER fixedness example (*beat round the bushes), and the card carried no way to teach that, because the shape has no tip field. Existed nowhere else in the corpus; the expression leaves the app."
+    },
+    {
+      "id": "native/idioms#vocab#bite-the-bullet",
+      "reason": "04-04 Task 1, approved by the user as `stands` after being shown the asymmetry with the phrase decision: SIX of these eight exist NOWHERE ELSE in the corpus, so retiring them deletes the expression from the product rather than merely de-duplicating it. That fact did NOT carry over from 04-03 (where 5 of 14 survived in the global decks) and the decision was taken with it stated. Selection ground shared by all eight: the canonical \"core idiom\" class — Grant (2005) found none of 104 such items reaches the top 5,000 multiword units in the BNC (0.14–0.25 per million words), the rarest phraseology in English, so volume could not fix this deck and re-selection was the only move. `ScenarioVocabCard` has no `tip` field and the fixture hash covers every field, so a KEPT card could never have been improved either — it would have stayed exactly as weak as it was, permanently. Core-idiom class, AND duplicated: the global deck `idioms` teaches it at src/lib/content/vocabulary.ts:92 with its own gloss and example. One of only two of the eight whose material survives elsewhere in the app, so retiring here removes a doubling rather than the expression."
+    },
+    {
+      "id": "native/idioms#vocab#blessing-in-disguise",
+      "reason": "04-04 Task 1, approved by the user as `stands` after being shown the asymmetry with the phrase decision: SIX of these eight exist NOWHERE ELSE in the corpus, so retiring them deletes the expression from the product rather than merely de-duplicating it. That fact did NOT carry over from 04-03 (where 5 of 14 survived in the global decks) and the decision was taken with it stated. Selection ground shared by all eight: the canonical \"core idiom\" class — Grant (2005) found none of 104 such items reaches the top 5,000 multiword units in the BNC (0.14–0.25 per million words), the rarest phraseology in English, so volume could not fix this deck and re-selection was the only move. `ScenarioVocabCard` has no `tip` field and the fixture hash covers every field, so a KEPT card could never have been improved either — it would have stayed exactly as weak as it was, permanently. Core-idiom class, AND duplicated: the global deck `idioms2` teaches it at src/lib/content/vocabulary.ts:206. The second of the two whose material survives elsewhere in the app."
+    },
+    {
+      "id": "native/idioms#vocab#cat-out-of-the-bag",
+      "reason": "04-04 Task 1, approved by the user as `stands` after being shown the asymmetry with the phrase decision: SIX of these eight exist NOWHERE ELSE in the corpus, so retiring them deletes the expression from the product rather than merely de-duplicating it. That fact did NOT carry over from 04-03 (where 5 of 14 survived in the global decks) and the decision was taken with it stated. Selection ground shared by all eight: the canonical \"core idiom\" class — Grant (2005) found none of 104 such items reaches the top 5,000 multiword units in the BNC (0.14–0.25 per million words), the rarest phraseology in English, so volume could not fix this deck and re-selection was the only move. `ScenarioVocabCard` has no `tip` field and the fixture hash covers every field, so a KEPT card could never have been improved either — it would have stayed exactly as weak as it was, permanently. Fully opaque core idiom, the purest case in the deck: nothing about the parts contributes to the meaning, so it is neither frequent nor decomposable and fails criteria 1 and 2 together. Existed nowhere else in the corpus; the expression leaves the app."
+    },
+    {
+      "id": "native/idioms#vocab#last-straw",
+      "reason": "04-04 Task 1, approved by the user as `stands` after being shown the asymmetry with the phrase decision: SIX of these eight exist NOWHERE ELSE in the corpus, so retiring them deletes the expression from the product rather than merely de-duplicating it. That fact did NOT carry over from 04-03 (where 5 of 14 survived in the global decks) and the decision was taken with it stated. Selection ground shared by all eight: the canonical \"core idiom\" class — Grant (2005) found none of 104 such items reaches the top 5,000 multiword units in the BNC (0.14–0.25 per million words), the rarest phraseology in English, so volume could not fix this deck and re-selection was the only move. `ScenarioVocabCard` has no `tip` field and the fixture hash covers every field, so a KEPT card could never have been improved either — it would have stayed exactly as weak as it was, permanently. Opaque set-piece idiom, no register mark and nowhere to put one. The scenario's reading passage names it in its own header as one of the fourteen the banks 'already teach' — a claim this retirement makes false, and which was corrected in the same commit. Existed nowhere else in the corpus; the expression leaves the app."
+    },
+    {
+      "id": "native/idioms#vocab#on-the-ball",
+      "reason": "04-04 Task 1, approved by the user as `stands` after being shown the asymmetry with the phrase decision: SIX of these eight exist NOWHERE ELSE in the corpus, so retiring them deletes the expression from the product rather than merely de-duplicating it. That fact did NOT carry over from 04-03 (where 5 of 14 survived in the global decks) and the decision was taken with it stated. Selection ground shared by all eight: the canonical \"core idiom\" class — Grant (2005) found none of 104 such items reaches the top 5,000 multiword units in the BNC (0.14–0.25 per million words), the rarest phraseology in English, so volume could not fix this deck and re-selection was the only move. `ScenarioVocabCard` has no `tip` field and the fixture hash covers every field, so a KEPT card could never have been improved either — it would have stayed exactly as weak as it was, permanently. Core-idiom class. The one of the eight with a genuine register restriction — informal, and said ABOUT a third party rather than to them — and the card recorded none of it, because ScenarioVocabCard has no tip field and amending a live record is a re-point. Existed nowhere else in the corpus; the expression leaves the app."
+    },
+    {
+      "id": "native/idioms#vocab#once-in-a-blue-moon",
+      "reason": "04-04 Task 1, approved by the user as `stands` after being shown the asymmetry with the phrase decision: SIX of these eight exist NOWHERE ELSE in the corpus, so retiring them deletes the expression from the product rather than merely de-duplicating it. That fact did NOT carry over from 04-03 (where 5 of 14 survived in the global decks) and the decision was taken with it stated. Selection ground shared by all eight: the canonical \"core idiom\" class — Grant (2005) found none of 104 such items reaches the top 5,000 multiword units in the BNC (0.14–0.25 per million words), the rarest phraseology in English, so volume could not fix this deck and re-selection was the only move. `ScenarioVocabCard` has no `tip` field and the fixture hash covers every field, so a KEPT card could never have been improved either — it would have stayed exactly as weak as it was, permanently. Fully opaque core idiom and invariable in form — 04-RESEARCH §1.5 names it by name as the fixedness example, and the card tested nothing about form. Replaced in function by `now-and-again`, which means roughly the same thing and is the frequency that a native actually produces: that single swap is the re-selection in one line. Existed nowhere else in the corpus; the expression leaves the app."
     },
     {
       "id": "native/phrasal-verbs#phrase#ran-into-at-the-airport",

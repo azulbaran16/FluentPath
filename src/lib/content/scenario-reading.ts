@@ -751,12 +751,21 @@ const BANK: Record<string, AuthoredPassage> = {
   },
 
   /* ───────────────────── native/idioms · C1 ─────────────────────
-   * The deck and the phrase set between them already TEACH fourteen
-   * expressions — a piece of cake, under the weather, the last straw, bite the
-   * bullet, on the ball and the rest — one per card, each in a sentence built to
-   * display it. Not one of those fourteen appears below, because a passage that
-   * paraded them again would be the deck read aloud (T-03-19) and would test a
-   * memorised gloss rather than a reading.
+   * The deck and the phrase set between them already TEACH everything they
+   * hold, one item per card, each in a sentence built to display it. Not one of
+   * those items appears below, because a passage that paraded them again would
+   * be the deck read aloud (T-03-19) and would test a memorised gloss rather
+   * than a reading.
+   *
+   * This comment used to NAME the fourteen — "a piece of cake, under the
+   * weather, the last straw, bite the bullet, on the ball and the rest". All
+   * five of those named expressions have since been retired (six phrases at
+   * 04-03, eight cards at 04-04) and the banks now hold eighteen phrases and
+   * twenty-four cards, none of them the same material. A comment that names
+   * bank contents goes stale the moment the bank moves, which is why it no
+   * longer names them and why the property is ASSERTED instead: the harness
+   * checks, on every run, that no phrase text and no vocabulary term appears in
+   * this passage at all.
    *
    * So the expressions here do work instead. Every question asks what one of
    * them means IN THIS TEXT, and the star is the chair's "cross that bridge":
