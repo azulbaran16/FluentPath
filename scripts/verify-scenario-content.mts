@@ -3120,6 +3120,217 @@ for (let pair = 0; pair * 2 + 1 < registerPhrases.length; pair++) {
   );
 }
 
+group("native/culture: nothing in either bank has a shelf life, and neither bank spoils the passage");
+
+/* 04-06. TWO PROPERTIES, and the group is deliberately HONEST ABOUT WHICH OF
+ * THEM A SCRIPT CAN ACTUALLY HOLD.
+ *
+ * ── A. THE SHELF LIFE (T-04-13, disposition: accept) ──
+ *
+ * `native/culture` is the one scenario whose content can go stale without
+ * anything failing. An item built on a film, a song, an advert or a person
+ * decays quietly: it still type-checks, still renders, still passes every
+ * assertion above, and is simply wrong by the time a learner reaches it. That
+ * is why this scenario's banks teach the MACHINERY of a missed reference rather
+ * than the references themselves.
+ *
+ * A FOUR-DIGIT YEAR IS THE ONLY SHELF-LIFE MARKER A SCRIPT CAN SEE, and it is
+ * gated below. It is NOT a proxy for the rule. "no work, no person, no brand"
+ * is enforced by the authoring rule in each bank's header and by the reader
+ * pass at the phase gate, and nothing here should be read as covering it.
+ * Stating the limit is the point: a gate that implies more coverage than it has
+ * is worse than no gate, because the next author trusts it.
+ *
+ * ── B. THE BANKS DO NOT SPOIL THE PASSAGE (T-04-08) ──
+ *
+ * The same cross-surface rule 04-03 established for `native/idioms`, applied
+ * here — with ONE STRUCTURAL DIFFERENCE that must not be flattened away.
+ *
+ * The idioms passage withholds all four of the expressions its questions turn
+ * on. This passage withholds three and GLOSSES THE FOURTH ON PURPOSE: its
+ * header says a white elephant is glossed because the question about it turns
+ * on the possessive ("our white elephant") rather than on the phrase. So the
+ * record carries a `glossed` flag, the glossary-silence assertion runs only on
+ * the three, and the exception is ASSERTED IN THE POSITIVE — the glossary must
+ * really define the one card marked glossed. That makes the exception
+ * self-validating rather than a hole: it cannot be widened to a second entry by
+ * an author who just wants a failing check to pass.
+ *
+ * The bank check runs on all four regardless. The passage may gloss its own
+ * white elephant; the BANKS may not, because the possessive turn only works
+ * while the phrase itself is unremarkable in the reader's hands. */
+
+const CULTURE_KEY = "native/culture";
+const [CULTURE_WORLD, CULTURE_SCENARIO] = CULTURE_KEY.split("/");
+
+const culturePhrases = getScenarioPhrases(CULTURE_WORLD, CULTURE_SCENARIO) ?? [];
+const cultureCards = getScenarioVocabulary(CULTURE_WORLD, CULTURE_SCENARIO) ?? [];
+
+ok(
+  `${CULTURE_KEY}: its phrase set resolves and is not empty`,
+  culturePhrases.length > 0,
+  "every per-item assertion in this group is vacuously true over an empty bank",
+);
+ok(
+  `${CULTURE_KEY}: its vocabulary deck resolves and is not empty`,
+  cultureCards.length > 0,
+  "every per-item assertion in this group is vacuously true over an empty bank",
+);
+
+/* Both banks flattened into one list of (where, text) so the year check and the
+ * spoiler check read the same surface. A field added to either type without
+ * being added here is invisible to both, which is why this is built once. */
+const cultureFields: { where: string; text: string }[] = [
+  ...culturePhrases.flatMap((p) => [
+    { where: `phrase#${p.id}.text`, text: p.text },
+    { where: `phrase#${p.id}.es`, text: p.es },
+    { where: `phrase#${p.id}.tip`, text: p.tip ?? "" },
+  ]),
+  ...cultureCards.flatMap((c) => [
+    { where: `vocab#${c.id}.term`, text: c.term },
+    { where: `vocab#${c.id}.es`, text: c.es },
+    { where: `vocab#${c.id}.example`, text: c.example },
+  ]),
+];
+
+/* 1000–2999. Narrow on purpose: a bare four-digit run would also catch a price,
+ * a word count or a house number, and a check that fires on things that are not
+ * the defect gets loosened rather than obeyed. */
+const YEAR = /\b(1\d{3}|2\d{3})\b/;
+for (const field of cultureFields) {
+  const found = YEAR.exec(field.text)?.[0];
+  ok(
+    `${CULTURE_KEY}#${field.where}: names no year`,
+    found === undefined,
+    `contains "${found}" — this is the ONE shelf-life marker a script can see, and this scenario is the one whose content silently rots. Teach the machinery, not the moment`,
+  );
+}
+
+/* The four the passage's questions turn on, WRITTEN OUT and then cross-checked
+ * against the passage itself — 04-02's pattern by way of 04-03, and for its
+ * reason: no shape check can know which references a hand-written passage
+ * decided to insure by context, so the record is stated and then forbidden to
+ * drift away from the text it claims to describe.
+ *
+ * `asWritten` is the form the passage uses and is what the self-checks run on.
+ * `hunt` is the forms a bank entry would plausibly gloss it under. `glossed`
+ * records the one deliberate exception, described at the top of this group. */
+const WITHHELD_BY_THE_CULTURE_PASSAGE: {
+  asWritten: string;
+  hunt: string[];
+  glossed: boolean;
+}[] = [
+  {
+    asWritten: "groundhog day",
+    hunt: ["groundhog day", "groundhog"],
+    glossed: false,
+  },
+  {
+    asWritten: "the emperor's new clothes",
+    hunt: [
+      "the emperor's new clothes",
+      "emperor's new clothes",
+      "emperors new clothes",
+    ],
+    glossed: false,
+  },
+  {
+    asWritten: "the third act of a story",
+    hunt: ["third act"],
+    glossed: false,
+  },
+  {
+    /* The deliberate exception: glossed by the passage, because the question
+     * about it turns on the possessive rather than on the phrase. The BANKS
+     * still may not name it. */
+    asWritten: "white elephant",
+    hunt: ["white elephant"],
+    glossed: true,
+  },
+];
+
+const culturePassage = getScenarioReading(CULTURE_WORLD, CULTURE_SCENARIO);
+ok(
+  `${CULTURE_KEY}: has the reading passage this group protects`,
+  !!culturePassage,
+  "every withholding assertion below is vacuous without it",
+);
+
+if (culturePassage) {
+  const cultureBody = plain(culturePassage.body.join(" "));
+  const cultureGlossary = plain(
+    culturePassage.glossary.map((g) => `${g.word} ${g.meaning}`).join(" "),
+  );
+  const culturePassageText = `${cultureBody} ~ ${cultureGlossary} ~ ${plain(
+    culturePassage.questions
+      .map((q) => `${q.q} ${q.options.join(" ")} ${q.explain}`)
+      .join(" "),
+  )}`;
+
+  ok(
+    `${CULTURE_KEY}: the withheld record names one reference per question the passage asks`,
+    WITHHELD_BY_THE_CULTURE_PASSAGE.length ===
+      culturePassage.questions.length,
+    `${WITHHELD_BY_THE_CULTURE_PASSAGE.length} recorded vs ${culturePassage.questions.length} question(s) — every question turns on one of them, so the two move together`,
+  );
+  ok(
+    `${CULTURE_KEY}: exactly one of the four is the glossed exception`,
+    WITHHELD_BY_THE_CULTURE_PASSAGE.filter((w) => w.glossed).length === 1,
+    "the exception exists because ONE question turns on a possessive rather than on a phrase. A second entry claiming it is the assertion being widened to fit a failure",
+  );
+
+  for (const withheld of WITHHELD_BY_THE_CULTURE_PASSAGE) {
+    ok(
+      `${CULTURE_KEY}: the passage really uses "${withheld.asWritten}"`,
+      cultureBody.includes(plain(withheld.asWritten)),
+      "the record names a reference the passage does not contain — it has drifted from the text it describes",
+    );
+    if (withheld.glossed) {
+      ok(
+        `${CULTURE_KEY}: the passage's glossary really does define "${withheld.asWritten}", as its header says`,
+        cultureGlossary.includes(plain(withheld.asWritten)),
+        "this entry is recorded as the deliberate exception, so the gloss must actually be there — otherwise the exception is just a silenced assertion",
+      );
+    } else {
+      ok(
+        `${CULTURE_KEY}: the passage's glossary stays silent on "${withheld.asWritten}"`,
+        !cultureGlossary.includes(plain(withheld.asWritten)),
+        "the glossary now defines a reference recorded as withheld — either the record is wrong or the passage gave away its own answer",
+      );
+    }
+
+    /* T-04-08 itself, and it runs on ALL FOUR including the glossed one. */
+    const offenders = cultureFields.filter((f) =>
+      withheld.hunt.some((h) => plain(f.text).includes(plain(h))),
+    );
+    ok(
+      `${CULTURE_KEY}: no bank entry gives away "${withheld.asWritten}"`,
+      offenders.length === 0,
+      `${canon(offenders.map((o) => o.where))} — the passage asks the reader to recover this from context; naming it in a bank turns a reading exercise into recall`,
+    );
+  }
+
+  /* The literal cross-surface rule, as 04-03 wrote it: nothing the banks teach
+   * may be sitting in the passage at all. The card TERM is the sharp end,
+   * because it is short enough to pass unnoticed inside a sentence of prose;
+   * a term that names its sense in a parenthesis is hunted on the part before
+   * the bracket, since the bare expression is what would actually repeat. */
+  for (const phrase of culturePhrases) {
+    ok(
+      `${CULTURE_KEY}#${phrase.id}: its text does not appear in the passage`,
+      !culturePassageText.includes(plain(phrase.text)),
+      "a passage that parades what the warm-up teaches is the warm-up read aloud (T-03-19)",
+    );
+  }
+  for (const card of cultureCards) {
+    ok(
+      `${CULTURE_KEY}#${card.id}: its term does not appear in the passage`,
+      !culturePassageText.includes(plain(card.term.split(" (")[0])),
+      "a passage that parades what the deck teaches is the deck read aloud (T-03-19)",
+    );
+  }
+}
+
 /* ------------------------------------------------------------------ *
  * The phase's own progress meter — REPORTED, never asserted.
  *

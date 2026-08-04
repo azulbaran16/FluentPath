@@ -2215,6 +2215,47 @@ const DECKS: Record<string, ScenarioVocabCard[]> = {
 
   // C1. Not a list of references — those date within a year — but the words
   // for how a reference behaves, which do not.
+  //
+  // TWENTY-FOUR CARDS, AND THE SHELF-LIFE RULE BINDS HARDER HERE THAN IN THE
+  // WARM-UP. A card that illustrates "a catchphrase" or "a running gag" is
+  // tempted to quote one, and the moment it does the deck acquires an expiry
+  // date the other four native scenarios do not have. So: NO CARD NAMES A WORK,
+  // A PERSON, A BRAND OR A YEAR. verify-scenario-content.mts gates the year,
+  // which is the only one of those a script can see; the rest is the authoring
+  // rule and the reader pass, and the summary says so rather than implying the
+  // gate covers more than it does.
+  //
+  // EVERY `example` INSURES ITS OWN TERM BY CONTEXT — a reader who does not
+  // already know the term should be able to recover it from the sentence. That
+  // is not a house style borrowed from elsewhere: it is precisely the technique
+  // this scenario's own reading passage uses on the references it drops, and it
+  // is why this deck costs more words per card than any other in the app.
+  // Budget for long examples here; do not trim them back to match a neighbour.
+  //
+  // Four strands:
+  //
+  //   WHAT KIND OF THING IT IS (Phase 3's catchphrase and in-joke, plus a
+  //   running gag, a nickname that stuck, a euphemism, an aside, a well-worn
+  //   line) — the taxonomy, so she can say WHICH sort of thing went past.
+  //
+  //   WHAT IT DOES TO THE ROOM (be lost on someone, shorthand for something,
+  //   allude to something, common currency, the uninitiated) — the social work
+  //   a reference performs, which is the half a dictionary never gives.
+  //
+  //   TIME (Phase 3's dated and go viral, plus topical and date someone) — the
+  //   scenario's own design constraint, made teachable rather than merely obeyed.
+  //
+  //   CATCHING AND NOT CATCHING (the penny drops, fill someone in, take
+  //   something at face value, a callback) — what happens in the seconds after.
+  //
+  // NOT HERE, AND DELIBERATELY: irony, sarcasm, deadpan, understatement and
+  // tongue in cheek. `social/humor` is titled "Humor & sarcasm", teaches
+  // `deadpan`, `understatement` and `tongue-in-cheek` as cards, and drills
+  // sarcasm in its briefing and its warm-up. A second scenario teaching the
+  // same unit is the D-01 failure 04-01 established as real, and 04-05 killed
+  // `understatement` here for exactly that reason. `take something at face
+  // value` is the one card in that territory, and it earns its place by naming
+  // the CONSEQUENCE of missing a tone rather than the tone itself.
   "native/culture": [
     {
       id: "catchphrase",
@@ -2263,6 +2304,114 @@ const DECKS: Record<string, ScenarioVocabCard[]> = {
       term: "go viral",
       es: "hacerse viral",
       example: "The clip went viral, and now it's a reference in its own right.",
+    },
+
+    /* ─── what kind of thing it is ─── the taxonomy, so she can say WHICH sort
+     * of thing went past instead of only that something did. */
+    {
+      id: "running-gag",
+      term: "a running gag",
+      es: "una broma que el grupo repite y que crece con cada repetición",
+      example: "It started as one bad photograph and became a running gag: three years later somebody still brings it up at every birthday.",
+    },
+    {
+      id: "nickname-that-stuck",
+      term: "a nickname that stuck",
+      es: "un apodo que se quedó, aunque ya nadie recuerde de dónde salió",
+      example: "Nobody in the office can tell you why he is called the Captain; it is a nickname that stuck long after whatever it once referred to.",
+    },
+    {
+      id: "euphemism",
+      term: "a euphemism",
+      es: "la palabra suave que todos leen como la dura",
+      example: "The word died was not used once all afternoon, and yet nobody in the room was in any doubt about what the euphemisms meant.",
+    },
+    {
+      id: "aside",
+      term: "an aside",
+      es: "un comentario lanzado de pasada, casi al margen",
+      example: "He dropped it as an aside, half under his breath between two other sentences, so it reached only the three people it was meant for.",
+    },
+    {
+      id: "well-worn-line",
+      term: "a well-worn line",
+      es: "una frase tan repetida que cualquiera de los presentes podría terminarla",
+      example: "She stopped halfway through, because it is a well-worn line here and everyone at the table could have supplied the rest of it.",
+    },
+
+    /* ─── what it does to the room ─── the social work a reference performs,
+     * which is the half a dictionary never gives. */
+    {
+      id: "lost-on-someone",
+      term: "be lost on someone",
+      es: "pasarle a alguien por completo, sin que se entere",
+      example: "The whole point of the remark was lost on me until somebody explained it in the car afterwards.",
+    },
+    {
+      id: "shorthand-for",
+      term: "shorthand for something",
+      es: "una forma corta de decir algo mucho más largo",
+      example: "Around here the name of that street is shorthand for a decision everyone regrets, and nobody ever has to say which decision.",
+    },
+    {
+      id: "allude-to",
+      term: "allude to something",
+      es: "aludir a algo dándolo por sabido, sin nombrarlo",
+      example: "He never said what had happened in March; he alluded to it twice and trusted the table to know which March he meant.",
+    },
+    {
+      id: "common-currency",
+      term: "common currency",
+      es: "algo que ya circula por todas partes y cualquiera reconoce",
+      example: "For about a month it was a private joke, and now it is common currency — you hear it from people with no idea where it came from.",
+    },
+    {
+      id: "the-uninitiated",
+      term: "the uninitiated",
+      es: "los que no están en el ajo, los que aún no conocen el asunto",
+      example: "To the uninitiated it looks like four adults laughing at the word ladder for no reason at all.",
+    },
+
+    /* ─── time ─── this scenario's own design constraint, made teachable rather
+     * than merely obeyed: a reference has a shelf life and says so about you. */
+    {
+      id: "topical",
+      term: "topical",
+      es: "de actualidad, pegado al momento",
+      example: "A topical remark is the one you cannot repeat in six months, because whatever it points at will have moved on without it.",
+    },
+    {
+      id: "date-someone",
+      term: "date someone (a reference that dates you)",
+      es: "delatar la edad de quien lo dice",
+      example: "Using it dates you more precisely than your passport does, which is why the youngest person present always notices first.",
+    },
+
+    /* ─── catching, and not catching ─── what happens in the seconds after one
+     * goes past, in both directions. */
+    {
+      id: "penny-drops",
+      term: "the penny drops",
+      es: "de pronto lo pillas, te cae la ficha",
+      example: "She repeated the last three words slowly, and you could see the exact moment the penny dropped for the man beside her.",
+    },
+    {
+      id: "fill-someone-in",
+      term: "fill someone in",
+      es: "contarle a alguien lo que se ha perdido",
+      example: "Ask her to fill you in on the way out rather than now, and the conversation never has to stop for a footnote.",
+    },
+    {
+      id: "face-value",
+      term: "take something at face value",
+      es: "creerse algo tal cual, sin ver la segunda intención",
+      example: "He took the whole speech at face value, and half the room had heard it as meaning the opposite of what it said.",
+    },
+    {
+      id: "callback",
+      term: "a callback",
+      es: "una referencia a algo dicho antes en la misma conversación",
+      example: "Forty minutes later she used his own word back at him, and the callback got a bigger laugh than the original line had.",
     },
   ],
 };
