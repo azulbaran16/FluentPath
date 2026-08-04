@@ -242,6 +242,71 @@ dull prose:
   consecutive read that caught repeated syntactic frames in Phases 3 and 4 — automated,
   because at 500 nobody will read them all.
 
+## BLOCKED 2026-08-04 — the DESIGN §1 risk is real, and it is worse than "an assertion"
+
+Checked before writing a single card, as instructed. **`core/vocab` does not work, and the
+reason is not a harness assertion that can be scoped — it is a runtime function.**
+
+`parseScenarioItemId` (`src/lib/review-items.ts:132-142`) ends with
+`if (!getScenario(worldSlug, scenarioSlug)) return undefined;`. That is a live lookup against
+`curriculum.ts`, executed in the browser, not in the gate. Measured:
+
+```
+parseScenarioItemId('core/vocab#word#house')   -> undefined
+parseScenarioItemId('core/vocab#vocab#house')  -> undefined
+resolveReviewItem('core/vocab#vocab#house')    -> undefined
+```
+
+So a `core/vocab` card is **stored, merged and scheduled correctly and never rendered** — the
+exact D-05 failure `review-items.ts` was written to make impossible, reproduced 500 times in
+permanent keys. DESIGN §1's claim of "zero changes to any of them" is false.
+
+Two further breaks, independent of the first:
+
+- `kind: "word"` is not in `ITEM_KINDS` (`:85-92`) or `SCHEDULED_ITEM_KINDS` (`:97-101`), so
+  it fails the kind check one line earlier regardless of the scenario lookup.
+- `reviewableIds()` (`:294-310`) iterates `WORLDS`. A key outside the curriculum can never be
+  emitted, so the volume deck would be counted in no "Due today" and drillable in no weak-spot
+  pass, on top of not rendering.
+
+**And the suggested fix — "scope it to scenario kinds rather than weaken it" — collides with
+committed tripwires.** `verify-scenario-content.mts:389-396` asserts that a key the curriculum
+does not have parses to *nothing*, on purpose. Making `core/vocab` parse means deleting or
+qualifying those two assertions. Under `AGENTS.md` that is weakening a gate to fit content,
+which is the move this project has refused since Phase 2.
+
+**This is a one-way door and it is not mine to open.** Nothing has been authored; no id exists.
+
+### Payload, measured today (independent of the id question, so done anyway)
+
+Harness prints, live: **205,174 B saturated over 752 scheduled ids — 19.6 % of the
+1,048,576 B cap.** That is **272.8 B per id**, not the 252 B the table above extrapolates from.
+
+| Added | Total | % of cap |
+|---|---|---|
+| +500 | ~341,600 B | **~32.6 %** |
+| +1,000 | ~478,000 B | ~45.6 % |
+| +2,000 | ~750,800 B | ~71.6 % |
+
+**500 fits under the 40 % stop rule with ~7 points of margin. 1,000 does not.** So the
+"grow gradually" path stops at roughly 750 cards under that rule, and the real architectural
+ceiling is nearer 3,090 than 3,346.
+
+## RESOLVED 2026-08-04 — the id shape, decided by the user after the block
+
+**A second key space, `vocab:<slug>`.** Not a pseudo-scenario. Its own parser, its own branch
+in `resolveReviewItem`, its own source in `reviewableIds()`. `parseScenarioItemId` is **not
+touched** and `verify-scenario-content.mts:389-396` stay exactly as written — the volume deck
+does not enter the scenario space at all, so there is nothing to weaken. The `:` is the
+collision property, the way `/` was for the scenario space in Phase 3: no global grammar id and
+no scenario id carries one, and the harness must assert that rather than trust it.
+
+This supersedes DESIGN §1 in full. `core/vocab#word#<slug>` is dead.
+
+**Volume: 500, and stop there.** Confirmed after the corrected 272.8 B/id measurement.
+~32.6 % of the cap, ~7 points of margin under the 40 % rule. A second batch is a separate
+decision with the ceiling re-measured first, not an assumed continuation.
+
 ## Recommended first move
 
 A short planning pass on the four unsettled items above — bank shape, id shape, payload, quality gate — then the first 500. Not a generation run first.

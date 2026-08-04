@@ -124,6 +124,20 @@ constraint as v1 — **all content original**, third-party material is format re
   claim made with content instead of with words. This is the measured case for deferred **VOICE-01**.
 - [x] **CONT-05**: New content is graduated across CEFR levels (B1–C1) so difficulty progresses with the learner — *satisfied as measured 2026-08-01: the 35 scenarios span A2 ×4, B1 ×11, B2 ×13, C1 ×7, and Phase 3 authored every exercise at its scenario's declared level.*
 
+### Content (vocabulary volume — Phase 04.1)
+
+The beta user said the app was "too basic to learn English"; asked what she meant, she said **too
+little content**. Measured: ~280 vocabulary cards against a 1,000–2,000-word beginner consensus and a
+2,809-word NGSL. Full reasoning, the options weighed and rejected, and the decisions in
+`.planning/NEXT-MILESTONE-REQUEST.md` and `.planning/phases/04.1-vocabulary-volume-deck/04.1-CONTEXT.md`.
+
+- [ ] **VOCAB-01**: The volume deck has its own spaced-repetition key space — `vocab:<slug>` composes, parses, resolves and enumerates through its own module, with `parseScenarioItemId`, `resolveReviewItem`, `reviewableIds()` and `verify-scenario-content.mts:389-396` **unchanged**, asserted by a committed check. The pseudo-scenario `core/vocab#word#<slug>` was measured against the live parser and found to be stored, merged and scheduled correctly and never rendered; it is dead by decision, not by omission.
+- [ ] **VOCAB-02**: `src/lib/content/core-vocabulary.ts` holds **500** cards of `{ id, word, es, example }` with **no `tip` field on the type**, so the tier's lower bar has nowhere to hide; the words come from a committed copy of the NGSL and every gloss and example is original.
+- [ ] **VOCAB-03**: The UI names the two tiers apart — its own route, its own nav entry, a tier chip on every card and a statement of what a volume card carries and what it does not — the volume deck has its **own** study queue, and no surface blends the counts: `Dashboard`'s and `ReviewHub`'s "Due today", the due list, the mistake notebook and the weak-spots drill are unchanged by its existence.
+- [ ] **VOCAB-04**: The saturated payload is measured over the **storage set** (every id that can reach the `srs` column, which is no longer the same as the shared review queue), re-measured from the harness after every authoring batch, and stays at or under **40 %** of the 1 MiB cap — a stop line where a human decides, distinct from the wall where a 413 becomes a permanent silent drop.
+- [ ] **VOCAB-05**: The quality floor is a set of harness assertions rather than a convention: every field non-empty; the `es` gloss is not the English word; the `example` contains the word (inflection allowed) and runs ≥ 6 words; no word repeats within the deck or against the 280 scenario cards; every word is on the committed NGSL list; and **no example opening-shape signature exceeds ~5 % of the deck** — the one assertion that addresses flat prose, automated because at 500 nobody reads them all.
+- [ ] **VOCAB-06**: Every new assertion has a mutation aimed at it that is **caught on its own label**, with surviving controls, run outside the working tree; all 500 ids are in `scripts/fixtures/scheduled-item-ids.json`, each batch regenerated in the same commit as its content; and `scenario-coverage.ts`'s 35/35 and 53/53 are **unmoved**, so the volume deck cannot inflate a scenario claim.
+
 ### Tutor (AI tutor end-to-end)
 
 - [ ] **TUTOR-01**: A signed-in learner with tutor access receives real Claude replies in production — the demo stub only ever appears when no API key is configured
@@ -191,6 +205,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONT-03 | Phase 4 | Complete (measured, not built — see requirement) |
 | CONT-04 | Phase 4 | **Met with a stated limitation** `[~]` — closed at the 04-09 gate on measurement and a reader pass, NOT on observation. Content complete and derived: 84 phrases · 112 cards · 20 grammar questions across all five Sounding Native scenarios (from 30 · 40 · 5), 155 scheduled ids added, 15 retired with reasons, **0 re-pointed**, 53/53 pairs written and 0 pending — asserted for the first time rather than reported. Gated by 14,577 + 2,021 assertions at their high-water marks, an independent 651 = 651 id enumeration that does not import the gate's own logic, a 19-mutation sweep run in a scratch copy with its own `node_modules` (**17/17 caught on their own labels, 2 controls survived**, every verdict carrying a landing proof), and the derivation control re-proved (one emptied entry takes 53/53 → 52/53 and flips every dependent claim, with no second edit). **THE BROWSER PASS WAS NOT PERFORMED** — the batched recall deck, this phase's one component change and the surface between the learner and every recall item in the app, has never been rendered; nor has `/review` above sixteen due, a rehearsal move ticked, or anything at all on a phone. Ten unobserved items are open by name as WINDOWS 62 with an ordered checklist in `04-09-SUMMARY.md`. **"More reading" — half of D-01's own wording — was NOT delivered**, declined knowingly by the user at 04-08 on a measured ratio argument (WINDOWS 61); option D likewise (WINDOWS 63). `native/pronunciation` is deliberately the smallest of the five, for the reason written into both its banks |
 | CONT-05 | Phase 4 | Complete (measured, not built — see requirement) |
+| VOCAB-01 | Phase 04.1 | Pending |
+| VOCAB-02 | Phase 04.1 | Pending |
+| VOCAB-03 | Phase 04.1 | Pending |
+| VOCAB-04 | Phase 04.1 | Pending |
+| VOCAB-05 | Phase 04.1 | Pending |
+| VOCAB-06 | Phase 04.1 | Pending |
 | TUTOR-01 | Phase 5 | Pending |
 | TUTOR-02 | Phase 5 | Pending |
 | TUTOR-03 | Phase 5 | Pending |

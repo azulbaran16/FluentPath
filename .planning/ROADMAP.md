@@ -270,6 +270,70 @@ Plans:
 - [x] 04-08-PLAN.md — Containers and declarations: the world page stops counting promises, and the priced options are decided in the open
 - [x] 04-09-PLAN.md — Phase gate: full suite, a mutation per new assertion, the reader pass, the browser pass, CONT-04
 
+### Phase 04.1: Vocabulary Volume Deck (INSERTED)
+
+**Goal:** A learner can study a 500-card core vocabulary deck sourced from the NGSL, held to an
+explicitly lower and type-encoded bar than the 280 scenario cards, declared as a distinct tier in
+the UI, keyed in its own id space, and gated by assertions that catch flat prose rather than only
+missing fields.
+
+**Why now:** The beta user — the real learner — says the app is "too basic to learn English," and
+asked what "too basic" meant she said *too little content*. Measured: ~280 vocabulary cards
+against a 1,000–2,000-word beginner consensus and a 2,809-word NGSL. She is right by an order of
+magnitude. Full reasoning, options weighed and rejected, and the decisions in
+`.planning/NEXT-MILESTONE-REQUEST.md`.
+
+**Requirements**: VOCAB-01, VOCAB-02, VOCAB-03, VOCAB-04, VOCAB-05, VOCAB-06
+**Depends on:** Phase 4
+**Plans:** 7 plans
+
+**Success Criteria** (what must be TRUE):
+
+  1. A `vocab:<slug>` id composes, parses, resolves to a renderable card, and is counted by
+     `reviewableIds()` — through its OWN parser and its OWN branches, with `parseScenarioItemId`
+     and `verify-scenario-content.mts:389-396` **unchanged**, asserted by a committed check
+  2. `src/lib/content/core-vocabulary.ts` holds 500 cards of `{ id, word, es, example }` with **no
+     `tip` field on the type**, so the lower bar cannot be forgotten — it has nowhere to go
+  3. The UI names the two tiers apart; a learner can tell a volume card from a scenario card
+     without being told, and no surface blends the counts
+  4. The saturated payload assertion is re-run and prints a figure **at or under 40 % of the
+     1 MiB cap** — measured after the batch, from the harness, not extrapolated
+  5. The quality floor is a set of harness assertions, not a convention: every field non-empty;
+     the `es` gloss is not the English word; the `example` contains the word (inflected allowed)
+     and runs ≥ 6 words; no word repeats within the deck or against the 280 scenario cards; every
+     word is on a committed NGSL copy; and **no example opening-shape signature exceeds ~5 % of
+     the deck**
+  6. Every new assertion has a mutation aimed at it that is CAUGHT on its own label, with the
+     controls that must survive still green
+  7. `scripts/verify-id-stability.mts` records all 500 ids, regenerated in the **same commit** as
+     the content, and `scenario-coverage.ts`'s 35/35 and 53/53 are **unmoved** — the volume deck
+     cannot inflate a scenario claim
+
+**Explicitly out of scope:** a second batch. 500 is the batch; +1,000 lands at ~45.6 % of the cap
+and breaks the 40 % rule. Growing past 500 is a fresh decision with the ceiling re-measured, and
+the 8,000–11,000-card fluency deck is not reachable in the JSON-column design at all — that is
+DATA-01 in the v2 backlog.
+
+**Decomposition:** tracer first, then gates, then volume, then the phase gate. Plan 01 carries twenty
+real cards the whole way — committed word list, bank, id space, resolver, deck surface, nav,
+`recordAttempt`, Postgres — and ends at a blocking human check, so the shape is proved before 480 more
+permanent keys exist. Plan 02 lands both gates *before* the volume, because the window a detector
+protects has to open before the risky work starts. Plans 03–06 author 120 cards each and each one
+re-measures the payload **from the harness** and hands the next batch its opening-signature histogram:
+four measurement points on the way to 32.6 %, not one at the end. Plan 07 proves the gates by watching
+them fail. Every plan states what the learner has if work stops right after it, and every one of them
+leaves a surface whose counts are read off the bank — so stopping early under-claims rather than lies.
+
+Plans:
+
+- [ ] 04.1-01-PLAN.md — Tracer: twenty NGSL cards end to end through their own `vocab:` key space, a deck surface that names the tier, and the containment that keeps `/review` unmoved
+- [ ] 04.1-02-PLAN.md — The gates, before the volume: id stability over a second key space, the quality floor including the frame-diversity ceiling, and the payload re-pointed at the storage set with a 40 % stop line
+- [ ] 04.1-03-PLAN.md — Volume batch 1: the deck to 140, the first measured payload and the first histogram
+- [ ] 04.1-04-PLAN.md — Volume batch 2: the deck to 260, the first batch authored under real frame pressure
+- [ ] 04.1-05-PLAN.md — Volume batch 3: the deck to 380, through the abstract middle of the list where the tier's quality is actually decided
+- [ ] 04.1-06-PLAN.md — Volume batch 4: the deck to 500 and stop; the final measured payload and the derivation proved by four commits that edited no copy
+- [ ] 04.1-07-PLAN.md — Phase gate: full suite, an independent enumeration, a mutation per new assertion, the reader pass, and the browser pass Phase 4 never got
+
 ### Phase 5: AI Tutor End-to-End
 
 **Goal**: The AI tutor works for real learners in production — in-character scenario role-play with gentle correction, graceful gating and error states, and progress credit for completed conversations
