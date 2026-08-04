@@ -308,6 +308,138 @@ const BANK: Record<string, AuthoredGrammarQuestion[]> = {
       explain:
         "Most formal single words have a spoken phrasal twin — postpone → put off. The other particles build different verbs entirely: put out (annoyed), put up (give someone a bed), put down (criticise).",
     },
+
+    /* ── 04-02: ten more, on the three things a C1 learner still gets wrong ──
+     * The particle rather than the verb, the SENSE the sentence forces, and the
+     * register collision — plus form, extending the two separability items
+     * above rather than repeating them.
+     *
+     * Every wrong particle below builds a REAL English verb with a different
+     * meaning, never a non-word, so getting one wrong is choosing the wrong
+     * meaning rather than choosing nonsense. `topic` adds exactly one new
+     * permanent string — "Phrasal verb senses" — and reuses the other three
+     * character for character; see the header before touching any of them. */
+
+    {
+      slug: "particle-give-in",
+      level: "B2",
+      topic: "Phrasal verb particles",
+      prompt: "Nobody would move on the price, so eventually I ___ and signed.",
+      options: ["gave in", "gave up", "gave away", "gave off"],
+      answer: 0,
+      explain:
+        "“Give in” is to stop resisting somebody else, so it needs an opponent — here, the other side of the negotiation. “Give up” abandons the attempt altogether, which is not what somebody who ends up signing has done. “Give away” hands something over for nothing, or lets a secret out; “give off” is what a smell or a heat does. One verb, four particles, four unrelated meanings.",
+    },
+    {
+      slug: "particle-hold-back",
+      level: "B2",
+      topic: "Phrasal verb particles",
+      prompt: "She told us most of it, but you could tell she was ___ something.",
+      options: ["holding back", "holding up", "holding on", "holding out"],
+      answer: 0,
+      explain:
+        "“Hold something back” is to keep it to yourself when you could have said it — the particle points away from the listener. “Hold up” is to delay something (or to rob a bank), “hold on” is to wait, and “hold out” is to last longer than expected or to refuse to settle. Only the first takes the kind of object this sentence has.",
+    },
+    {
+      slug: "particle-let-on",
+      level: "B2",
+      topic: "Phrasal verb particles",
+      prompt: "She had known since March and never once ___.",
+      options: ["let on", "let off", "let in", "let down"],
+      answer: 0,
+      explain:
+        "“Let on” is to reveal that you know something, and it lives almost entirely in the negative — “don't let on”, “he never let on”. Let somebody off and you spare them the punishment; let them in and you open the door; let them down and you fail them when they were relying on you. The verb tells you nothing at all here; the particle is carrying every one of the four meanings.",
+    },
+    {
+      slug: "sense-go-off-dislike",
+      level: "B2",
+      topic: "Phrasal verb senses",
+      prompt: "“I've gone right off coffee since the summer.” Here, “go off” means ___.",
+      options: [
+        "to stop liking something",
+        "to ring or explode suddenly",
+        "to stop being fit to eat",
+        "to leave without saying goodbye",
+      ],
+      answer: 0,
+      explain:
+        "Three senses of “go off” are common and the sentence has to choose between them. An alarm goes off, milk goes off, and a person goes off something she used to enjoy. It is the last one here because the subject is a person and “off” is followed by the thing she has an opinion about — the food sense takes no object at all: the milk has gone off, full stop.",
+    },
+    {
+      slug: "sense-take-up-space",
+      level: "B2",
+      topic: "Phrasal verb senses",
+      prompt:
+        "“He's taken up the cello” and “that piano takes up half the room” are the same two words; only the second is about ___.",
+      options: ["space", "a new habit", "a formal complaint", "the hem of a skirt"],
+      answer: 0,
+      explain:
+        "“Take up” means to start doing something regularly when a person is the subject, and to occupy space or time when a thing is. The subject decides, not the words. The other two options are real senses as well — you take a matter up with somebody, and a tailor takes a skirt up — which is precisely why reasoning from “take” plus “up” gets you nowhere.",
+    },
+    {
+      slug: "sense-break-down-itemise",
+      level: "B2",
+      topic: "Phrasal verb senses",
+      prompt:
+        "Nothing has failed in “could you break those figures down for me?” — the request is for the total to be ___.",
+      options: [
+        "set out in its separate parts",
+        "rounded off to something simpler",
+        "checked once more for errors",
+        "put in writing before Friday",
+      ],
+      answer: 0,
+      explain:
+        "A car breaks down and a person breaks down, and both of those are a collapse — so a learner who has only met those two hears a request for a breakdown as bad news. With figures, costs or an argument as the object it is the opposite: take the whole apart until each piece is visible. The object is what decides, and this one is a number rather than a machine or a person.",
+    },
+    {
+      slug: "register-terminate-contract",
+      level: "B2",
+      topic: "Phrasal verbs vs formal verbs",
+      prompt:
+        "The clause in the signed contract reads: “Either party may ___ this agreement on thirty days' notice.”",
+      options: ["terminate", "call off", "pull out of", "cancel out"],
+      answer: 0,
+      explain:
+        "This is the mirror image of the mistake learners are usually warned about. Talking to a colleague you would say they called it off or pulled out of it, and “terminate” out loud would sound like a robot; inside the contract the single Latinate verb is the only one that belongs, and a phrasal verb there reads as a draft nobody proofread. “Cancel out” is a different verb again — two things cancel each other out.",
+    },
+    {
+      slug: "register-commence-kick-off",
+      level: "B2",
+      topic: "Phrasal verbs vs formal verbs",
+      prompt:
+        "The printed agenda says the session “will commence at nine”. In the corridor beforehand, somebody asks what time we ___.",
+      options: ["kick off", "commence", "set off", "take off"],
+      answer: 0,
+      explain:
+        "“Commence” is not wrong English; it is wrong in a corridor, and repeating the agenda's own word out loud is the tell that somebody learned English from documents rather than from people. A meeting or a match kicks off. “Set off” starts a journey and “take off” is what the plane does once you are on it — the particle is doing the work again.",
+    },
+    {
+      slug: "fixed-form-get-rid-of",
+      level: "B2",
+      topic: "Phrasal verb separability",
+      prompt:
+        "We finally ___ the filing cabinet that had been sitting in the hallway for two years.",
+      options: ["got rid of", "got rid off", "got ridden of", "got rid from"],
+      answer: 0,
+      explain:
+        "There is nothing to work out here, and that is the lesson. “Rid” is not a verb anybody uses on its own any more, so the three words are simply frozen in that order: get rid of, always. The instinct that serves you everywhere else — reasoning from the parts, hearing “off” in a verb about removal — is exactly what produces “got rid off”, which is the commonest written slip in English on this expression.",
+    },
+    {
+      slug: "three-part-keep-up-with",
+      level: "B2",
+      topic: "Phrasal verb separability",
+      prompt: "The releases come so fast now that I've stopped trying to ___.",
+      options: [
+        "keep up with them",
+        "keep them up with",
+        "keep up them with",
+        "keep them up",
+      ],
+      answer: 0,
+      explain:
+        "A three-part phrasal verb — verb, particle, preposition — is a closed unit, so its object goes at the end even when it is a pronoun. That is the exact opposite of “look it over” above, where a pronoun HAS to split the verb, and the two rules together are why word order has to be learned verb by verb rather than derived. “Keep them up” is real English, but it means carry on doing them, which is not what somebody who has stopped trying is describing.",
+    },
   ],};
 
 /**
