@@ -1978,6 +1978,50 @@ const DECKS: Record<string, ScenarioVocabCard[]> = {
   // this scenario and a poor model for anything else, so it is deliberately not
   // spread. The deck is the metalanguage instead: the words she needs to say
   // what her mouth is doing wrong and to be told how to fix it.
+  //
+  // THAT RULE STANDS AND IS NOT SUPERSEDED. 04-07 doubled the deck under it,
+  // 8 cards to 16, because this deck is not a vocabulary list — it is the whole
+  // feedback loop this scenario has. `PronunciationLab` scores an attempt word
+  // by word against the browser recogniser: it can tell her THAT something came
+  // out wrong and never WHAT. Everything else she will ever learn about her own
+  // mouth arrives as a sentence from a teacher, a colleague or the AI tutor when
+  // it lands, and she can only act on that sentence if she owns the words in it.
+  // Eight more terms widen what can be said to her; nothing else here would.
+  //
+  // SO EVERY `example` IS A CORRECTION BEING GIVEN, not a definition restated.
+  // The card's value is recognition — hearing "you're not aspirating that" and
+  // knowing what to move — so the example shows somebody actually saying it to
+  // somebody. Where no settled Spanish term exists, `es` says what the thing IS
+  // rather than inventing one.
+  //
+  // WHY THIS SCENARIO IS THE SMALLEST OF THE FIVE — the same account
+  // `phrases.ts` carries above its `native/pronunciation` set, recorded in both
+  // banks on purpose so the two agree and neither reads as an oversight. Its
+  // neighbours hold 18 phrases and 24 or 42 cards; this holds 12 and 16. The
+  // drills pronunciation actually needs — minimal pairs, word stress and
+  // intonation AS EXERCISES — are exactly the new drill components D-01 rules
+  // out, so under that decision the only shapes available here are a warm-up
+  // line and a recall card, and volume buys less in this scenario than in any
+  // other. Padding it to a uniform floor would imply the five were deepened
+  // equally when they were not. The deferred premium TTS/STT work (VOICE-01, v2
+  // backlog) is the thing that would change that verdict: a real voice model
+  // makes every rejected drill buildable and turns this into the cheapest
+  // scenario to deepen rather than the dearest. Named as evidence; not acted on.
+  //
+  // MEASURED BEFORE AUTHORING, AND KEPT WITH THE NUMBER: `sentence stress`
+  // scores J = 0.667 against the GLOBAL speaking-tip panel titled "Word &
+  // sentence stress" (`phrases.ts`, SPEAKING_TIPS), whose points also brush
+  // weak forms, linking and the rising/falling contour. That panel is prose on
+  // the Speaking skill page — not a card, no term, no Spanish, nothing
+  // scheduled — and this deck has coexisted with it since Phase 3 on `word
+  // stress` and `intonation` already. The overlap is real, it is recorded here
+  // so the next author inherits the measurement instead of rediscovering it,
+  // and the cards were kept: the deferred drills cannot be built, so the words
+  // are the only thing this scenario can actually hand her.
+  //
+  // `ScenarioVocabCard` stays `{id, term, es, example}` — no new item type
+  // (D-01). No existing card was edited in any field: every id is a live
+  // spaced-repetition key and the fixture's hash covers the whole record.
   "native/pronunciation": [
     {
       id: "word-stress",
@@ -2026,6 +2070,59 @@ const DECKS: Record<string, ScenarioVocabCard[]> = {
       term: "rhyme with",
       es: "rimar con",
       example: "'Tough' rhymes with 'stuff', not with 'though'.",
+    },
+    // ── WHAT UNSTRESSED SYLLABLES DO ──
+    {
+      id: "schwa",
+      term: "the schwa",
+      es: "la vocal neutra /ə/, la que sale cuando la sílaba no lleva acento",
+      example: "You're giving the 'a' in 'about' a full vowel; it's a schwa, so let it almost disappear.",
+    },
+    {
+      id: "weak-form",
+      term: "a weak form",
+      es: "la versión relajada de una palabra funcional cuando no lleva peso en la frase",
+      example: "Use the weak form: there's no 'ov' in 'a cup of tea', just a schwa.",
+    },
+    // ── WHAT HAPPENS BETWEEN WORDS ──
+    {
+      id: "linking-and-elision",
+      term: "linking and elision",
+      es: "enlazar el final de una palabra con la siguiente, y comerse sonidos al hablar seguido",
+      example: "You're putting a gap between the words; linking and elision are what make 'not at all' arrive as one piece.",
+    },
+    // ── WHAT THE CONSONANT ITSELF IS DOING ──
+    {
+      id: "aspiration",
+      term: "aspiration",
+      es: "el golpe de aire de la /p/, la /t/ y la /k/ al principio de palabra",
+      example: "That 'p' needs more aspiration behind it — you're landing on 'bin' rather than 'pin'.",
+    },
+    {
+      id: "voiced-voiceless",
+      term: "voiced and voiceless",
+      es: "sonoro y sordo: si las cuerdas vocales vibran o no al soltar el sonido",
+      example: "The end of 'is' is voiced; make it voiceless and the word becomes 'ice'.",
+    },
+    // ── WHAT THE WHOLE SENTENCE IS DOING ──
+    {
+      id: "sentence-stress",
+      term: "sentence stress",
+      es: "qué palabra destaca dentro de la oración, no dentro de la palabra",
+      example: "Your word stress is fine — it's the sentence stress: you're hitting all six words equally hard.",
+    },
+    {
+      id: "rising-tone",
+      term: "a rising tone",
+      es: "el tono que sube al final y deja la frase abierta, frente al que baja y la cierra",
+      example: "Finish the list on a rising tone and people will wait for one more item.",
+    },
+    // ── AND THE ONE THAT TELLS HER WHERE NOT TO SPEND THE EFFORT ──
+    {
+      id: "accent-not-a-mistake",
+      term: "an accent, not a mistake",
+      es: "un rasgo de acento, no un error: se entiende igual",
+      example: "That 'r' of yours is an accent, not a mistake — everyone understood you, so spend the effort elsewhere.",
     },
   ],
 

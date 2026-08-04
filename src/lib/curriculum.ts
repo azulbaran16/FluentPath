@@ -138,16 +138,15 @@ export const WORLDS: World[] = [
       // that covers it is 17 (1020 s), 30 s of slack.
       { slug: "idioms", title: "Idioms & expressions", blurb: "Use everyday idioms correctly and naturally.", level: "C1", skills: ["speaking", "reading"], minutes: 17 },
       { slug: "phrasal-verbs", title: "Phrasal verbs", blurb: "Master the verbs natives can't live without.", level: "B2", skills: ["grammar", "speaking"], minutes: 24 },
-      // 04-07 took the warm-up from 6 to 12 — half again, where its four
-      // neighbours went to three times, and phrases.ts says in as many words
-      // why this scenario is deliberately the smallest. At 12 phrases and a
-      // 20-card deck the sitting is 12 x 20 s + 20 x 15 s = 540 s, which the
-      // standing 10 (600 s) already covers with 60 s to spare. NOT LOWERED to
-      // the 9 the invariant would now permit: 04-01's rule is that the fix for
-      // this budget is always to raise `minutes`, never to lower anything, and
-      // shrinking an advertised sitting in the commit that grows the bank
-      // behind it is churn pointing the wrong way.
-      { slug: "pronunciation", title: "Pronunciation & accent", blurb: "Tricky sounds, word stress, intonation, connected speech.", level: "B2", skills: ["speaking"], minutes: 10 },
+      // 04-07 took the warm-up from 6 to 12 and the metalanguage deck from 8
+      // cards to 16 — half again, where its four neighbours went to three
+      // times. Both banks say in as many words why this scenario is
+      // deliberately the smallest of the five. The sitting is therefore
+      // 12 x 20 s + a 28-card deck x 15 s = 660 s, and the smallest whole
+      // minute that covers it is 11 (660 s) — zero slack, which the invariant
+      // permits because it compares with `>=` and already double-counts the
+      // warm-up phrases inside the deck.
+      { slug: "pronunciation", title: "Pronunciation & accent", blurb: "Tricky sounds, word stress, intonation, connected speech.", level: "B2", skills: ["speaking"], minutes: 11 },
       // 04-05 took the warm-up from three contrasting pairs to nine (6 phrases
       // to 18) and the marker deck from 8 cards to 24, so the sitting is
       // 18 x 20 s + a 42-card deck x 15 s = 990 s. The smallest whole minute
