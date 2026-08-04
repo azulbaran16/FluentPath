@@ -118,13 +118,25 @@ const LESSONS: Record<string, ScenarioLesson> = {
       "Escalate calmly: “Could I speak to someone who can help with this?”",
     ],
   },
+  /* The three examples this briefing used to work from — "a piece of cake",
+   * "under the weather" — were also in the phrase bank and also in the deck, so
+   * ONE canonical list appeared on three surfaces of a single C1 scenario, and
+   * it appeared here in the shape the bank is now gated against: expression =
+   * translation. Both expressions were retired at 04-03/04-04 and this briefing
+   * would otherwise be teaching from a bank that no longer holds them.
+   *
+   * The rewrite demonstrates its points on expressions used NOWHERE ELSE in
+   * this scenario — not in the eighteen phrases, not in the twenty-four cards,
+   * not in the rehearsal, and not among the four expressions the reading
+   * passage withholds. That separation is asserted in
+   * scripts/verify-scenario-content.mts, so it cannot quietly come back. */
   "native/idioms": {
     intro:
-      "Idioms make you sound natural — but only when used in the right situation. Learn a few well rather than many badly.",
+      "An idiom only sounds native when it fits the person you're saying it to. Learn each one properly — what it means AND who you can say it to — rather than collecting a long list you can only translate.",
     tips: [
-      "“It's a piece of cake” = very easy. “Under the weather” = feeling ill.",
-      "Idioms are mostly informal — fine with friends, careful in formal writing.",
-      "If unsure of an idiom, plain English is always safe.",
+      "The restriction is part of the expression. “I've got a lot on my plate” sounds honest said to a colleague, and reads as an excuse in a written reply to someone who has been waiting a fortnight.",
+      "Most of them are informal. They belong in speech and in messages; in a contract, a complaint or a covering letter, the plain wording is the professional one.",
+      "Getting it wrong rarely leaves you misunderstood — it leaves you misplaced. People work out what you meant; what they notice is that you reached for a phrase the moment didn't call for. When in doubt, the ordinary sentence is never the wrong answer.",
     ],
   },
   "native/pronunciation": {
@@ -327,7 +339,26 @@ const LESSONS: Record<string, ScenarioLesson> = {
   },
 };
 
-const FALLBACK: ScenarioLesson = {
+/* The generic briefing an unknown scenario key resolves to.
+ *
+ * EXPORTED SO THE HARNESS CAN PROVE IT UNREACHABLE. All 35 scenarios have a
+ * briefing of their own today, so this record is dead — the same situation
+ * `phrases.ts` was in before 03-11, and the same trap: filler that reads exactly
+ * like curated content on the page, handed silently to the next author who adds
+ * a scenario and forgets a briefing.
+ *
+ * 03-11 deleted its fallback outright. That is NOT the move here, because
+ * `getScenarioLesson` returns `ScenarioLesson` rather than `ScenarioLesson |
+ * undefined`, so deleting the record changes the accessor's return type and
+ * every call site — real churn in files this change does not own, to buy a
+ * safety property an assertion buys for nothing. 03-11's other rule is the one
+ * that applies: the replacement for a comment saying "this is dead" is an
+ * ASSERTION saying so. See scripts/verify-scenario-content.mts.
+ *
+ * Whether the record should be deleted outright, and the accessor made to
+ * return `undefined` like every other bank's, is an OPEN QUESTION filed for the
+ * phase gate — not a decision taken here. */
+export const FALLBACK_LESSON: ScenarioLesson = {
   intro:
     "Before you practise, glance over the key phrases below — then say them out loud and rehearse the conversation.",
   tips: [
@@ -341,5 +372,5 @@ export function getScenarioLesson(
   worldSlug: string,
   scenarioSlug: string,
 ): ScenarioLesson {
-  return LESSONS[`${worldSlug}/${scenarioSlug}`] ?? FALLBACK;
+  return LESSONS[`${worldSlug}/${scenarioSlug}`] ?? FALLBACK_LESSON;
 }

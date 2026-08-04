@@ -77,6 +77,12 @@ import {
   getScenarioSpeaking,
   scenarioSpeakingKeys,
 } from "../src/lib/content/scenario-speaking.ts";
+// FALLBACK_LESSON is imported so the generic briefing can be asserted
+// UNREACHABLE rather than trusted unreachable — see the group near the bottom.
+import {
+  getScenarioLesson,
+  FALLBACK_LESSON,
+} from "../src/lib/content/scenario-lessons.ts";
 // Read by the speaking group alone, to assert that the rehearsal panel really
 // is practicable with no AI and no microphone rather than merely documented as
 // such. A builtin, so the no-new-dependency rule above still holds.
@@ -2921,6 +2927,107 @@ if (idiomsPassage) {
       "a passage that parades what the deck teaches is the deck read aloud (T-03-19)",
     );
   }
+}
+
+group("every scenario gets a briefing of its own, and it does not quote its own banks");
+
+/* TWO PROPERTIES, both of them things a comment used to claim and nothing
+ * checked.
+ *
+ * ── A. THE GENERIC BRIEFING IS PROVABLY UNREACHABLE (T-04-09) ──
+ *
+ * `getScenarioLesson` resolves an unknown key to a single generic record. All
+ * 35 scenarios have their own briefing, so that record is dead — but "dead" was
+ * only ever true by inspection, and the trap it sets is specific: the next
+ * author to add a scenario and forget its briefing gets filler that reads
+ * exactly like curated content on the page. Nothing crashes, no derived count
+ * is wrong, and the learner is quietly served nothing.
+ *
+ * This is the situation `phrases.ts` was in before 03-11. 03-11 DELETED its
+ * fallback; that is not the move here, because this accessor returns
+ * `ScenarioLesson` rather than `ScenarioLesson | undefined`, so deleting the
+ * record changes its signature and every call site. 03-11's other rule is the
+ * one that applies — the replacement for a comment asserting a fallback is dead
+ * is an assertion asserting it. Filed as an open question for the phase gate;
+ * NOT decided here.
+ *
+ * The reference check (`!==`) is the load-bearing one: it proves the accessor
+ * did not fall through, which is the actual property. The deep-equality check
+ * beside it catches the other half — a briefing that was written by pasting the
+ * generic one, which the reference check alone would pass.
+ *
+ * ── B. THE THREE SURFACES OF `native/idioms` STAY APART (T-04-10) ──
+ *
+ * Research measured one canonical list appearing in this scenario's briefing,
+ * in its warm-up and in its deck at once, and the briefing was the surface
+ * nothing gated: it is prose, so a repeat there was invisible to every existing
+ * check. Measured clean before this was written — 0 offenders.
+ *
+ * The vocabulary term is the sharp end, because it is short enough to sit
+ * inside a sentence of prose unnoticed; a phrase text is a whole sentence and
+ * the check on it is the cheap half. A term that NAMES ITS SENSE in a
+ * parenthesis — `down the line (later, not now)` — is hunted on the part before
+ * the bracket, since the bare expression is what a tip would actually repeat
+ * and matching the whole string would make the check trivially passable. */
+
+const briefingScenarios = SCENARIOS.map((s) => ({
+  key: s.key,
+  lesson: getScenarioLesson(s.world, s.scenario),
+}));
+
+for (const { key, lesson } of briefingScenarios) {
+  ok(
+    `${key}: resolves to a briefing of its own, not the generic record`,
+    lesson !== FALLBACK_LESSON,
+    "the accessor fell through to the generic briefing — filler that reads as curated content on the page, and nothing else would have reported it",
+  );
+  ok(
+    `${key}: its briefing is not a copy of the generic one`,
+    JSON.stringify(lesson) !== JSON.stringify(FALLBACK_LESSON),
+    "a briefing byte-identical to the generic record is the fallback with extra steps",
+  );
+  ok(
+    `${key}: its briefing intro is not blank`,
+    lesson.intro.trim().length > 0,
+    "a scenario whose briefing renders an empty heading claims a framing it does not give",
+  );
+  ok(
+    `${key}: its briefing carries at least two non-blank tips`,
+    lesson.tips.filter((t) => t.trim().length > 0).length >= 2,
+    "the type says 2–3 quick practical tips; one or none is the shape of an unfinished briefing",
+  );
+}
+
+const idiomsLesson = getScenarioLesson(IDIOMS_WORLD, IDIOMS_SCENARIO);
+const briefingSurfaces = [
+  { where: "intro", text: plain(idiomsLesson.intro) },
+  ...idiomsLesson.tips.map((t, i) => ({
+    where: `tip[${i}]`,
+    text: plain(t),
+  })),
+];
+
+for (const phrase of idiomPhrases) {
+  const offenders = briefingSurfaces.filter((s) =>
+    s.text.includes(plain(phrase.text)),
+  );
+  ok(
+    `${IDIOMS_KEY}: the briefing does not work its example from phrase#${phrase.id}`,
+    offenders.length === 0,
+    `${canon(offenders.map((o) => o.where))} — the briefing, the warm-up and the deck teaching the same expression is the triple 04-RESEARCH §1 measured`,
+  );
+}
+for (const card of idiomCards) {
+  /* The sense-naming parenthesis comes off: the bare expression is what a tip
+   * would repeat, and hunting the bracketed form would make this passable by
+   * accident. */
+  const bareTerm = plain(card.term.split(" (")[0]);
+  const offenders = briefingSurfaces.filter((s) => s.text.includes(bareTerm));
+  ok(
+    `${IDIOMS_KEY}: the briefing does not work its example from vocab#${card.id}`,
+    offenders.length === 0,
+    `${canon(offenders.map((o) => o.where))} quotes "${bareTerm}" — the briefing must demonstrate on material no other surface of this scenario uses`,
+  );
 }
 
 /* ------------------------------------------------------------------ *
