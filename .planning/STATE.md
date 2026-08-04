@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 04
 current_phase_name: native-level-depth
 status: in-progress
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-08-02T06:14:32.124Z"
-last_activity: 2026-08-02
-last_activity_desc: "04-01 executed: THE TRACER, and the phase's gate lands before its risky work. native/phrasal-verbs goes 6 to 18 phrases and 8 to 24 cards, authored on a CHANGED RULE — the unit is verb + particle + SENSE, ten of the twelve phrases being a second or third sense of a verb the scenario already teaches, and the tip is what tells the senses apart. The 42-card deck now ARRIVES IN BATCHES of 14/14/14 through src/lib/recall-batches.ts, the one author of the split; ALL FOUR callers of the one recall renderer inherit it deliberately and there is no opt-out prop, and a deck of 16 or fewer still renders as one uninterrupted run so the thirty untouched scenarios see no change. THE ID-STABILITY GATE IS COMMITTED (scripts/verify-id-stability.mts + a 538-id fixture): every scheduled id carries a SHA-256 of its FULL authored record, so a re-point, a PARTIAL edit under a live id, an unrecorded addition and a returning retired id all FAIL, and --update refuses to launder a changed hash. That gate then caught a real defect one task later: ran-into-at-the-airport duplicated social/small-talk's run-into card, and because it was already committed it was RETIRED WITH A REASON AND REPLACED WITH A NEW SLUG rather than edited in place — the legal path taken on real content, not a drill. Two more duplicates the byte-identity harness cannot see were found by the corpus-wide scan and fixed before commit, one of them a Spanish gloss at J=0.75 against another scenario's, which matters because es is the FRONT of a recall card. MINUTES IS NOW A GATED CLAIM for all 35 scenarios (minutes x 60 >= phrases x 20 + deck x 15, >= so zero slack passes, and the double-count of warm-up phrases is documented conservatism that must not be corrected away); phrasal-verbs went 9 to 17. The saturated payload is now an ASSERTION rather than a summary line: 173,143 B, 16.5 percent of the cap, read against the route's own MAX_BODY_BYTES parsed out of its source, and printed on every run. verify-scenario-content 11981 to 12683; verify-id-stability 1639; merge 25647, schema 309, queue 173, headers 24, celpip 43/648/50 all held; tsc, lint and build exit 0 from the committed tree after a .next wipe, with the rebuilt bundle grepped for the new ids so no claim rests on a stale artifact; dependencies 11 + 11. Mutation sweeps 14 declared / 14 executed / 14 caught with 4 controls green — and TWO SWEEP DEFECTS WERE FOUND AND FIXED BEFORE ANY VERDICT: the first runner read $? through a pipe into grep so the control lied, and the first mutation read process.argv[2], undefined under node -e, so it never applied. 8 of 9 plans remain in Phase 4."
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-08-04T05:18:34.466Z"
+last_activity: 2026-08-04
+last_activity_desc: "04-02 executed: native/phrasal-verbs is FINISHED and the strings behind its quiz are now gated. The scenario goes 5 to 15 GRAMMAR QUESTIONS, additively, in the shape GrammarQuiz already renders (D-01) — three on THE PARTICLE (give in / hold back / let on) where every distractor is a REAL sibling verb with a different meaning rather than a non-word; three on THE SENSE (go off = stop liking, take up = occupy space, break down = itemise), each a second dominant sense of a verb the deck already teaches in another, with the explanation naming what in the sentence decides; two on THE REGISTER COLLISION in BOTH directions (terminate belongs in a contract, kick off belongs in a corridor); and two on FORM, extending the two existing separability items rather than repeating them (get rid of is simply frozen; keep up with them is a three-part verb a pronoun may NOT split, stated against separable-pronoun-look-over by name). EXACTLY ONE new permanent topic string was spent, Phrasal verb senses, with the other three copied character for character — and the TOPIC SETS OF ALL FOUR grammar banks are now WRITTEN OUT in the harness and asserted exactly, because a topic is the key weakTopics() groups a learner's history by and a near-variant splits that history in two permanently and undetectably; agreement with the GLOBAL bank is checked character for character through a deliberately LOSSY normalisation, so a string that means the same and is not the same fails. THE SESSION-LENGTH INVARIANT GAINED ITS THIRD RATE, 30 s per grammar question, carrying 04-01's two properties forward unchanged: the comparison stays >= so exactly zero slack passes, and the warm-up double count stays. phrasal-verbs went 17 to 24 minutes — 18x20 + 42x15 + 15x30 = 1,440 s = EXACTLY 24 min, exactly zero slack, which passes by design and was NOT rounded up to 25 because the margin is already in the rates. Run over all 35 scenarios NO scenario lands at negative slack, so no other minutes moved; social/small-talk also measures exactly zero and was deliberately left alone. The id fixture was regenerated in the same commit as the content: 10 added, 0 removed, 0 changed hashes, 538 to 548 ids. A planned run over question was KILLED BEFORE IT WAS WRITTEN by the corpus scan — work/meetings already teaches that exact sense with a 'by twenty minutes' example — and cut off likewise; replaced by break down and let on. verify-scenario-content 12683 to 12868; verify-id-stability 1639 to 1679; payload 176,151 B / 16.8 percent; merge 25647, schema 309, queue 173, headers 24, celpip 43/648/50 all held; tsc, lint and build exit 0 from the committed tree after a .next wipe, with the bundle grepped for the new slugs AND minutes:24; dependencies 11 + 11. Mutation sweep 8 declared / 8 executed / 6 caught / 2 controls green — and the sweep harness was smoke-tested in BOTH DIRECTIONS before any verdict, proving the SURVIVED branch and the ANCHOR-DEFECT branch actually execute, because until they had, '6 caught' was unfalsifiable. Hazard 2 bit once during the TDD RED step (an echo $? after a pipe into grep reported 0 for a probe that exited 1) and is recorded in the summary; it affected no verdict. WINDOWS 45 RECURRED FOR AN ELEVENTH CONSECUTIVE PLAN AND WAS WORSE: state.advance-plan REGRESSED current_phase 04 to 03 and total_phases 6 to 5, reported 'plan 11 of 11, last_plan, ready_for_verification' by reading PHASE 03's plan count while on phase 04 plan 2 of 9, update-progress DELETED the informative Progress parenthetical rather than merely leaving it stale, and add-decision stamped [Phase ?] again. All hand-corrected, with the 107 historical [Phase ?] rows counted before and after to prove they were untouched. Six PRE-EXISTING exact duplicates in the grammar corpus were logged to deferred-items.md and NOT fixed. 7 of 9 plans remain in Phase 4."
 progress:
   total_phases: 6
   completed_phases: 4
   total_plans: 45
-  completed_plans: 37
+  completed_plans: 38
 ---
 
 # Project State
@@ -23,33 +23,34 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-23)
 
 **Core value:** A learner can practice any real-life English scenario end-to-end — with an AI tutor that corrects them in context — and their progress is never lost.
-**Current focus:** Phase 03 — every-scenario-practicable (COMPLETE, 11 of 11 plans; next is Phase 04 — curriculum expansion)
+**Current focus:** Phase 04 — native-level-depth (IN PROGRESS, 2 of 9 plans; CONT-04)
 
 ## Current Position
 
-Phase: 03 (every-scenario-practicable) — IN PROGRESS
-Plan: 11 of 11 complete
-Status: 03-06 complete on `main`. **CONT-02 stays closed; CONT-01's writing quarter closes.** All
-nine scenario×skill pairs that declare writing — `work/emails`, `travel/hotel`,
-`practical/tech-support`, `social/complaining`, `work/presentations`, `work/networking`,
-`academic/summaries`, `academic/debate`, `native/register` — now have a brief written for their own
-situation, with a checklist and an original model answer, so coverage reads
-**35/35 scenarios with phrases · 35/35 with vocabulary · 13/52 pairs written · 39 pending**
-(speaking 30, reading 9, **grammar 0, writing 0**). `WritingDesk`'s only change is that it hides its
-prompt picker below two prompts, so a scenario's single task reads as a task rather than as a menu
-of one. **A writing id is composed but UNSCHEDULED**: nothing scores a writing task, so
-`reviewableIds()` was deliberately NOT extended and the negative is asserted instead — 03-05's
-four-edit rule is *conditional* on the bank writing to the SRS, and plans 03-07 and 03-09 must check
-their own renderer for `recordAttempt` before copying it. **`CONT-01` is NOT ticked in
-REQUIREMENTS.md** and must not be until 52/52; the requirement says *every* pair. `getPhrases` and
-its `WORLD_FALLBACK` still exist in `phrases.ts` and are still dead for scenario pages; **plan 03-11
-deletes them**. Next action is executing 03-07 (reading). **The exported surface plans 07–11 depend
-on is recorded in `03-01-SUMMARY.md`; the authoring rules and the duplicate-scan method in
-`03-03-SUMMARY.md`; `03-05-SUMMARY.md` §1 is the wiring recipe; and `03-06-SUMMARY.md` §1 is the
-caveat on its fourth edit.** Read the summaries, not the plans.
-Last activity: 2026-08-02 — 04-01 executed: THE TRACER, and the phase's gate lands before its risky work. native/phrasal-verbs goes 6 to 18 phrases and 8 to 24 cards, authored on a CHANGED RULE — the unit is verb + particle + SENSE, ten of the twelve phrases being a second or third sense of a verb the scenario already teaches, and the tip is what tells the senses apart. The 42-card deck now ARRIVES IN BATCHES of 14/14/14 through src/lib/recall-batches.ts, the one author of the split; ALL FOUR callers of the one recall renderer inherit it deliberately and there is no opt-out prop, and a deck of 16 or fewer still renders as one uninterrupted run so the thirty untouched scenarios see no change. THE ID-STABILITY GATE IS COMMITTED (scripts/verify-id-stability.mts + a 538-id fixture): every scheduled id carries a SHA-256 of its FULL authored record, so a re-point, a PARTIAL edit under a live id, an unrecorded addition and a returning retired id all FAIL, and --update refuses to launder a changed hash. That gate then caught a real defect one task later: ran-into-at-the-airport duplicated social/small-talk's run-into card, and because it was already committed it was RETIRED WITH A REASON AND REPLACED WITH A NEW SLUG rather than edited in place — the legal path taken on real content, not a drill. Two more duplicates the byte-identity harness cannot see were found by the corpus-wide scan and fixed before commit, one of them a Spanish gloss at J=0.75 against another scenario's, which matters because es is the FRONT of a recall card. MINUTES IS NOW A GATED CLAIM for all 35 scenarios (minutes x 60 >= phrases x 20 + deck x 15, >= so zero slack passes, and the double-count of warm-up phrases is documented conservatism that must not be corrected away); phrasal-verbs went 9 to 17. The saturated payload is now an ASSERTION rather than a summary line: 173,143 B, 16.5 percent of the cap, read against the route's own MAX_BODY_BYTES parsed out of its source, and printed on every run. verify-scenario-content 11981 to 12683; verify-id-stability 1639; merge 25647, schema 309, queue 173, headers 24, celpip 43/648/50 all held; tsc, lint and build exit 0 from the committed tree after a .next wipe, with the rebuilt bundle grepped for the new ids so no claim rests on a stale artifact; dependencies 11 + 11. Mutation sweeps 14 declared / 14 executed / 14 caught with 4 controls green — and TWO SWEEP DEFECTS WERE FOUND AND FIXED BEFORE ANY VERDICT: the first runner read $? through a pipe into grep so the control lied, and the first mutation read process.argv[2], undefined under node -e, so it never applied. 8 of 9 plans remain in Phase 4.
+Phase: 04 (native-level-depth) — IN PROGRESS
+Plan: 2 of 9 complete
+Status: 04-02 complete on `main`. **`native/phrasal-verbs` is FINISHED** — 18 phrases, a 42-card
+deck batched 14/14/14, **15 grammar questions** and an honestly gated 24 minutes — and it stands as
+the worked example the remaining four native scenarios are authored against. The other four still
+report their Phase 3 floors, truthfully, because coverage is derived. **Two gates now bind every
+later plan in this phase:** (1) `scripts/verify-id-stability.mts` — regenerate
+`scripts/fixtures/scheduled-item-ids.json` with `--update` IN THE SAME COMMIT as any added or
+removed scheduled id; a legitimate diff is additions only, nothing removed except into `retired`
+with a hand-written reason, and NOT ONE changed hash; a replacement is retire-then-add-with-a-new-
+slug, never an edit in place. (2) the session-length invariant, now with THREE rates —
+`minutes × 60 >= phrases × 20 + deck × 15 + questions × 30` — so **any plan that deepens a bank must
+raise that scenario's `minutes` in the same commit**; the comparison is `>=` so exactly zero slack
+passes and only NEGATIVE slack is corrected. **`native/phrasal-verbs` and `social/small-talk` both
+sit at exactly zero and must not be raised.** 04-02 also wrote out the grammar TOPIC SETS in the
+harness: a topic string is the key `weakTopics()` groups a learner's history by, so a near-variant
+splits it permanently — the set is now asserted exactly, and must be changed deliberately in the
+same commit as a new question. **Read `04-01-SUMMARY.md` and `04-02-SUMMARY.md`, not the plans.**
+Pre-existing corpus defects found and NOT fixed are in
+`.planning/phases/04-native-level-depth/deferred-items.md`.
 
-Progress: [████░░░░░░] 37 of 45 plans (4 of 6 phases complete; Phase 4 has 9 plans written and 1 executed)
+Last activity: 2026-08-04 — 04-02 executed: native/phrasal-verbs is FINISHED and the strings behind its quiz are now gated. The scenario goes 5 to 15 GRAMMAR QUESTIONS, additively, in the shape GrammarQuiz already renders (D-01) — three on THE PARTICLE (give in / hold back / let on) where every distractor is a REAL sibling verb with a different meaning rather than a non-word; three on THE SENSE (go off = stop liking, take up = occupy space, break down = itemise), each a second dominant sense of a verb the deck already teaches in another, with the explanation naming what in the sentence decides; two on THE REGISTER COLLISION in BOTH directions (terminate belongs in a contract, kick off belongs in a corridor); and two on FORM, extending the two existing separability items rather than repeating them (get rid of is simply frozen; keep up with them is a three-part verb a pronoun may NOT split, stated against separable-pronoun-look-over by name). EXACTLY ONE new permanent topic string was spent, Phrasal verb senses, with the other three copied character for character — and the TOPIC SETS OF ALL FOUR grammar banks are now WRITTEN OUT in the harness and asserted exactly, because a topic is the key weakTopics() groups a learner's history by and a near-variant splits that history in two permanently and undetectably; agreement with the GLOBAL bank is checked character for character through a deliberately LOSSY normalisation, so a string that means the same and is not the same fails. THE SESSION-LENGTH INVARIANT GAINED ITS THIRD RATE, 30 s per grammar question, carrying 04-01's two properties forward unchanged: the comparison stays >= so exactly zero slack passes, and the warm-up double count stays. phrasal-verbs went 17 to 24 minutes — 18x20 + 42x15 + 15x30 = 1,440 s = EXACTLY 24 min, exactly zero slack, which passes by design and was NOT rounded up to 25 because the margin is already in the rates. Run over all 35 scenarios NO scenario lands at negative slack, so no other minutes moved; social/small-talk also measures exactly zero and was deliberately left alone. The id fixture was regenerated in the same commit as the content: 10 added, 0 removed, 0 changed hashes, 538 to 548 ids. A planned run over question was KILLED BEFORE IT WAS WRITTEN by the corpus scan — work/meetings already teaches that exact sense with a 'by twenty minutes' example — and cut off likewise; replaced by break down and let on. verify-scenario-content 12683 to 12868; verify-id-stability 1639 to 1679; payload 176,151 B / 16.8 percent; merge 25647, schema 309, queue 173, headers 24, celpip 43/648/50 all held; tsc, lint and build exit 0 from the committed tree after a .next wipe, with the bundle grepped for the new slugs AND minutes:24; dependencies 11 + 11. Mutation sweep 8 declared / 8 executed / 6 caught / 2 controls green — and the sweep harness was smoke-tested in BOTH DIRECTIONS before any verdict, proving the SURVIVED branch and the ANCHOR-DEFECT branch actually execute, because until they had, '6 caught' was unfalsifiable. Hazard 2 bit once during the TDD RED step (an echo $? after a pipe into grep reported 0 for a probe that exited 1) and is recorded in the summary; it affected no verdict. WINDOWS 45 RECURRED FOR AN ELEVENTH CONSECUTIVE PLAN AND WAS WORSE: state.advance-plan REGRESSED current_phase 04 to 03 and total_phases 6 to 5, reported 'plan 11 of 11, last_plan, ready_for_verification' by reading PHASE 03's plan count while on phase 04 plan 2 of 9, update-progress DELETED the informative Progress parenthetical rather than merely leaving it stale, and add-decision stamped [Phase ?] again. All hand-corrected, with the 107 historical [Phase ?] rows counted before and after to prove they were untouched. Six PRE-EXISTING exact duplicates in the grammar corpus were logged to deferred-items.md and NOT fixed. 7 of 9 plans remain in Phase 4.
+
+Progress: [████████░░] 38 of 45 plans (4 of 6 phases complete; Phase 4 has 9 plans written and 2 executed)
 
 ## Performance Metrics
 
@@ -106,6 +107,7 @@ Progress: [████░░░░░░] 37 of 45 plans (4 of 6 phases complet
 | Phase 03 P10 | ~85min | 2 tasks | 1 files |
 | Phase 03 P11 | ~135min | 3 tasks | 8 files |
 | Phase 04 P01 | 22m | 4 tasks | 8 files |
+| Phase 04 P02 | ~50 min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -247,6 +249,9 @@ Recent decisions affecting current work:
 - [Phase 03]: 03-11: WINDOWS 39, WINDOWS 41 and 03-05/06/07's tautological id assertion were CLOSED at the gate rather than assessed and left — each was a trap aimed at Phase 4, both stated blockers had expired, and each is proved by a mutation caught on its own label
 - [Phase 03]: 03-11: the two design echoes found by the reader pass (Sounding Native's four-of-five same drill; three of four A2 counter tasks closing on a read-back) are RATIFIED as stated design decisions, waived in the ledger rather than carried as debt
 - [Phase 03]: 03-11: CONT-01 and CONT-02 close, each annotated in the requirement with what the browser pass saw and what it did not — writing-desk typing and rehearsal ticking stay open by name rather than being rounded up
+- [Phase 04]: 04-02: exactly ONE new permanent topic string spent — "Phrasal verb senses". Fixedness filed under the EXISTING "Phrasal verb separability", because the topic is about the FORM of a phrasal verb and a frozen string is a form.
+- [Phase 04]: 04-02: topic sets are WRITTEN OUT in the harness, not shape-checked — a shape check cannot tell "Phrasal verb particles" from "Phrasal Verb Particles", and that is the entire failure being hunted.
+- [Phase 04]: 04-02: social/small-talk measures EXACTLY ZERO slack under the three-rate session invariant and was deliberately NOT raised — zero passes by design, and raising it would contradict the rule the invariant states.
 
 ### Pending Todos
 
@@ -292,6 +297,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-08-02T06:14:32.085Z
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-08-04T05:18:34.428Z
+Stopped at: Completed 04-02-PLAN.md
 Resume file: None

@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 35
+open_count: 37
 waived_count: 1
 fixed_count: 14
-total_count: 50
-last_updated: 2026-08-02T06:16:03.890Z
+total_count: 52
+last_updated: 2026-08-04T05:20:58.283Z
 ---
 
 # Broken Windows Ledger
@@ -65,6 +65,8 @@ last_updated: 2026-08-02T06:16:03.890Z
 | 48 | 03 | deviation | scripts/verify-scenario-content.mts |  | 03-11: a NEAR-MISS worth recording because the reviewer raised it and the answer is reassuring rather than obvious. Driving the 03-11 browser pass, the reviewer's own regex looked for the scenario reading explanations by searching the DOM for 'because', 'the passage' and 'Why:' and found NOTHING, then correctly warned that any committed assertion phrased that way would be weaker than it looks. Checked at the source: NO assertion anywhere in scripts/verify-scenario-content.mts matches explanation PROSE. Explanations are gated by filled(q.explain) - non-empty after trimming - at lines 919 and 1498, and by distinctness within a passage at 1554, and by nothing else; mutation M4 (a whitespace explanation) and M8/M9 (one explanation pasted over another) are what give those teeth. Measured over the live bank: of the 36 scenario reading explanations, 0 contain 'because', 0 contain 'Why:' and only 7 contain 'the passage' - they are written as substantive prose rather than to a formula, which is why the regex missed them and is arguably the better teaching. NO CHANGE MADE. Recorded so that a future reader who has the same idea does not conclude the explanations are absent, and so that nobody later ADDS a wording-shaped assertion believing it is a tightening. | open |  | 2026-08-01T07:24:56.275Z |  |
 | 49 | 04 | deviation | src/lib/content/phrases.ts |  | 04-01: 'take on too much' (taken-on-too-much) shares a frame with listening.ts's C1 interview line, and 'turned up late' (turned-up-an-hour-late) with practical/housing's estate-agent example. Both incidental co-occurrences on other surfaces — neither teaches the unit — and both ids are committed, so correcting them would cost a retirement for no pedagogical gain. Accepted, not fixed. | open |  | 2026-08-02T06:16:03.386Z |  |
 | 50 | 04 | deviation | .planning/STATE.md |  | 04-01: WINDOWS 45 recurred for a tenth consecutive plan. state.advance-plan left current_phase at 03, wrote total_phases: 5 for a 6-phase project, and left the prose Progress line contradicting its own frontmatter (36 of 36 vs 37 of 45). Corrected by hand; the root cause in the tooling is still unfixed. | open |  | 2026-08-02T06:16:03.890Z |  |
+| 51 | 04 | deviation | .planning/STATE.md |  | 04-02: WINDOWS 45 recurred for an ELEVENTH consecutive plan and regressed rather than merely staling. state.advance-plan rewrote current_phase 04 -> 03 and total_phases 6 -> 5, and reported 'current_plan 11 / total_plans 11 / last_plan / ready_for_verification' -- it read PHASE 03's plan count while the project is on phase 04, plan 2 of 9. state.update-progress DELETED the informative Progress parenthetical outright ('37 of 45 plans (4 of 6 phases complete; Phase 4 has 9 plans written and 1 executed)' -> a bare '84%'), which is bug (a) escalated from stale to destructive. state.add-decision stamped [Phase ?] on all three new rows again. All corrected by hand; the 107 historical [Phase ?] rows were counted before and after to prove the blanket-replace trap of WINDOWS 45 was avoided. The last_activity_desc workaround (one physical line, written LAST) held again and parses as JSON. The Current Position body and Current focus were ALSO still describing Phase 03 plan 11 of 11 with 03-06 prose, pre-existing and never advanced by the tool -- rewritten by hand this run. Eleven plans is past the point where absorbing it again is reasonable. | open |  | 2026-08-04T05:20:57.768Z |  |
+| 52 | 04 | deviation | src/lib/content/grammar.ts |  | 04-02: six PRE-EXISTING exact duplicates in the grammar corpus, found by the mandated corpus scan and deliberately NOT fixed (every one is a committed id, so each costs a retirement under the 04-01 gate). The cross-surface one is the notable case: work/emails#grammar#look-forward-to-gerund's prompt is byte-identical to global b8's ('I look forward to ___ from you.'), so a learner answers the same question twice under two ids and only one namespaces to her scenario -- D-01 at the grammar grain. The other five are wholly inside src/lib/content/grammar.ts (a8==a17, a5==a21, c4==c14, c6==c18 explain, d3==d11). Full detail in .planning/phases/04-native-level-depth/deferred-items.md. No assertion was added either: it would fail on arrival, and a gate that fails on arrival gets disabled rather than fixed. | open |  | 2026-08-04T05:20:58.283Z |  |
 
 ````json
 [
@@ -666,6 +668,30 @@ last_updated: 2026-08-02T06:16:03.890Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-08-02T06:16:03.890Z",
+    "resolved_at": null
+  },
+  {
+    "id": 51,
+    "kind": "deviation",
+    "phase": "04",
+    "file": ".planning/STATE.md",
+    "line": null,
+    "description": "04-02: WINDOWS 45 recurred for an ELEVENTH consecutive plan and regressed rather than merely staling. state.advance-plan rewrote current_phase 04 -> 03 and total_phases 6 -> 5, and reported 'current_plan 11 / total_plans 11 / last_plan / ready_for_verification' -- it read PHASE 03's plan count while the project is on phase 04, plan 2 of 9. state.update-progress DELETED the informative Progress parenthetical outright ('37 of 45 plans (4 of 6 phases complete; Phase 4 has 9 plans written and 1 executed)' -> a bare '84%'), which is bug (a) escalated from stale to destructive. state.add-decision stamped [Phase ?] on all three new rows again. All corrected by hand; the 107 historical [Phase ?] rows were counted before and after to prove the blanket-replace trap of WINDOWS 45 was avoided. The last_activity_desc workaround (one physical line, written LAST) held again and parses as JSON. The Current Position body and Current focus were ALSO still describing Phase 03 plan 11 of 11 with 03-06 prose, pre-existing and never advanced by the tool -- rewritten by hand this run. Eleven plans is past the point where absorbing it again is reasonable.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-04T05:20:57.768Z",
+    "resolved_at": null
+  },
+  {
+    "id": 52,
+    "kind": "deviation",
+    "phase": "04",
+    "file": "src/lib/content/grammar.ts",
+    "line": null,
+    "description": "04-02: six PRE-EXISTING exact duplicates in the grammar corpus, found by the mandated corpus scan and deliberately NOT fixed (every one is a committed id, so each costs a retirement under the 04-01 gate). The cross-surface one is the notable case: work/emails#grammar#look-forward-to-gerund's prompt is byte-identical to global b8's ('I look forward to ___ from you.'), so a learner answers the same question twice under two ids and only one namespaces to her scenario -- D-01 at the grammar grain. The other five are wholly inside src/lib/content/grammar.ts (a8==a17, a5==a21, c4==c14, c6==c18 explain, d3==d11). Full detail in .planning/phases/04-native-level-depth/deferred-items.md. No assertion was added either: it would fail on arrival, and a gate that fails on arrival gets disabled rather than fixed.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-04T05:20:58.283Z",
     "resolved_at": null
   }
 ]
