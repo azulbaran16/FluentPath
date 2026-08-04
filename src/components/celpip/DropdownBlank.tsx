@@ -71,7 +71,14 @@ export function DropdownBlank({
           onChange={(e) =>
             onChange(e.target.value === "" ? undefined : Number(e.target.value))
           }
-          className={`max-w-full rounded-lg border bg-card px-2 py-1 text-sm font-medium text-ink outline-none transition-colors disabled:opacity-100 ${cls}`}
+          // text-base, not text-sm, and this is a correctness constraint rather
+          // than a style choice: iOS Safari auto-zooms the whole page whenever a
+          // focused form control renders below 16px. At text-sm (14px) every one
+          // of a set's fifteen blanks would zoom the page in on tap and leave the
+          // learner pinching back out mid-exam. min-h-11 meets the 44px touch
+          // target for the same reason — these are the smallest controls in the
+          // exam and they sit inline in running prose.
+          className={`min-h-11 max-w-full rounded-lg border bg-card px-2 py-1 text-base font-medium text-ink outline-none transition-colors disabled:opacity-100 ${cls}`}
         >
           {/* An empty first option, so an untouched blank reads as untouched
               rather than as a first option she never chose. Submission is never
