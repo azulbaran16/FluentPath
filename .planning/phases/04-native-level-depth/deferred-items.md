@@ -141,3 +141,31 @@ accessor and it is strict").
 
 Filed to `.planning/WINDOWS.md` as well. **Whoever next touches `scenario-lessons.ts` should settle
 it** — not leave a third plan to find the same fork.
+
+---
+
+## 04-05 — `native/register`'s briefing quotes the shapes of its own phrase pair
+
+**Found:** 04-05, Task 2, while checking whether 04-04's briefing/bank separation gate applies.
+
+`scenario-lessons.ts:322-330`'s first tip reads *"Casual ↔ formal: “Can you…?” becomes “Would you
+be able to…?”"*. Those are the opening shapes of pair 1's two halves —
+`casual-send-it-over` (*"Can you send it over when you get a sec?"*) and
+`formal-earliest-convenience` (*"Would you be able to forward it at your earliest convenience?"*).
+
+**04-04's gate does not fire**, and correctly so: it is scoped to `native/idioms`, and it matches
+whole phrase texts and bare card terms, not sentence openings.
+
+**Not fixed, deliberately.** Two reasons:
+
+1. This is weaker than the defect 04-04 removed. `native/idioms`' briefing quoted whole
+   expressions the deck and warm-up also taught, three surfaces on one item. Here the briefing
+   quotes a two-word *frame* (`Can you` / `Would you be able to`) which is the scenario's subject
+   matter rather than an item of its content — arguably the briefing doing its job.
+2. Deciding it means deciding whether the separation gate should be widened from one scenario to
+   all thirty-five, which is a decision about the gate. `scenario-lessons.ts` is outside this
+   plan's `files_modified`, and 04-04 already has an open question on that file.
+
+**For whoever widens the gate:** the check would need a notion of a phrase PREFIX, not a whole
+text — and it should be measured across all 35 briefings before being written, because several
+briefings legitimately name the structure their scenario teaches.
