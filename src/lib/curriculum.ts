@@ -132,13 +132,17 @@ export const WORLDS: World[] = [
     tagline: "The final 10% that changes everything.",
     color: "--plum",
     scenarios: [
-      // 04-03 took the warm-up from 6 re-selected phrases to 18, so the sitting
-      // grew: 18 x 20 s + a 26-card deck x 15 s = 750 s. The smallest whole
-      // minute that covers it is 13 (780 s), 30 s of slack.
+      // 04-03 took the warm-up from 6 re-selected phrases to 18 and 04-04
+      // re-selected the deck up to 24 cards, so the sitting is now
+      // 18 x 20 s + a 42-card deck x 15 s = 990 s. The smallest whole minute
+      // that covers it is 17 (1020 s), 30 s of slack.
       { slug: "idioms", title: "Idioms & expressions", blurb: "Use everyday idioms correctly and naturally.", level: "C1", skills: ["speaking", "reading"], minutes: 17 },
       { slug: "phrasal-verbs", title: "Phrasal verbs", blurb: "Master the verbs natives can't live without.", level: "B2", skills: ["grammar", "speaking"], minutes: 24 },
       { slug: "pronunciation", title: "Pronunciation & accent", blurb: "Tricky sounds, word stress, intonation, connected speech.", level: "B2", skills: ["speaking"], minutes: 10 },
-      { slug: "register", title: "Register: formal ↔ casual", blurb: "Switch tone for the situation, from texts to contracts.", level: "C1", skills: ["writing", "speaking"], minutes: 9 },
+      // 04-05 took the warm-up from three contrasting pairs to nine, i.e. 6
+      // phrases to 18: 18 x 20 s + a 26-card deck x 15 s = 750 s. The smallest
+      // whole minute that covers it is 13 (780 s), 30 s of slack.
+      { slug: "register", title: "Register: formal ↔ casual", blurb: "Switch tone for the situation, from texts to contracts.", level: "C1", skills: ["writing", "speaking"], minutes: 13 },
       { slug: "culture", title: "Culture & references", blurb: "Catch the references natives drop in conversation.", level: "C1", skills: ["reading", "speaking"], minutes: 10 },
     ],
   },

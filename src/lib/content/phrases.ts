@@ -448,8 +448,29 @@ const SETS: Record<string, Phrase[]> = {
     { id: "ship-sheep", text: "This ship is full of sheep.", es: "(la /ɪ/ corta frente a la /iː/ larga)", tip: "'Ship' corta, 'sheep' larga — cambia el significado." },
   ],
   // C1, and deliberately in CONTRASTING PAIRS rather than as a flat list —
-  // register is a dial, and a single line cannot show a dial moving. Three
-  // situations (a request, an apology, a refusal), each said twice.
+  // register is a dial, and a single line cannot show a dial moving. NINE
+  // situations, each said twice: a request, an apology, a refusal (the three
+  // this set opened with at Phase 3), then bad news, a chase-up, a
+  // disagreement, an ask for more time, a piece of praise and a correction.
+  //
+  // THREE RULES THIS ARRAY OBEYS, AND THE THIRD IS LOAD-BEARING IN CODE:
+  //
+  //  1. The two halves of a pair carry the SAME FACTS. Softening the content
+  //     out of the polite version is the real-world failure the scenario
+  //     exists to prevent, and its writing task says so in as many words.
+  //  2. They differ in ways the learner can NAME — a contraction against a
+  //     full form, `till` against `until`, a direct ask against a distancing
+  //     past, an active subject against an agentless passive. A pair whose
+  //     only difference is politeness teaches nothing, and this scenario's own
+  //     rehearsal explicitly forbids "more polite" as an answer.
+  //  3. ADJACENCY CARRIES THE PAIRING AND NOTHING ELSE DOES. Both renderers
+  //     (PronunciationLab and RecallDeck) walk this array in order, and no
+  //     field records which entry pairs with which — so a pair is legible only
+  //     while its casual half sits immediately before its formal half. Insert
+  //     a new pair as two consecutive entries, casual first, keeping the
+  //     `casual-` / `formal-` slug prefixes. verify-scenario-content.mts
+  //     asserts the even length, the alternation and the adjacency, so an
+  //     insertion that breaks the contrast fails loudly instead of silently.
   "native/register": [
     { id: "casual-send-it-over", text: "Can you send it over when you get a sec?", es: "¿Me lo pasas cuando tengas un momento?", tip: "Casual: contracción, 'a sec' y un verbo corto. Perfecto entre compañeros." },
     { id: "formal-earliest-convenience", text: "Would you be able to forward it at your earliest convenience?", es: "¿Podría remitírmelo lo antes posible?", tip: "Formal: la misma petición. 'At your earliest convenience' es cortés y a la vez marca urgencia." },
@@ -457,6 +478,31 @@ const SETS: Record<string, Phrase[]> = {
     { id: "formal-apologise-oversight", text: "I apologise for the oversight; it has been corrected.", es: "Le pido disculpas por el descuido; ya está corregido.", tip: "Formal: sin contracciones y en pasiva, que aparta a la persona del error." },
     { id: "casual-not-going-to-work", text: "Yeah, that's not going to work for us.", es: "Ya, eso no nos va a funcionar.", tip: "Ese 'yeah' de apertura reconoce lo dicho antes de rechazarlo." },
     { id: "formal-wont-be-possible", text: "I'm afraid that won't be possible on this occasion.", es: "Me temo que no va a ser posible en esta ocasión.", tip: "'I'm afraid' es el amortiguador estándar de una negativa formal en inglés." },
+    // Pair 4 — BAD NEWS. The mark is where the softening goes: in the form
+    // ('Unfortunately' at the front) and never in the fact.
+    { id: "casual-slight-problem-friday", text: "Right, slight problem — we're not going to hit Friday.", es: "A ver, un problemilla: no vamos a llegar al viernes.", tip: "Ese 'slight problem' encoge la noticia antes de darla, y 'we're not going to' la dice en activo, con sujeto. Entre compañeros suena honesto y rápido; a quien te paga, 'slight' suena a que le quitas importancia a algo que le cuesta dinero." },
+    { id: "formal-friday-no-longer-realistic", text: "Unfortunately, the Friday date is no longer realistic.", es: "Lamentablemente, la fecha del viernes ya no es realista.", tip: "'Unfortunately' abriendo la frase avisa de la mala noticia antes de darla, y por escrito eso ya es medio punto de cortesía. Lo que no hace es tocar el hecho: el amortiguador va en la forma y nunca en los datos." },
+    // Pair 5 — CHASING SOMETHING OVERDUE. The mark is whether the line leaves
+    // a record: a date said in full turns a nudge into evidence.
+    { id: "casual-any-joy-with-those-figures", text: "Any joy with those figures yet?", es: "¿Se sabe ya algo de esas cifras?", tip: "'Any joy?' reclama algo pendiente sin acusar a nadie: es informal británico y de compañero a compañero. Por escrito a un proveedor no se lee como reclamación, y luego no tienes nada que enseñar." },
+    { id: "formal-still-awaiting-those-figures", text: "We are still awaiting the figures requested on the 4th.", es: "Seguimos a la espera de las cifras solicitadas el día 4.", tip: "'Still awaiting' más la fecha convierte el recordatorio en registro escrito: es lo que se manda cuando la siguiente llamada puede acabar en queja. Dicho al compañero de al lado suena a expediente." },
+    // Pair 6 — DISAGREEING WITH A DECISION. The mark is a nominalisation:
+    // 'reservations' is a thing you have, 'I disagree' is a thing you do.
+    { id: "casual-not-sold-on-that", text: "I'm not sold on that, to be honest.", es: "No me convence, la verdad.", tip: "'Not sold on something' discrepa entre iguales: dice que no te convence sin decir que está mal. Hacia arriba en la jerarquía suena a que estás valorando una compra, no una decisión de tu jefa." },
+    { id: "formal-reservations-about-the-approach", text: "I do have some reservations about the approach.", es: "Sí tengo algunas reservas sobre este enfoque.", tip: "El 'do' enfático concede antes de discrepar, y 'reservations' evita decir 'I disagree'. Es la discrepancia que se puede dejar por escrito; entre amigos suena a acta de reunión." },
+    // Pair 7 — ASKING FOR MORE TIME. The mark is the distancing past: 'I was
+    // wondering' is happening now, and the tense is there to shrink the ask.
+    { id: "casual-give-me-till-monday", text: "Could you give me till Monday on this?", es: "¿Me lo puedes dejar para el lunes?", tip: "'Till' en vez de 'until' y la petición directa con 'could you': entre compañeros es rapidez, no descaro. En un correo a un cliente, un 'till' escrito es lo que delata que has escrito como hablas." },
+    { id: "formal-wondering-about-an-extension", text: "I was wondering whether an extension until Monday might be possible.", es: "Quería consultarle si sería posible una prórroga hasta el lunes.", tip: "El pasado que aleja: 'I was wondering' no habla de ayer, hace pequeña la petición de ahora. Encadenado con 'might be possible' es lo normal hacia fuera; entre compañeros suena a que pides un riñón." },
+    // Pair 8 — GIVING CREDIT. Both halves name Marta and both give her the
+    // whole of it; what moves is whether the praise survives in writing.
+    { id: "casual-nice-one-that-was-all-you", text: "Nice one, Marta — that was all you.", es: "¡Muy bien, Marta! Eso ha sido cosa tuya.", tip: "'Nice one' es el elogio corto entre iguales, y 'that was all you' da el mérito entero sin repartirlo. Dicho delante del equipo vale más que un correo; escrito a un cliente no se entiende." },
+    { id: "formal-acknowledge-martas-part", text: "I would like to acknowledge Marta's part in this, which was decisive.", es: "Quisiera reconocer la aportación de Marta, que ha sido decisiva.", tip: "'Acknowledge' con el nombre completo es el elogio que queda por escrito y que cuenta en una evaluación. Dicho de viva voz en una comida suena a discurso." },
+    // Pair 9 — CORRECTING A MISTAKE. The sharpest contrast in the set: 'you'
+    // plus an active verb against an agentless passive that removes the
+    // person from the sentence entirely.
+    { id: "casual-cced-the-wrong-sarah", text: "I think you've cc'd the wrong Sarah.", es: "Creo que has puesto en copia a la Sarah equivocada.", tip: "Ese 'I think' delante no es duda: es el amortiguador que deja al otro corregirse solo. Aun así el sujeto sigue siendo 'you', así que esto se dice en privado o entre iguales." },
+    { id: "formal-appears-to-have-been-copied", text: "The message appears to have been copied to the wrong recipient.", es: "Parece que el mensaje se envió en copia al destinatario equivocado.", tip: "La pasiva sin agente aparta a la persona de la frase: nadie se ha equivocado, algo ha ocurrido. Es la forma estándar de corregir hacia arriba o hacia fuera; entre amigos suena a que abres un expediente." },
   ],
   // C1. Not the references themselves — those date, and the briefing already
   // gives two — but what she says when one lands and she does not catch it.
