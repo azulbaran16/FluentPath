@@ -151,7 +151,13 @@ export const WORLDS: World[] = [
       // to 18) and the marker deck from 8 cards to 24, so the sitting is
       // 18 x 20 s + a 42-card deck x 15 s = 990 s. The smallest whole minute
       // that covers it is 17 (1020 s), 30 s of slack.
-      { slug: "register", title: "Register: formal ↔ casual", blurb: "Switch tone for the situation, from texts to contracts.", level: "C1", skills: ["writing", "speaking"], minutes: 17 },
+      // 04-08 option C: grammar declared, with its five questions landing in the
+      // SAME commit — a declaration without its bank is a live overclaim on the
+      // catalogue. minutes 17 -> 21 in that commit too: the session-length
+      // invariant models phrases and the deck only, so grammar's four minutes
+      // are added on 04-02's measured rate (it spent 7 minutes on 10 questions;
+      // this is 5 at the same 42 s, rounded up rather than down).
+      { slug: "register", title: "Register: formal ↔ casual", blurb: "Switch tone for the situation, from texts to contracts.", level: "C1", skills: ["writing", "speaking", "grammar"], minutes: 21 },
       // 04-06 took the warm-up from 6 repair phrases to 18 and the deck from 8
       // cards to 24, so the sitting is 18 x 20 s + a 42-card deck x 15 s
       // = 990 s. The smallest whole minute that covers it is 17 (1020 s),

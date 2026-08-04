@@ -526,9 +526,18 @@ ok(
   SCENARIOS.length === 35,
   `${SCENARIOS.length}`,
 );
+// 52 -> 53 at 04-08 (option C: native/register declares grammar).
+//
+// THIS NUMBER IS A HAND-WRITTEN LITERAL AND MUST STAY ONE. It is a tripwire: it
+// exists so that ANY change to the curriculum's declarations fails loudly and
+// has to be acknowledged by an author editing this line on purpose. Do NOT
+// "fix" a failure here by writing `DECLARED_PAIRS.length === DECLARED_PAIRS.length`
+// or by deriving the number from the thing it is checking — that is a tautology
+// which can never fail, and it would permanently disarm the check. Raise it by
+// hand, in the same commit as the declaration that moved it.
 ok(
-  "the curriculum declares 52 scenario×skill pairs",
-  DECLARED_PAIRS.length === 52,
+  "the curriculum declares 53 scenario×skill pairs",
+  DECLARED_PAIRS.length === 53,
   `${DECLARED_PAIRS.length}`,
 );
 ok(
@@ -707,10 +716,19 @@ ok(
 
 group("coverage: the totals and the written/unwritten identity");
 
+// TWO ASSERTIONS IN ONE, AND THEY CATCH DIFFERENT THINGS. Keep both halves.
+//   · `=== DECLARED_PAIRS.length` is the CROSS-CHECK: the derived registry and
+//     the curriculum agree. It stays as it is and is not a literal.
+//   · `=== 53` is the TRIPWIRE, hand-raised from 52 at 04-08 in the same commit
+//     as the declaration that moved it. It is what makes a change to the
+//     curriculum's declarations fail loudly instead of flowing through both
+//     sides of the cross-check unnoticed — which is exactly what would happen
+//     if this half were dropped, because the cross-check compares two numbers
+//     that MOVE TOGETHER. Never replace it with a self-comparison.
 ok(
-  "COVERAGE_TOTALS.pairsTotal is the curriculum's 52 declared pairs",
+  "COVERAGE_TOTALS.pairsTotal is the curriculum's 53 declared pairs",
   COVERAGE_TOTALS.pairsTotal === DECLARED_PAIRS.length &&
-    COVERAGE_TOTALS.pairsTotal === 52,
+    COVERAGE_TOTALS.pairsTotal === 53,
   `${COVERAGE_TOTALS.pairsTotal}`,
 );
 ok(
@@ -2642,6 +2660,12 @@ const RECORDED_TOPICS: Record<string, string[]> = {
     "Phrasal verb separability",
     "Phrasal verbs vs formal verbs",
   ],
+  // 04-08 introduced exactly ONE new permanent string here, "Register markers",
+  // and reused the other two character for character from live questions so a
+  // learner's history aggregates rather than fragmenting: "Passive voice" with
+  // work/emails (both are the passive; the register point is get- vs be-) and
+  // "Modals" with work/emails' request modals.
+  "native/register": ["Modals", "Passive voice", "Register markers"],
 };
 
 const grammarDeclaringKeys = SCENARIOS.filter(
@@ -3329,6 +3353,62 @@ if (culturePassage) {
       "a passage that parades what the deck teaches is the deck read aloud (T-03-19)",
     );
   }
+}
+
+group("04-08: what the declarations decision added");
+
+/* NO PAIR IS PENDING — ASSERTED, not merely printed.
+ *
+ * Phase 3 deliberately kept this REPORTED (the meter at the foot of this file),
+ * because the number moved on almost every plan and an assertion that fails for
+ * most of a phase gets disabled rather than fixed. That reasoning was right then
+ * and does not apply now: this phase started at 52/52 written and every plan in
+ * it has been pure addition, so the number has been zero throughout. 04-08 is
+ * also the plan that ADDS declarations, which is the one move that can make it
+ * non-zero — and the rule it works under is that a declaration and its bank land
+ * in the same commit. This assertion is that rule, enforced. */
+{
+  const pending = pendingPairs();
+  ok(
+    "no declared pair is unwritten",
+    pending.length === 0,
+    pending.map((p) => `${p.key}:${p.skill}`).join(", ") ||
+      "a declared pair with no bank entry is the catalogue promising practice that does not exist — write the bank in the SAME commit as the declaration",
+  );
+}
+
+{
+  const registerGrammar = getScenarioGrammar("native", "register");
+  const registerSkills =
+    SCENARIOS.find((s) => s.key === "native/register")?.skills ?? [];
+  ok(
+    "native/register declares grammar AND its bank holds the questions",
+    registerSkills.includes("grammar") && (registerGrammar?.length ?? 0) >= 5,
+    `declared: ${registerSkills.join("/")} · questions: ${registerGrammar?.length ?? 0}`,
+  );
+  // The scenario's own devices are named by its DECK; the quiz must not be the
+  // deck read back. These four are the teaching points 04-08's plan proposed and
+  // the bank header rejects by name, each already live as a card or a question.
+  ok(
+    "the register questions do not re-teach what the register deck already names",
+    (registerGrammar ?? []).every(
+      (q) =>
+        !/agentless passive|distancing past|I was (wondering|hoping)/i.test(
+          q.prompt + q.explain,
+        ),
+    ),
+    "a question restating a live vocabulary card is volume, not depth",
+  );
+  // A register set whose right answer is always the formal option teaches that
+  // formal is correct, which is the opposite of this scenario's first line.
+  const casualAnswers = (registerGrammar ?? []).filter((q) =>
+    ["got let go", "Seen", "'m not", "am not"].includes(q.options[q.answer]),
+  ).length;
+  ok(
+    "the register set runs in BOTH directions, not only towards formal",
+    casualAnswers >= 2,
+    `${casualAnswers} of ${registerGrammar?.length ?? 0} questions have an answer that is the CASUAL choice — the dial goes both ways`,
+  );
 }
 
 group("the world page reads coverage, and reads it without shipping the banks");

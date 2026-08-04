@@ -440,6 +440,89 @@ const BANK: Record<string, AuthoredGrammarQuestion[]> = {
       explain:
         "A three-part phrasal verb — verb, particle, preposition — is a closed unit, so its object goes at the end even when it is a pronoun. That is the exact opposite of “look it over” above, where a pronoun HAS to split the verb, and the two rules together are why word order has to be learned verb by verb rather than derived. “Keep them up” is real English, but it means carry on doing them, which is not what somebody who has stopped trying is describing.",
     },
+  ],
+
+  /* ───────────────────── native/register · C1 ─────────────────────
+   * 04-08, and it is the SECOND grammar-declaring scenario in this world.
+   *
+   * WHAT THIS SET DELIBERATELY DOES NOT TEACH, because the scenario already
+   * does. The plan proposed contractions, the agentless passive, the distancing
+   * past and hedges. All four are ALREADY LIVE HERE as vocabulary cards — `a
+   * contraction`, `the agentless passive (it was sent)`, `the distancing past
+   * (I was hoping to ask)`, `a hedge (sort of, kind of)` — two of them are also
+   * live phrases (“I was wondering whether an extension…”, “The message appears
+   * to have been copied…”), and the writing task's checklist already counts
+   * contractions. Two of them are additionally the teaching point of live
+   * work/emails questions (`passive-invoice-sent`, `was-wondering-softener`).
+   * Writing them again as questions would be the deck read back as a quiz.
+   *
+   * WHAT IT TEACHES INSTEAD: the register-carrying grammar the scenario names
+   * NOWHERE. The deck hands the learner the vocabulary for the devices; these
+   * five make her CHOOSE the form under a stated reader — which is the same
+   * split between recognition and production that native/pronunciation's deck
+   * and warm-up already run on.
+   *
+   * AND IT RUNS IN BOTH DIRECTIONS. Three of the five have a CASUAL answer.
+   * A register set whose right answer is always the more formal option teaches
+   * that formal is correct and casual is sloppy, which is the opposite of this
+   * scenario — the dial goes both ways, and the briefing says so in its first
+   * line. Two of the five are cases where both options are perfectly
+   * grammatical and only the reader decides, which is the actual C1 skill. */
+  "native/register": [
+    {
+      slug: "full-form-as-emphasis",
+      level: "C1",
+      topic: "Register markers",
+      prompt:
+        "Your flatmate keeps borrowing your charger without asking. You have had enough: “I ___ lending it to you again.”",
+      options: ["'m not", "am not", "aren't", "not"],
+      answer: 1,
+      explain:
+        "Between friends the contraction is the neutral default, so the FULL form is the marked one — and that is the direction learners never expect. Spelling out “I am not” slows the line down and lands as a line being drawn. In casual speech a full form is not more polite, it is more serious.",
+    },
+    {
+      slug: "ellipsis-casual-speech",
+      level: "C1",
+      topic: "Register markers",
+      prompt:
+        "Two colleagues who share a desk, no greeting, straight in: “___ the email about Friday?”",
+      options: ["Seen", "Have seen", "Did seen", "Been seeing"],
+      answer: 0,
+      explain:
+        "Casual spoken English knocks the subject and the auxiliary off the front of a question altogether: “Seen it?”, “Coming tonight?”. “Have you seen…” is not wrong, it is a notch more formal — and the short form stops working the moment it is typed to somebody who is paying you.",
+    },
+    {
+      slug: "negative-inversion-formal-notice",
+      level: "C1",
+      topic: "Register markers",
+      prompt:
+        "A formal letter refusing a complaint: “At no point ___ to cover the travel costs.”",
+      options: ["we agreed", "did we agree", "we did agree", "have we agreeing"],
+      answer: 1,
+      explain:
+        "Put a negative adverbial at the front — at no point, under no circumstances, on no occasion — and the subject and auxiliary swap places behind it, exactly as in a question. It is one of the few structures that is almost only ever written, and it is what makes a letter read as legal rather than merely firm.",
+    },
+    {
+      slug: "get-passive-casual",
+      level: "C1",
+      topic: "Passive voice",
+      prompt:
+        "Telling a friend what happened to a colleague: “She ___ on Friday. No warning, nothing.”",
+      options: ["got let go", "was let go", "has let go", "were let go"],
+      answer: 0,
+      explain:
+        "There is a second passive in English and it is almost never written down: built with “get” rather than “be”, it carries the speaker's sympathy or outrage along with it. “She was let go” is what the company puts in writing; “she got let go” is what the people who liked her say. Both are correct — the reader is what decides.",
+    },
+    {
+      slug: "must-in-written-notice",
+      level: "C1",
+      topic: "Modals",
+      prompt: "A notice on the office door: “Visitors ___ report to reception on arrival.”",
+      options: ["must", "have to", "got to", "need"],
+      answer: 0,
+      explain:
+        "Notices and regulations use “must”: it is impersonal, and the obligation comes from the rule rather than from a person. “Have to” points at circumstances and belongs in speech, “got to” is the spoken form of that again, and “need” would want a “to”. Said to a colleague, the same instruction is just “you'll need to sign in”.",
+    },
   ],};
 
 /**
