@@ -74,14 +74,63 @@ cheapest is not the same as the most valuable.
 - **Phase 5 (the AI tutor) is still unplanned** and is the only large feature that does not
   exist at all. This request deliberately precedes it — that ordering was the user's call.
 
+## ANSWERED 2026-08-04 — the ambiguity is resolved
+
+The user asked his sister. **"Too basic" means too little content.** Not too easy, not too
+aimless — volume. And "Anki" means what Anki is actually for: **learning words and their
+meanings, to expand vocabulary massively.**
+
+So this is a **vocabulary-volume milestone**, and the numbers make the gap concrete.
+
+### What the research says a vocabulary needs to be
+
+| Target | Words | What it buys |
+|---|---|---|
+| Beginner core (consensus) | 1,000–2,000 by frequency | top 2,000 ≈ **80 % of everyday text**, roughly A2–B1 |
+| New General Service List | **2,809** | ~90–95 % of colloquial speech, 80–85 % of common written text |
+| "Core deck" fluency claim | 8,000–11,000 | the whole journey |
+
+**FluentPath has ~280 vocabulary cards.** That is about **10 % of even the beginner target**,
+and ~1 % of a fluency deck. The sister is right, and she is right by an order of magnitude —
+this is not a gap that another phase of hand-authored scenario decks closes.
+
+### The tension this creates, and it is the real scoping question
+
+Every card in this app today is **scenario-keyed and hand-authored**, and the measured rate is
+**16 words of authoring per card**. Two thousand cards would be ~32,000 words — roughly **five
+times Phase 4's entire output**, and Phase 4 took a full session per plan.
+
+So volume at this scale cannot come from the pattern that got us here. The options, and none
+is free:
+
+1. **A frequency-list backbone** (NGSL is public and citable). Fast to reach 2,000+. But those
+   cards are **not scenario-specific**, which breaks the principle every phase has enforced:
+   content belongs to a scenario, and coverage is derived from it. A second, unkeyed card
+   space is a real architectural decision, not a content one.
+2. **Import an existing deck.** Fastest of all — and a **licensing question before an
+   engineering one**. This project has held a hard original-content line since Phase 1
+   precisely because third-party material was available and was refused.
+3. **Learner-added cards.** Solves it for one motivated learner, not for "anyone".
+4. **Generate them.** Cheap per card, and the quality bar this project has held — a register
+   note that says who says it and what getting it wrong costs — is exactly what generation is
+   worst at.
+
+**Whichever is chosen, the SRS one-way door still applies**: 2,000 new ids are 2,000 permanent
+keys. And the payload is already at 19.6 % of its 1 MiB cap with 752 items; 2,000 more needs
+measuring before it is authored, not after.
+
 ## Recommended first move
 
-Not a plan. A conversation with the sister, with three questions:
+The ambiguity is gone, so the next session does not need a conversation — it needs a
+**decision on where two thousand words come from**, taken before any authoring. That is a
+one-way architectural choice (a second, unkeyed card space) plus a licensing question, and it
+should go to the user as a priced menu the way 04-08's container options did.
 
-1. When you say "too basic" — is it too little, too easy, or too aimless?
-2. What do you use Anki for that this does not do?
-3. What would "you are ready" look like to you?
+Only then a milestone: .
 
-Her answers decide whether this is a content milestone, a levelling milestone or a
-learning-path milestone. Scoping it before asking would be guessing at the one thing the real
-user is best placed to answer.
+## Sources
+
+- https://ankicoredecks.com/
+- https://en.wikipedia.org/wiki/New_General_Service_List
+- https://en.wikipedia.org/wiki/General_Service_List
+- https://refold.la/roadmap/library/learning-words-with-anki
