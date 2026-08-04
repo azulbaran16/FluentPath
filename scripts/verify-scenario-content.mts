@@ -2715,6 +2715,215 @@ for (const [n, spellings] of scenarioTopicsByNormal) {
 }
 
 /* ------------------------------------------------------------------ *
+ * 04-03 — the tip that is a translation, and the passage that withholds.
+ *
+ * TWO DEFECTS ARE GATED HERE, and both were invisible to every assertion above.
+ *
+ * ONE: the gloss masquerading as a tip. 04-RESEARCH §1 measured the
+ * textbook-ness of `native/idioms` and found it in the tips — of its six
+ * phrases exactly one carried a tip and it read "Idiom: algo muy fácil.", which
+ * is the Spanish column written twice. A native-level item's tip says WHO says
+ * it, TO WHOM, and WHAT IT COSTS to get that wrong; a tip that translates the
+ * expression teaches nothing the `es` field did not already say. `tsc` sees a
+ * populated optional string and is satisfied. So: non-blank, not a restatement
+ * of the item's own Spanish, and long enough to be a use note.
+ *
+ * TWO: the bank that spoils its own reading passage. That passage's questions
+ * ask the reader to recover four expressions FROM CONTEXT, and its glossary is
+ * silent on exactly those four on purpose (see the passage's header comment in
+ * scenario-reading.ts). Glossing one of them in the phrase or vocabulary bank
+ * converts a reading exercise into a memorised definition — silently, with
+ * every other assertion still green, and only ever noticed by a learner who
+ * finds the questions trivially easy. That is T-04-08.
+ * ------------------------------------------------------------------ */
+
+group("native/idioms: every tip is a use note, and no bank entry glosses what the passage withholds");
+
+const IDIOMS_KEY = "native/idioms";
+const [IDIOMS_WORLD, IDIOMS_SCENARIO] = IDIOMS_KEY.split("/");
+
+/* The gloss/use-note boundary, stated as a number so it is arguable rather than
+ * a matter of taste. The two tips this bank carried before 04-03 ran four and
+ * five words ("Idiom: algo muy fácil.", "Muy frecuente en el trabajo."); the
+ * neighbouring scenario's genuine use notes start at ten and the eighteen below
+ * start at twenty-seven. Twelve sits in the empty band between the two
+ * populations, so it separates them without being tuned to either. It is a
+ * FLOOR on substance, not a target: nothing is asserted about the ceiling. */
+const MIN_TIP_WORDS = 12;
+
+/* Case, curly quote marks and runs of whitespace all collapse. Deliberately
+ * lossy, for the same reason 04-02's topic normaliser is: the thing being
+ * hunted is a string that MEANS the same and is not byte-identical. */
+const plain = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/[’‘]/g, "'")
+    .replace(/[“”]/g, '"')
+    .replace(/\s+/g, " ")
+    .trim();
+
+const idiomPhrases = getScenarioPhrases(IDIOMS_WORLD, IDIOMS_SCENARIO) ?? [];
+const idiomCards = getScenarioVocabulary(IDIOMS_WORLD, IDIOMS_SCENARIO) ?? [];
+
+ok(
+  `${IDIOMS_KEY}: resolves to a phrase set this group can assert on`,
+  idiomPhrases.length > 0,
+  "an empty set would make every per-item assertion below vacuously true",
+);
+
+for (const phrase of idiomPhrases) {
+  const tip = (phrase.tip ?? "").trim();
+  ok(
+    `${IDIOMS_KEY}#${phrase.id}: carries a tip at all`,
+    tip.length > 0,
+    "every item in this bank is register-marked, and the mark IS the tip — an item without one is not native-level, it is listed",
+  );
+  if (!tip) continue;
+
+  const tipWords = tip.split(/\s+/).filter(Boolean).length;
+  ok(
+    `${IDIOMS_KEY}#${phrase.id}: its tip is a use note, not a gloss (>= ${MIN_TIP_WORDS} words)`,
+    tipWords >= MIN_TIP_WORDS,
+    `${tipWords} word(s): "${tip}" — say who says it, to whom, and what getting it wrong costs`,
+  );
+
+  /* The trailing full stop comes off the Spanish so that a tip which quotes the
+   * gloss and then carries on is caught as readily as one that IS the gloss. */
+  const es = plain(phrase.es).replace(/[.!?¡¿]+$/, "").trim();
+  ok(
+    `${IDIOMS_KEY}#${phrase.id}: its tip does not restate its own Spanish`,
+    es.length > 0 && !plain(tip).includes(es),
+    `tip repeats the "es" field verbatim ("${es}") — that is the defect 04-RESEARCH §1 measured, not a use note`,
+  );
+}
+
+/* The four the passage withholds, WRITTEN OUT — 04-02's pattern, and for its
+ * reason: a shape check cannot know which four expressions a hand-written
+ * passage decided to keep silent about, so the set is recorded and then
+ * CROSS-CHECKED AGAINST THE PASSAGE ITSELF so the record cannot quietly drift
+ * away from what it claims to describe.
+ *
+ * `asWritten` is the form the passage actually uses and is what the two
+ * self-checks run on. `hunt` is the inflections a bank entry would plausibly
+ * gloss it under — the passage says "the writing WAS on the wall", a bank would
+ * say "the writing IS on the wall", and only the second is the defect. */
+const WITHHELD_BY_THE_PASSAGE: { asWritten: string; hunt: string[] }[] = [
+  {
+    asWritten: "cross that bridge",
+    hunt: ["cross that bridge", "crossed that bridge"],
+  },
+  {
+    asWritten: "the writing was on the wall",
+    hunt: [
+      "writing was on the wall",
+      "writing is on the wall",
+      "writing's on the wall",
+      "writing on the wall",
+    ],
+  },
+  {
+    asWritten: "cleared the air",
+    hunt: ["clear the air", "cleared the air", "clearing the air"],
+  },
+  {
+    asWritten: "put my foot in it",
+    hunt: [
+      "put my foot in it",
+      "put your foot in it",
+      "put his foot in it",
+      "put her foot in it",
+      "putting my foot in it",
+      "putting your foot in it",
+    ],
+  },
+];
+
+const idiomsPassage = getScenarioReading(IDIOMS_WORLD, IDIOMS_SCENARIO);
+ok(
+  `${IDIOMS_KEY}: has the reading passage this group protects`,
+  !!idiomsPassage,
+  "the withholding assertions below are vacuous without it",
+);
+
+if (idiomsPassage) {
+  const bodyText = plain(idiomsPassage.body.join(" "));
+  const glossaryText = plain(
+    idiomsPassage.glossary.map((g) => `${g.word} ${g.meaning}`).join(" "),
+  );
+  const questionText = plain(
+    idiomsPassage.questions
+      .map((q) => `${q.q} ${q.options.join(" ")} ${q.explain}`)
+      .join(" "),
+  );
+  const passageText = `${bodyText} ~ ${glossaryText} ~ ${questionText}`;
+
+  /* Three checks that make the written-out record self-validating: it cannot
+   * name an expression the passage does not use, it cannot name one the
+   * passage actually glosses, and it cannot fall out of step with the number
+   * of questions that depend on the withholding. */
+  ok(
+    `${IDIOMS_KEY}: the withheld record names one expression per question the passage asks`,
+    WITHHELD_BY_THE_PASSAGE.length === idiomsPassage.questions.length,
+    `${WITHHELD_BY_THE_PASSAGE.length} recorded vs ${idiomsPassage.questions.length} question(s) — every question turns on one of them, so these two move together`,
+  );
+  for (const withheld of WITHHELD_BY_THE_PASSAGE) {
+    ok(
+      `${IDIOMS_KEY}: the passage really uses "${withheld.asWritten}"`,
+      bodyText.includes(plain(withheld.asWritten)),
+      "the record names an expression the passage does not contain — it has drifted from the text it describes",
+    );
+    ok(
+      `${IDIOMS_KEY}: the passage's glossary stays silent on "${withheld.asWritten}"`,
+      !glossaryText.includes(plain(withheld.asWritten)),
+      "the glossary now defines an expression recorded as withheld — either the record is wrong or the passage gave away its own answer",
+    );
+  }
+
+  /* T-04-08 itself. */
+  const bankFields: { where: string; text: string }[] = [
+    ...idiomPhrases.flatMap((p) => [
+      { where: `phrase#${p.id}.text`, text: p.text },
+      { where: `phrase#${p.id}.es`, text: p.es },
+      { where: `phrase#${p.id}.tip`, text: p.tip ?? "" },
+    ]),
+    ...idiomCards.flatMap((c) => [
+      { where: `vocab#${c.id}.term`, text: c.term },
+      { where: `vocab#${c.id}.es`, text: c.es },
+      { where: `vocab#${c.id}.example`, text: c.example },
+    ]),
+  ];
+  for (const withheld of WITHHELD_BY_THE_PASSAGE) {
+    const offenders = bankFields.filter((f) =>
+      withheld.hunt.some((h) => plain(f.text).includes(plain(h))),
+    );
+    ok(
+      `${IDIOMS_KEY}: no bank entry gives away "${withheld.asWritten}"`,
+      offenders.length === 0,
+      `${canon(offenders.map((o) => o.where))} — the passage withholds this on purpose so the reader recovers it from context; glossing it here turns a reading exercise into recall`,
+    );
+  }
+
+  /* The literal cross-surface rule: nothing the banks teach may be sitting in
+   * the passage at all. The vocabulary term is the sharp end of this — a bare
+   * expression like "on the ball" would match a passage that used it — while
+   * the phrase check is the cheap belt-and-braces half. */
+  for (const phrase of idiomPhrases) {
+    ok(
+      `${IDIOMS_KEY}#${phrase.id}: its text does not appear in the passage`,
+      !passageText.includes(plain(phrase.text)),
+      "a passage that parades what the deck teaches is the deck read aloud (T-03-19)",
+    );
+  }
+  for (const card of idiomCards) {
+    ok(
+      `${IDIOMS_KEY}#${card.id}: its term does not appear in the passage`,
+      !passageText.includes(plain(card.term)),
+      "a passage that parades what the deck teaches is the deck read aloud (T-03-19)",
+    );
+  }
+}
+
+/* ------------------------------------------------------------------ *
  * The phase's own progress meter — REPORTED, never asserted.
  *
  * These three numbers move on almost every plan in this phase. An assertion on
@@ -2741,6 +2950,24 @@ console.log(
 // Printed, not asserted, on top of the assertion above: the headroom is what
 // this phase is spending, so it should be visible on every run rather than
 // recoverable only from a failure.
+/* The number 04-RESEARCH §1 used to diagnose `native/idioms` — printed so it
+ * stays visible while this phase spends the rest of the world. NOT asserted, on
+ * purpose and for the same reason as the three above: it moves on almost every
+ * plan in this phase, and an assertion on a moving number ends up disabled
+ * rather than fixed. Research measured 24 of 30 when the world held 30 phrases
+ * and `native/idioms` contributed one of its six. */
+const nativeWorldPhrases = SCENARIOS.filter((s) => s.world === "native").flatMap(
+  (s) => getScenarioPhrases(s.world, s.scenario) ?? [],
+);
+const nativeWorldTipped = nativeWorldPhrases.filter(
+  (p) => (p.tip ?? "").trim().length > 0,
+).length;
+
+console.log(
+  `  tip ratio:  ${nativeWorldTipped}/${nativeWorldPhrases.length} phrases in Sounding Native carry a tip` +
+    ` (${((nativeWorldTipped / nativeWorldPhrases.length) * 100).toFixed(1)}%)` +
+    ` — reported, never asserted`,
+);
 console.log(
   `  payload:    ${saturatedBytes.toLocaleString("en-US")} B saturated over` +
     ` ${saturatedIds.length} scheduled id(s)` +
