@@ -144,7 +144,10 @@ export const WORLDS: World[] = [
       // 18 x 20 s + a 42-card deck x 15 s = 990 s. The smallest whole minute
       // that covers it is 17 (1020 s), 30 s of slack.
       { slug: "register", title: "Register: formal ↔ casual", blurb: "Switch tone for the situation, from texts to contracts.", level: "C1", skills: ["writing", "speaking"], minutes: 17 },
-      { slug: "culture", title: "Culture & references", blurb: "Catch the references natives drop in conversation.", level: "C1", skills: ["reading", "speaking"], minutes: 10 },
+      // 04-06 took the warm-up from 6 repair phrases to 18, so the sitting is
+      // 18 x 20 s + a 26-card deck x 15 s = 750 s. The smallest whole minute
+      // that covers it is 13 (780 s), 30 s of slack.
+      { slug: "culture", title: "Culture & references", blurb: "Catch the references natives drop in conversation.", level: "C1", skills: ["reading", "speaking"], minutes: 13 },
     ],
   },
 ];

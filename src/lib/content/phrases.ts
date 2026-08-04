@@ -506,6 +506,37 @@ const SETS: Record<string, Phrase[]> = {
   ],
   // C1. Not the references themselves — those date, and the briefing already
   // gives two — but what she says when one lands and she does not catch it.
+  //
+  // THE RULE THIS SET OBEYS, AND IT IS THE SCENARIO'S WHOLE DESIGN CONSTRAINT:
+  // NOTHING HERE HAS A SHELF LIFE. Not one entry's meaning depends on a film, a
+  // song, a programme, an advert, a person or a year. A culture bank built out
+  // of the references themselves would be stale before a learner reached it —
+  // this one is built out of the MACHINERY of a missed reference, which does
+  // not date. If an item would need a footnote in five years, it does not go in.
+  //
+  // Eighteen repairs across three axes, because a repair is only right for one
+  // room at one speed:
+  //
+  //   THE ROOM. What works at lunch with four friends is wrong in a meeting,
+  //   wrong on a call where nobody can read your face, wrong in a group chat
+  //   where the moment has already gone, and wrong with someone senior who
+  //   assumed you would get it.
+  //
+  //   THE SPEED. Sometimes the repair has to be instant and invisible — answer
+  //   the point, not the reference, and look nothing up. Sometimes it can be
+  //   open. Sometimes the right move is to let the moment go entirely, and the
+  //   phrase is what you say two turns later.
+  //
+  //   THE DIRECTION. She is not only the person who misses one. She is also the
+  //   person whose own reference lands on nobody, the person who can rescue
+  //   somebody else's, and the person who offers one back and hands the turn on.
+  //
+  // THE TIP IS THE USE NOTE, never a translation of the line: who this works
+  // with, when it would sound like an excuse, and what it costs in the wrong
+  // room. And NOTHING HERE NAMES A REFERENCE THE SCENARIO'S READING PASSAGE
+  // ASKS THE READER TO RECOVER — that passage insures its references by context
+  // on purpose, and glossing one here would turn a reading exercise into recall.
+  // verify-scenario-content.mts asserts both properties.
   "native/culture": [
     { id: "is-that-from-something", text: "Is that from something, or did you just make it up?", es: "¿Eso es de algo, o te lo acabas de inventar?", tip: "La forma natural de preguntar por una referencia sin admitir que no la pillas." },
     { id: "before-my-time", text: "That one's a bit before my time.", es: "Eso es un poco anterior a mi época.", tip: "Excusa impecable para no conocer una referencia: la culpa es de la fecha, no tuya." },
@@ -513,6 +544,25 @@ const SETS: Record<string, Phrase[]> = {
     { id: "had-to-look-it-up", text: "I had to look that one up afterwards.", es: "Esa la tuve que buscar después.", tip: "'Look something up' es buscarlo en un diccionario o en internet." },
     { id: "had-to-be-there", text: "I guess you had to be there.", es: "Supongo que había que estar allí.", tip: "Se dice cuando cuentas algo gracioso y no funciona fuera de contexto." },
     { id: "if-you-know-you-know", text: "If you know, you know.", es: "El que lo sepa, lo sabe.", tip: "Por escrito se abrevia 'IYKYK'. Marca una referencia deliberadamente de nicho." },
+
+    // ── THE ROOM ── the same admission, priced differently in four places.
+    { id: "got-the-tone-not-the-reference", text: "I got the tone but not the reference — keep going, I'll catch up.", es: "He pillado el tono pero no la referencia; sigue, ya te alcanzo.", tip: "En una reunión, donde parar la sala cuesta dinero: reconoces el vacío y devuelves el turno en la misma frase, así que nadie se detiene por ti. Entre amigos suena a que no quieres la explicación, y a veces sí la quieres." },
+    { id: "give-me-that-one-again", text: "Sorry — you'll have to give me that one again.", es: "Perdona, esa me la vas a tener que repetir.", tip: "Por teléfono nadie te ve la cara, así que la confusión hay que decirla en voz alta o no existe. Pides la frase entera, no la explicación: el otro la repite y tú decides si te hace falta más. En persona, con el gesto ya puesto, sobra." },
+    { id: "scrolled-back-twice", text: "I've scrolled back twice and I still don't get it.", es: "He vuelto a leerlo dos veces y sigo sin pillarlo.", tip: "Para un grupo de mensajes, donde el momento ya pasó y preguntar no interrumpe a nadie. Enseña que lo has intentado antes de preguntar, que es lo que evita que suene a pereza. En vivo no sirve: no hay nada que releer." },
+    { id: "new-one-on-me", text: "That's a new one on me.", es: "Esa no la había oído nunca.", tip: "Hacia arriba, con quien daba por hecho que lo pillarías: en plano, sin disculpa y sin chiste, cierra el asunto en tres segundos y de paso suena a interés. Lo que no admite es repetirlo cada cuarto de hora; a la tercera deja de ser franqueza." },
+
+    // ── THE SPEED ── invisible, open, delayed, and the one that arrives late.
+    { id: "whatever-thats-from", text: "Whatever that's from, you're right about the second half.", es: "Venga de donde venga, tienes razón en la segunda parte.", tip: "La reparación invisible: contestas al argumento en lugar de a la referencia y la conversación no se detiene. Vale en cualquier sala y tiene un precio: te quedas sin saber qué era, porque ya nadie va a volver sobre ello." },
+    { id: "what-am-i-missing", text: "Go on then — what am I missing?", es: "Venga, ¿qué me estoy perdiendo?", tip: "Abierta y rápida, con gente de confianza: ese arranque la convierte en curiosidad y no en reproche. Hacia arriba o delante de un cliente suena a que les encargas el trabajo de explicártelo." },
+    { id: "go-back-a-second", text: "Actually, go back a second — what was the thing you said before?", es: "Espera, vuelve un momento: ¿qué era eso que has dicho antes?", tip: "La reparación tardía: dejas pasar el instante y lo recoges cuando la mesa ya ha cambiado de tema, así nadie repite una gracia para una sola persona. Pasadas dos o tres intervenciones ya no se sostiene." },
+    { id: "ten-seconds-behind", text: "Don't mind me — I'm always about ten seconds behind.", es: "No me hagas caso, siempre voy diez segundos por detrás.", tip: "Se dice a toro pasado y sobre una misma: admite lo que ya se ha visto y de paso lo convierte en broma propia. Con desconocidos llama la atención justo sobre unos segundos que nadie había contado." },
+
+    // ── THE OTHER DIRECTION ── hers lands on nobody, she rescues somebody
+    // else's, she offers one back, and then she gets the room off the subject.
+    { id: "doesnt-travel", text: "Sorry, that doesn't travel — it only works where I'm from.", es: "Perdona, esa no viaja: solo funciona en mi tierra.", tip: "Para cuando la que no aterriza es la tuya. Llamarla intraducible es más rápido que explicarla y devuelve el turno a la mesa; contarla entera la mata y además gasta un minuto que nadie te había dado." },
+    { id: "i-got-it-even-if-nobody-else-did", text: "I got it, even if nobody else did.", es: "Yo sí la he pillado, aunque los demás no.", tip: "Esta no es para cuando fallas tú, sino para cuando la referencia de otro cae en el vacío y tú eras el único que la tenía. Rescata a quien la soltó y no cuesta nada; dicha con retintín, subraya que los demás no llegaron." },
+    { id: "same-job-back-home", text: "We've got one that does the same job back home.", es: "En mi tierra tenemos una que sirve para lo mismo.", tip: "Convierte el hueco en intercambio: en lugar de quedarte fuera, pones una tuya al lado. Funciona con quien quiere oírla; en una reunión con prisa alarga un turno que ya se estaba cerrando." },
+    { id: "held-everybody-up-enough", text: "Right, sorted — I've held everybody up enough.", es: "Vale, ya está; que os he parado bastante.", tip: "Cierra la reparación para que la mesa no se quede otro minuto contigo de tema. Una vez es cortesía; cada vez que preguntas algo, te convierte justo en el asunto del que querías salir." },
   ],
 };
 
