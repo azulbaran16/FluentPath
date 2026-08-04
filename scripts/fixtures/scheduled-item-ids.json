@@ -93,12 +93,24 @@
     "native/culture#vocab#mainstream": "55ef8d0ae20f47e5213c73e8c13c9e7a8887aa4d9f43a8287f6374605ada4636",
     "native/culture#vocab#name-drop": "530528e71167b1177860fe786146b25df4666fd6f079a675ff853f5afb7addea",
     "native/culture#vocab#niche": "1cfa4a4e2d6e5019a3dd8c33c26b2382891c7ac826bde27542d021e415055e6a",
-    "native/idioms#phrase#break-a-leg": "8b7629b678273e403b929a0a65ea9a90284e53e0c359c467ee79761558aef6a2",
-    "native/idioms#phrase#call-it-a-day": "176ab245db21ed65af425fc73b484f20881e41e28bad4b8bb8ab0af179f1acc1",
-    "native/idioms#phrase#hit-the-nail": "42062ec85ce09000060fe7431a90c5de804c14b82df3d14b870123ec768be5ff",
-    "native/idioms#phrase#piece-of-cake": "6138117ab9a92417fc21886371755436004f88822e042fbdab5ab22631956b62",
-    "native/idioms#phrase#same-page": "ecde892a120b94790072bf36f761a1e50ef5270ced3d3a86bb022cbfdd3ec4cd",
-    "native/idioms#phrase#under-the-weather": "26ee9ab23125e194db60f5740444278f1f589e71435a1228e10a0138948424c5",
+    "native/idioms#phrase#are-we-on-the-same-page": "0629c32b4b1aa34cb039ec715623cd2c7572085446e51e50a98f138fe6c716d9",
+    "native/idioms#phrase#as-it-happens": "c498e4d31fdb96a85d7a1db530ebfc89ada02f59e8cc851a089914b1685e8bc4",
+    "native/idioms#phrase#at-the-end-of-the-day": "86a3f7571562d35c08c29f748dc082cdf167e0547aed476b7b9c3551f196209a",
+    "native/idioms#phrase#benefit-of-the-doubt": "2844cd04988d9ad05a4f105afb7d84a0b32b31d7d6c57f867afac064d595cd91",
+    "native/idioms#phrase#for-what-its-worth": "6ec9e9cfd96495d949ce4324d12e55c82e573b53c47b99d7ccf2f038461c9f8c",
+    "native/idioms#phrase#had-better-weeks": "0b51fd6fdea96e71ea02a34ada86df507690db347c7e723fe3034f89d4d15d3e",
+    "native/idioms#phrase#hardly-the-end-of-the-world": "15488401968c19dbd748ef8896e41c433bada60e522b6fc3844737ab67fea703",
+    "native/idioms#phrase#leave-it-at-that": "ca51b972cdffaa26ec8518d1fa54ba68cc0b040d4d22707a9fc7b7a596cdf0b9",
+    "native/idioms#phrase#long-story-short": "1be4cede5b50e9b4bacd15b1f50cabd417e06175eeff02efcf5579a7c734be9c",
+    "native/idioms#phrase#no-hard-feelings": "b55a0b6115b9e122ed027baac9c2c3149482567780be7bc07a7b14d2dbae707e",
+    "native/idioms#phrase#not-my-call": "7f9bd1e174e896ff7f18f83b5a1e863e9ac4221617194d77df083a54c7aff116",
+    "native/idioms#phrase#off-the-top-of-my-head": "43958c554bb0bd17436644c9bb19e2fa7bc4bb348c91fffc23744631792d972a",
+    "native/idioms#phrase#one-way-of-putting-it": "c1f7546ffe25ee29b4c89d3a6b778f845546b33936d9995c3cbfb690450c1e90",
+    "native/idioms#phrase#that-was-a-bit-much": "7e92a824c2d71c5a85ca3c328bff6f8636674653e4034342d9189636341a5b7a",
+    "native/idioms#phrase#timing-isnt-ideal": "2ba43faa4109ecf71a49930fdd72edd815aa32f0697c4174ab05e9112d899b5b",
+    "native/idioms#phrase#to-be-fair-she-did": "7a6bd684893c9e595369fbd2e2493051f6b6fd3d05ce33d61fe8487c2e313126",
+    "native/idioms#phrase#true-up-to-a-point": "cc6470e4ffaf1fc869b9475b9bc427adad0c5633e279266dc1210491e95d36ac",
+    "native/idioms#phrase#wouldnt-go-that-far": "bc04ae538957a8d698a85e14b12c03c000fdc6177227394aad183eaf56324d6b",
     "native/idioms#vocab#arm-and-a-leg": "de37cb6bf6055fc99710ddd737445603db3a75b7345104f31085f369154322a4",
     "native/idioms#vocab#beat-around-the-bush": "3465fbf32db01889f8bf4d171cdfb77ee64c0e9bbbdd023ee0b0e81599f88a9b",
     "native/idioms#vocab#bite-the-bullet": "9694b05119bba72c83808b1f6bfbea12d30d9679072b9a8eaf4e414091e4371f",
@@ -559,6 +571,30 @@
     "work/presentations#vocab#slide-deck": "c95de31b40b2fa085e9f347601455d4e2502aef119c73a695c4eadf1f02ea480"
   },
   "retired": [
+    {
+      "id": "native/idioms#phrase#break-a-leg",
+      "reason": "04-03 Task 1, approved as `retire-recommended`. Named by name in 04-RESEARCH §1.2 as the class this bank was being rescued from — fully opaque set-piece idiom, the rarest and pedagogically least load-bearing category. Carried no tip."
+    },
+    {
+      "id": "native/idioms#phrase#call-it-a-day",
+      "reason": "04-03 Task 1, approved as `retire-recommended`. Carried NO tip at all, so it could not meet the register-mark criterion without editing content behind a live id, which is forbidden. The strongest duplicate in the set: the global vocabulary deck `idioms` teaches it with an example sentence BYTE-IDENTICAL to this phrase's text (\"Let's call it a day.\"), so retiring here removes a doubling rather than the material."
+    },
+    {
+      "id": "native/idioms#phrase#hit-the-nail",
+      "reason": "04-03 Task 1, approved as `retire-recommended`. The purest case: core-idiom class, no tip, and nothing register-marked to say about it — there is no who-says-it-to-whom note that would make it native-level rather than listed. Not duplicated elsewhere; retired on selection grounds alone."
+    },
+    {
+      "id": "native/idioms#phrase#piece-of-cake",
+      "reason": "04-03 Task 1, approved by the user as `retire-recommended` before any id was deleted. Core-idiom class — the rarest phraseology in English (Grant 2005: none of 104 core idioms reaches the top 5,000 items) — and its tip was a translation, the exact defect 04-RESEARCH §1 measured. Taught on three further surfaces: the scenario briefing quotes it verbatim and the global vocabulary deck `idioms` carries it with the same gloss, so the material survives in the app. Any learner schedule on this key is orphaned permanently and deliberately."
+    },
+    {
+      "id": "native/idioms#phrase#same-page",
+      "reason": "04-03 Task 1, approved as `retire-recommended`; the user was offered keeping this one and declined. The EXPRESSION is good — genuinely the frequent, non-transparent, decomposable PHRASE-List class — but the ITEM could not be saved: its tip (\"Muy frecuente en el trabajo.\", 5 words) is a frequency note rather than a use note, and amending it under this id would be a re-point. Also taught in the global vocabulary deck `work`. Re-authored under a new slug per the approved decision."
+    },
+    {
+      "id": "native/idioms#phrase#under-the-weather",
+      "reason": "04-03 Task 1, approved as `retire-recommended`. Core-idiom class, and carried no tip. Quoted verbatim in the scenario's own briefing tip and taught again in the global vocabulary deck `idioms` with the same gloss — the same canonical item on three surfaces at once, which is what 03-11's gate meant by \"reads like any ELT textbook\"."
+    },
     {
       "id": "native/phrasal-verbs#phrase#ran-into-at-the-airport",
       "reason": "04-01 Task 3: duplicated social/small-talk#vocab#run-into — same phrasal verb, same sense, same example frame (D-01). Retired rather than edited in place: the replacement carries its own slug (didnt-think-wed-pull-it-off). Committed at 1595c88, never deployed."

@@ -313,13 +313,83 @@ const SETS: Record<string, Phrase[]> = {
     { id: "cant-make-it-on-friday", text: "I can't make it on Friday.", es: "El viernes no puedo.", tip: "'Make it' es poder ir. Es lo que se dice para cancelar." },
     { id: "can-i-come-earlier", text: "Can I come earlier?", es: "¿Puedo venir antes?" },
   ],
+  // C1. Phase 4 (CONT-04, D-04) RE-SELECTED this bank rather than extending it.
+  //
+  // The six phrases that stood here — piece of cake, call it a day, under the
+  // weather, hit the nail on the head, on the same page, break a leg — were
+  // RETIRED at 04-03 Task 1 by an explicit human decision, each recorded in
+  // scripts/fixtures/scheduled-item-ids.json under "retired" with its reason.
+  // None may ever return. They were not edited in place: re-pointing an id
+  // moves a learner's box and due date onto material she has never seen, so the
+  // only legal replacement is delete-the-old-id, add-a-new-one-with-its-own-
+  // slug. Every id below is therefore new.
+  //
+  // WHY re-selected and not merely lengthened. Research (04-RESEARCH §1) found
+  // those six were almost exactly the classic "core idioms" — which corpus
+  // linguistics repeatedly shows to be the RAREST phraseology in English (Grant
+  // 2005: none of 104 reaches the top 5,000 items; 0.14–0.25 per million
+  // words). Twenty more canonical idioms would have made the bank longer and no
+  // more native. So the criterion changed, and the criterion is the work:
+  //
+  //   1. FREQUENCY-ATTESTED, not dictionary-attested — a native would produce
+  //      it this month. The class to aim at is Martinez & Schmitt's PHRASE List:
+  //      mundane discourse formulae that are non-transparent but DECOMPOSABLE.
+  //      Fully opaque set-piece idioms are what this bank was rescued from.
+  //   2. REGISTER-MARKED, and the mark is part of the item. Every one of the
+  //      eighteen carries a tip that says who says it, to whom, and what getting
+  //      that wrong costs. A tip that translates the expression does not count
+  //      and FAILS the harness (MIN_TIP_WORDS, and the no-verbatim-`es` rule).
+  //   3. CHOSEN BECAUSE A C1 LEARNER GETS THAT PARTICULAR THING WRONG, which
+  //      for idiom is over-use and mis-placement — deploying one where a plain
+  //      sentence belongs. The briefing says "learn a few well rather than many
+  //      badly" and the rehearsal drills exactly that, so eighteen items must
+  //      not contradict them: a share of these are expressions whose whole value
+  //      is that they are UNREMARKABLE, and the tips carry the restraint.
+  //
+  // TWO HARD EXCLUSIONS, both asserted by the harness:
+  //   · Nothing here is one of the four expressions this scenario's own reading
+  //     passage withholds — cross that bridge when we come to it, the writing is
+  //     on the wall, clear the air, put my foot in it. Its glossary is silent on
+  //     them ON PURPOSE so the reader has to recover them from context, which is
+  //     the actual skill; glossing one here would convert a reading exercise
+  //     into a memorised definition.
+  //   · Nothing here repeats the scenario's deck or its briefing. Those surfaces
+  //     are 04-04's and this bank leaves them a clean field.
   "native/idioms": [
-    { id: "piece-of-cake", text: "It's a piece of cake.", es: "Es pan comido.", tip: "Idiom: algo muy fácil." },
-    { id: "call-it-a-day", text: "Let's call it a day.", es: "Dejémoslo por hoy." },
-    { id: "under-the-weather", text: "I'm under the weather.", es: "No me siento bien." },
-    { id: "hit-the-nail", text: "You hit the nail on the head.", es: "Diste en el clavo." },
-    { id: "same-page", text: "We're on the same page.", es: "Estamos de acuerdo.", tip: "Muy frecuente en el trabajo." },
-    { id: "break-a-leg", text: "Break a leg!", es: "¡Mucha suerte!" },
+    // ── Disagreeing without ever saying no ──────────────────────
+    { id: "to-be-fair-she-did", text: "To be fair, she did tell us on Friday.", es: "Hay que reconocerlo: sí nos avisó el viernes.", tip: "'To be fair' introduce el dato que favorece a quien estás criticando, y por eso quien lo dice suena justo y no blando. Delante de un elogio no aporta nada y el nativo lo oye vacío." },
+    { id: "true-up-to-a-point", text: "That's true up to a point.", es: "Eso es cierto hasta cierto punto.", tip: "Parece un acuerdo y es un desacuerdo: concede la mitad para quedarse con la otra. Entre colegas resulta elegante; a un cliente que espera un sí rotundo le suena a 'no' con buenos modales." },
+    { id: "wouldnt-go-that-far", text: "I wouldn't go that far.", es: "Yo no diría tanto.", tip: "Es la forma más suave que tiene el inglés de decir 'eso es exagerado'. Va contra la afirmación, nunca contra la persona: si le añades 'you're wrong' detrás pierdes justo lo que habías comprado." },
+    { id: "one-way-of-putting-it", text: "Well, that's one way of putting it.", es: "Bueno, esa es una forma de decirlo.", tip: "Literalmente admite la frase; en realidad la desaprueba. Con amigos es humor seco; en una reunión, con el aludido delante, es una pulla que oye todo el mundo. No lo digas si de verdad te parece bien dicho." },
+
+    // ── The formula that manages the topic itself ───────────────
+    { id: "at-the-end-of-the-day", text: "At the end of the day, it's her decision.", es: "A fin de cuentas, la decisión es suya.", tip: "Cierra la discusión apelando a lo único que de verdad pesa. Es tan frecuente que ya roza la muletilla: una vez por conversación convence, tres veces seguidas te delata como alguien que se ha quedado sin argumentos." },
+    { id: "leave-it-at-that", text: "Let's leave it at that.", es: "Dejémoslo ahí.", tip: "No es 'terminemos por hoy' sino 'no añadamos nada más', y casi siempre porque lo siguiente sería peor. Dicho a tiempo salva una reunión; dicho a destiempo parece que escondes algo." },
+    // `same-page` was RETIRED with the other five, but the expression itself was
+    // always the best thing in the old bank — frequent, non-transparent and
+    // decomposable, the PHRASE-List class exactly. What could not be saved was
+    // the ITEM: its tip was a five-word frequency note, and amending a tip under
+    // a live id is a re-point. So the expression comes back the only legal way,
+    // under a NEW slug, as a question rather than an assertion — which is also
+    // the more useful move, since asking lets the other person say no.
+    { id: "are-we-on-the-same-page", text: "Are we on the same page here?", es: "¿Estamos hablando de lo mismo?", tip: "Comprueba que los dos entendéis lo mismo antes de seguir, y en pregunta —no en afirmación— porque así el otro puede decir que no sin tener que discutir. Entre colegas es prudencia; lanzado con retintín a quien acaba de contradecirte, se oye como un reproche." },
+    { id: "long-story-short", text: "Long story short, we didn't go.", es: "Resumiendo: no fuimos.", tip: "Anuncia que te saltas el detalle, así que lo que viene detrás tiene que ser corto de verdad. Si después hablas dos minutos, el nativo lo registra como que no sabes editarte." },
+
+    // ── Understatement doing the work of a strong statement ─────
+    { id: "timing-isnt-ideal", text: "The timing isn't ideal.", es: "El momento no es el mejor.", tip: "Atenuación británica pura: 'not ideal' abarca desde 'un poco incómodo' hasta 'un desastre', y quien escucha calcula cuál por tu tono. Por escrito se lee siempre como el problema pequeño, así que no lo uses para el grande." },
+    { id: "had-better-weeks", text: "I've had better weeks.", es: "He tenido semanas mejores.", tip: "Responde a 'how are you?' admitiendo que va mal sin contar nada y sin pedir consuelo. Con un compañero deja la puerta abierta por si quiere preguntar; con tu jefa deja el problema sin nombre y puede sonar a excusa." },
+    { id: "hardly-the-end-of-the-world", text: "It's hardly the end of the world.", es: "Tampoco es una tragedia.", tip: "Quita hierro, y suele decirlo quien no ha sufrido el problema. De uno mismo tranquiliza; dicho del disgusto ajeno suena a que lo estás minimizando, que es lo contrario de consolar. No lo confundas con 'at the end of the day': se parecen por fuera y hacen cosas distintas, aquel resume y este resta importancia." },
+    { id: "that-was-a-bit-much", text: "That was a bit much, wasn't it?", es: "Se pasó un poco, ¿no?", tip: "Critica el exceso sin nombrar a nadie: se dice de un comentario, de un precio o de una reacción, casi siempre después y en voz baja. A la cara de quien se pasó deja de ser un comentario y es una bronca." },
+
+    // ── Who decides, and what you owe the other person ──────────
+    { id: "not-my-call", text: "That one's not my call, I'm afraid.", es: "Eso no lo decido yo, lo siento.", tip: "'A call' aquí es una decisión, no una llamada. Sirve para declinar sin culpar a nadie, pero repetido demasiado te describe como alguien que nunca decide nada." },
+    { id: "benefit-of-the-doubt", text: "I'd give her the benefit of the doubt.", es: "Yo le daría el beneficio de la duda.", tip: "Se concede cuando las pruebas no bastan para condenar a alguien. Entre amigos es generosidad; escrito en una evaluación de trabajo significa que dudas haberlas hay, y quien la lea lo entenderá así." },
+    { id: "no-hard-feelings", text: "No hard feelings if you'd rather not.", es: "Sin rencores si prefieres que no.", tip: "Lo dice quien deja claro que no guardará rencor pase lo que pase, y por eso va ANTES del resultado. Dicho después de ganar suena a victoria disfrazada de cortesía, y el que ha perdido lo nota." },
+
+    // ── The unremarkable ones, whose value is being unremarkable ─
+    { id: "off-the-top-of-my-head", text: "Off the top of my head, about forty.", es: "Así de memoria, unos cuarenta.", tip: "Avisa de que la cifra es aproximada y de memoria, de modo que nadie te la exigirá luego. Es lo que se dice en lugar de inventar un número con aplomo: en el trabajo protege más que quedar rápido." },
+    { id: "for-what-its-worth", text: "For what it's worth, I'd go.", es: "Por lo que valga mi opinión, yo iría.", tip: "Rebaja tu propia opinión antes de darla para que el otro pueda descartarla sin quedar mal. Es cortesía, no inseguridad; pero delante de un consejo importante suena a que ni tú te lo crees." },
+    { id: "as-it-happens", text: "As it happens, I've just done that.", es: "Pues mira, precisamente acabo de hacerlo.", tip: "Introduce una coincidencia real y oportuna. Es de las expresiones cuyo valor está en no llamar la atención: aquí la frase corriente es la buena, y colocar un idiom de color en su lugar es exactamente el error que este escenario enseña a evitar." },
   ],
   // B2. Written to EXTEND the briefing, not restate it: the briefing already
   // demonstrates separability on "turn it down" and the get up / get on /
