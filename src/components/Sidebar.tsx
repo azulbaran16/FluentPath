@@ -6,7 +6,7 @@ import { useState } from "react";
 import { signOut } from "next-auth/react";
 import { WORLDS, SKILL_META, type Skill } from "@/lib/curriculum";
 import { WorldIcon, SkillIcon, NAV_ICONS } from "@/lib/icons";
-import { GraduationCap, RefreshCw, LogOut, Lightbulb, Settings, Trophy, Headphones, Layers, Sparkles, Gift } from "lucide-react";
+import { GraduationCap, RefreshCw, LogOut, Lightbulb, Settings, Trophy, Headphones, Layers, BookMarked, Sparkles, Gift } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 
 const SKILLS = Object.keys(SKILL_META) as Skill[];
@@ -133,6 +133,15 @@ export function Sidebar({ user }: { user?: SidebarUser }) {
           <NavLink href="/vocabulary" active={isActive("/vocabulary")}>
             <Layers className="h-[1.05rem] w-[1.05rem] shrink-0" strokeWidth={1.75} />
             Vocabulary
+          </NavLink>
+          {/* The volume tier. Added in the same commit as the route, because
+              the comment above the CELPIP entry records what happens otherwise.
+              No count in the label: a hand-written number in a nav item is the
+              un-derived claim this project has refused since 2.1, and it is the
+              one place nobody re-reads when the bank grows. */}
+          <NavLink href="/core-vocabulary" active={isActive("/core-vocabulary")}>
+            <BookMarked className="h-[1.05rem] w-[1.05rem] shrink-0" strokeWidth={1.75} />
+            Core vocabulary
           </NavLink>
         </nav>
 
