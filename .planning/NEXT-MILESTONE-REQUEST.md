@@ -119,14 +119,58 @@ is free:
 keys. And the payload is already at 19.6 % of its 1 MiB cap with 752 items; 2,000 more needs
 measuring before it is authored, not after.
 
+## DECIDED 2026-08-04 — generate, two tiers, 500 first, grow gradually
+
+The user has **no further budget**. Asked whether the cards could be generated, and approved
+the shape below. This is the milestone's design; a fresh session executes it.
+
+**The framing that made the decision easy:** every card in this app is *already* generated —
+all 280 were written by agents. The question was never human-vs-generated. It is **what care
+level, at what volume**. The 280 cost roughly a session per plan because each passed a
+pre-authoring corpus scan, a consecutive read of the finished bank, and a mutation sweep. Two
+thousand at that care is ~20 sessions. That is the budget that does not exist.
+
+### The design
+
+**Two tiers, declared honestly** — the same move this project has made with derived coverage
+since Phase 2.1: never blend two quality levels and present them as one.
+
+| Tier | Source of words | Card contents | Bar |
+|---|---|---|---|
+| **Volume deck** (new) | **NGSL**, public and frequency-ordered — solves *which* words for free | word · translation · one usage sentence | explicit and lower: **no register note** |
+| **Scenario cards** (the 280 today) | hand-picked per scenario | term · gloss · example that cannot be reworded to carry another sense | unchanged — who says it, and what getting it wrong costs |
+
+The UI must say which is which. Mixing them silently is the overclaim every phase has been
+built to prevent.
+
+### Start at 500, not 2,000
+
+The user's own instruction: **start with 500 and add gradually.** Rationale accepted as given —
+500 is one or two sessions, covers the A2→B1 jump where the beta user actually is, and shows
+the real quality before committing twenty sessions to a deck that may not land. If she says
+the cards are flat at 500, that is known for a tenth of the cost.
+
+### What is NOT settled, and must be before a single card is generated
+
+1. **Where the volume deck lives.** A new bank? A new field on the existing card type? A
+   separate unkeyed space? This determines whether `scenario-coverage.ts` can keep deriving
+   truthfully, and it is an architectural choice, not a content one.
+2. **The id shape.** 500 ids are 500 permanent keys — `AGENTS.md`'s one-way door applies in
+   full. The composite `world/scenario#kind#slug` does not fit a deck with no scenario.
+3. **Payload.** 19.6 % of the 1 MiB cap at 752 items. 500 more must be **measured before
+   authoring**, not after — and the growth path to 2,000 measured with it, or the gradual plan
+   hits a wall it cannot back out of.
+4. **The quality floor, written as an assertion.** At volume, prose quality degrades and the
+   corpus scan cannot see it — it detects repeated words, not flat translations or dull
+   examples. Whatever bar the volume tier holds must be gated, or it is not a bar.
+
+**A generation run must not start before those four are decided.** Creating 500 permanent ids
+in a shape nobody designed is the one mistake this project's id gate exists to make
+impossible, and it would be made by moving fast rather than by moving wrong.
+
 ## Recommended first move
 
-The ambiguity is gone, so the next session does not need a conversation — it needs a
-**decision on where two thousand words come from**, taken before any authoring. That is a
-one-way architectural choice (a second, unkeyed card space) plus a licensing question, and it
-should go to the user as a priced menu the way 04-08's container options did.
-
-Only then a milestone: `/gsd-new-milestone`.
+A short planning pass on the four unsettled items above — bank shape, id shape, payload, quality gate — then the first 500. Not a generation run first.
 
 ## Sources
 
