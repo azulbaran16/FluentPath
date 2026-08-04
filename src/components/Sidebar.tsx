@@ -87,6 +87,13 @@ export function Sidebar({ user }: { user?: SidebarUser }) {
             <RefreshCw className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
             Review
           </NavLink>
+          {/* The CELPIP section had no entry point anywhere in the app until now:
+              four skills of exam practice were reachable only by typing the URL.
+              Found by the beta user, who asked where it was. */}
+          <NavLink href="/celpip" active={isActive("/celpip")}>
+            <GraduationCap className="h-[1.05rem] w-[1.05rem]" strokeWidth={1.75} />
+            CELPIP
+          </NavLink>
         </nav>
 
         <p className="mt-7 px-3 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-muted">
