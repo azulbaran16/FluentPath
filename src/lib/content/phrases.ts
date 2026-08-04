@@ -439,6 +439,66 @@ const SETS: Record<string, Phrase[]> = {
     { id: "look-into-it", text: "Leave it with me and I'll look into it.", es: "Déjamelo a mí y lo miro.", tip: "'Look into' es investigar, y en atención al cliente es la frase que compra tiempo sin prometer solución. 'Look over' es solo echar un vistazo: prometer eso a un cliente enfadado le suena a que no piensas hacer nada." },
     { id: "make-up-for-last-week", text: "Let me buy lunch to make up for last week.", es: "Déjame invitarte a comer para compensar lo de la semana pasada.", tip: "'Make up for' es compensar; 'make up' a secas es inventarse algo y 'make up with someone' es reconciliarse. Ofrecer compensación reconoce la deuda sin tener que pedir perdón otra vez." },
   ],
+  // B2, and DELIBERATELY THE SMALLEST OF THE FIVE SOUNDING-NATIVE SETS —
+  // twelve phrases where its neighbours hold eighteen, and sixteen cards where
+  // they hold twenty-four or forty-two. That is a judgement, not an oversight,
+  // and it is written here so no later reader mistakes it for one.
+  //
+  // WHY. The drills pronunciation actually needs are minimal pairs as an
+  // exercise, word stress as an exercise and intonation as an exercise — and
+  // those are precisely the new drill components this phase's D-01 rules out.
+  // Under that decision the only shapes available here are a warm-up line and a
+  // recall card, so volume buys less in this scenario than in any other: a
+  // thirteenth tongue-twister teaches nothing a sixth did not. Padding this set
+  // to the same floor as `native/idioms` or `native/culture` would imply the
+  // five scenarios were deepened equally when they were not, which is a claim
+  // made with content instead of with words. The phase says so instead.
+  //
+  // WHAT WOULD CHANGE THE VERDICT: the deferred premium TTS/STT work (VOICE-01,
+  // v2 backlog). This scenario's whole feedback loop today is the browser
+  // recogniser plus the learner's own ear, and PronunciationLab scores an
+  // attempt WORD BY WORD against what the recogniser returned — it cannot hear
+  // a vowel length, an aspiration or a stress position, only whether the word
+  // came back. A real voice model would make every drill D-01 rejected buildable
+  // and would make this the cheapest scenario to deepen rather than the dearest.
+  // Named here as evidence for that case; NOT acted on in this phase.
+  //
+  // THE TWO SHAPES IN THIS SET, AND THE SECOND IS THE ONE TO COPY:
+  //
+  //  1. The first five entries are TONGUE-TWISTERS. `scenario-vocabulary.ts`'s
+  //     own header calls that "a legitimate shape for this scenario and a poor
+  //     model for anything else", and it is right on both halves. They stay,
+  //     untouched, and NOTHING WAS ADDED IN THAT SHAPE — six more would be
+  //     volume with no gain.
+  //  2. `ship-sheep` is the one entry that is not a twister, and it is the best
+  //     item in the set for exactly that reason: the contrast sits inside an
+  //     ordinary sentence, so the recogniser has a real WORD to get right or
+  //     wrong and the learner's score means something. The six additions below
+  //     all follow it — a sentence somebody would actually say to another
+  //     person, with the contrast on a word whose mis-articulation produces a
+  //     DIFFERENT WORD and therefore a different meaning.
+  //
+  // THIS IS NOT A MINIMAL-PAIRS COMPONENT AND MUST NOT BE READ AS ONE. The
+  // deferred item under D-01 is a new drill with a new renderer; this adds
+  // neither. It is six more entries in the array `PronunciationLab` has always
+  // rendered, authored on the model of an item that was already in this bank.
+  //
+  // The contrasts are the ones a Spanish speaker loses meaning on: /v/ against
+  // /b/ (no /v/ exists in Spanish), the two dental fricatives against their
+  // nearest neighbours, an initial s-cluster that invites a vowel in front of
+  // it, a final voiced consonant that carries a tense, and the stress shift that
+  // turns a noun into a verb. `es` names the contrast in the parenthetical style
+  // this set already uses rather than pretending a drill line has a translation,
+  // and every `tip` says what the MOUTH does, never what the sentence means.
+  //
+  // The short/long vowel pair was ALSO on the list and was cut: `ship-sheep`
+  // below already teaches it, and the gloss drafted for it turned out to be a
+  // word-for-word permutation of that live entry's own `es`. Measured before it
+  // was written; /v/–/b/ took its slot because nothing in this bank covers it.
+  //
+  // The six original entries are UNTOUCHED in every field and always will be:
+  // each id is a live spaced-repetition key and the fixture's hash covers the
+  // whole record, so rewriting even a tip under one of them is a re-point.
   "native/pronunciation": [
     { id: "seashells", text: "She sells seashells by the seashore.", es: "(trabalenguas de la 's/sh')", tip: "Distingue /s/ de /ʃ/." },
     { id: "thirty-three-thieves", text: "The thirty-three thieves thought they thrilled the throne.", es: "(la 'th')", tip: "Saca la lengua para la /θ/." },
@@ -446,6 +506,15 @@ const SETS: Record<string, Phrase[]> = {
     { id: "peter-piper", text: "Peter Piper picked a peck of pickled peppers.", es: "(la 'p' aspirada)", tip: "Suelta aire en cada 'p' inicial." },
     { id: "brown-cow", text: "How now, brown cow.", es: "(el diptongo /aʊ/)", tip: "Abre la boca y ciérrala hacia la 'u'." },
     { id: "ship-sheep", text: "This ship is full of sheep.", es: "(la /ɪ/ corta frente a la /iː/ larga)", tip: "'Ship' corta, 'sheep' larga — cambia el significado." },
+    // ── SIX SENTENCES SOMEBODY WOULD ACTUALLY SAY ── each one puts its
+    // contrast on a word the recogniser has to return, so a wrong articulation
+    // comes back as a different word and the score means something.
+    { id: "taking-the-dog-to-the-vet", text: "I'm taking the dog to the vet tomorrow.", es: "(la /v/ labiodental frente a la /b/)", tip: "Muerde un poco el labio de abajo con los dientes de arriba y deja pasar el aire: eso es la /v/, y en español no existe. Si juntas los dos labios sale 'bet', y entonces has dicho que apuestas, no que llevas al perro." },
+    { id: "thursday-not-tuesday", text: "I thought we said Thursday, not Tuesday.", es: "(la /θ/ frente a la /t/)", tip: "La punta de la lengua asoma entre los dientes en 'thought' y en 'Thursday'. Si la apoyas por detrás, lo que oye el otro es 'Tuesday', y esa es justo la confusión que te hace aparecer dos días antes de la reunión." },
+    { id: "hang-those-clothes-up", text: "Hang those clothes up — they're still damp.", es: "(la /ð/ sonora frente a la /d/)", tip: "Misma lengua entre los dientes que en 'think', pero con la garganta vibrando: 'those', 'clothes' y 'they're' llevan las tres esa /ð/. Con una /d/ dura quedan en 'doze' y en 'close', y ya no hay ropa en la frase." },
+    { id: "state-school-not-estate", text: "It's a state school, not a private one.", es: "(el grupo 'st-' inicial, sin vocal delante)", tip: "Arranca directamente en la 's', sin coger impulso: en inglés el grupo 'st-' abre la palabra. La 'e' que se cuela delante te deja en 'estate', que es una urbanización y no un tipo de colegio." },
+    { id: "send-an-update-every-friday", text: "I send an update every Friday morning.", es: "(la /d/ final sonora frente a la /t/)", tip: "La /d/ del final de 'send' vibra y alarga un poco la vocal de delante. Ensordecida suena 'sent', y ahí el sonido se lleva puesto el tiempo verbal: has contado algo que hiciste una vez en lugar de lo que haces cada semana." },
+    { id: "record-it-and-a-record", text: "Someone should record this — I want a record of what he actually said.", es: "(el acento en la segunda sílaba del verbo y en la primera del sustantivo)", tip: "Verbo re-CORD, sustantivo RE-cord: la misma palabra con el peso en otra sílaba y en otra categoría. Aviso honesto — el corrector de esta pantalla puntúa palabra a palabra y no oye dónde cae el acento, así que esta la juzgas tú con el botón de escuchar." },
   ],
   // C1, and deliberately in CONTRASTING PAIRS rather than as a flat list —
   // register is a dial, and a single line cannot show a dial moving. NINE
