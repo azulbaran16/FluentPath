@@ -1,14 +1,50 @@
 "use client";
 
 import Link from "next/link";
-import type { World } from "@/lib/curriculum";
+import type { Skill, World } from "@/lib/curriculum";
 import { useProgress } from "@/lib/progress";
 import { WorldIcon } from "@/lib/icons";
 import { SkillPill, LevelBadge } from "./SkillPill";
 import { ProgressRing } from "./ProgressRing";
 import { Check } from "lucide-react";
 
-export function WorldView({ world }: { world: World }) {
+/**
+ * Which skills each scenario on this page has practice actually WRITTEN for,
+ * keyed by scenario slug. Derived from the coverage registry by the server
+ * component above and handed down — see the note on `written` below for why it
+ * arrives as a prop instead of being looked up here.
+ */
+export type WorldSkillsWritten = Readonly<Record<string, readonly Skill[]>>;
+
+/**
+ * `written` is REQUIRED, and deliberately so.
+ *
+ * Until it existed this component mapped `scenario.skills` straight onto pills
+ * and passed no availability flag, so the world page counted DECLARATIONS while
+ * the scenario page one click deeper read the coverage registry. The two agreed
+ * only by accident, because every declared pair happened to be written; the
+ * moment a skill was declared before its bank entry existed — the normal
+ * authoring order — this page advertised practice that did not exist.
+ * `SkillPill.available` defaults to true for callers with no registry in hand,
+ * which is exactly the default a caller that DOES know must not fall back to.
+ * Making the prop required is what stops the next caller re-introducing it by
+ * omission rather than by intent.
+ *
+ * It is a PROP rather than a `getScenarioCoverage` call in this file because
+ * this component is `"use client"`, and the registry imports all six content
+ * banks. Measured at 04-08: importing it here cost the `/world/[slug]` client
+ * bundle 416,798 B -> 633,952 B (+217,154 B, +52.1%, 6 chunks -> 9) to render
+ * pills whose text is already known at build time. Deriving it in the server
+ * component costs nothing on the wire and cannot drift, because it reads the
+ * same registry the scenario page reads.
+ */
+export function WorldView({
+  world,
+  written,
+}: {
+  world: World;
+  written: WorldSkillsWritten;
+}) {
   const { ready, isDone, worldProgress } = useProgress();
   const accent = `var(${world.color})`;
 
@@ -48,6 +84,7 @@ export function WorldView({ world }: { world: World }) {
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         {world.scenarios.map((s, i) => {
           const done = ready && isDone(world.slug, s.slug);
+          const writtenHere = written[s.slug] ?? [];
           return (
             <Link
               key={s.slug}
@@ -73,7 +110,11 @@ export function WorldView({ world }: { world: World }) {
               <div className="mt-4 flex flex-wrap items-center gap-2">
                 <LevelBadge level={s.level} />
                 {s.skills.map((sk) => (
-                  <SkillPill key={sk} skill={sk} />
+                  <SkillPill
+                    key={sk}
+                    skill={sk}
+                    available={writtenHere.includes(sk)}
+                  />
                 ))}
                 <span className="ml-auto text-xs text-muted">~{s.minutes} min</span>
               </div>

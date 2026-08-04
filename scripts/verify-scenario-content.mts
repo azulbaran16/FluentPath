@@ -3331,6 +3331,66 @@ if (culturePassage) {
   }
 }
 
+group("the world page reads coverage, and reads it without shipping the banks");
+
+/* Ledger 34, closed at 04-08 after being carried open since 03-05.
+ *
+ * `WorldView` mapped `scenario.skills` straight onto `SkillPill` with no
+ * availability flag, so the world page counted DECLARATIONS while the scenario
+ * page one click deeper read the registry. That was latent rather than visible
+ * only because every declared pair happened to be written; it goes live the
+ * instant a skill is declared before its bank entry exists, which is the normal
+ * authoring order and precisely what 04-08 then did twice. The two assertions
+ * below are the reason it cannot come back silently: the fix is three lines and
+ * a three-line fix is a three-line revert.
+ *
+ * 03-09's source-read technique again, for the same reason RecallDeck's
+ * delegation is asserted at the source: whether a component PASSES a prop is a
+ * property of the source and is not recoverable from behaviour here. Comments
+ * are stripped first, so the paragraph explaining the rule cannot satisfy it.
+ *
+ * THE SECOND ASSERTION IS A BUNDLE INVARIANT AND ITS NUMBER IS MEASURED, NOT
+ * GUESSED. `WorldView` is `"use client"` and `scenario-coverage.ts` imports all
+ * six content banks, so looking coverage up INSIDE the component — the obvious
+ * reading of the ledger's "import getScenarioCoverage" — cost this route's
+ * client bundle 416,798 B -> 633,952 B (+217,154 B, +52.1%, 6 chunks -> 9),
+ * measured at 04-08 from the per-route client-reference manifest. Deriving it
+ * in the server component instead cost +50 B. Both spellings put the same pills
+ * on the same page; only one of them makes a browser download the curriculum to
+ * find out what colour they are.
+ */
+{
+  const stripComments = (code: string) =>
+    code.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/^[ \t]*\/\/.*$/gm, " ");
+
+  const worldViewSource = stripComments(
+    readFileSync(
+      new URL("../src/components/WorldView.tsx", import.meta.url),
+      "utf8",
+    ),
+  );
+  const worldPageSource = stripComments(
+    readFileSync(
+      new URL("../src/app/(catalog)/world/[slug]/page.tsx", import.meta.url),
+      "utf8",
+    ),
+  );
+
+  ok(
+    "the world page's pills are told which pairs are written",
+    /<SkillPill[\s\S]{0,200}?available=/.test(worldViewSource),
+    "WorldView must pass `available` to every SkillPill; SkillPill.available defaults to TRUE for callers with no registry in hand, so a caller that knows and stays silent renders a solid pill for practice that may not exist (ledger 34)",
+  );
+
+  ok(
+    "the world page derives that from the coverage registry, server-side",
+    worldPageSource.includes("getScenarioCoverage") &&
+      worldPageSource.includes("written={") &&
+      !worldViewSource.includes("scenario-coverage"),
+    "the derivation belongs in the SERVER component: WorldView is a client component and scenario-coverage.ts pulls in all six content banks, measured at +217,154 B (+52.1%) on this route's client bundle when imported there. Derive it in page.tsx and pass it down",
+  );
+}
+
 /* ------------------------------------------------------------------ *
  * The phase's own progress meter — REPORTED, never asserted.
  *
