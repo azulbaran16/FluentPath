@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 40
+open_count: 41
 waived_count: 1
 fixed_count: 16
-total_count: 57
-last_updated: 2026-08-04T07:28:15.512Z
+total_count: 58
+last_updated: 2026-08-04T08:28:00.658Z
 ---
 
 # Broken Windows Ledger
@@ -72,6 +72,7 @@ last_updated: 2026-08-04T07:28:15.512Z
 | 55 | 04 | deviation | src/lib/content/scenario-lessons.ts | 340 | OPEN QUESTION for the phase gate, filed by 04-04 rather than decided by it: should FALLBACK_LESSON be DELETED outright and getScenarioLesson made to return ScenarioLesson\|undefined, like every other bank accessor? 04-04 proved it unreachable by assertion (all 35 scenarios resolve to their own briefing, checked by reference AND by value) instead of deleting it, because deletion changes the accessor's return type and every call site - churn in files 04-04 does not own, to buy a property the assertion already buys. The record is therefore dead-and-gated rather than gone. 03-11 took the other route for phrases.ts. Whoever next touches scenario-lessons.ts should settle which is right. | open |  | 2026-08-04T06:40:11.061Z |  |
 | 56 | 04 | deviation | src/lib/content/scenario-vocabulary.ts | 1607 | 04-04's corpus scan left TWO pairs above its own declared J>=0.60 defect threshold, judged short-field artefacts and NOT fixed - recorded here so the judgement can be second-guessed rather than buried in a summary. (a) J=0.750 now-and-again.es 'de vez en cuando' vs global/vocab/daily.es 'en vez de': four-word denominator, three shared function words, opposite meanings ('from time to time' vs 'instead of'). (b) J=0.667 a-non-starter.term 'a non-starter' vs travel/restaurant#vocab#starter.term 'a starter': three-word denominator, morphological (non- prefix), zero shared teaching. Neither is the D-01 failure the threshold was written for. The same scan restricted to fields of >=6 words - where duplication actually matters - tops out at J=0.308 over 66,495 pairs, and there are ZERO exact duplicates. If a later plan disagrees, the fix is to change the card, never to move the threshold. | open |  | 2026-08-04T06:40:11.559Z |  |
 | 57 | 04 | deviation | src/lib/content/scenario-lessons.ts | 326 | 04-05: native/register's briefing tip quotes the opening shapes of its own phrase pair 1 (Can you...? / Would you be able to...?). 04-04's briefing/bank separation gate is scoped to native/idioms so it does not fire. Not fixed: widening the gate to all 35 briefings is a decision about the gate, and this plan does not own scenario-lessons.ts. | open |  | 2026-08-04T07:28:15.512Z |  |
+| 58 | 04 | deviation | src/lib/content/scenario-lessons.ts |  | native/culture's briefing tip says "That's so 2010" — a four-digit year in the one scenario whose banks are now gated against years; 04-06's gate is scoped to the two banks it owns | open |  | 2026-08-04T08:28:00.658Z |  |
 
 ````json
 [
@@ -757,6 +758,18 @@ last_updated: 2026-08-04T07:28:15.512Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-08-04T07:28:15.512Z",
+    "resolved_at": null
+  },
+  {
+    "id": 58,
+    "kind": "deviation",
+    "phase": "04",
+    "file": "src/lib/content/scenario-lessons.ts",
+    "line": null,
+    "description": "native/culture's briefing tip says \"That's so 2010\" — a four-digit year in the one scenario whose banks are now gated against years; 04-06's gate is scoped to the two banks it owns",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-04T08:28:00.658Z",
     "resolved_at": null
   }
 ]

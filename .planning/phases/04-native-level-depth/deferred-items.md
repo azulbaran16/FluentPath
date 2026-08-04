@@ -169,3 +169,35 @@ whole phrase texts and bare card terms, not sentence openings.
 **For whoever widens the gate:** the check would need a notion of a phrase PREFIX, not a whole
 text — and it should be measured across all 35 briefings before being written, because several
 briefings legitimately name the structure their scenario teaches.
+
+---
+
+## 04-06 — `native/culture`'s BRIEFING has the shelf life its banks are now gated against
+
+**Found during:** Task 2, while writing the year gate.
+
+`scenario-lessons.ts` gives `native/culture` this tip:
+
+> *"Catch common ones: “It's his Achilles' heel”, “That's so 2010.”"*
+
+**That is a literal four-digit year, in the one scenario whose whole design constraint is that
+its content must not date** — and it sits one surface away from two banks that are now asserted
+to contain no year at all. The briefing's intro also frames the scenario as *"films, sayings,
+history"*, which is the framing the banks deliberately reject.
+
+**The new gate does not fire**, and correctly so: it is scoped to the two banks
+(`phrases.ts`, `scenario-vocabulary.ts`), which are the files 04-06 owns.
+
+**Not fixed, deliberately.** Two reasons:
+
+1. **It may be intentional.** *"That's so 2010"* is itself an example of an expression that
+   dates you — the tip is arguably demonstrating the phenomenon rather than falling for it.
+   Deciding that is a content judgement about a file this plan does not own.
+2. Widening the year gate from two banks to all thirty-five briefings is a decision about the
+   gate, not about this content — the same shape as 04-05's deferred briefing/bank separation
+   question, and on the same file.
+
+**For whoever picks this up:** the year regex already exists in the `native/culture` group of
+`scripts/verify-scenario-content.mts` (`\b(1\d{3}|2\d{3})\b`, narrow on purpose so a price or a
+house number cannot trip it). Extending it to briefings is one loop. Measure across all 35
+first: at least one other briefing may legitimately name a year.
