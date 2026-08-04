@@ -34,6 +34,12 @@ constraint as v1 — **all content original**, third-party material is format re
 > `[~]` means **met with a stated limitation**: the artifact ships and its gates pass, but a
 > criterion in the requirement's own wording rests on an observation nobody has made yet.
 > Introduced by the 02.1-12 phase gate rather than rounding those two up to `[x]`.
+>
+> **It is a project-wide convention, not a CELPIP one.** The 04-09 phase gate reused it for
+> **CONT-04**, whose content is complete, derived and gated but whose browser pass was never
+> driven. Reach for `[~]` whenever the honest answer is "built and proved by script, unproved
+> by sight" — the whole point is that neither `[ ]` nor `[x]` is true, and picking either one
+> would be the overclaim this project's derivation exists to make impossible.
 
 ### Progress (server-side persistence)
 
@@ -51,7 +57,71 @@ constraint as v1 — **all content original**, third-party material is format re
 ### Content (curriculum expansion)
 
 - [x] **CONT-03**: Each of the 6 worlds covers its full designed topic list with scenarios — *satisfied as measured 2026-08-01: the design doc's topic list and `curriculum.ts` match one-for-one in all six worlds (Social 7, Work 7, Travel 6, Reading & Ideas 5, Practical 5, Sounding Native 5 = 35). The requirement's own examples — humor, favors, networking, feedback, housing, banking — all exist. Nothing was built for this; Phases 1–3 satisfied it as a side effect.*
-- [ ] **CONT-04**: Sounding Native world delivers native-level content: idioms, phrasal verbs, pronunciation drills, and register/culture
+- [~] **CONT-04**: Sounding Native world delivers native-level content: idioms, phrasal verbs, pronunciation drills, and register/culture — ***met as content, with the browser pass unobserved.** Closed at the 04-09 phase gate on measurement and on a reader pass, and deliberately NOT ticked `[x]`, because a criterion this phase itself added rests on an observation nobody has made.*
+
+  ***WHAT IS WRITTEN, MEASURED 2026-08-04.*** All five scenarios carry depth, from Phase 3 floors of six phrases and eight cards each:
+
+  | Scenario | phrases | cards | grammar Qs | deck | advertised |
+  |---|---|---|---|---|---|
+  | `native/idioms` | 6 → **18** | 8 → **24** | — | **42** | 10 → **17** min |
+  | `native/phrasal-verbs` | 6 → **18** | 8 → **24** | 5 → **15** | **42** | 9 → **24** min |
+  | `native/register` | 6 → **18** | 8 → **24** | 0 → **5** | **42** | 9 → **21** min |
+  | `native/culture` | 6 → **18** | 8 → **24** | — | **42** | 10 → **17** min |
+  | `native/pronunciation` | 6 → **12** | 8 → **16** | — | **28** | 10 → **11** min |
+  | **world** | 30 → **84** | 40 → **112** | 5 → **20** | | |
+
+  **155 scheduled ids added · 15 retired, every one with a written reason · ZERO re-pointed** (no changed
+  hash in any of the phase's fourteen content commits). Fourteen of the retirements removed pre-existing
+  `native/idioms` material by explicit human approval at 04-03 and 04-04; the fifteenth was authored and
+  retired inside 04-01. Authored-field words in the world rose **1,643 → 8,132** (+6,489). Coverage is
+  **53/53 pairs written, 0 pending** — derived from bank contents, never hand-written, and now *asserted*
+  rather than merely reported.
+
+  ***THE TICK RESTS ON THIS.*** `verify-scenario-content` **14,577** assertions and `verify-id-stability`
+  **2,021**, both at their high-water marks; an *independent* enumeration of every scheduled id the banks
+  emit agrees with the fixture **exactly, 651 = 651**, computed without importing the gate's own logic;
+  a **19-mutation sweep in a scratch copy with its own `node_modules`** in which **17 of 17 mutations were
+  CAUGHT on their own labels** and **2 controls survived**, each verdict carrying a landing proof and a
+  parse check; and the derivation control re-proved — emptying one exercise entry takes 53/53 to 52/53,
+  puts the pair in `pendingPairs()`, empties its summary and flips the scenario incomplete, with no second
+  edit. Plus a **reader pass** over all five phrase sets, all five decks, each scenario against its own
+  briefing/rehearsal/passage, and the two nearest neighbours elsewhere in the app.
+
+  ***WHAT A HUMAN SAW: NOTHING. The 04-09 browser pass was NOT PERFORMED*** — the reviewer's context was
+  exhausted before it could be driven, and it is recorded as not done rather than rounded up. Unobserved,
+  by name, and open as **WINDOWS 62**: (1) the **batched recall deck**, which is this phase's one component
+  change, sits between the learner and every recall item in the app, and **has never been rendered** — its
+  rest point, its per-batch counter, its whole-sitting completion totals and "Go again"; (2) the same deck
+  on **`/review`** with more than sixteen items due, the longest un-pausable run in the app and one of
+  `RecallDeck`'s four callers; (3) a **sub-ceiling deck** (`practical/appointments`, 14 cards) confirmed
+  unchanged; (4) the **eighteen-phrase warm-up** at its new length; (5) `native/idioms` **read as a learner**
+  against Phase 3's "reads like any ELT textbook" verdict; (6) the **register pairs rendering adjacent**;
+  (7) the advertised minutes on the five pages; (8) **ticking a rehearsal move** — the 15 XP single-award
+  and the remount question research flagged (WINDOWS 38, open since Phase 3); (9) the honesty mechanism on
+  a served page; (10) **anything at all on a phone**, which is the device the beta user practises on and on
+  which nothing in this project has ever run. The ordered checklist with URLs is at the foot of
+  `04-09-SUMMARY.md`.
+
+  ***WHAT THIS PHASE DID NOT DELIVER, NAMED RATHER THAN OMITTED.*** D-01 — the user's own wording — asked for
+  large idiom and phrasal-verb banks, **more reading** and **more rehearsals**. The banks are delivered and
+  *more rehearsals* was delivered in kind at 04-08 (option E). ***More reading was not delivered by Phase 4
+  at all.*** It was available only as 04-08's options A and B (~631 authored words each), and **the user
+  declined both knowingly** at 04-08's blocking checkpoint, on a measured ratio argument: 631 words is 4×
+  what 04-CONTEXT projected, and both existing native passages already sit above the corpus mean. Option F
+  (a second passage per scenario) was declined as UI work outside D-01's scope; option D (register grows to
+  2–3 writing tasks) was declined once its true price — eight further harness blocks, reshaping all nine
+  writing pairs — was measured. This is a **scope decision, not a gap**, and nothing is broken by it: the
+  app claims no reading it does not have, because coverage is derived. Open as **WINDOWS 61** and **63**.
+
+  ***AND WHY THE FIVE ARE DELIBERATELY UNEQUAL.*** `native/pronunciation` is the smallest at 12/16 where its
+  neighbours are 18/24, and that is a recorded judgement written into both of its banks, not an oversight.
+  The drills pronunciation actually needs — minimal pairs, word stress, intonation *as exercises* — are new
+  drill components, which D-01 rules out; under that decision the only shapes available are a warm-up line
+  and a recall card, so a thirteenth tongue-twister teaches nothing a sixth did not. Worse, `PronunciationLab`
+  scores word by word against a browser recogniser, so it **cannot hear** vowel length, aspiration or stress
+  position: one of the six additions ships with that limitation disclosed in its own tip (WINDOWS 59). Padding
+  this scenario to the same floor would have implied the five were deepened equally when they were not — a
+  claim made with content instead of with words. This is the measured case for deferred **VOICE-01**.
 - [x] **CONT-05**: New content is graduated across CEFR levels (B1–C1) so difficulty progresses with the learner — *satisfied as measured 2026-08-01: the 35 scenarios span A2 ×4, B1 ×11, B2 ×13, C1 ×7, and Phase 3 authored every exercise at its scenario's declared level.*
 
 ### Tutor (AI tutor end-to-end)
@@ -119,7 +189,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONT-01 | Phase 3 | Complete (52/52 pairs — plan 03-10; browser-confirmed at the 03-11 gate, 2026-08-01) |
 | CONT-02 | Phase 3 | Complete (35/35 phrases, 35/35 vocabulary — plan 03-04; SRS leg browser-confirmed at the 03-11 gate) |
 | CONT-03 | Phase 4 | Complete (measured, not built — see requirement) |
-| CONT-04 | Phase 4 | Pending |
+| CONT-04 | Phase 4 | **Met with a stated limitation** `[~]` — closed at the 04-09 gate on measurement and a reader pass, NOT on observation. Content complete and derived: 84 phrases · 112 cards · 20 grammar questions across all five Sounding Native scenarios (from 30 · 40 · 5), 155 scheduled ids added, 15 retired with reasons, **0 re-pointed**, 53/53 pairs written and 0 pending — asserted for the first time rather than reported. Gated by 14,577 + 2,021 assertions at their high-water marks, an independent 651 = 651 id enumeration that does not import the gate's own logic, a 19-mutation sweep run in a scratch copy with its own `node_modules` (**17/17 caught on their own labels, 2 controls survived**, every verdict carrying a landing proof), and the derivation control re-proved (one emptied entry takes 53/53 → 52/53 and flips every dependent claim, with no second edit). **THE BROWSER PASS WAS NOT PERFORMED** — the batched recall deck, this phase's one component change and the surface between the learner and every recall item in the app, has never been rendered; nor has `/review` above sixteen due, a rehearsal move ticked, or anything at all on a phone. Ten unobserved items are open by name as WINDOWS 62 with an ordered checklist in `04-09-SUMMARY.md`. **"More reading" — half of D-01's own wording — was NOT delivered**, declined knowingly by the user at 04-08 on a measured ratio argument (WINDOWS 61); option D likewise (WINDOWS 63). `native/pronunciation` is deliberately the smallest of the five, for the reason written into both its banks |
 | CONT-05 | Phase 4 | Complete (measured, not built — see requirement) |
 | TUTOR-01 | Phase 5 | Pending |
 | TUTOR-02 | Phase 5 | Pending |

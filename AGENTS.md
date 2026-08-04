@@ -44,7 +44,7 @@ Stack: Next.js 16 (App Router) · React 19 · TypeScript · Tailwind v4.
   that `onend` and by nothing else — so an over-long turn strands the learner on a screen with
   no words and no questions. `scripts/verify-celpip-content.mts` gates the ceiling at 35 words.
   A single-speaker news item is still written as many turns for this reason alone.
-- Scenario practice is per-scenario as of Fase 3 — all 35 scenarios and all 52 declared
+- Scenario practice is per-scenario as of Fase 3 — all 35 scenarios and all **53** declared
   scenario×skill pairs. Content is keyed by the composite scenario key `"world/scenario"`
   across `scenario-lessons.ts`, `phrases.ts`, `scenario-vocabulary.ts`, `scenario-grammar.ts`,
   `scenario-writing.ts`, `scenario-reading.ts` and `scenario-speaking.ts`. **Coverage is
@@ -65,14 +65,64 @@ Stack: Next.js 16 (App Router) · React 19 · TypeScript · Tailwind v4.
   is the key its Postgres `srs` entry lives under and `mergeProgress` unions keys blindly, so
   **an id must never be renamed or renumbered once shipped** — a rename orphans live progress
   with no migration path and no way to detect it. Insert freely; never renumber.
+- **The one-way door is now DETECTABLE, not merely documented** (`scripts/verify-id-stability.mts`
+  + `scripts/fixtures/scheduled-item-ids.json`, added 04-01). Every scheduled id carries a
+  committed SHA-256 of its **whole authored record, every field** — so rewriting a phrase's `tip`
+  or a card's `example` under a live id is a re-point and **fails**, exactly as swapping the
+  headline field does. Three rules follow, and all three are mutation-proved:
+  **(1)** a new id must be regenerated into the fixture **in the same commit as its content**
+  (`… verify-id-stability.mts --update`) — an id in the tree and not in the fixture fails as an
+  unrecorded addition, which is what makes the gate mandatory rather than opt-in;
+  **(2)** a deletion must be declared in `retired` **by hand, with a reason, before `--update` runs**
+  — the script never invents one, and a retired id may never come back;
+  **(3)** regenerate **once, after content is final**. `--update` deliberately refuses to launder a
+  changed hash, and it cannot tell your uncommitted rewrite from a real re-point (04-07 tripped
+  this; recover by restoring the fixture from `HEAD` and regenerating once).
+  A replacement is therefore always *retire the old id, add a new one with its own slug* — never
+  edit content behind an existing id.
+- **The recall deck is batched, and `src/lib/recall-batches.ts` is the ONE author of the split**
+  (D-03, 04-01). `recallBatches(items, ceiling = 16)`: empty → no batches; at or below the ceiling
+  → exactly one batch holding the whole deck, so the scenarios nobody has deepened render
+  byte-identically to before; above → the fewest batches that fit, sized so longest minus shortest
+  is ≤ 1 (42 cards is 14/14/14, never 16/16/10). **All four `RecallDeck` callers inherit it —
+  `ScenarioView`, `ReviewHub`, `ReviewView`, `MistakesView` — and there is deliberately no opt-out
+  prop**, because `/review` is the longest un-pausable run in the app and so is the surface a rest
+  point is worth most, not the one to exempt. **A component must never chunk by hand:** the harness
+  reads `RecallDeck`'s source and fails if it stops calling the helper or spells any `Math.ceil` /
+  `Math.floor` of its own. `RecallDeck` also snapshots its deck at mount on purpose, so rating an
+  item correct cannot shrink the deck underneath the learner.
+- **A scenario's advertised `minutes` is a GATED CLAIM, not a label.** `minutes × 60 >= phrases × 20
+  + deck × 15 + questions × 30`, asserted for all 35 scenarios. **Any commit that grows a bank must
+  raise that scenario's `minutes` in the same commit**, and the fix for a failure is always to raise
+  `minutes` — never to lower a rate. Two properties are deliberate and must not be "corrected": the
+  comparison is `>=`, so exactly zero slack passes (three scenarios sit there today), and the budget
+  **double-counts the warm-up phrases**, because the deck is phrases *plus* vocabulary. That
+  double-count is documented conservatism; removing it weakens the assertion.
+- **The pair-count literals are tripwires. Raise them by hand; never make them self-comparisons.**
+  `DECLARED_PAIRS.length === 53` and `COVERAGE_TOTALS.pairsTotal === 53` are written as literals so
+  that declaring a skill *before* its bank exists fails loudly. Replacing either with
+  `DECLARED_PAIRS.length === DECLARED_PAIRS.length` would be green forever and worth nothing. The
+  cross-check between the two, and the separate `pendingPairs().length === 0`, are different
+  assertions — keep all three.
+- **Sounding Native's five scenarios are deliberately UNEQUAL, and that is recorded, not accidental.**
+  `idioms`, `phrasal-verbs`, `register` and `culture` hold 18 phrases and 24 cards; `native/pronunciation`
+  holds **12 and 16**, on purpose, with the reason written into both of its banks. The drills that
+  scenario actually needs — minimal pairs, word stress, intonation *as exercises* — are new drill
+  components, which D-01 rules out; and `PronunciationLab` scores word-by-word against the browser
+  recogniser, so it cannot hear vowel length, aspiration or stress position at all. Volume buys less
+  there than anywhere else, and padding it to a uniform floor would imply the five were deepened
+  equally when they were not. Do not "fix" the inequality without reading those bank headers.
 - Which exercises feed the review queue is deliberate: **phrases, vocabulary and scenario
   grammar are scheduled; writing, reading and speaking are not.** Those three compose ids for
   uniqueness and storage scoping only (`SCHEDULED_ITEM_KINDS` in `review-items.ts`) because
   nothing scores them — a drafted text, a comprehension question that cannot leave its passage,
   and a ticked self-report are not answers that can come due.
 - The gate for all of it: `node --experimental-strip-types scripts/verify-scenario-content.mts`
-  (11,981 assertions). It is a low-conflict append target — one import line, one group at the
-  bottom. If it fails, fix the content; never weaken the assertion.
+  (**14,577** assertions) and `scripts/verify-id-stability.mts` (**2,021**, over 651 ids). Both are
+  low-conflict append targets — one import line, one group at the bottom. If either fails, fix the
+  content; never weaken the assertion. **And a gate that has never failed is a gate nobody has
+  tested:** aim a mutation at every assertion you add, require it to be CAUGHT *on its own label*,
+  and keep controls that must survive — a non-zero exit from a syntax error is not a catch.
 - AI tutor endpoint `src/app/api/tutor/route.ts` is a stub until `ANTHROPIC_API_KEY` is set (Fase 5).
 - **A mutation sweep can poison a `.next` build that outlives it.** Sweeps restore source
   byte-for-byte and `git status` comes back clean while the build keeps the mutation — 03-08
