@@ -246,7 +246,7 @@ at the same depth as the other five
   3. Every new scenario ships fully practicable across its applicable skills from day one — no stub content — *no new scenario is added by this phase; the equivalent invariant that IS live here is that no skill declaration lands without its bank entry in the same commit (plan 04-08), and that zero pairs are pending at the gate*
   4. Content difficulty spans B1–C1 so learners at different levels find appropriately graduated material — *ALREADY SATISFIED on the 2026-08-01 measurement recorded in CONT-05; every item this phase authors sits at its scenario's declared level (B2 ×2, C1 ×3)*
 
-**Plans**: 6/9 plans executed
+**Plans**: 7/9 plans executed
 
 Sequencing: tracer first — one scenario carried through every layer (bank, derived coverage, SRS ids,
 renderer, advertised session length, gate) before any bulk authoring, so the machinery is proved at
@@ -266,7 +266,7 @@ Plans:
 - [x] 04-04-PLAN.md — `native/idioms`: the deck to 24 and the briefing stops teaching from its own phrase bank
 - [x] 04-05-PLAN.md — `native/register`: nine situations on the dial as contrasting pairs, a 24-card marker deck, the pairing gated
 - [x] 04-06-PLAN.md — `native/culture`: 18 phrases and 24 cards of machinery, not of references — depth that does not date
-- [ ] 04-07-PLAN.md — `native/pronunciation`: deliberately the smallest of the five, with the reason written into the banks
+- [x] 04-07-PLAN.md — `native/pronunciation`: deliberately the smallest of the five, with the reason written into the banks
 - [ ] 04-08-PLAN.md — Containers and declarations: the world page stops counting promises, and the priced options are decided in the open
 - [ ] 04-09-PLAN.md — Phase gate: full suite, a mutation per new assertion, the reader pass, the browser pass, CONT-04
 
@@ -303,5 +303,5 @@ Phases execute in numeric order: 1 → 2 → 2.1 → 3 → 4 → 5
 | 2. Server-Side Progress | 7/7 | Complete | 2026-07-30 |
 | 2.1 CELPIP Remaining Skills | 12/12 | Complete | 2026-07-31 |
 | 3. Every Scenario Practicable | 11/11 | In Progress|  |
-| 4. Full Curriculum Expansion | 6/9 | In Progress|  |
+| 4. Full Curriculum Expansion | 7/9 | In Progress|  |
 | 5. AI Tutor End-to-End | 0/TBD | Not started | - |

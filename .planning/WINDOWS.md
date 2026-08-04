@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 41
+open_count: 43
 waived_count: 1
 fixed_count: 16
-total_count: 58
-last_updated: 2026-08-04T08:28:00.658Z
+total_count: 60
+last_updated: 2026-08-04T09:29:02.718Z
 ---
 
 # Broken Windows Ledger
@@ -73,6 +73,8 @@ last_updated: 2026-08-04T08:28:00.658Z
 | 56 | 04 | deviation | src/lib/content/scenario-vocabulary.ts | 1607 | 04-04's corpus scan left TWO pairs above its own declared J>=0.60 defect threshold, judged short-field artefacts and NOT fixed - recorded here so the judgement can be second-guessed rather than buried in a summary. (a) J=0.750 now-and-again.es 'de vez en cuando' vs global/vocab/daily.es 'en vez de': four-word denominator, three shared function words, opposite meanings ('from time to time' vs 'instead of'). (b) J=0.667 a-non-starter.term 'a non-starter' vs travel/restaurant#vocab#starter.term 'a starter': three-word denominator, morphological (non- prefix), zero shared teaching. Neither is the D-01 failure the threshold was written for. The same scan restricted to fields of >=6 words - where duplication actually matters - tops out at J=0.308 over 66,495 pairs, and there are ZERO exact duplicates. If a later plan disagrees, the fix is to change the card, never to move the threshold. | open |  | 2026-08-04T06:40:11.559Z |  |
 | 57 | 04 | deviation | src/lib/content/scenario-lessons.ts | 326 | 04-05: native/register's briefing tip quotes the opening shapes of its own phrase pair 1 (Can you...? / Would you be able to...?). 04-04's briefing/bank separation gate is scoped to native/idioms so it does not fire. Not fixed: widening the gate to all 35 briefings is a decision about the gate, and this plan does not own scenario-lessons.ts. | open |  | 2026-08-04T07:28:15.512Z |  |
 | 58 | 04 | deviation | src/lib/content/scenario-lessons.ts |  | native/culture's briefing tip says "That's so 2010" — a four-digit year in the one scenario whose banks are now gated against years; 04-06's gate is scoped to the two banks it owns | open |  | 2026-08-04T08:28:00.658Z |  |
+| 59 | 04 | deviation | src/components/practice/PronunciationLab.tsx |  | 04-07: T-04-15 is PARTIALLY UNMET, 5 of 6, and it cannot be met by authoring. Its mitigation reads 'every addition puts the contrast on a word the recogniser must return', which holds for the five segmental contrasts only because a mis-articulated segment happens to produce a DIFFERENT WORD. It cannot hold for native/pronunciation#phrase#record-it-and-a-record: scoreAttempt() normalises to a word set and tests membership, so re-CORD and RE-cord are the same token and the noun/verb stress shift is invisible to the score. Vowel length, aspiration and contour are equally invisible - the five that work do so by luck of the metric, not by design. SHIPPED WITH THE LIMITATION DISCLOSED IN THE ITEM'S OWN TIP rather than dropped or hidden. This is the evidence input for deferred VOICE-01 (v2 backlog) and closes only when a real voice model lands. | open |  | 2026-08-04T09:28:26.734Z |  |
+| 60 | 04 | deviation | .planning/STATE.md |  | 04-07: WINDOWS 45, FIFTEENTH consecutive occurrence, with one improvement and one NEW sub-finding that entry 45 does not record. IMPROVEMENT: state.record-metric wrote its row correctly this time - the Performance Metrics table is real and populated, contrary to 04-06's reading that it was a placeholder for all 42 plans. STILL BROKEN: update-progress again replaced the informative Progress parenthetical with a bare percentage, and again reset frontmatter total_phases from 6 to 5 against a ROADMAP defining 6. NEW AND ACTIONABLE: state.record-session ALSO resets total_phases, so it reverted a hand-correction I had already applied after update-progress. The correction must therefore be made AFTER THE LAST state.* VERB RUNS, not after the first one that damages the field - the same ordering rule entry 45 records for last_activity_desc now applies to total_phases as well. Any plan that hand-corrects between verbs will silently lose the fix. | open |  | 2026-08-04T09:29:02.718Z |  |
 
 ````json
 [
@@ -770,6 +772,30 @@ last_updated: 2026-08-04T08:28:00.658Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-08-04T08:28:00.658Z",
+    "resolved_at": null
+  },
+  {
+    "id": 59,
+    "kind": "deviation",
+    "phase": "04",
+    "file": "src/components/practice/PronunciationLab.tsx",
+    "line": null,
+    "description": "04-07: T-04-15 is PARTIALLY UNMET, 5 of 6, and it cannot be met by authoring. Its mitigation reads 'every addition puts the contrast on a word the recogniser must return', which holds for the five segmental contrasts only because a mis-articulated segment happens to produce a DIFFERENT WORD. It cannot hold for native/pronunciation#phrase#record-it-and-a-record: scoreAttempt() normalises to a word set and tests membership, so re-CORD and RE-cord are the same token and the noun/verb stress shift is invisible to the score. Vowel length, aspiration and contour are equally invisible - the five that work do so by luck of the metric, not by design. SHIPPED WITH THE LIMITATION DISCLOSED IN THE ITEM'S OWN TIP rather than dropped or hidden. This is the evidence input for deferred VOICE-01 (v2 backlog) and closes only when a real voice model lands.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-04T09:28:26.734Z",
+    "resolved_at": null
+  },
+  {
+    "id": 60,
+    "kind": "deviation",
+    "phase": "04",
+    "file": ".planning/STATE.md",
+    "line": null,
+    "description": "04-07: WINDOWS 45, FIFTEENTH consecutive occurrence, with one improvement and one NEW sub-finding that entry 45 does not record. IMPROVEMENT: state.record-metric wrote its row correctly this time - the Performance Metrics table is real and populated, contrary to 04-06's reading that it was a placeholder for all 42 plans. STILL BROKEN: update-progress again replaced the informative Progress parenthetical with a bare percentage, and again reset frontmatter total_phases from 6 to 5 against a ROADMAP defining 6. NEW AND ACTIONABLE: state.record-session ALSO resets total_phases, so it reverted a hand-correction I had already applied after update-progress. The correction must therefore be made AFTER THE LAST state.* VERB RUNS, not after the first one that damages the field - the same ordering rule entry 45 records for last_activity_desc now applies to total_phases as well. Any plan that hand-corrects between verbs will silently lose the fix.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-04T09:29:02.718Z",
     "resolved_at": null
   }
 ]
