@@ -3030,6 +3030,96 @@ for (const card of idiomCards) {
   );
 }
 
+group("native/register: the dial is legible, because the pairing survives");
+
+/* THE PROPERTY NOTHING ELSE COULD HOLD.
+ *
+ * `native/register` is the only bank in the app built as CONTRASTING PAIRS:
+ * nine situations, each written twice — once casually, once formally, with the
+ * same facts in both halves. The contrast IS the teaching. A single line cannot
+ * show a dial, which is why the set is shaped this way rather than as a flat
+ * list of eighteen.
+ *
+ * And the pairing is carried by ARRAY ORDER AND NOTHING ELSE. No field records
+ * which entry pairs with which; both renderers that consume this set —
+ * PronunciationLab as a warm-up and RecallDeck as cards — simply walk the array
+ * from index 0. So a casual half separated from its formal half by an insertion
+ * still type-checks, still passes every other assertion in this file, still
+ * renders eighteen perfectly good phrases, and quietly stops teaching the one
+ * thing this scenario exists for.
+ *
+ * That is exactly the failure mode this file was written for: type-correct and
+ * silent. 04-05 grew the set from six entries to eighteen, which is precisely
+ * when an ordering invariant held only by an author's care starts to rot — the
+ * next plan to add a tenth situation will not have read the header comment.
+ *
+ * Three separable checks, because they fail for different reasons:
+ *
+ *   1. EVEN LENGTH — an odd count means a half was added without its partner,
+ *      i.e. a situation the learner sees said once. Cheapest check, and the one
+ *      that catches the commonest mistake.
+ *   2. ALTERNATION BY THE SLUG CONVENTION — every entry declares which half of
+ *      a pair it is (`casual-` / `formal-`), and the declaration must agree
+ *      with its position. This catches a pair inserted the wrong way round,
+ *      which even length cannot see.
+ *   3. ADJACENCY — the two halves of pair k are the entries at 2k and 2k+1,
+ *      one of each, in that order. Stated separately from (2) because it is the
+ *      property the RENDERERS depend on, and a reader of a failure should be
+ *      told which pair broke rather than which index did.
+ *
+ * NOTE the slugs deliberately do NOT share a stem — `casual-my-bad` pairs with
+ * `formal-apologise-oversight` — so matching suffixes is not, and must not
+ * become, the mechanism. Adjacency is the mechanism; this asserts adjacency.
+ *
+ * Measured clean before any of it was written: 18 entries, 0 alternation
+ * violations, 0 untipped entries, 9 well-formed pairs. */
+
+const REGISTER_WORLD = "native";
+const REGISTER_SCENARIO = "register";
+const REGISTER_KEY = `${REGISTER_WORLD}/${REGISTER_SCENARIO}`;
+const CASUAL_PREFIX = "casual-";
+const FORMAL_PREFIX = "formal-";
+
+const registerPhrases = getScenarioPhrases(REGISTER_WORLD, REGISTER_SCENARIO) ?? [];
+
+ok(
+  `${REGISTER_KEY}: its phrase set resolves and is not empty`,
+  registerPhrases.length > 0,
+  "the whole group below is vacuous without this — an empty set alternates and pairs perfectly",
+);
+ok(
+  `${REGISTER_KEY}: its phrase set holds an even number of entries (${registerPhrases.length})`,
+  registerPhrases.length % 2 === 0,
+  "an odd count is a half added without its partner — one situation the learner only ever sees said once, which is the one thing a dial cannot be shown with",
+);
+
+for (const [i, phrase] of registerPhrases.entries()) {
+  const expected = i % 2 === 0 ? CASUAL_PREFIX : FORMAL_PREFIX;
+  const wrong = i % 2 === 0 ? FORMAL_PREFIX : CASUAL_PREFIX;
+  ok(
+    `${REGISTER_KEY}#phrase#${phrase.id}: at index ${i} it declares itself the ${expected.slice(0, -1)} half`,
+    phrase.id.startsWith(expected) && !phrase.id.startsWith(wrong),
+    `index ${i} must hold a "${expected}" slug and holds "${phrase.id}" — either the pair went in the wrong way round or an entry was inserted between two halves`,
+  );
+  ok(
+    `${REGISTER_KEY}#phrase#${phrase.id}: carries a non-blank tip`,
+    (phrase.tip ?? "").trim().length > 0,
+    "in this scenario the tip is where the MARK lives — who says it, to whom, and what it costs to get that wrong. An entry without one is a line with no register attached, which is the thing being taught",
+  );
+}
+
+for (let pair = 0; pair * 2 + 1 < registerPhrases.length; pair++) {
+  const casual = registerPhrases[pair * 2];
+  const formal = registerPhrases[pair * 2 + 1];
+  ok(
+    `${REGISTER_KEY}: pair ${pair + 1} sits adjacent — ${casual.id} then ${formal.id}`,
+    casual.id.startsWith(CASUAL_PREFIX) &&
+      formal.id.startsWith(FORMAL_PREFIX) &&
+      casual.id !== formal.id,
+    "both renderers walk this array in order, so the two halves of a situation are legible as a contrast only while they sit next to each other, casual first",
+  );
+}
+
 /* ------------------------------------------------------------------ *
  * The phase's own progress meter — REPORTED, never asserted.
  *

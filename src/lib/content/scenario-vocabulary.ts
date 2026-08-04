@@ -2029,9 +2029,31 @@ const DECKS: Record<string, ScenarioVocabCard[]> = {
     },
   ],
 
-  // C1. The plan asks for the MARKERS that signal which register she is in —
-  // the things a listener reads the dial from — rather than more example
-  // sentences, which the contrasting phrase pairs already supply.
+  // C1. Twenty-four MARKERS — the things a listener reads the dial from —
+  // rather than more example sentences, which the eighteen contrasting phrase
+  // pairs already supply. The division of labour between the two banks is the
+  // whole reason 42 items in one scenario do not read as one list twice:
+  //
+  //   phrases.ts holds nine situations SAID. This deck holds the names for
+  //   what changed between the two sayings.
+  //
+  // A marker earns a card only if the learner can POINT AT IT IN A SENTENCE,
+  // which is why most of these are grammar rather than vocabulary: research
+  // measured that register in English is carried by contractions, the
+  // agentless passive, the distancing past and hedging far more than by word
+  // choice. So `a full form`, `nominalisation` and `the distancing past` sit
+  // here beside `slang` and `jargon`, and that mix is deliberate.
+  //
+  // `ScenarioVocabCard` is {id, term, es, example} and has NOWHERE to put a
+  // register note, so the mark lives in the only two places the shape offers:
+  // a term that names its instances in a parenthesis (`a softener
+  // (unfortunately, I'm afraid)`), and an example that shows the marker either
+  // doing work or doing damage in a real sentence.
+  //
+  // Four of these exist for a Spanish speaker specifically — `a bare
+  // imperative`, `effusive`, `deferential` and `be on first-name terms` — each
+  // one a place where the habit that is neutral in Spanish lands somewhere
+  // else in English.
   "native/register": [
     {
       id: "contraction",
@@ -2080,6 +2102,114 @@ const DECKS: Record<string, ScenarioVocabCard[]> = {
       term: "overfamiliar",
       es: "demasiado confianzudo",
       example: "Using her first name there would come across as overfamiliar.",
+    },
+
+    /* ─── the grammar of the dial ─── the five markers a listener actually
+     * reads the register from, and the reason this deck is not a word list. */
+    {
+      id: "full-form",
+      term: "a full form (do not, cannot)",
+      es: "la forma sin contraer",
+      example: "He wrote 'do not' where he would have said 'don't', and the line landed like a warning.",
+    },
+    {
+      id: "agentless-passive",
+      term: "the agentless passive (it was sent)",
+      es: "la pasiva que no dice quién",
+      example: "'Your file was deleted' names nobody, and that is exactly why the letter chose it.",
+    },
+    {
+      id: "distancing-past",
+      term: "the distancing past (I was hoping to ask)",
+      es: "el pasado que hace pequeña la petición",
+      example: "'I was hoping' is happening right now; the past tense is there to shrink the ask.",
+    },
+    {
+      id: "nominalisation",
+      term: "nominalisation (the decision, not we decided)",
+      es: "convertir el verbo en sustantivo",
+      example: "Nominalisation turns 'we decided' into 'the decision', and the room stops knowing who to argue with.",
+    },
+    {
+      id: "bare-imperative",
+      term: "a bare imperative (Send me the file.)",
+      es: "el imperativo a secas",
+      example: "'Send me the file' arrives as an order; 'could you send me the file' costs two words and does not.",
+    },
+
+    /* ─── the moves around bad news ─── where the softening goes, and what it
+     * costs when it goes into the facts instead of into the form. */
+    {
+      id: "softener",
+      term: "a softener (unfortunately, I'm afraid)",
+      es: "el amortiguador que precede a una mala noticia",
+      example: "The softener goes in front of the news and never inside the numbers.",
+    },
+    {
+      id: "discourse-marker",
+      term: "a discourse marker (well, right, so)",
+      es: "la partícula con la que se abre el turno",
+      example: "That 'well' at the front tells the room a refusal is coming before the sentence does.",
+    },
+    {
+      id: "over-hedge",
+      term: "over-hedge something",
+      es: "envolver algo en tantas reservas que deja de entenderse",
+      example: "She over-hedged the cancellation so thoroughly that two people booked flights anyway.",
+    },
+    {
+      id: "downplay",
+      term: "downplay something",
+      es: "quitarle importancia a algo",
+      example: "Downplaying the delay bought him a week and cost him the client's trust.",
+    },
+
+    /* ─── what it looks like on the page ─── register is louder in writing,
+     * because the reader has nothing else to go on. */
+    {
+      id: "salutation",
+      term: "a salutation (Dear Ms Ruiz, Hi Ana)",
+      es: "el saludo inicial de una carta o un correo",
+      example: "The salutation sets the register before the message says anything at all.",
+    },
+    {
+      id: "textspeak",
+      term: "textspeak (thx, asap)",
+      es: "la escritura de mensajería",
+      example: "Textspeak in a tender document costs far more than the keystrokes it saves.",
+    },
+    {
+      id: "plain-english",
+      term: "plain English",
+      es: "lenguaje llano, sin florituras",
+      example: "Legal rewrote the clause in plain English and complaints about it halved.",
+    },
+
+    /* ─── who is in the room ─── the four collisions a Spanish speaker walks
+     * into, where the habit that is neutral at home lands somewhere else. */
+    {
+      id: "in-group",
+      term: "in-group language",
+      es: "el lenguaje de los de dentro",
+      example: "In-group language flatters the four people who share it and shuts out the other twenty.",
+    },
+    {
+      id: "effusive",
+      term: "effusive",
+      es: "excesivamente efusivo",
+      example: "Two exclamation marks in a first email will land as effusive, not as friendly.",
+    },
+    {
+      id: "deferential",
+      term: "deferential",
+      es: "que trata al otro como muy superior",
+      example: "The letter was so deferential that the client assumed we had done something wrong.",
+    },
+    {
+      id: "first-name-terms",
+      term: "be on first-name terms",
+      es: "tutearse, tratarse por el nombre",
+      example: "We're on first-name terms with her now, and 'Dear Ms Owusu' would put the relationship back a year.",
     },
   ],
 
