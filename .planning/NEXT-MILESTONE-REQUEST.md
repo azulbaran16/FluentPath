@@ -168,6 +168,80 @@ the cards are flat at 500, that is known for a tenth of the cost.
 in a shape nobody designed is the one mistake this project's id gate exists to make
 impossible, and it would be made by moving fast rather than by moving wrong.
 
+## DESIGN 2026-08-04 — the four open points, decided
+
+### 1. Id shape — reuse the composite, do not invent a space
+
+**`core/vocab#word#<slug>`.** A pseudo-scenario key, so it flows through every mechanism that
+already exists — `scenarioItemId` composes it, `parseScenarioItemId` reads it,
+`mergeProgress` unions it, `verify-id-stability` hashes it — with **zero changes to any of
+them**. It is slash-bearing, so it cannot collide with the 39 global grammar ids, exactly as
+the Phase 3 audit established.
+
+**The one risk to check first:** if `verify-scenario-content.mts` asserts that every scheduled
+id parses to a scenario present in `curriculum.ts`, `core/vocab` fails on arrival. Find that
+assertion before writing a card. If it exists, the fix is to scope it to scenario kinds rather
+than to weaken it.
+
+**Deliberate consequence:** `core/vocab` is not in `curriculum.ts`, so it does **not** enter
+`scenario-coverage.ts`'s 35/35 or 53/53. The honesty mechanism stays intact and the volume
+deck cannot inflate a scenario claim. That is a feature, not an oversight.
+
+### 2. Bank shape — a new file, and the lower bar encoded in the TYPE
+
+`src/lib/content/core-vocabulary.ts` — alias-free, React-free, explicit `.ts` extensions, like
+every other bank, so the harness can load it standalone.
+
+```
+CoreVocabCard = { id, word, es, example }   // NO tip field
+```
+
+**The missing `tip` is the design.** This project's own rule is that an optional field is one
+an author forgets — so the volume tier's lower bar is expressed by the type having nowhere to
+put a register note, not by a convention someone must remember. A card that needs one belongs
+in a scenario bank instead.
+
+### 3. Payload — measured, and it caps the ambition
+
+At **252 bytes per scheduled id** (measured at 04-01) against a 1 MiB body cap:
+
+| Added | Total | % of cap |
+|---|---|---|
+| +500 | 331 KB | **31.6 %** |
+| +1,000 | 457 KB | 43.6 % |
+| +2,000 | 709 KB | **67.6 %** |
+| +3,000 | 961 KB | 91.7 % |
+| +5,000 | 1.47 MB | **OVER** |
+
+**The architecture caps at ~3,346 cards.** So the "grow gradually" plan has a real ceiling:
+500 is comfortable, 2,000 is the practical limit with margin, and **the 8,000–11,000 fluency
+deck is not reachable in the current JSON-column design at all** — that needs DATA-01
+(normalised progress schema), which sits in the v2 backlog.
+
+**And it does not fail gracefully.** The route answers 413 above the cap, and `sync-queue`
+classifies 413 as *permanent* and drops the slot. Crossing the cap does not degrade — it
+**silently stops syncing her progress**. So the growth path must be gated with headroom, not
+discovered.
+
+### 4. The quality floor, as assertions — including one that catches flatness
+
+Mechanically gateable, and all of it belongs in the harness:
+
+- every field non-empty; the `es` gloss is not the English word
+- the `example` **contains the word** (inflected forms allowed) and is ≥ 6 words
+- **no duplicate word** across the deck, and none against the 280 scenario cards
+- **provenance**: every word is on the NGSL list, asserted against a committed copy
+
+And the one that addresses the actual risk, since the corpus scan sees repeated words but not
+dull prose:
+
+- **a frame-diversity ceiling.** Signature each example by its opening shape (first two
+  part-of-speech-ish tokens, or first two words lowercased) and assert **no signature exceeds
+  ~5 % of the deck**. Five hundred examples that all begin *"I have a…"* pass every existing
+  check and are exactly what "flat" means. This is the volume tier's equivalent of the
+  consecutive read that caught repeated syntactic frames in Phases 3 and 4 — automated,
+  because at 500 nobody will read them all.
+
 ## Recommended first move
 
 A short planning pass on the four unsettled items above — bank shape, id shape, payload, quality gate — then the first 500. Not a generation run first.
