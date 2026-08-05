@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 04.1
 current_phase_name: native-level-depth
 status: in-progress
-stopped_at: Completed 04.1-04-PLAN.md
-last_updated: "2026-08-05T01:24:57.205Z"
+stopped_at: Completed 04.1-05-PLAN.md
+last_updated: "2026-08-05T02:06:00.737Z"
 last_activity: 2026-08-04
 last_activity_desc: "04-09 executed, THE PHASE GATE: 17 of 17 mutations CAUGHT on their own labels with 2 controls green in a scratch export with its own node_modules, an independent 651 = 651 id enumeration that does not import the gate own logic, the derivation control re-proved, and a reader pass that found NO near-duplicate exercise and rewrote nothing (same-world highest 0.286 phrases / 0.400 terms, nothing at or above 0.50 anywhere, the rise from 03-11 mostly pool size). The corpus figure is settled at 4,410 for 04-07 own tree and 4,440 at HEAD, and 04-05 broken harvester now THROWS rather than sitting importable beside the good one. CONT-04 is marked [~] met-with-a-stated-limitation and NOT [x]: the content is complete, derived and gated, but THE BROWSER PASS WAS NOT PERFORMED and ten items are open by name as WINDOWS 62 - including the batched recall deck, which is this phase one component change and has never been rendered, and any phone at all. More reading is named as a deliberate deferral the user declined knowingly. PHASE 4 IS COMPLETE."
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 52
-  completed_plans: 49
+  completed_plans: 50
 ---
 
 # Project State
@@ -28,23 +28,49 @@ See: .planning/PROJECT.md (updated 2026-07-23)
 ## Current Position
 
 Phase: 04.1 (vocabulary-volume-deck) — IN PROGRESS
-Plan: 4 of 7 executed (01 tracer, 02 gates, 03 first volume batch, 04 second)
-Status: **THE DECK IS PAST HALFWAY — 260 cards of L3's 500, NGSL ranks 8 to 378.** 04.1-04 added
-120 cards and 20 skips, so rank completeness below 378 is **total and exact**: 260 carded + 118
-declared = 378, nothing cherry-picked. Both gates green — `verify-scenario-content` 16,765 →
-**18,485** (+1,720, decomposed exactly) and `verify-id-stability` 2,442 → **2,802** (+360 = 120 × 3)
-over **911** recorded ids. The fixture was regenerated **once**, after the near-duplicate scan, and
-additions-only was proved by running the id gate *before* `--update`: **120 failures, all on `is
-recorded in the fixture`, ZERO on `still holds the content it was recorded with`.** Payload
-re-measured from the harness: `263,120 B over 1012 STORAGE ids = 752 shared-queue + 260 volume —
-**25.1 %** of the cap`, against the 40 % stop line; the marginal cost is now measured four times
-(220.6 / 222.7 / **223.4** B/id) and the full 500 still lands near 30 %. Frame pressure was the
-real constraint and it held: **259 distinct opening shapes over 260 cards**, this batch spending
-`the` 3 times in 120 and a pronoun twice, with **four examples rewritten before their ids
-committed** — three repeated bigrams the harness prints but cannot fail on, and one Jaccard 0.455
-frame the scan caught. **04.1-01's blocking human checkpoint is STILL OUTSTANDING and no VOCAB
-requirement is marked** — 260 permanent keys now exist and nobody has opened `/core-vocabulary`
-in a browser since the deck was twenty cards.
+Plan: 6 of 7 next (01 tracer, 02 gates, 03 first volume batch, 04 second, 05 third)
+Status: **THE DECK IS AT 380 OF L3's 500 — NGSL ranks 8 to 515, 76 % of the target.** 04.1-05 added
+**121** cards and **17** skips and **removed one card**, so rank completeness below 515 is **total
+and exact**: 380 carded + 135 declared = 515, nothing cherry-picked. Both gates green —
+`verify-scenario-content` 18,485 → **20,199** (+1,714, decomposed exactly, and it is **not**
+121 × the rate because the per-card groups scale with the NET +120) and `verify-id-stability`
+2,802 → **3,164** over **1,031** recorded ids and **16** retired.
+
+**THE BATCH UN-CARDED A WORD FOR THE FIRST TIME.** `cognate` is now the skip register's FOURTH
+declared reason (user decision, 2026-08-05): no honest Spanish gloss differs from the English word.
+`vocab:color` — shipped at 04.1-04 as the fudge `"color / tono"` and recorded as one — was repaired
+by **RETIREMENT, not by an edit**: declared by hand in the fixture's `retired` list with a reason
+**before** `--update` ran, removed from the bank, added to the register. The order is the proof —
+run the other way round `--update` refuses, and an in-place gloss fix would have failed as a
+re-point. The line is narrow and is written beside the reason: `individual` → "individuo" and
+`particular` → "concreto" are CARDED, because their Spanish really differs. Only `social` (381) and
+`general` (404) met it. Plan 06 will meet `total` (569) and `material` (571).
+
+Additions-only was again proved by running the id gate *before* `--update`: **121 failures all on
+`is recorded in the fixture`, ZERO on `still holds the content it was recorded with`, ZERO on
+`left the banks and is declared retired`** — the strongest form of that proof so far, because
+**fifteen rewrites happened during this batch** and not one touched a live card. Payload
+re-measured from the harness: `290,056 B over 1132 STORAGE ids = 752 shared-queue + 380 volume —
+**27.7 %** of the cap`, against the 40 % stop line; the marginal cost is measured four times
+(220.6 / 222.7 / 223.4 / **224.5** B/id, a steady **+0.8 B per batch** drift) and the full 500
+still lands near **30.2 %**.
+
+**Frame pressure moved to the SECOND word and the whole-deck scan is what caught it:**
+**379 distinct opening shapes over 380 cards**, the one repeat being plan 03's own `"give me"`.
+**Fifteen rewrites before the ids committed** — eleven repeated frames the harness *prints* but
+cannot fail on (ceiling 19), and four the scan caught at 0.400–0.667. **Two lessons for plan 06:**
+(a) the first `staff` rewrite fixed one collision and CREATED another against a different batch, so
+**re-run the whole-deck scan after rewriting**; (b) the harness's "top ten openings" line is the
+most productive quality signal in this phase and is still printed without anyone being told to
+read it. **Subject shape was steered by hand and measured**, because the harness has no ceiling on
+it: the pronoun share moved 11.9 % → **16.1 %** deck-wide, correcting plan 04's bare-plural lean,
+and `the` sits at 23/380 (**6.1 %**) against a one-in-ten budget.
+
+**04.1-01's blocking human checkpoint is STILL OUTSTANDING and no VOCAB requirement is marked** —
+380 permanent keys plus one deliberately orphaned one now exist, and nobody has opened
+`/core-vocabulary` in a browser since the deck was twenty cards. Newly checkable and unchecked:
+the app can now hold an `srs` entry under a `vocab:` key no bank emits, and nothing confirms
+`/core-vocabulary` ignores it rather than counting it.
 
 Previously: **PHASE 4 COMPLETE on `main`** — 04-09, the gate, is done. **ALL FIVE native scenarios now carry depth — four of them
 deeply and one deliberately less, and the record says which is which.**
@@ -111,7 +137,7 @@ gate should widen from one scenario to all thirty-five.
 
 Last activity: 2026-08-04 — 04-09 executed, THE PHASE GATE: 17 of 17 mutations CAUGHT on their own labels with 2 controls green in a scratch export with its own node_modules, an independent 651 = 651 id enumeration that does not import the gate own logic, the derivation control re-proved, and a reader pass that found NO near-duplicate exercise and rewrote nothing (same-world highest 0.286 phrases / 0.400 terms, nothing at or above 0.50 anywhere, the rise from 03-11 mostly pool size). The corpus figure is settled at 4,410 for 04-07 own tree and 4,440 at HEAD, and 04-05 broken harvester now THROWS rather than sitting importable beside the good one. CONT-04 is marked [~] met-with-a-stated-limitation and NOT [x]: the content is complete, derived and gated, but THE BROWSER PASS WAS NOT PERFORMED and ten items are open by name as WINDOWS 62 - including the batched recall deck, which is this phase one component change and has never been rendered, and any phone at all. More reading is named as a deliberate deferral the user declined knowingly. PHASE 4 IS COMPLETE.
 
-Progress: [█████████░] 94% — 45 of 45 written plans executed (5 of 6 phases complete; Phase 4 native-level-depth CLOSED at 9 of 9 plans, CONT-04 at [~] with its browser pass open as WINDOWS 62; Phase 5, the AI tutor, is not yet planned so 45 is the written total and not the project total)
+Progress: [██████████] 96% — 45 of 45 written plans executed (5 of 6 phases complete; Phase 4 native-level-depth CLOSED at 9 of 9 plans, CONT-04 at [~] with its browser pass open as WINDOWS 62; Phase 5, the AI tutor, is not yet planned so 45 is the written total and not the project total)
 
 ## Performance Metrics
 
@@ -180,6 +206,7 @@ Progress: [█████████░] 94% — 45 of 45 written plans execut
 | Phase 04.1 P02 | ~3h | 3 tasks | 3 files |
 | Phase 04.1 P03 | ~2h | 2 tasks | 3 files |
 | Phase 04.1 P04 | ~2h | 2 tasks | 3 files |
+| Phase 04.1 P05 | ~2h | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -364,6 +391,9 @@ Recent decisions affecting current work:
 - [Phase ?]: 04.1-04: `already` (NGSL 302) is CARDED despite an EXACT gloss collision with the deck browser (both "ya") — the first overlap whose FRONT is byte-identical. Plan 02 decided deck-browser overlap is reported and never asserted, because asserting it would force the volume deck to skip the high-frequency words it exists to teach; the only skip reason available, `already-taught`, is declared for SCENARIO vocabulary banks and would be a false reason in the register. The reasoning is written onto the card, not left in a summary.
 - [Phase ?]: 04.1-04: `color` is glossed "color / tono" and that is a fudge, recorded as one — the gate asserts es !== word and Spanish for color IS color. Cognates below rank 500 (total, natural, general, personal, similar) will keep hitting this, and whether a `cognate` skip reason is worth declaring should be decided BEFORE a plan needs it, the way `already-taught` was declared at plan 01 and first used at plan 03.
 - [Phase ?]: 04.1-04: the harness's printed top-ten openings IS a real signal at x2 and is presented as if it were not — four bigrams sat at x2 (ceiling 13) on the first run and all four were genuine repeated frames, rewritten while free. The fix is one harness line: print the top ten opening WORDS beside the top ten shapes and mark any shape at x2 or more.
+- [Phase ?]: 04.1-05: `cognate` is the skip register's fourth reason (user, 2026-08-05) — no honest Spanish gloss DIFFERS from the English word; the line is narrow, so individual→"individuo" and particular→"concreto" stay carded and only social/general met it
+- [Phase ?]: 04.1-05: vocab:color is RETIRED, not edited — declared by hand in the fixture's retired list with a reason BEFORE --update ran; a live id's content may never be rewritten and --update refuses to launder a changed hash
+- [Phase ?]: 04.1-05: agree is "coincidir" not "estar de acuerdo" — the scan put the original at J=0.667 against the deck browser's "de acuerdo", over the 0.60 acting line, and unlike 04.1-04's `already` an honest alternative existed
 
 ### Pending Todos
 
@@ -393,6 +423,7 @@ Recent decisions affecting current work:
 - 02.1-05: nobody has HEARD the Listening runner or clicked through it — no browser, no phone, no speaker. Playback of a real 226-word twelve-turn script, the onCompleted handoff that reveals the questions, the one-at-a-time flow, submit, and the attempt reaching the account are all unobserved. Chrome's ~15s truncation and the iPhone silent switch remain untested on a device. Owed to 02.1-12; WINDOWS.md ids 8, 10, 11.
 - Phase 2.1 cannot be closed until the browser/phone pass runs: six ROADMAP criteria and ~20 WINDOWS.md entries depend on it. Checklist in 02.1-12-SUMMARY.md
 - 04.1-01 task 3 is a BLOCKING human checkpoint and is outstanding: /core-vocabulary must be opened in a browser, a card rated, the page reloaded, and the three /review numbers confirmed unmoved, before any requirement of plan 01 is marked complete or plan 03 authors more ids.
+- 04.1: the removed-line check in plans 05-06 fails BY DESIGN on a retirement — it exits non-zero on any removed non-comment bank line while the same plan's cognate_decision instructs removing the color card. It should assert instead that a removed card line has a matching hand-declared entry in the fixture's retired list.
 
 ### Roadmap Evolution
 
@@ -411,6 +442,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-08-05T01:23:56.893Z
-Stopped at: Completed 04.1-04-PLAN.md
+Last session: 2026-08-05T02:04:43.206Z
+Stopped at: Completed 04.1-05-PLAN.md
 Resume file: None

@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 50
+open_count: 52
 waived_count: 1
 fixed_count: 17
-total_count: 68
-last_updated: 2026-08-05T01:25:42.811Z
+total_count: 70
+last_updated: 2026-08-05T02:06:17.085Z
 ---
 
 # Broken Windows Ledger
@@ -83,6 +83,8 @@ last_updated: 2026-08-05T01:25:42.811Z
 | 66 | 04 | deviation | .planning/STATE.md |  | 04-09: THE state.* TOOLING DEFECT, CONSOLIDATED IN ONE PLACE WITH ITS ROOT CAUSE, on its SEVENTEENTH consecutive occurrence. This supersedes the scattered records in WINDOWS 45, 50, 51 and 60 and in nine plan summaries; read this entry and stop re-deriving it. SEVENTEEN consecutive plans (03-03 through 03-11, then 04-01 through 04-09) have hand-corrected the same commands. ROOT CAUSE, found by 03-05 and confirmed repeatedly: last_activity_desc is derived by a LINE-ORIENTED READ of the hard-wrapped 'Last activity:' paragraph in the body, so it takes the FIRST PHYSICAL LINE ONLY and truncates mid-sentence. It is not a length cap and not a serialisation bug. THE WORKAROUND, proved by 03-07 and reused ever since: write the 'Last activity:' sentence on ONE PHYSICAL LINE, and write the frontmatter field LAST. THE FIVE RECURRING BUGS: (a) update-progress moves the progress BAR and destroys or stales the informative PARENTHETICAL on the same line - escalated from stale to destructive at 04-02, where it replaced the whole parenthetical with a bare percentage; (b) '**Current focus:**' is never advanced; (c) state.add-decision stamps '[Phase ?]' on every row it writes, and 113 pre-existing rows already carry it - WARNING, a blanket [Phase ?] -> [Phase NN] replace would stamp those historical rows, belonging to phases 01/02/02.1/03, with the WRONG phase, which is worse than the state the tool leaves and is invisible in command output; only a line-by-line diff shows it, so correct ONLY your own rows and count the historical ones before and after; (d) advance-plan and record-session both RESET frontmatter total_phases from 6 to 5 against a ROADMAP defining six, and advance-plan has also rewritten current_phase backwards (04 -> 03 at 04-02) and read the WRONG PHASE's plan count; (e) record-session writes stopped_at as an UNQUOTED YAML scalar where every other value in the file is quoted. THE ORDERING RULE THAT MAKES CORRECTION POSSIBLE, and the single most important line here: EVERY HAND-CORRECTION MUST BE MADE AFTER THE LAST state.* VERB HAS RUN, never between verbs - 04-07 proved record-session reverts a total_phases fix already applied after update-progress, so a plan that corrects too early silently loses the fix. NEW AT 04-09, and the reason this entry exists rather than a nineteenth summary paragraph: roadmap.update-plan-progress reported complete:false and WROTE NOTHING AT ALL at 04-08, leaving both the '**Plans**:' line and the phase table row stale. SEVENTEEN plans is long past the point where absorbing this again is reasonable; it should be fixed in the tool, and this entry is where a fix should start. | open |  | 2026-08-04T21:21:20.000Z |  |
 | 67 | 04.1 | unrun-verify | .planning/phases/04.1-vocabulary-volume-deck/04.1-01-PLAN.md |  | 04.1-01 task 3 is a blocking human-verify checkpoint that has never been performed; 04.1-02 did not perform it either and VOCAB-01/02/03 stay unmarked | open |  | 2026-08-05T00:42:21.895Z |  |
 | 68 | 04.1 | deviation | src/lib/content/core-vocabulary.ts |  | 04.1-04: `color` is glossed "color / tono" purely to satisfy the es!==word gate — Spanish for color IS color. Cognates below rank 500 (total, natural, general, personal, similar) will keep hitting this in plans 05-06; decide whether a `cognate` skip reason is declared BEFORE a plan needs it. | open |  | 2026-08-05T01:25:42.811Z |  |
+| 69 | 04.1 | deviation | src/lib/content/core-vocabulary.ts |  | 04.1-05: the plan's removed-line check fails by design on the vocab:color retirement — the same plan's cognate_decision instructs the deletion the check exists to catch; it should assert a matching hand-declared entry in the fixture's retired list instead | open |  | 2026-08-05T02:06:15.952Z |  |
+| 70 | 04.1 | unrun-verify | src/app/core-vocabulary |  | 04.1-05: /core-vocabulary has never been opened in a browser (380 cards, 04.1-01 task 3 still outstanding), and it can now hold an orphaned srs key under vocab:color that no bank emits — nothing confirms the surface ignores it rather than counting it | open |  | 2026-08-05T02:06:17.085Z |  |
 
 ````json
 [
@@ -900,6 +902,30 @@ last_updated: 2026-08-05T01:25:42.811Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-08-05T01:25:42.811Z",
+    "resolved_at": null
+  },
+  {
+    "id": 69,
+    "kind": "deviation",
+    "phase": "04.1",
+    "file": "src/lib/content/core-vocabulary.ts",
+    "line": null,
+    "description": "04.1-05: the plan's removed-line check fails by design on the vocab:color retirement — the same plan's cognate_decision instructs the deletion the check exists to catch; it should assert a matching hand-declared entry in the fixture's retired list instead",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-05T02:06:15.952Z",
+    "resolved_at": null
+  },
+  {
+    "id": 70,
+    "kind": "unrun-verify",
+    "phase": "04.1",
+    "file": "src/app/core-vocabulary",
+    "line": null,
+    "description": "04.1-05: /core-vocabulary has never been opened in a browser (380 cards, 04.1-01 task 3 still outstanding), and it can now hold an orphaned srs key under vocab:color that no bank emits — nothing confirms the surface ignores it rather than counting it",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-05T02:06:17.085Z",
     "resolved_at": null
   }
 ]
