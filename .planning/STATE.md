@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 04
 current_phase_name: native-level-depth
 status: in-progress
-stopped_at: 04.1-01 tasks 1-2 done (ff1f6ca, aa1002c); STOPPED at task 3, blocking human checkpoint
-last_updated: "2026-08-05T00:00:41.974Z"
+stopped_at: Completed 04.1-02-PLAN.md (gates only; 45/45 mutations caught). 04.1-01's human checkpoint STILL OUTSTANDING
+last_updated: "2026-08-05T00:41:17.886Z"
 last_activity: 2026-08-04
 last_activity_desc: "04-09 executed, THE PHASE GATE: 17 of 17 mutations CAUGHT on their own labels with 2 controls green in a scratch export with its own node_modules, an independent 651 = 651 id enumeration that does not import the gate own logic, the derivation control re-proved, and a reader pass that found NO near-duplicate exercise and rewrote nothing (same-world highest 0.286 phrases / 0.400 terms, nothing at or above 0.50 anywhere, the rise from 03-11 mostly pool size). The corpus figure is settled at 4,410 for 04-07 own tree and 4,440 at HEAD, and 04-05 broken harvester now THROWS rather than sitting importable beside the good one. CONT-04 is marked [~] met-with-a-stated-limitation and NOT [x]: the content is complete, derived and gated, but THE BROWSER PASS WAS NOT PERFORMED and ten items are open by name as WINDOWS 62 - including the batched recall deck, which is this phase one component change and has never been rendered, and any phone at all. More reading is named as a deliberate deferral the user declined knowingly. PHASE 4 IS COMPLETE."
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 52
-  completed_plans: 46
+  completed_plans: 47
 ---
 
 # Project State
@@ -27,9 +27,24 @@ See: .planning/PROJECT.md (updated 2026-07-23)
 
 ## Current Position
 
-Phase: 04 (native-level-depth) — IN PROGRESS
-Plan: 9 of 9 complete
-Status: **PHASE 4 COMPLETE on `main`** — 04-09, the gate, is done. **ALL FIVE native scenarios now carry depth — four of them
+Phase: 04.1 (vocabulary-volume-deck) — IN PROGRESS
+Plan: 2 of 7 executed (01 tracer, 02 gates)
+Status: **THE GATES ARE IN, BEFORE A SINGLE CARD IS AUTHORED AT VOLUME.** 04.1-02 put all
+twenty of the tracer's `vocab:` ids under a committed hash of their whole authored record
+(651 → **671** ids, `verify-id-stability.mts` 2,021 → **2,082** assertions, fixture regenerated
+once with an additions-only diff and no changed hash); made the quality floor mechanical
+(`verify-scenario-content.mts` 14,577 → **14,991**), including the frame-diversity ceiling that
+is the one assertion able to see flat prose — **a deliberately flattened twenty-card deck that
+passes every other check produces exactly THREE failures, all of them frame**; and re-pointed the
+payload gate at the **STORAGE** set, which 04.1 is the first phase in this project to have differ
+from the queue set: `209,586 B over 772 storage ids = 752 shared-queue + 20 volume — 20.0 % of
+the cap`, with a **40 % STOP LINE** beside the route's own wall and the sentence *the fix is never
+to raise the ceiling* written next to the constant. **45 of 45 mutations were CAUGHT on their own
+labels** in a scratch worktree, with the wall surviving both stop-line mutations. **The marginal
+cost of a volume id is 220.6 B, not the 272.8 CONTEXT extrapolates from** — +480 lands near 30 %.
+**04.1-01's blocking human checkpoint is STILL OUTSTANDING and no VOCAB requirement is marked.**
+
+Previously: **PHASE 4 COMPLETE on `main`** — 04-09, the gate, is done. **ALL FIVE native scenarios now carry depth — four of them
 deeply and one deliberately less, and the record says which is which.**
 `native/phrasal-verbs` — 18 phrases, a 42-card deck batched 14/14/14, 15 grammar questions, 24
 honest minutes. `native/idioms` — 18 re-selected phrases and 24 re-selected cards, its briefing
@@ -94,7 +109,7 @@ gate should widen from one scenario to all thirty-five.
 
 Last activity: 2026-08-04 — 04-09 executed, THE PHASE GATE: 17 of 17 mutations CAUGHT on their own labels with 2 controls green in a scratch export with its own node_modules, an independent 651 = 651 id enumeration that does not import the gate own logic, the derivation control re-proved, and a reader pass that found NO near-duplicate exercise and rewrote nothing (same-world highest 0.286 phrases / 0.400 terms, nothing at or above 0.50 anywhere, the rise from 03-11 mostly pool size). The corpus figure is settled at 4,410 for 04-07 own tree and 4,440 at HEAD, and 04-05 broken harvester now THROWS rather than sitting importable beside the good one. CONT-04 is marked [~] met-with-a-stated-limitation and NOT [x]: the content is complete, derived and gated, but THE BROWSER PASS WAS NOT PERFORMED and ten items are open by name as WINDOWS 62 - including the batched recall deck, which is this phase one component change and has never been rendered, and any phone at all. More reading is named as a deliberate deferral the user declined knowingly. PHASE 4 IS COMPLETE.
 
-Progress: [██████████] 100% — 45 of 45 written plans executed (5 of 6 phases complete; Phase 4 native-level-depth CLOSED at 9 of 9 plans, CONT-04 at [~] with its browser pass open as WINDOWS 62; Phase 5, the AI tutor, is not yet planned so 45 is the written total and not the project total)
+Progress: [█████████░] 90% — 45 of 45 written plans executed (5 of 6 phases complete; Phase 4 native-level-depth CLOSED at 9 of 9 plans, CONT-04 at [~] with its browser pass open as WINDOWS 62; Phase 5, the AI tutor, is not yet planned so 45 is the written total and not the project total)
 
 ## Performance Metrics
 
@@ -160,6 +175,7 @@ Progress: [██████████] 100% — 45 of 45 written plans execu
 | Phase 04 P07 | ~50 min | 2 tasks | 4 files |
 | Phase 04 P08 | ~95 min | 3 tasks | 7 files |
 | Phase 04 P09 | ~135 min | 3 tasks | 4 files |
+| Phase 04.1 P02 | ~3h | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -336,6 +352,8 @@ Recent decisions affecting current work:
 - [Phase 04]: 04-09: a PARTICLE IS NOT A STOPWORD in Sounding Native — a conventional stoplist scored catch-up against catch-on at J=1.000, deleting the unit phrasal-verbs teaches
 - [Phase 04]: 04-09: corpus size settled by measurement at four commits — 4,410 at 04-07's own tree, 4,440 at HEAD; 04-07's 4,523/4,565 does not reproduce and the broken harvester now throws
 - [Phase 04]: 04-09: the state.* defect consolidated into WINDOWS 66 with its root cause after seventeen consecutive occurrences, superseding 45/50/51/60
+- [Phase 04.1]: 04.1-02: the payload gate now measures the STORAGE set (reviewableIds + coreVocabIds), not the queue set — 04.1 is the first time the two differ, and a 40% stop line stands beside the route's hard cap
+- [Phase 04.1]: 04.1-02: verify-id-stability.mts holds TWO key spaces, routed by prefix to each id's own parser; the scenario branch is unqualified and a malformed id of either space still fails
 
 ### Pending Todos
 
@@ -383,6 +401,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-08-05T00:00:41.921Z
-Stopped at: 04.1-01 tasks 1-2 done (ff1f6ca, aa1002c); STOPPED at task 3, blocking human checkpoint
-Resume file: .planning/phases/04.1-vocabulary-volume-deck/04.1-01-PLAN.md
+Last session: 2026-08-05T00:40:40.327Z
+Stopped at: Completed 04.1-02-PLAN.md (gates only; 45/45 mutations caught). 04.1-01's human checkpoint STILL OUTSTANDING
+Resume file: None

@@ -285,26 +285,32 @@ magnitude. Full reasoning, options weighed and rejected, and the decisions in
 
 **Requirements**: VOCAB-01, VOCAB-02, VOCAB-03, VOCAB-04, VOCAB-05, VOCAB-06
 **Depends on:** Phase 4
-**Plans:** 7 plans
+**Plans:** 2/7 plans executed
 
 **Success Criteria** (what must be TRUE):
 
   1. A `vocab:<slug>` id composes, parses, resolves to a renderable card, and is counted by
      `reviewableIds()` — through its OWN parser and its OWN branches, with `parseScenarioItemId`
      and `verify-scenario-content.mts:389-396` **unchanged**, asserted by a committed check
+
   2. `src/lib/content/core-vocabulary.ts` holds 500 cards of `{ id, word, es, example }` with **no
      `tip` field on the type**, so the lower bar cannot be forgotten — it has nowhere to go
+
   3. The UI names the two tiers apart; a learner can tell a volume card from a scenario card
      without being told, and no surface blends the counts
+
   4. The saturated payload assertion is re-run and prints a figure **at or under 40 % of the
      1 MiB cap** — measured after the batch, from the harness, not extrapolated
+
   5. The quality floor is a set of harness assertions, not a convention: every field non-empty;
      the `es` gloss is not the English word; the `example` contains the word (inflected allowed)
      and runs ≥ 6 words; no word repeats within the deck or against the 280 scenario cards; every
      word is on a committed NGSL copy; and **no example opening-shape signature exceeds ~5 % of
      the deck**
+
   6. Every new assertion has a mutation aimed at it that is CAUGHT on its own label, with the
      controls that must survive still green
+
   7. `scripts/verify-id-stability.mts` records all 500 ids, regenerated in the **same commit** as
      the content, and `scenario-coverage.ts`'s 35/35 and 53/53 are **unmoved** — the volume deck
      cannot inflate a scenario claim
@@ -326,8 +332,8 @@ leaves a surface whose counts are read off the bank — so stopping early under-
 
 Plans:
 
-- [ ] 04.1-01-PLAN.md — Tracer: twenty NGSL cards end to end through their own `vocab:` key space, a deck surface that names the tier, and the containment that keeps `/review` unmoved
-- [ ] 04.1-02-PLAN.md — The gates, before the volume: id stability over a second key space, the quality floor including the frame-diversity ceiling, and the payload re-pointed at the storage set with a 40 % stop line
+- [x] 04.1-01-PLAN.md — Tracer: twenty NGSL cards end to end through their own `vocab:` key space, a deck surface that names the tier, and the containment that keeps `/review` unmoved — **ticked on its summary; its task-3 blocking human checkpoint is STILL OUTSTANDING and VOCAB-01/02/03 stay unmarked**
+- [x] 04.1-02-PLAN.md — The gates, before the volume: id stability over a second key space, the quality floor including the frame-diversity ceiling, and the payload re-pointed at the storage set with a 40 % stop line
 - [ ] 04.1-03-PLAN.md — Volume batch 1: the deck to 140, the first measured payload and the first histogram
 - [ ] 04.1-04-PLAN.md — Volume batch 2: the deck to 260, the first batch authored under real frame pressure
 - [ ] 04.1-05-PLAN.md — Volume batch 3: the deck to 380, through the abstract middle of the list where the tier's quality is actually decided
