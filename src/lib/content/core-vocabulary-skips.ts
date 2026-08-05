@@ -45,6 +45,24 @@
 //     assertion. This register is that rule's escape hatch, which is why the
 //     matcher must never be widened instead.
 //
+//   "synonym-already-carded"
+//     THE DECK ITSELF already cards an English word that takes the same
+//     Spanish front, and no parenthetical separates them. `big` holds
+//     *grande*, so `large` can only be fronted by a gloss pointing somewhere
+//     else — "amplio" is answered *wide*. `perhaps` holds *quizás*, and
+//     *a lo mejor* → **perhaps** is just as correct as → **maybe**, so the
+//     pair could never mark an answer wrong.
+//     WHY A SKIP RATHER THAN A PARENTHETICAL. A parenthetical disambiguates
+//     two SENSES of one word; it cannot separate two WORDS that mean the same
+//     thing. "grande (de tamaño o cantidad)" is still answered *big*.
+//     WHERE THE LINE IS, AND IT IS THE NARROWEST OF THE FIVE. Only when the
+//     rival is carded IN THIS DECK and the two are interchangeable in the
+//     example's own register. Near-synonyms that a learner must distinguish —
+//     `say`/`tell`, `hear`/`listen`, `look`/`watch` — are all CARDED and must
+//     stay so: distinguishing them is the lesson, not the obstacle.
+//     Added 04.1-10, after the reader pass showed re-glossing round a taken
+//     front produces a card that asks one thing and teaches another.
+//
 //   "cognate"
 //     No honest Spanish gloss DIFFERS from the English word. `social` is
 //     "social", `general` is "general", `total` is "total". A Spanish speaker
@@ -58,9 +76,14 @@
 //     word, which is exactly what the register is for.
 //     WHERE THE LINE IS, AND IT IS NARROW. This is NOT for a word that merely
 //     LOOKS Spanish. `local` → "del barrio / de la zona", `real` →
-//     "auténtico / de verdad", `idea` → "ocurrencia", `individual` →
-//     "individuo" and `particular` → "concreto" all have real, differing
-//     Spanish and are all CARDED. Reach for this reason only when forcing a
+//     "auténtico / de verdad", `individual` → "individuo" and `particular` →
+//     "concreto" all have real, differing Spanish and are all CARDED.
+//     CORRECTED 04.1-10: this list used to include `idea` → "ocurrencia" as a
+//     card that "has real, differing Spanish". It does not. Spanish for *idea*
+//     is *idea*; "ocurrencia" is a whim or a witty remark, so the front asked
+//     for one word and the headword was another. The 04.1-09 reader pass found
+//     it as WRONG-KEY and `idea` is now skipped here. The example was wrong,
+//     not the rule. Reach for this reason only when forcing a
 //     gloss would produce a slash-fudge.
 //
 // No React, no hooks, no path aliases: this module is imported by
@@ -72,7 +95,8 @@ export type SkipReason =
   | "function-word"
   | "already-taught"
   | "no-base-form-example"
-  | "cognate";
+  | "cognate"
+  | "synonym-already-carded";
 
 export interface SkippedHeadword {
   /** the NGSL headword, lowercase, exactly as the committed list spells it */
@@ -348,4 +372,17 @@ export const SKIPPED_HEADWORDS: SkippedHeadword[] = [
   { word: "particularly", reason: "function-word" },
   { word: "simply", reason: "function-word" }, // focus particle, the class `just` (49) and `really` (104) were skipped on
   { word: "factor", reason: "cognate" }, // "factor"
+  // Spanish for *idea* is *idea*. It shipped fronted "ocurrencia" — a whim, a
+  // witty remark — which the 04.1-09 reader pass found is answered *notion*,
+  // not *idea*. Not a padded gloss but a displaced one.
+  { word: "idea", reason: "cognate" },
+  // `big` is carded and holds *grande*. Every honest front for `large` is a
+  // front for `big`; every front that is not — "amplio", "extenso" — is
+  // answered *wide* or *spacious*. There is no third option.
+  { word: "large", reason: "synonym-already-carded" },
+  // `perhaps` is carded and holds *quizás*. `maybe` shipped fronted "a lo
+  // mejor", but *a lo mejor* → **perhaps** is as correct as → **maybe**, so
+  // NEITHER card could ever mark an answer wrong. Retiring one dissolves the
+  // pair; a register parenthetical on both only disguised it.
+  { word: "maybe", reason: "synonym-already-carded" },
 ];

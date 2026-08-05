@@ -756,7 +756,6 @@
     "vocab:hour": "861bb0730338d48cb2f89dd5f21807e6f74217654c75efafa6842389ffd7e950",
     "vocab:house": "46ad81c1018377192a5d620d1adb4e7a475ea4ea8097fc4909fff3954efdd37d",
     "vocab:human": "83801c8d47f78d23c628b7ef0c5625297acf243ceaa50a73c5c2cf9efabefd9e",
-    "vocab:idea": "4032117f3f75828be80eefe46b65db93c73b74d1999b20cd6174499cd72d822e",
     "vocab:important": "4b40a8c8f1d8da356223a876fab1113cb9effbd2d33e2a4b1410e53a8c032486",
     "vocab:improve": "02973c46f4767cab42abec255c8973bd2e7fadbe29341ed22b1108873160bcc5",
     "vocab:include": "73349cfa99afc074ed184aa43bd24fbef83a2485a156213363ff0d077dee715b",
@@ -776,7 +775,6 @@
     "vocab:knowledge": "e4be1a77aa3a77ae2759789fcb1624a7aa57dc63ffc4c15ded1376f7e5437c99",
     "vocab:land": "a02405f58796b4a99e18b137e97a4d89bbc38c6f030a459bbdc00f0ff718e3c3",
     "vocab:language": "d3caf296a7ca9891751b093b2c93b28f3d811bc764723d0b2e08c01a6ef679db",
-    "vocab:large": "629fd067fd2020ac032aae4857c50c929e94077349020ce99f597aae66316034",
     "vocab:last": "62d09c44fc563a8f53ca6665ec4d042bacaaeb1687300ead288a11a8d60a441d",
     "vocab:late": "cc7a6f041a5fc4ce7c28a9d4ce1caacccc3e95335acce2528ec17c46ef2cdb6b",
     "vocab:laugh": "e5e982fe64cec3939027386684567a079697b1040fb3731b997007d614d8f65c",
@@ -812,7 +810,6 @@
     "vocab:manage": "9a8e427e33a8fd82eeed7b9c83ac15c784908b564fba7117b892ca31272c8278",
     "vocab:market": "ae4ff0af21218ae143a603873df26282d765ed819a29fd99c4ab7ea46c9f44f3",
     "vocab:matter": "e846579d0d03bee4d6ecc42dc433d0ccd3ac98fcb7cf33a6ec2beaaf36f1b6c9",
-    "vocab:maybe": "f5e0584e6394ea3c53fd183de359946c63befb59276760b24b3b03cda764c6b3",
     "vocab:mean": "9e97a7cd3e09f4900eb304c43d729be2ec6fcdac28c0b3f38af2190867b2a8c6",
     "vocab:measure": "480c86a4a0e4c22b0d8277ece0e82a995ca1e3cb38e904a799946bce211c6dfc",
     "vocab:meet": "04931414da856d99187f982e1886cbffb57f254a1818b285d88f6252c073b9de",
@@ -865,7 +862,7 @@
     "vocab:people": "17295bda35a78ca12838b4f3502094645e74dfb34a4fbfa967f4cce443cb2f00",
     "vocab:percent": "b1df7946335d5d54700e8743e5c62ff00264d38ed9a781dda25e220a51b1924f",
     "vocab:performance": "0a2f52250907de7463b9fcf7a023fed02423cedcc6e4c151acec78e94dd244cd",
-    "vocab:perhaps": "ace56f11180cf9229d33cba1233736867b5cdbb95c3492a4d7164fee34b983e1",
+    "vocab:perhaps": "39a826df0d831aa7ef0cc249a082ce552d011fee29c4ed81e49f72af32715824",
     "vocab:period": "2c43a6d5a010b171b01359fde2d897ec5fea93d8f46dd86aab2b4062d537fd05",
     "vocab:person": "982e9e168f36399f9d3abb7521a73498f234f990bcc986b6def6782c95c85f37",
     "vocab:phone": "f824c0768ff33527f1af04d3f8f081e0738feb96a736ac562a834061bc7ae8d7",
@@ -1225,6 +1222,18 @@
     {
       "id": "vocab:color",
       "reason": "04.1-05, on the user's decision of 2026-08-05 declaring `cognate` as a fourth skip reason. The card shipped at 04.1-04 (rank 378) glossed \"color / tono\", and Spanish for *color* is *color*: it passed the `es !== word` assertion only by appending a near-synonym it did not need, which makes the FRONT of a recall card a small lie about what the learner is being asked to answer. 04.1-04's own summary recorded it as a fudge rather than presenting it as solved, and named the decision this retirement acts on. RETIRED AND NOT EDITED, deliberately: AGENTS.md's one-way-door rule forbids rewriting a live id's content, verify-id-stability.mts hashes the whole authored record so an in-place gloss fix would fail as a re-point, and `--update` refuses to launder a changed hash. The word is now declared in core-vocabulary-skips.ts with reason \"cognate\", so rank completeness below the deepest rank stays total. No replacement id was added — a cognate is not re-authored under a new slug, it is passed over. This is the first card this deck has ever un-carded; any learner schedule on this key is orphaned, permanently and deliberately."
+    },
+    {
+      "id": "vocab:idea",
+      "reason": "04.1-10, user-approved. Reclassified as `cognate`: Spanish for *idea* is *idea*, so no honest gloss differs. It shipped fronted \"ocurrencia\" (a whim), which the 04.1-09 reader pass found is answered *notion*. Retired rather than re-glossed because the quality floor's `es !== word` can only be satisfied here by a displaced front."
+    },
+    {
+      "id": "vocab:large",
+      "reason": "04.1-10, user-approved. Reclassified as `synonym-already-carded`: `big` is carded and holds *grande*. Every honest front for `large` is also a front for `big`; \"amplio / extenso\" is answered *wide*. A parenthetical disambiguates two senses of one word and cannot separate two words meaning the same thing."
+    },
+    {
+      "id": "vocab:maybe",
+      "reason": "04.1-10, user-approved. Reclassified as `synonym-already-carded`: `perhaps` is carded and holds *quizas*. Since *a lo mejor* -> **perhaps** is as correct as -> **maybe**, neither card could ever mark an answer wrong. This retirement dissolves a cross-card collision no single-card check could see."
     }
   ]
 }

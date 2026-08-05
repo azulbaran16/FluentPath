@@ -83,9 +83,16 @@
 // and `verify-id-stability.mts` will refuse anything else. Nothing below is a
 // licence to run `--update` over a changed hash.
 //
-// The ID SET did not move: 500 before, 500 after, zero additions, zero
-// removals, zero retirements. Only hashes changed. `word` and `id` were not
-// touched on any card.
+// The ID SET did not move at 04.1-09: 500 before, 500 after, zero additions,
+// zero removals, zero retirements. Only hashes changed.
+//
+// AT 04.1-10 IT DID MOVE, ON PURPOSE AND ONCE. Three cards were RETIRED —
+// `idea`, `large`, `maybe` — each with a hand-declared reason in the fixture
+// written BEFORE `--update` ran, and each added to the skip register. They
+// were the three the 04.1-09 pass reported as unfixable in place: a front
+// nothing but a displaced gloss could satisfy, and two English words whose
+// Spanish front was already held by a card in this same deck. A retired id
+// never comes back.
 
 export interface CoreVocabCard {
   /**
@@ -124,7 +131,8 @@ function card(word: string, es: string, example: string): CoreVocabCard {
 /**
  * The volume deck, in NGSL rank order.
  *
- * 500 cards as of plan 04.1-06, and THE DECK IS FINISHED — the tracer batch of
+ * 497 cards — 500 authored through plan 04.1-06 and three retired at 04.1-10
+ * — and THE DECK IS FINISHED — the tracer batch of
  * twenty (04.1-01, to rank 71), the first volume batch of 120 (04.1-03, to rank
  * 238), the second (04.1-04, to rank 378), the third (04.1-05, to rank 515) and
  * the fourth and last (04.1-06, to rank 648). They are real cards held to the
@@ -135,14 +143,16 @@ function card(word: string, es: string, example: string): CoreVocabCard {
  * FIVE HUNDRED IS A CEILING DECISION, NOT A STOPPING POINT SOMEBODY GOT TIRED
  * AT. The learner's whole progress record is one JSON column behind a 1 MiB
  * route cap; the harness measures what this bank costs there and prints it on
- * every run, and 500 cards land near 30 % of that cap against a 40 % stop line.
+ * every run, and 497 cards land near 30 % of that cap against a 40 % stop line.
  * Another 500 would not fit under the rule. Growing this bank is therefore a
  * fresh decision with the payload RE-MEASURED first — never an assumed
  * continuation, and never an extrapolation, which is what produced the wrong
  * per-id figure this phase had to correct twice.
  *
- * THE ARITHMETIC DOES NOT ADD UP BY ONE, AND THAT IS THE POINT. 20 + 120 + 120
- * + 121 + 120 = 501, not 500, because 04.1-05 REMOVED one card as well as
+ * THE ARITHMETIC DOES NOT ADD UP BY FOUR, AND THAT IS THE POINT. 20 + 120 +
+ * 120 + 121 + 120 = 501, and the bank holds 497: 04.1-05 removed one and
+ * 04.1-10 removed three more. Taking the first, 04.1-05 REMOVED a card as
+ * well as
  * adding 121: `color` (rank 378) shipped in 04.1-04 glossed "color / tono", and
  * Spanish for *color* is *color*. The gate asserts `es !== word`, so the card
  * satisfied the assertion by appending a near-synonym rather than by having a
@@ -417,7 +427,6 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 209
   card("month", "mes", "Rent goes up again next month."),
   // rank 210
-  card("large", "grande (de tamaño o cantidad)", "They ordered a large table for twelve people."),
   // rank 211
   card("business", "negocio", "Her business survived two very hard years."),
   // rank 213
@@ -499,7 +508,6 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 250
   card("hope", "esperar (con ilusión)", "Everyone hopes the strike ends this week."),
   // rank 251
-  card("idea", "ocurrencia", "Whose idea was it to paint everything green?"),
   // rank 252
   card("cost", "costar / coste", "It cost me twice what the bike is worth."),
   // rank 254
@@ -820,7 +828,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 412
   card("sense", "sentido", "His answer made no sense to anybody."),
   // rank 413
-  card("perhaps", "quizás (más formal)", "Perhaps the train is stuck outside the station."),
+  card("perhaps", "quizás", "Perhaps the train is stuck outside the station."),
   // rank 414
   card("add", "añadir", "Add salt only after the sauce thickens."),
   // rank 415
@@ -913,7 +921,6 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   card("girl", "chica", "A girl from the flat downstairs fed the cat."),
   // The colloquial hedge, deliberately not "quizás" — see the batch header.
   // rank 464
-  card("maybe", "a lo mejor (coloquial)", "Maybe the shop opens later on Sundays."),
   // rank 465
   card("community", "comunidad", "Our community raised the money in a fortnight."),
   // rank 467
