@@ -125,4 +125,74 @@ export const SKIPPED_HEADWORDS: SkippedHeadword[] = [
   { word: "just", reason: "function-word" },
   { word: "could", reason: "function-word" }, // modal
   { word: "than", reason: "function-word" }, // comparative conjunction
+
+  // ------------------------------------------------------------------
+  // 04.1-03 — the first volume batch, ranks 72 to 238.
+  // ------------------------------------------------------------------
+  // 47 skips against 120 cards: the function words thin out fast below rank
+  // 100, exactly as the top of a frequency list predicts. The line drawn at
+  // rank 71 is held without exception here — deictic PRO-FORMS (`here`, to go
+  // with `there` at rank 40) are closed class and skipped, while temporal and
+  // frequency adverbs (`still`, `never`, `always`, `again`, `early`, `late`)
+  // are lexical and ARE carded.
+  { word: "also", reason: "function-word" }, // additive focus particle
+  { word: "into", reason: "function-word" }, // preposition
+  { word: "only", reason: "function-word" }, // focus particle
+  { word: "over", reason: "function-word" }, // preposition / particle
+  { word: "any", reason: "function-word" }, // determiner / quantifier
+  { word: "after", reason: "function-word" }, // preposition / conjunction
+  { word: "where", reason: "function-word" }, // interrogative / relative
+  { word: "most", reason: "function-word" }, // superlative marker / quantifier
+  { word: "should", reason: "function-word" }, // modal
+  { word: "much", reason: "function-word" }, // quantifier
+  { word: "how", reason: "function-word" }, // interrogative
+  { word: "even", reason: "function-word" }, // focus particle
+  { word: "may", reason: "function-word" }, // modal
+  // The locative pro-form, and the pair `there` (rank 40) already sets the
+  // rule: a deictic points at something rather than naming it, so a front/back
+  // card teaches nothing a sentence would not have to teach anyway.
+  { word: "here", reason: "function-word" },
+  { word: "many", reason: "function-word" }, // quantifier
+  { word: "such", reason: "function-word" }, // determiner
+  { word: "really", reason: "function-word" }, // degree / discourse intensifier
+  { word: "before", reason: "function-word" }, // preposition / conjunction
+  { word: "through", reason: "function-word" }, // preposition
+  { word: "down", reason: "function-word" }, // particle / preposition
+  { word: "between", reason: "function-word" }, // preposition
+  { word: "too", reason: "function-word" }, // degree particle
+  { word: "same", reason: "function-word" }, // determiner (always "the same")
+  { word: "both", reason: "function-word" }, // quantifier / determiner
+  // Its rank-129 frequency is the intensifying determiner of "my own room",
+  // not the verb "poseer" — the same argument `do` (rank 21) was skipped on.
+  { word: "own", reason: "function-word" },
+  // A degree quantifier at this frequency: "a little tired", "a little of it".
+  // `small` (rank 186) carries the adjective sense "pequeño" as a card, but
+  // that is not why this one is skipped — the reason recorded has to be the
+  // real one, and the real one is the quantifier.
+  { word: "little", reason: "function-word" },
+  { word: "something", reason: "function-word" }, // indefinite pronoun
+  { word: "another", reason: "function-word" }, // determiner
+  // The FIRST use of this reason, and the register was declared for the whole
+  // batch precisely so that it existed before it was needed:
+  // scenario-vocabulary.ts already teaches "interest" with a tip, a scenario
+  // around it and a place in /review, which is strictly the better card.
+  { word: "interest", reason: "already-taught" },
+  { word: "each", reason: "function-word" }, // determiner / quantifier
+  { word: "off", reason: "function-word" }, // particle / preposition
+  { word: "why", reason: "function-word" }, // interrogative
+  { word: "while", reason: "function-word" }, // conjunction
+  { word: "might", reason: "function-word" }, // modal
+  { word: "must", reason: "function-word" }, // modal
+  { word: "around", reason: "function-word" }, // preposition / particle
+  { word: "every", reason: "function-word" }, // determiner / quantifier
+  { word: "during", reason: "function-word" }, // preposition
+  { word: "since", reason: "function-word" }, // preposition / conjunction
+  { word: "under", reason: "function-word" }, // preposition
+  { word: "few", reason: "function-word" }, // quantifier
+  { word: "however", reason: "function-word" }, // conjunctive adverb / connective
+  { word: "without", reason: "function-word" }, // preposition
+  { word: "against", reason: "function-word" }, // preposition
+  { word: "though", reason: "function-word" }, // conjunction
+  { word: "yes", reason: "function-word" }, // response particle
+  { word: "away", reason: "function-word" }, // directional particle
 ];

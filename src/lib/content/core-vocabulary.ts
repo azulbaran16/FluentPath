@@ -94,10 +94,18 @@ function card(word: string, es: string, example: string): CoreVocabCard {
 /**
  * The volume deck, in NGSL rank order.
  *
- * Twenty cards as of plan 04.1-01 — the tracer batch, reaching rank 71. They
- * are real cards held to the volume bar, not placeholders: every `es` is a
- * natural Spanish gloss and never the English word, and every `example` is a
- * sentence somebody would say, contains the word and runs at least six words.
+ * 140 cards as of plan 04.1-03 — the tracer batch of twenty (04.1-01, to rank
+ * 71) plus the first volume batch of 120 (04.1-03, to rank 238). They are real
+ * cards held to the volume bar, not placeholders: every `es` is a natural
+ * Spanish gloss and never the English word, and every `example` is a sentence
+ * somebody would say, contains the word and runs at least six words.
+ *
+ * THE GLOSS IS THE FRONT OF THE CARD, and that is why near-synonyms carry
+ * deliberately separated glosses rather than the first dictionary word. `tell`
+ * is "contar / avisar" and not "decir", because `say` (rank 30) already holds
+ * "decir" and two cards with the same front expecting different answers is a
+ * usability defect, not a stylistic echo. The same reasoning separates
+ * leave/let, meet/know, want/love, ask/question, work/job and start/begin.
  *
  * The examples' OPENINGS are varied on purpose. Plan 02 gates a frame-diversity
  * ceiling — no two-word opening shape above ~5 % of the deck and no single
@@ -146,4 +154,251 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   card("now", "ahora", "Right now the office is completely empty."),
   // rank 71
   card("then", "entonces / luego", "Finish the form, then hand it to reception."),
+
+  // ---------------------------------------------------------------- //
+  // 04.1-03 — the first volume batch. Ranks 75 to 238, 120 cards.     //
+  // Every rank in between is either below or declared in              //
+  // core-vocabulary-skips.ts, and the harness proves it.              //
+  // ---------------------------------------------------------------- //
+
+  // rank 75
+  card("look", "mirar", "Everyone looked towards the door at once."),
+  // rank 76
+  card("want", "querer", "My brother wants a dog for his birthday."),
+  // rank 77
+  card("give", "dar", "Please give me a call when you arrive."),
+  // rank 78
+  card("first", "primero", "The first bus leaves at half past five."),
+  // rank 79
+  card("new", "nuevo", "Her new job starts on Monday morning."),
+  // rank 80
+  card("way", "manera / camino", "There must be a better way to do this."),
+  // rank 81
+  card("find", "encontrar", "I cannot find my keys anywhere in this flat."),
+  // rank 85
+  card("day", "día", "Some days are harder than others at work."),
+  // rank 87
+  card("thing", "cosa", "One thing still bothers me about the plan."),
+  // rank 90
+  card("need", "necesitar", "We need two more chairs for the table."),
+  // rank 92
+  card("right", "correcto", "Your answer is right, but the spelling is not."),
+  // rank 94
+  card("back", "espalda / de vuelta", "Grandma hurt her back lifting those heavy boxes."),
+  // rank 95
+  card("mean", "significar", "What does this word mean in Spanish?"),
+  // rank 101
+  card("last", "último", "The last train left ten minutes ago."),
+  // rank 102
+  card("child", "niño / hijo", "Every child in the class got a prize."),
+  // rank 103
+  card("tell", "contar / avisar", "Tell me if the music is too loud."),
+  // rank 105
+  card("call", "llamar", "Somebody should call the landlord about the heating."),
+  // rank 107
+  card("company", "empresa", "His company moved to a smaller office downtown."),
+  // rank 110
+  card("show", "mostrar", "Show me the photos from your trip."),
+  // rank 111
+  card("life", "vida", "Life in a small town moves slowly."),
+  // rank 112
+  card("man", "hombre", "An older man was reading beside the fountain."),
+  // rank 113
+  card("change", "cambiar / cambio", "Nothing will change until somebody complains loudly."),
+  // rank 114
+  card("place", "lugar", "This place gets crowded after seven o'clock."),
+  // rank 115
+  card("long", "largo", "That queue was longer than we expected."),
+  // rank 117
+  card("feel", "sentir", "How do you feel after the operation?"),
+  // rank 119
+  card("still", "todavía / aún", "Are you still waiting for the bus?"),
+  // rank 120
+  card("problem", "problema", "We solved the problem without calling anyone."),
+  // rank 121
+  card("write", "escribir", "Write your name at the top, please."),
+  // rank 123
+  card("lot", "montón / mucho", "There's a lot of traffic this morning."),
+  // rank 124
+  card("great", "estupendo / genial", "Your idea sounds great to all of us."),
+  // rank 125
+  card("try", "intentar", "Let's try the other entrance instead."),
+  // rank 126
+  card("leave", "marcharse", "They leave for the airport at dawn."),
+  // rank 127
+  card("number", "número", "Give me the number of your room."),
+  // rank 130
+  card("part", "parte", "The hardest part is starting the conversation."),
+  // rank 131
+  card("point", "punto", "At this point nobody knew what to do."),
+  // rank 133
+  card("help", "ayudar", "Can somebody help me carry this table?"),
+  // rank 134
+  card("ask", "pedir / preguntar", "Ask the guard where the entrance is."),
+  // rank 135
+  card("meet", "reunirse con alguien", "Our team meets every Thursday in the café."),
+  // rank 136
+  card("start", "empezar", "Classes start again in the middle of September."),
+  // rank 137
+  card("talk", "hablar", "Talk to the manager before you sign anything."),
+  // rank 139
+  card("put", "poner", "Put the milk back in the fridge."),
+  // rank 141
+  card("become", "convertirse en", "Winters here become milder with every passing year."),
+  // rank 143
+  card("country", "país", "Which country has the longest coastline?"),
+  // rank 144
+  card("old", "viejo", "My grandfather's watch is old but accurate."),
+  // rank 146
+  card("school", "escuela / colegio", "Both children walk to school by themselves."),
+  // rank 147
+  card("late", "tarde", "Sorry, the traffic made me late again."),
+  // rank 148
+  card("high", "alto", "Prices are much higher near the beach."),
+  // rank 149
+  card("different", "distinto", "Everything looks different after a fresh coat of paint."),
+  // rank 151
+  card("next", "próximo / siguiente", "Get off at the next stop, not this one."),
+  // rank 152
+  card("end", "final / terminar", "Wait until the end of the song."),
+  // rank 153
+  card("live", "vivir", "They live above a bakery on Green Street."),
+  // rank 156
+  card("world", "mundo", "Half the world was watching that match."),
+  // rank 157
+  card("week", "semana", "Next week we finally get the keys."),
+  // rank 158
+  card("play", "jugar", "Kids play in the square until dark."),
+  // rank 161
+  card("home", "hogar", "Nothing beats a warm home in winter."),
+  // rank 162
+  card("never", "nunca", "I have never tried Ethiopian food before."),
+  // rank 163
+  card("include", "incluir", "Does the price include breakfast and parking?"),
+  // rank 164
+  card("course", "curso", "That course lasts six weeks in total."),
+  // rank 165
+  card("house", "casa", "Their house has a garden full of lemons."),
+  // rank 166
+  card("report", "informe", "The report is due before Friday afternoon."),
+  // rank 167
+  card("group", "grupo", "A group of tourists blocked the entrance."),
+  // rank 168
+  card("case", "caso", "In that case we should book earlier."),
+  // rank 169
+  card("woman", "mujer", "The woman behind the counter spoke Portuguese."),
+  // rank 171
+  card("book", "libro", "Bring the book back whenever you finish it."),
+  // rank 172
+  card("family", "familia", "Her family moved here from Valencia."),
+  // rank 173
+  card("seem", "parecer", "Things seem calmer since the new manager arrived."),
+  // rank 174
+  card("let", "dejar / permitir", "They never let anyone park in front."),
+  // rank 175
+  card("again", "otra vez / de nuevo", "Say that again, more slowly this time."),
+  // rank 176
+  card("kind", "tipo / clase", "What kind of music does your sister like?"),
+  // rank 177
+  card("keep", "guardar / mantener", "Keep those photos somewhere dry and dark."),
+  // rank 178
+  card("hear", "oír", "Did you hear that noise upstairs?"),
+  // rank 179
+  card("system", "sistema", "Our heating system breaks down every winter."),
+  // rank 181
+  card("question", "pregunta", "Only one question came up after the talk."),
+  // rank 183
+  card("always", "siempre", "Buses here always run late on Sundays."),
+  // rank 184
+  card("big", "grande", "Such a big crowd surprised the organisers."),
+  // rank 185
+  card("set", "fijar / establecer", "Management set the meeting for Tuesday morning."),
+  // rank 186
+  card("small", "pequeño", "A small mistake cost us the contract."),
+  // rank 187
+  card("study", "estudiar", "My cousin is studying medicine in Bogotá."),
+  // rank 188
+  card("follow", "seguir", "Follow the signs until you reach the river."),
+  // rank 189
+  card("begin", "comenzar", "The ceremony begins at noon sharp."),
+  // rank 190
+  card("important", "importante", "Sleep is more important than any supplement."),
+  // rank 192
+  card("run", "correr", "He runs by the river every morning."),
+  // rank 194
+  card("turn", "girar", "Turn the key gently or it will snap."),
+  // rank 196
+  card("bring", "traer", "Remember to bring your passport tomorrow."),
+  // rank 197
+  card("early", "temprano", "Leaving early avoids most of the traffic."),
+  // rank 198
+  card("hand", "mano", "Raise your hand if you need more time."),
+  // rank 199
+  card("state", "estado", "The building is in a terrible state."),
+  // rank 200
+  card("move", "mover / mudarse", "Let's move the sofa closer to the window."),
+  // rank 201
+  card("money", "dinero", "Most of the money went on rent."),
+  // rank 202
+  card("fact", "hecho", "In fact, nobody noticed the mistake."),
+  // rank 204
+  card("area", "zona / área", "This area floods every time it rains."),
+  // rank 205
+  card("provide", "proporcionar", "The hotel provides towels and soap."),
+  // rank 206
+  card("name", "nombre", "Spell your name slowly for the receptionist."),
+  // rank 207
+  card("read", "leer", "She reads two novels every month."),
+  // rank 208
+  card("friend", "amigo", "An old friend called me out of nowhere."),
+  // rank 209
+  card("month", "mes", "Rent goes up again next month."),
+  // rank 210
+  card("large", "amplio / extenso", "They ordered a large table for twelve people."),
+  // rank 211
+  card("business", "negocio", "Her business survived two very hard years."),
+  // rank 213
+  card("information", "información", "The information on that website is outdated."),
+  // rank 214
+  card("open", "abrir", "Open the window; it is stuffy in here."),
+  // rank 215
+  card("order", "pedido / orden", "Our order arrived cold and an hour late."),
+  // rank 216
+  card("government", "gobierno", "The government raised taxes again this year."),
+  // rank 217
+  card("word", "palabra", "One word from her ended the argument."),
+  // rank 218
+  card("issue", "asunto / tema", "Money is the real issue behind all this."),
+  // rank 219
+  card("market", "mercado", "Saturday's market sells the cheapest vegetables."),
+  // rank 220
+  card("pay", "pagar", "Who pays for the taxi tonight?"),
+  // rank 221
+  card("build", "construir", "Somebody wants to build flats on that field."),
+  // rank 222
+  card("hold", "sujetar / sostener", "Hold the door for the woman behind you."),
+  // rank 223
+  card("service", "servicio", "The service here is slow but friendly."),
+  // rank 225
+  card("believe", "creer (estar convencido)", "Nobody believed a single word of it."),
+  // rank 226
+  card("second", "segundo", "Give me a second to find my glasses."),
+  // rank 229
+  card("love", "amar / encantar", "Kids love the sound of the ice-cream van."),
+  // rank 230
+  card("increase", "aumentar", "Sales increased sharply after the advert."),
+  // rank 231
+  card("job", "empleo", "Finding a job here takes months."),
+  // rank 232
+  card("plan", "planear / proyecto", "What's the plan for Saturday evening?"),
+  // rank 233
+  card("result", "resultado", "The result surprised absolutely everyone in the room."),
+  // rank 235
+  card("example", "ejemplo", "Give a clear example before explaining the rule."),
+  // rank 236
+  card("happen", "ocurrir / pasar", "Whatever happens, call me when you land."),
+  // rank 237
+  card("offer", "ofrecer", "They offered him twice his old salary."),
+  // rank 238
+  card("young", "joven", "Young drivers pay more for insurance here."),
 ];
