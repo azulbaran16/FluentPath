@@ -174,13 +174,13 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 31
   card("go", "ir", "We usually go swimming early on Saturday mornings."),
   // rank 41
-  card("know", "saber / conocer", "Nobody seems to know where the keys are."),
+  card("know", "saber (algo)", "Nobody seems to know where the keys are."),
   // rank 43
   card("get", "conseguir / obtener", "Where can I get a decent coffee around here?"),
   // rank 45
   card("like", "gustar", "My daughter likes cold weather more than I do."),
   // rank 47
-  card("think", "pensar / creer", "Let me think about it until tomorrow."),
+  card("think", "pensar", "Let me think about it until tomorrow."),
   // rank 48
   card("make", "hacer", "Could you make a copy of this form?"),
   // rank 49
@@ -199,19 +199,19 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 58
   card("year", "año", "Prices have gone up twice this year."),
   // rank 59
-  card("take", "llevar / tomar", "It'll take about twenty minutes by bus."),
+  card("take", "llevar (algo a algún sitio)", "Take these papers to the office upstairs."),
   // rank 61
   card("well", "bien", "She sings remarkably well for her age."),
   // rank 65
   card("come", "venir", "Come to the front desk when you're ready."),
   // rank 67
-  card("work", "trabajo / trabajar", "His work starts at six in the morning."),
+  card("work", "trabajo (empleo)", "His work starts at six in the morning."),
   // rank 68
   card("use", "usar", "Can I use your phone for a second?"),
   // rank 70
   card("now", "ahora", "Right now the office is completely empty."),
   // rank 71
-  card("then", "entonces / luego", "Finish the form, then hand it to reception."),
+  card("then", "luego (después)", "Finish the form, then hand it to reception."),
 
   // ---------------------------------------------------------------- //
   // 04.1-03 — the first volume batch. Ranks 75 to 238, 120 cards.     //
@@ -224,7 +224,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 76
   card("want", "querer", "My brother wants a dog for his birthday."),
   // rank 77
-  card("give", "dar", "Please give me a call when you arrive."),
+  card("give", "dar", "Give the keys to whoever arrives first."),
   // rank 78
   card("first", "primero", "The first bus leaves at half past five."),
   // rank 79
@@ -242,7 +242,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 90
   card("need", "necesitar", "We need two more chairs for the table."),
   // rank 92
-  card("right", "correcto", "Your answer is right, but the spelling is not."),
+  card("right", "acertado", "Your answer is right, but the spelling is not."),
   // rank 94
   // NARROWED at 04.1-08 from "espalda / de vuelta": the example is the body
   // part and nothing else. "espalda" also points at *back* and at no other
@@ -253,9 +253,9 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 101
   card("last", "último", "The last train left ten minutes ago."),
   // rank 102
-  card("child", "niño / hijo", "Every child in the class got a prize."),
+  card("child", "niño", "Every child in the class got a prize."),
   // rank 103
-  card("tell", "contar / avisar", "Tell me if the music is too loud."),
+  card("tell", "avisar", "Tell me if the music is too loud."),
   // rank 105
   card("call", "llamar", "Somebody should call the landlord about the heating."),
   // rank 107
@@ -267,7 +267,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 112
   card("man", "hombre", "An older man was reading beside the fountain."),
   // rank 113
-  card("change", "cambiar / cambio", "Nothing will change until somebody complains loudly."),
+  card("change", "cambiar", "Nothing will change until somebody complains loudly."),
   // rank 114
   card("place", "lugar", "This place gets crowded after seven o'clock."),
   // rank 115
@@ -285,7 +285,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 124
   card("great", "estupendo / genial", "Your idea sounds great to all of us."),
   // rank 125
-  card("try", "intentar", "Let's try the other entrance instead."),
+  card("try", "intentar", "She will try again after lunch."),
   // rank 126
   card("leave", "marcharse", "They leave for the airport at dawn."),
   // rank 127
@@ -297,7 +297,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 133
   card("help", "ayudar", "Can somebody help me carry this table?"),
   // rank 134
-  card("ask", "pedir / preguntar", "Ask the guard where the entrance is."),
+  card("ask", "preguntar", "Ask the guard where the entrance is."),
   // rank 135
   card("meet", "reunirse con alguien", "Our team meets every Thursday in the café."),
   // rank 136
@@ -307,7 +307,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 139
   card("put", "poner", "Put the milk back in the fridge."),
   // rank 141
-  card("become", "convertirse en", "Winters here become milder with every passing year."),
+  card("become", "convertirse en", "Children become adults faster than their parents expect."),
   // rank 143
   card("country", "país", "Which country has the longest coastline?"),
   // rank 144
@@ -315,7 +315,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 146
   card("school", "escuela / colegio", "Both children walk to school by themselves."),
   // rank 147
-  card("late", "tarde", "Sorry, the traffic made me late again."),
+  card("late", "tarde (con retraso)", "Sorry, the traffic made me late again."),
   // rank 148
   card("high", "alto", "Prices are much higher near the beach."),
   // rank 149
@@ -323,7 +323,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 151
   card("next", "próximo / siguiente", "Get off at the next stop, not this one."),
   // rank 152
-  card("end", "final / terminar", "Wait until the end of the song."),
+  card("end", "final", "Wait until the end of the song."),
   // rank 153
   card("live", "vivir", "They live above a bakery on Green Street."),
   // rank 156
@@ -361,9 +361,9 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 175
   card("again", "otra vez / de nuevo", "Say that again, more slowly this time."),
   // rank 176
-  card("kind", "tipo / clase", "What kind of music does your sister like?"),
+  card("kind", "tipo (de cosa)", "What kind of music does your sister like?"),
   // rank 177
-  card("keep", "guardar / mantener", "Keep those photos somewhere dry and dark."),
+  card("keep", "guardar (conservar)", "Keep those photos somewhere dry and dark."),
   // rank 178
   card("hear", "oír", "Did you hear that noise upstairs?"),
   // rank 179
@@ -399,11 +399,11 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 199
   card("state", "estado", "The building is in a terrible state."),
   // rank 200
-  card("move", "mover / mudarse", "Let's move the sofa closer to the window."),
+  card("move", "mover", "Let's move the sofa closer to the window."),
   // rank 201
   card("money", "dinero", "Most of the money went on rent."),
   // rank 202
-  card("fact", "hecho", "In fact, nobody noticed the mistake."),
+  card("fact", "hecho", "That is a fact nobody can deny."),
   // rank 204
   card("area", "zona / área", "This area floods every time it rains."),
   // rank 205
@@ -417,7 +417,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 209
   card("month", "mes", "Rent goes up again next month."),
   // rank 210
-  card("large", "amplio / extenso", "They ordered a large table for twelve people."),
+  card("large", "grande (de tamaño o cantidad)", "They ordered a large table for twelve people."),
   // rank 211
   card("business", "negocio", "Her business survived two very hard years."),
   // rank 213
@@ -425,7 +425,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 214
   card("open", "abrir", "Open the window; it is stuffy in here."),
   // rank 215
-  card("order", "pedido / orden", "Our order arrived cold and an hour late."),
+  card("order", "pedido", "Our order arrived cold and an hour late."),
   // rank 216
   card("government", "gobierno", "The government raised taxes again this year."),
   // rank 217
@@ -447,13 +447,13 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 226
   card("second", "segundo", "Give me a second to find my glasses."),
   // rank 229
-  card("love", "amar / encantar", "Kids love the sound of the ice-cream van."),
+  card("love", "encantar", "Kids love the sound of the ice-cream van."),
   // rank 230
   card("increase", "aumentar", "Sales increased sharply after the advert."),
   // rank 231
   card("job", "empleo", "Finding a job here takes months."),
   // rank 232
-  card("plan", "planear / proyecto", "What's the plan for Saturday evening?"),
+  card("plan", "planear", "We planned the trip over several weekends."),
   // rank 233
   card("result", "resultado", "The result surprised absolutely everyone in the room."),
   // rank 235
@@ -497,7 +497,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 249
   card("face", "cara", "Wash your face before you sit down."),
   // rank 250
-  card("hope", "tener esperanza", "Everyone hopes the strike ends this week."),
+  card("hope", "esperar (con ilusión)", "Everyone hopes the strike ends this week."),
   // rank 251
   card("idea", "ocurrencia", "Whose idea was it to paint everything green?"),
   // rank 252
@@ -533,9 +533,9 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 270
   card("night", "noche", "Last night the neighbours argued until three."),
   // rank 271
-  card("able", "capaz", "Were you able to reach the doctor?"),
+  card("able", "capaz", "She is a very able and careful nurse."),
   // rank 272
-  card("support", "apoyo / apoyar", "Without support from the council, the project dies."),
+  card("support", "apoyo", "Without support from the council, the project dies."),
   // rank 274
   card("line", "línea / fila", "The waiter drew a straight line under the total."),
   // rank 275
@@ -613,15 +613,15 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 312
   card("rate", "tarifa / tasa", "They double their rates during the festival week."),
   // rank 313
-  card("care", "cuidado / cuidar", "Handle the box with care; it's glass."),
+  card("care", "cuidado (atención)", "Handle the box with care; it's glass."),
   // rank 314
-  card("expect", "dar por hecho", "Guests are expected to check out by eleven."),
+  card("expect", "esperar (que alguien haga algo)", "Guests are expected to check out by eleven."),
   // rank 315
   card("effect", "efecto", "I felt no effect from the tablets at all."),
   // rank 316
   card("sort", "clasificar / ordenar", "Sort these papers into two neat piles."),
   // rank 319
-  card("cause", "causa / provocar", "Frozen pipes caused the flood last winter."),
+  card("cause", "provocar", "Frozen pipes caused the flood last winter."),
   // rank 320
   card("fall", "caer(se)", "Leaves fall early along that shaded avenue."),
   // rank 321
@@ -631,7 +631,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 323
   card("send", "enviar", "Who else should I send this invoice to?"),
   // rank 324
-  card("allow", "autorizar / dar permiso", "Dogs are not allowed inside the market."),
+  card("allow", "permitir", "Dogs are not allowed inside the market."),
   // rank 325
   card("soon", "pronto", "Call the plumber soon or it'll get worse."),
   // rank 326
@@ -643,13 +643,13 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 329
   card("suggest", "sugerir / proponer", "May I suggest a quieter table near the window?"),
   // rank 330
-  card("past", "pasado", "Walk past the bakery and cross the square."),
+  card("past", "pasado", "She never talks about her past with strangers."),
   // rank 331
-  card("power", "poder / energía", "The storm cut the power for six hours."),
+  card("power", "corriente (eléctrica)", "The storm cut the power for six hours."),
   // rank 332
-  card("test", "examen / prueba", "Blood tests usually take three days here."),
+  card("test", "análisis (médico)", "Blood tests usually take three days here."),
   // rank 333
-  card("visit", "visitar / visita", "Visit the museum early to avoid the queue."),
+  card("visit", "visitar", "Visit the museum early to avoid the queue."),
   // rank 334
   card("center", "centro", "Everything shuts early in the center on Sundays."),
   // rank 335
@@ -675,7 +675,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 346
   card("force", "fuerza / obligar", "He forced me to wait outside in the rain."),
   // rank 347
-  card("stop", "parar", "Buses stop running at half past eleven."),
+  card("stop", "parar", "The driver stopped the bus at the corner."),
   // rank 349
   card("light", "luz", "Leave a light on for the cat."),
   // rank 350
@@ -714,7 +714,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 362
   card("class", "clase (de alumnos)", "Thirty children share one class in that school."),
   // rank 363
-  card("development", "desarrollo", "Housing development stopped when the money ran out."),
+  card("development", "desarrollo", "The development of the vaccine took two years."),
   // rank 364
   card("town", "pueblo", "Nothing opens in this town before ten."),
   // rank 365
@@ -726,11 +726,11 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 368
   card("break", "romper", "Careful, that handle breaks if you pull hard."),
   // rank 369
-  card("clear", "claro / despejado", "Skies stayed clear all through the night."),
+  card("clear", "despejado", "Skies stayed clear all through the night."),
   // rank 370
   card("future", "futuro", "In future, book the tickets a month earlier."),
   // rank 374
-  card("remain", "permanecer", "Only three seats remain for Friday's concert."),
+  card("remain", "permanecer", "Please remain seated until the plane stops."),
   // rank 375
   card("top", "parte de arriba / cima", "Dust gathers on top of the wardrobe."),
   // rank 377
@@ -782,7 +782,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 392
   card("music", "música", "We played music until the neighbours complained."),
   // rank 393
-  card("game", "partido", "Rain cancelled the game on Saturday afternoon."),
+  card("game", "juego", "The children invented a game with stones."),
   // rank 394
   card("political", "político", "Nobody mentions political arguments at family dinners."),
   // rank 395
@@ -796,7 +796,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // "normativa" and not "política": `political` two ranks up is "político", and
   // two fronts a single letter apart is the same defect as two identical ones.
   // rank 399
-  card("policy", "normativa", "Company policy forbids phones during the shift."),
+  card("policy", "política (de una empresa)", "Company policy forbids phones during the shift."),
   // rank 401
   card("body", "cuerpo", "Cold water wakes your whole body up."),
   // rank 402
@@ -820,7 +820,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 412
   card("sense", "sentido", "His answer made no sense to anybody."),
   // rank 413
-  card("perhaps", "quizás", "Perhaps the train is stuck outside the station."),
+  card("perhaps", "quizás (más formal)", "Perhaps the train is stuck outside the station."),
   // rank 414
   card("add", "añadir", "Add salt only after the sauce thickens."),
   // rank 415
@@ -870,17 +870,17 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 437
   card("shop", "tienda", "The shop on the corner closed last winter."),
   // rank 438
-  card("major", "mayor (en importancia)", "Flooding is a major problem in that street."),
+  card("major", "grave / importante", "Flooding is a major problem in that street."),
   // rank 441
   card("design", "diseño", "Whose design won the competition in the end?"),
   // rank 442
-  card("event", "acontecimiento", "An event that size needs months of planning."),
+  card("event", "acontecimiento", "The moon landing was a huge event."),
   // rank 443
   card("special", "especial", "Tonight is special, so we booked a table."),
   // rank 444
   card("sometimes", "a veces", "Sometimes the heating stops for no reason."),
   // rank 445
-  card("condition", "condición", "The car runs, but its condition is awful."),
+  card("condition", "estado (en que algo se encuentra)", "The car runs, but its condition is awful."),
   // rank 446
   card("carry", "cargar con", "Don't carry that box down the stairs alone."),
   // rank 447
@@ -913,18 +913,18 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   card("girl", "chica", "A girl from the flat downstairs fed the cat."),
   // The colloquial hedge, deliberately not "quizás" — see the batch header.
   // rank 464
-  card("maybe", "a lo mejor", "Maybe the shop opens later on Sundays."),
+  card("maybe", "a lo mejor (coloquial)", "Maybe the shop opens later on Sundays."),
   // rank 465
   card("community", "comunidad", "Our community raised the money in a fortnight."),
   // rank 467
   card("particular", "concreto", "She wants that particular shade of green."),
   // "función" and not "papel": `paper` five ranks up holds "papel".
   // rank 468
-  card("role", "función", "Salt has a role in bread beyond flavour."),
+  card("role", "papel (que algo desempeña)", "Salt has a role in bread beyond flavour."),
   // rank 469
   card("join", "unirse a", "Why not join us for lunch tomorrow?"),
   // rank 470
-  card("difficult", "complicado", "Reading his handwriting is difficult even for me."),
+  card("difficult", "difícil", "Reading his handwriting is difficult even for me."),
   // rank 472
   card("detail", "detalle", "One detail in her story never added up."),
   // rank 473
@@ -936,7 +936,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 476
   card("eat", "comer", "We eat at eight, so don't be late."),
   // rank 477
-  card("step", "paso", "One step is missing from the fire escape."),
+  card("step", "paso", "Take one step back from the yellow line."),
   // rank 478
   card("true", "verdadero", "None of that gossip is true."),
   // rank 479
@@ -948,7 +948,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 483
   card("date", "fecha", "What date suits you for the appointment?"),
   // rank 484
-  card("practice", "práctica", "Choir practice runs from seven till nine."),
+  card("practice", "práctica", "With enough practice the piece becomes easy."),
   // rank 485
   card("model", "modelo", "This model costs less than the older one."),
   // rank 486
@@ -991,7 +991,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 505
   card("death", "muerte", "His death shocked the whole village."),
   // rank 506
-  card("nice", "agradable", "That waiter was nice about the mix-up."),
+  card("nice", "agradable", "The garden is a nice place to read."),
   // rank 507
   card("amount", "cantidad", "Only a tiny amount of glue is needed."),
   // rank 508
@@ -1072,7 +1072,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 523
   card("list", "lista", "Pin the list where everybody can see it."),
   // rank 524
-  card("wish", "desear", "I wish this bus went past the hospital."),
+  card("wish", "desear", "We wish you luck with the new job."),
   // "llevar (ropa)" and not "llevar": `take` (rank 59) holds "llevar / tomar".
   // The parenthetical rather than "llevar puesto", which the scan put at 0.500
   // against `position` (426, "puesto") — a front wholly containing another
@@ -1097,7 +1097,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 533
   card("kill", "matar", "Frost killed every tomato plant last April."),
   // rank 534
-  card("serve", "servir", "Nobody serves you at that counter after six."),
+  card("serve", "servir", "They serve breakfast until half past ten."),
   // rank 535
   card("likely", "probable", "Snow is likely above a thousand metres tonight."),
   // A stance adverb, and it is CARDED rather than skipped on the same line
@@ -1105,7 +1105,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // confidence and can be glossed, unlike the degree particles `quite` and
   // `rather`. "desde luego" and not "seguro": `sure` (279) holds that front.
   // rank 536
-  card("certainly", "desde luego", "That certainly explains the smell in the hallway."),
+  card("certainly", "sin duda", "That certainly explains the smell in the hallway."),
   // rank 537
   card("national", "nacional", "Nobody warned us about the national holiday."),
   // rank 539
@@ -1164,7 +1164,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 556
   card("data", "datos", "Our data disappeared when the laptop was stolen."),
   // rank 557
-  card("single", "único", "Not a single ticket was left for Saturday."),
+  card("single", "ni un solo (enfático)", "Not a single ticket was left for Saturday."),
   // rank 558
   card("address", "dirección", "Send the parcel to my new address, please."),
   // "rendimiento" and not "actuación", which is one suffix from `act` (515)
@@ -1206,7 +1206,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // glossed "debido a", which is grammar; "the rent is due Friday" is the
   // lexical sense a learner can answer.
   // rank 574
-  card("due", "previsto para", "Her baby is due the week after Easter."),
+  card("due", "previsto para (una fecha)", "Her baby is due the week after Easter."),
   // rank 575
   card("wrong", "equivocado", "You dialled the wrong number twice tonight."),
   // rank 576
@@ -1279,7 +1279,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // "debatir" and NOT "discutir", which in Spanish means to argue — the false
   // friend a bare cognate gloss would have taught backwards.
   // rank 605
-  card("discuss", "debatir", "Neighbours discussed the noise for an hour."),
+  card("discuss", "hablar de", "Neighbours discussed the noise for an hour."),
   // RE-GLOSSED at 04.1-08 from "reacción", which is answered by *reaction*.
   // Bare "respuesta" is NOT available even though `answer` (355) narrowed to
   // "responder" in this same commit: *answer* is itself a card, so "respuesta"
@@ -1314,9 +1314,9 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   card("police", "policía", "Police stopped three drivers outside the school gate."),
   // The VERB, because `shop` (437) already holds "tienda".
   // rank 617
-  card("store", "almacenar", "Store the paint somewhere the frost cannot reach."),
+  card("store", "almacenar", "They store the grain in metal silos."),
   // rank 618
-  card("poor", "pobre", "Poor lighting makes the stairs dangerous at night."),
+  card("poor", "pobre", "Many poor families cannot afford the heating bills."),
   // rank 619
   card("knowledge", "conocimientos", "Practical knowledge beats a certificate in this trade."),
   // rank 620
@@ -1348,7 +1348,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 631
   card("fast", "rápido", "Those trains are fast but always overcrowded."),
   // rank 632
-  card("attack", "ataque", "A dog attacked the postman near the gate."),
+  card("attack", "ataque", "The attack on the shop happened after midnight."),
   // rank 633
   card("foreign", "extranjero", "Does that machine take foreign cards at all?"),
   // rank 634
@@ -1362,7 +1362,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 637
   card("pretty", "bonito", "Somebody hung pretty lanterns along the whole terrace."),
   // rank 638
-  card("recently", "hace poco", "Recently somebody has been feeding the stray cats."),
+  card("recently", "hace poco", "She moved to Bristol quite recently."),
   // rank 639
   // REWRITTEN at 04.1-08. The old example needed BOTH *damp* as a noun and
   // *plaster* — two words above this deck's own learner, in the one place the
@@ -1370,7 +1370,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   card("affect", "afectar", "Cold weather affects her knees every winter."),
   // "soltar" and not "dejar caer", which contains `fall`'s front (320, "caer(se)").
   // rank 640
-  card("drop", "soltar", "He dropped the tray halfway across the room."),
+  card("drop", "soltar", "Drop the letter in the box on your way."),
   // rank 641
   card("recent", "reciente", "Recent rain filled the reservoir at last."),
   // RE-GLOSSED at 04.1-08 from "vincular", which is answered by *link*.
@@ -1394,5 +1394,5 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 647
   card("campaign", "campaña", "Their campaign collected signatures outside the library."),
   // rank 648 — the five hundredth card, and where this deck stops.
-  card("private", "privado", "Private lessons cost double what the school charges."),
+  card("private", "privado", "Those photos are private and not for sharing."),
 ];
