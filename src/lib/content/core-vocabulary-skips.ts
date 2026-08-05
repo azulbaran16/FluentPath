@@ -195,4 +195,53 @@ export const SKIPPED_HEADWORDS: SkippedHeadword[] = [
   { word: "though", reason: "function-word" }, // conjunction
   { word: "yes", reason: "function-word" }, // response particle
   { word: "away", reason: "function-word" }, // directional particle
+
+  // ------------------------------------------------------------------
+  // 04.1-04 — the second volume batch, ranks 239 to 378.
+  // ------------------------------------------------------------------
+  // 20 skips against 120 cards (14 %), down from 28 % in the previous 167
+  // ranks and 72 % in the first 71: the closed class is nearly exhausted by
+  // rank 250 and what remains below 378 is almost all lexical.
+  //
+  // The line drawn at rank 71 and held at rank 238 is held again, and the two
+  // sides of it are worth naming because this batch sits right on the seam:
+  // TEMPORAL, FREQUENCY, MANNER and SPATIAL adverbs are lexical and ARE carded
+  // — `today` (246), `once` (265), `often` (288), `already` (302), `soon`
+  // (325), `together` (294), `far` (245), `probably` (328). DEGREE, FOCUS,
+  // APPROXIMATIVE and DISCOURSE particles are not — `quite`, `rather`,
+  // `almost`, `actually`, and the comparative/superlative markers `less` and
+  // `least` that pair with `more` (38) and `most` (88).
+  { word: "less", reason: "function-word" }, // comparative marker, pairs with `more` (rank 38)
+  { word: "until", reason: "function-word" }, // preposition / conjunction
+  { word: "enough", reason: "function-word" }, // quantifier
+  { word: "whether", reason: "function-word" }, // subordinating conjunction
+  { word: "quite", reason: "function-word" }, // degree particle
+  { word: "although", reason: "function-word" }, // conjunction
+  { word: "least", reason: "function-word" }, // superlative marker, pairs with `most` (rank 88)
+  { word: "within", reason: "function-word" }, // preposition
+  // A discourse particle of exactly the class `really` (rank 104) was skipped
+  // on: it marks the speaker's stance towards the utterance rather than naming
+  // anything, and its Spanish ("en realidad", "de hecho", "la verdad es que")
+  // is chosen by what the sentence is doing, not by a gloss.
+  { word: "actually", reason: "function-word" },
+  { word: "rather", reason: "function-word" }, // degree particle
+  { word: "almost", reason: "function-word" }, // approximative degree particle
+  // Polarity-sensitive: it needs a negative or interrogative host ("not yet",
+  // "have you eaten yet?") or else it is the adversative conjunction. Both
+  // difficulties are grammatical. Its one-word Spanish would also be
+  // "todavía", which is already the FRONT of `still` (rank 119), and two cards
+  // with the same front expecting different answers is a usability defect.
+  { word: "yet", reason: "function-word" },
+  { word: "ever", reason: "function-word" }, // polarity-sensitive particle
+  { word: "anything", reason: "function-word" }, // indefinite pronoun, pairs with `something` (138)
+  { word: "nothing", reason: "function-word" }, // indefinite pronoun
+  { word: "several", reason: "function-word" }, // quantifier
+  { word: "either", reason: "function-word" }, // determiner / correlative conjunction
+  // A postpositional temporal marker, and the reason is structural rather than
+  // semantic: it cannot stand alone. "Ago" is ungrammatical without a measure
+  // phrase in front of it ("two years ago"), which is a fact about syntax and
+  // not a meaning a front/back card can hold.
+  { word: "ago", reason: "function-word" },
+  { word: "per", reason: "function-word" }, // preposition
+  { word: "among", reason: "function-word" }, // preposition
 ];

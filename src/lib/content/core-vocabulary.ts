@@ -94,11 +94,12 @@ function card(word: string, es: string, example: string): CoreVocabCard {
 /**
  * The volume deck, in NGSL rank order.
  *
- * 140 cards as of plan 04.1-03 — the tracer batch of twenty (04.1-01, to rank
- * 71) plus the first volume batch of 120 (04.1-03, to rank 238). They are real
- * cards held to the volume bar, not placeholders: every `es` is a natural
- * Spanish gloss and never the English word, and every `example` is a sentence
- * somebody would say, contains the word and runs at least six words.
+ * 260 cards as of plan 04.1-04 — the tracer batch of twenty (04.1-01, to rank
+ * 71), the first volume batch of 120 (04.1-03, to rank 238) and the second
+ * (04.1-04, to rank 378). They are real cards held to the volume bar, not
+ * placeholders: every `es` is a natural Spanish gloss and never the English
+ * word, and every `example` is a sentence somebody would say, contains the word
+ * and runs at least six words.
  *
  * THE GLOSS IS THE FRONT OF THE CARD, and that is why near-synonyms carry
  * deliberately separated glosses rather than the first dictionary word. `tell`
@@ -401,4 +402,264 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   card("offer", "ofrecer", "They offered him twice his old salary."),
   // rank 238
   card("young", "joven", "Young drivers pay more for insurance here."),
+
+  // ---------------------------------------------------------------- //
+  // 04.1-04 — the second volume batch. Ranks 239 to 378, 120 cards.   //
+  // The first batch authored against a deck whose openings were       //
+  // already spent: 04.1-03's recorded opening-WORD histogram was read  //
+  // before a card was written, and its top entries (`the` x12,         //
+  // `they` x5, `my` x4) were treated as budget already gone. Three of  //
+  // these 120 open with `the` and none with `they` or `my`.            //
+  // ---------------------------------------------------------------- //
+
+  // rank 239
+  card("close", "cerrar", "Close the gate behind you or the dog escapes."),
+  // rank 240
+  card("program", "programa", "Which program teaches you to edit video?"),
+  // rank 241
+  card("lead", "dirigir / encabezar", "Marta will lead the project until December."),
+  // rank 242
+  card("buy", "comprar", "Never buy fish from that stall on Mondays."),
+  // rank 243
+  card("understand", "entender", "Few people understand how the pension works."),
+  // rank 244
+  card("thank", "agradecer", "Thank the driver when you get off."),
+  // rank 245
+  card("far", "lejos", "How far is the station from here?"),
+  // rank 246
+  card("today", "hoy", "Today the market closes an hour early."),
+  // rank 247
+  card("hour", "hora", "Lunch lasts barely half an hour here."),
+  // rank 248
+  card("student", "estudiante", "Every student needs a card for the library."),
+  // rank 249
+  card("face", "cara", "Wash your face before you sit down."),
+  // rank 250
+  card("hope", "tener esperanza", "Everyone hopes the strike ends this week."),
+  // rank 251
+  card("idea", "ocurrencia", "Whose idea was it to paint everything green?"),
+  // rank 252
+  card("cost", "costar / coste", "Repairs cost more than the bike is worth."),
+  // rank 254
+  card("room", "habitación", "Their room looks onto a noisy street."),
+  // rank 256
+  card("reason", "motivo", "Health was the only reason she resigned."),
+  // rank 257
+  card("form", "formulario", "Fill in the form with black ink."),
+  // rank 258
+  card("spend", "gastar", "Students spend a fortune on textbooks each term."),
+  // rank 259
+  card("head", "cabeza", "Mind your head on the low beam."),
+  // rank 260
+  card("car", "coche", "Parking a car here costs eight euros."),
+  // rank 261
+  card("learn", "aprender", "Children learn languages faster than adults do."),
+  // rank 262
+  card("level", "nivel", "Noise levels rise every night after eleven."),
+  // rank 263
+  card("person", "persona (un individuo)", "Just one person replied to the whole advertisement."),
+  // rank 264
+  card("experience", "experiencia", "Teaching abroad was an unforgettable experience for her."),
+  // rank 265
+  card("once", "una sola vez", "Ring the bell once and wait outside."),
+  // rank 266
+  card("member", "socio / miembro", "Members of the club park for free."),
+  // rank 268
+  card("bad", "malo", "Bad weather ruined the whole weekend for us."),
+  // rank 269
+  card("city", "ciudad", "Airports outside the city are always cheaper."),
+  // rank 270
+  card("night", "noche", "Last night the neighbours argued until three."),
+  // rank 271
+  card("able", "capaz", "Were you able to reach the doctor?"),
+  // rank 272
+  card("support", "apoyo / apoyar", "Without support from the council, the project dies."),
+  // rank 274
+  card("line", "línea / fila", "Draw a straight line under the total."),
+  // rank 275
+  card("present", "regalo", "Wrap the present before the guests arrive."),
+  // rank 276
+  card("side", "lado", "Cross to the other side near the fountain."),
+  // rank 279
+  card("sure", "seguro (convencido)", "Double-check the address if you aren't sure."),
+  // rank 280
+  card("term", "trimestre", "Exams fall at the end of term."),
+  // rank 282
+  card("age", "edad", "At what age can you drive here?"),
+  // rank 283
+  card("low", "bajo", "Petrol prices are unusually low this month."),
+  // rank 284
+  card("speak", "hablar (un idioma)", "Does anyone at reception speak Turkish?"),
+  // rank 286
+  card("process", "proceso", "The whole process takes about three weeks."),
+  // rank 287
+  card("public", "público", "Public transport here stops well before midnight."),
+  // rank 288
+  card("often", "a menudo", "How often does the ferry cross the bay?"),
+  // rank 289
+  card("train", "tren", "Trains to the coast run every hour."),
+  // rank 290
+  card("possible", "posible", "Is it possible to change my seat?"),
+  // rank 293
+  card("view", "vista", "From the roof the view is spectacular."),
+  // rank 294
+  card("together", "juntos", "Glue the two pieces together and wait."),
+  // rank 295
+  card("consider", "considerar / plantearse", "Have you considered moving closer to work?"),
+  // rank 296
+  card("price", "precio", "Haggling over the price is normal here."),
+  // rank 297
+  card("parent", "padre o madre", "Parents wait outside the hall during rehearsals."),
+  // rank 298
+  card("hard", "difícil / duro", "Sanding the floor was harder than expected."),
+  // rank 299
+  card("party", "fiesta", "Bring something to drink to the party."),
+  // rank 300
+  card("local", "del barrio / de la zona", "Local shops shut for two hours at lunchtime."),
+  // rank 301
+  card("control", "controlar / dominar", "Who controls the thermostat in this building?"),
+  // rank 302
+  // THE FIRST EXACT GLOSS COLLISION WITH THE DECK BROWSER, and it is kept on
+  // purpose. `daily` holds "already → ya" too, so this is the first overlap
+  // whose FRONT is byte-identical (book/kind/order overlap the word and not the
+  // sense). Plan 02 decided that overlap is reported and never asserted,
+  // because asserting it would force this deck to skip the high-frequency words
+  // it exists to teach — and `already` is NGSL rank 302. The two are different
+  // products: the deck browser is flip-and-mark and is not scheduled, this card
+  // is a permanent `vocab:` key with its own example. Skipping it would need
+  // reason "already-taught", which is declared for SCENARIO vocabulary banks
+  // and would be the wrong reason recorded.
+  card("already", "ya", "By nine the bakery had already sold out."),
+  // rank 303
+  card("concern", "preocupación", "Safety is my only concern with that ladder."),
+  // rank 304
+  card("product", "producto", "Cheap products usually break within a single month."),
+  // rank 305
+  card("lose", "perder", "Don't lose the receipt for the warranty."),
+  // rank 306
+  card("story", "relato / cuento", "Grandpa tells the same story every Christmas."),
+  // rank 308
+  card("continue", "continuar / proseguir", "Rain continued all afternoon without a break."),
+  // rank 309
+  card("stand", "estar de pie", "Standing for three hours ruined my knees."),
+  // rank 310
+  card("whole", "entero / completo", "Termites destroyed a whole section of the roof."),
+  // rank 312
+  card("rate", "tarifa / tasa", "Hotel rates double during the festival week."),
+  // rank 313
+  card("care", "cuidado / cuidar", "Handle the box with care; it's glass."),
+  // rank 314
+  card("expect", "dar por hecho", "Guests are expected to check out by eleven."),
+  // rank 315
+  card("effect", "efecto", "The pills had no effect on her cough."),
+  // rank 316
+  card("sort", "clasificar / ordenar", "Sort these papers into two neat piles."),
+  // rank 319
+  card("cause", "causa / provocar", "Frozen pipes caused the flood last winter."),
+  // rank 320
+  card("fall", "caer(se)", "Leaves fall early along that shaded avenue."),
+  // rank 321
+  card("deal", "trato / acuerdo", "Both sides signed the deal on Friday."),
+  // rank 322
+  card("water", "agua", "Filter the water before you drink it."),
+  // rank 323
+  card("send", "enviar", "Send me the address when you decide."),
+  // rank 324
+  card("allow", "autorizar / dar permiso", "Dogs are not allowed inside the market."),
+  // rank 325
+  card("soon", "pronto", "Call the plumber soon or it'll get worse."),
+  // rank 326
+  card("watch", "vigilar / observar", "Watch the kettle so it doesn't boil over."),
+  // rank 327
+  card("base", "basar / fundamentar", "Producers based the series on a true crime."),
+  // rank 328
+  card("probably", "probablemente", "Traffic will probably be terrible after the match."),
+  // rank 329
+  card("suggest", "sugerir / proponer", "May I suggest a quieter table near the window?"),
+  // rank 330
+  card("past", "pasado", "Walk past the bakery and cross the square."),
+  // rank 331
+  card("power", "poder / energía", "The storm cut the power for six hours."),
+  // rank 332
+  card("test", "examen / prueba", "Blood tests usually take three days here."),
+  // rank 333
+  card("visit", "visitar / visita", "Visit the museum early to avoid the queue."),
+  // rank 334
+  card("center", "centro", "Everything shuts early in the center on Sundays."),
+  // rank 335
+  card("grow", "crecer", "Tomatoes grow well on that sunny balcony."),
+  // rank 337
+  card("return", "devolver", "Return the borrowed tools before Saturday, please."),
+  // rank 338
+  card("mother", "madre", "His mother taught him to sew properly."),
+  // rank 339
+  card("walk", "caminar / andar", "Walking home in the rain soaked her coat."),
+  // rank 340
+  card("matter", "importar", "Does it matter if we arrive slightly late?"),
+  // rank 341
+  card("mind", "mente", "Something odd crossed my mind during dinner."),
+  // rank 342
+  card("value", "valor", "Old coins gain value if nobody cleans them."),
+  // rank 343
+  card("office", "oficina", "Post arrives at the office before nine."),
+  // rank 344
+  card("record", "grabar / registrar", "Someone recorded the whole concert on a phone."),
+  // rank 345
+  card("stay", "quedarse", "Stay under the awning until the rain stops."),
+  // rank 346
+  card("force", "fuerza / obligar", "Wind forced the ferry back to port."),
+  // rank 347
+  card("stop", "parar", "Buses stop running at half past eleven."),
+  // rank 349
+  card("light", "luz", "Leave a light on for the cat."),
+  // rank 350
+  card("develop", "desarrollar", "Photographers still develop film in that basement."),
+  // rank 351
+  card("remember", "recordar", "Nobody remembers who left the tap running."),
+  // rank 352
+  card("bit", "un trozo / un poco", "Cut a bit of cheese for the sauce."),
+  // rank 353
+  card("share", "compartir", "Would you share a taxi to the airport?"),
+  // rank 354
+  card("real", "auténtico / de verdad", "Those flowers look real from a distance."),
+  // rank 355
+  card("answer", "respuesta / responder", "Answer the door; I'm covered in flour."),
+  // rank 356
+  card("sit", "sentarse", "Sit on the floor; the chairs are wet."),
+  // rank 357
+  card("figure", "cifra", "These figures don't add up at all."),
+  // rank 358
+  card("letter", "carta", "A letter arrived for the previous tenant."),
+  // rank 359
+  card("decide", "decidir", "Decide quickly; the offer ends at midnight."),
+  // rank 360
+  card("language", "idioma", "Sign language classes fill up very fast."),
+  // rank 361
+  card("subject", "asignatura", "Maths was my worst subject at school."),
+  // rank 362
+  card("class", "clase (de alumnos)", "Thirty children share one class in that school."),
+  // rank 363
+  card("development", "desarrollo", "Housing development stopped when the money ran out."),
+  // rank 364
+  card("town", "pueblo", "Nothing opens in this town before ten."),
+  // rank 365
+  card("half", "mitad", "Half of the guests never replied to the invitation."),
+  // rank 366
+  card("minute", "minuto", "Wait five minutes and try the number again."),
+  // rank 367
+  card("food", "comida", "Street food here beats most restaurants easily."),
+  // rank 368
+  card("break", "romper", "Careful, that handle breaks if you pull hard."),
+  // rank 369
+  card("clear", "claro / despejado", "Skies stayed clear all through the night."),
+  // rank 370
+  card("future", "futuro", "In future, book the tickets a month earlier."),
+  // rank 374
+  card("remain", "permanecer", "Only three seats remain for Friday's concert."),
+  // rank 375
+  card("top", "parte de arriba / cima", "Dust gathers on top of the wardrobe."),
+  // rank 377
+  card("win", "ganar", "Whoever wins tonight buys dinner for everyone."),
+  // rank 378
+  card("color", "color / tono", "This color looks orange under artificial light."),
 ];
