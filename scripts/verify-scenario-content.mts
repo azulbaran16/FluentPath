@@ -2552,7 +2552,34 @@ ok(
   `MAX_BODY_BYTES parsed as: ${capExpression ?? "NOT FOUND"}`,
 );
 
-const saturatedIds = reviewableIds();
+/* THE QUEUE SET IS NOT THE STORAGE SET, AND 04.1 IS THE FIRST TIME THEY DIFFER.
+ *
+ * This group built its saturated state from `reviewableIds()`, and that was
+ * correct until now: every id that could reach the `srs` column was also in the
+ * shared review queue, so one enumerator answered both questions. L5 separates
+ * them. The volume tier's ids are deliberately ABSENT from `reviewableIds()` —
+ * that is what keeps 500 lower-tier cards out of /review — and they are
+ * absolutely PRESENT in `srs`, because the Leitner engine and the Postgres
+ * column are shared.
+ *
+ *   the QUEUE set   — what /review counts, drills and renders.
+ *   the STORAGE set — what Postgres holds. The payload cares ONLY about this
+ *                     one, and it is now strictly larger.
+ *
+ * Left measuring the queue set, this gate would have gone on printing a
+ * comfortable figure while the real payload grew underneath it: a gate measuring
+ * the wrong set, which is worse than no gate at all, because it reassures. */
+const queueIds = reviewableIds();
+const storageIds = [...queueIds, ...coreVocabIds()];
+// Named and asserted, so a later change that quietly narrows the measurement
+// back to one enumerator fails HERE rather than at somebody's 413.
+const storageIdSet = new Set(storageIds);
+ok(
+  "the storage set contains the whole shared queue set",
+  queueIds.every((id) => storageIdSet.has(id)) &&
+    storageIds.length >= queueIds.length,
+  `${storageIds.length} storage id(s) vs ${queueIds.length} queue id(s)`,
+);
 const longestTitle = SCENARIOS.reduce(
   (longest, s) => (s.title.length > longest.length ? s.title : longest),
   "",
@@ -2571,7 +2598,7 @@ const saturated: ProgressState = {
   lastActive: today(),
   level: "C1",
   srs: Object.fromEntries(
-    saturatedIds.map((id) => [id, { box: 5, due: addDays(180) }]),
+    storageIds.map((id) => [id, { box: 5, due: addDays(180) }]),
   ),
   vocab: Object.fromEntries(
     VOCAB_DECKS.flatMap((deck) =>
@@ -2579,7 +2606,7 @@ const saturated: ProgressState = {
     ),
   ),
   attempts: Object.fromEntries(
-    saturatedIds.map((id) => [
+    storageIds.map((id) => [
       id,
       {
         topic: longestTitle,
@@ -2609,6 +2636,31 @@ ok(
   "a fully saturated ProgressState fits under the route's body cap",
   typeof cap === "number" && saturatedBytes < cap,
   `${saturatedBytes} B against a ${cap ?? "?"} B cap`,
+);
+
+/* THE STOP LINE, NOT THE WALL — and both are kept because they fail at
+ * different moments and mean different things.
+ *
+ * The assertion above is the WALL. Above it the route answers 413, sync-queue
+ * classifies a 413 as PERMANENT and DROPS THE SLOT — so crossing it does not
+ * degrade, it silently stops syncing the learner's progress. By the time that
+ * assertion fails, the decision has already been taken badly.
+ *
+ * This one is where A HUMAN DECIDES, and it sits deliberately far below the wall
+ * so the decision is taken with room rather than discovered at a 413. Measured
+ * today: 272.8 B per id, NOT the 252 an earlier design table extrapolated from.
+ * +500 volume cards lands near 32.6 %; +1,000 lands near 45.6 % and would fail
+ * here. That is the point — growing past this batch is a fresh decision with the
+ * ceiling re-measured (L3), and this line is what forces it to be one.
+ *
+ * IF THIS ASSERTION EVER FAILS, THE FIX IS NEVER TO RAISE THE CEILING. It is to
+ * stop authoring and ask the user. Same posture as the session-length budget
+ * above, where the fix is always to raise `minutes` and never to lower a rate. */
+const PAYLOAD_HEADROOM_CEILING = 0.4;
+ok(
+  `the saturated payload stays under the ${PAYLOAD_HEADROOM_CEILING * 100}% stop line, with headroom to decide`,
+  typeof cap === "number" && saturatedBytes <= cap * PAYLOAD_HEADROOM_CEILING,
+  `${saturatedBytes} B is ${typeof cap === "number" ? ((saturatedBytes / cap) * 100).toFixed(1) : "?"}% of the ${cap ?? "?"} B cap — STOP AUTHORING AND ASK THE USER; do not raise this constant`,
 );
 
 /* ================================================================== *
@@ -4107,11 +4159,16 @@ console.log(
     ` (${((nativeWorldTipped / nativeWorldPhrases.length) * 100).toFixed(1)}%)` +
     ` — reported, never asserted`,
 );
+// The two set sizes are printed SEPARATELY on purpose: a single number that
+// silently conflated the queue set with the storage set is exactly what task 3
+// of 04.1-02 existed to stop, so the print makes the two visible.
 console.log(
   `  payload:    ${saturatedBytes.toLocaleString("en-US")} B saturated over` +
-    ` ${saturatedIds.length} scheduled id(s)` +
+    ` ${storageIds.length} STORAGE id(s) = ${queueIds.length} shared-queue` +
+    ` + ${storageIds.length - queueIds.length} volume` +
     (typeof cap === "number"
-      ? ` — ${((saturatedBytes / cap) * 100).toFixed(1)}% of the ${cap.toLocaleString("en-US")} B cap`
+      ? ` — ${((saturatedBytes / cap) * 100).toFixed(1)}% of the ${cap.toLocaleString("en-US")} B cap` +
+        ` (stop line ${PAYLOAD_HEADROOM_CEILING * 100}%)`
       : ""),
 );
 
