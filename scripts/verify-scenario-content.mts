@@ -47,6 +47,17 @@
  * Imports — one line per topic. APPEND HERE (see the header).
  * ------------------------------------------------------------------ */
 
+// The ONE third-party import in this file, added at 04.1-07 and argued rather
+// than assumed: the "no number in the copy claims a quantity" assertion needs
+// JSX TEXT NODES, and every regex approximation of those is wrong in a way that
+// makes the assertion vacuous instead of loud (see the note beside it). Asking
+// the compiler for a node kind cannot be approximately right. `typescript` is
+// already a devDependency of this repo — `npx tsc --noEmit` runs beside this
+// script on every plan — so nothing new is installed and the dependency count
+// does not move.
+import { createRequire } from "node:module";
+const ts: typeof import("typescript") = createRequire(import.meta.url)("typescript");
+
 import { WORLDS, type Skill } from "../src/lib/curriculum.ts";
 import {
   getScenarioPhrases,
@@ -4358,21 +4369,43 @@ group("the world page reads coverage, and reads it without shipping the banks");
    * shell block. Strip every expression (which is where the derived counts
    * live) and every tag (which is where Tailwind's `h-11` and `size={92}`
    * live); what remains is the prose a learner reads, and it must contain no
-   * digit at all. */
-  const jsxText = (code: string) => {
-    let s = code;
-    for (let i = 0; i < 40; i += 1) {
-      const next = s.replace(/\{[^{}]*\}/g, " ");
-      if (next === s) break;
-      s = next;
-    }
-    return s.replace(/<[^>]*>/g, " ");
+   * digit at all.
+   *
+   * THE EXTRACTION IS THE PARSER'S, NOT A REGEX'S, and that is not fastidiousness
+   * — the regex version was written first and it SURVIVED its own mutation. Two
+   * ways: stripping `{…}` innermost-first eventually reaches the function body's
+   * own braces and eats the whole component, and text bounded by `>` and `<`
+   * captures `dueCount > 0 && (` as prose, so `pct * 100` reads as a digit in
+   * the copy while a real "500 most frequent words" reads as nothing. Both
+   * failures are silent and both make the assertion vacuous. `JsxText` is a node
+   * kind; asking TypeScript for it cannot be approximately right. Note the input
+   * is the RAW source, not the comment-stripped one: a braced JSX comment is an
+   * expression container rather than JsxText, so a digit inside one is correctly
+   * invisible here. */
+  const jsxText = (file: string, code: string): string[] => {
+    const sourceFile = ts.createSourceFile(
+      file,
+      code,
+      ts.ScriptTarget.Latest,
+      true,
+      ts.ScriptKind.TSX,
+    );
+    const out: string[] = [];
+    const walk = (node: import("typescript").Node) => {
+      if (node.kind === ts.SyntaxKind.JsxText) {
+        out.push((node as import("typescript").JsxText).text);
+      }
+      ts.forEachChild(node, walk);
+    };
+    walk(sourceFile);
+    return out;
   };
-  for (const [name, code] of [
-    ["CoreVocabView.tsx", surfaceSource],
-    ["core-vocabulary/page.tsx", pageSource],
+  for (const [name, path] of [
+    ["CoreVocabView.tsx", "../src/components/practice/CoreVocabView.tsx"],
+    ["core-vocabulary/page.tsx", "../src/app/(catalog)/core-vocabulary/page.tsx"],
   ] as const) {
-    const text = jsxText(code);
+    const raw = readFileSync(new URL(path, import.meta.url), "utf8");
+    const text = jsxText(name, raw).join(" ");
     const digits = text.match(/\d+/g) ?? [];
     ok(
       `volume: no number in ${name}'s copy claims a quantity`,
