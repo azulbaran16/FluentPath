@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 04
 current_phase_name: native-level-depth
 status: in-progress
-stopped_at: Completed 04-09-PLAN.md — Phase 4 complete
-last_updated: "2026-08-04T22:47:23.092Z"
+stopped_at: 04.1-01 tasks 1-2 done (ff1f6ca, aa1002c); STOPPED at task 3, blocking human checkpoint
+last_updated: "2026-08-05T00:00:41.974Z"
 last_activity: 2026-08-04
 last_activity_desc: "04-09 executed, THE PHASE GATE: 17 of 17 mutations CAUGHT on their own labels with 2 controls green in a scratch export with its own node_modules, an independent 651 = 651 id enumeration that does not import the gate own logic, the derivation control re-proved, and a reader pass that found NO near-duplicate exercise and rewrote nothing (same-world highest 0.286 phrases / 0.400 terms, nothing at or above 0.50 anywhere, the rise from 03-11 mostly pool size). The corpus figure is settled at 4,410 for 04-07 own tree and 4,440 at HEAD, and 04-05 broken harvester now THROWS rather than sitting importable beside the good one. CONT-04 is marked [~] met-with-a-stated-limitation and NOT [x]: the content is complete, derived and gated, but THE BROWSER PASS WAS NOT PERFORMED and ten items are open by name as WINDOWS 62 - including the batched recall deck, which is this phase one component change and has never been rendered, and any phone at all. More reading is named as a deliberate deferral the user declined knowingly. PHASE 4 IS COMPLETE."
 progress:
   total_phases: 6
   completed_phases: 5
-  total_plans: 45
-  completed_plans: 45
+  total_plans: 52
+  completed_plans: 46
 ---
 
 # Project State
@@ -364,6 +364,7 @@ Recent decisions affecting current work:
 - 02.1-04: nobody has HEARD the audio check — no browser, no phone, no speaker. Chrome's ~15s utterance truncation (the reason speaker-turn chunking exists) and the iPhone silent-switch path are both untested on a device. AudioCheck is not mounted by any route until plan 05, so this cannot close before then. Owed to 02.1-12; WINDOWS.md id 8.
 - 02.1-05: nobody has HEARD the Listening runner or clicked through it — no browser, no phone, no speaker. Playback of a real 226-word twelve-turn script, the onCompleted handoff that reveals the questions, the one-at-a-time flow, submit, and the attempt reaching the account are all unobserved. Chrome's ~15s truncation and the iPhone silent switch remain untested on a device. Owed to 02.1-12; WINDOWS.md ids 8, 10, 11.
 - Phase 2.1 cannot be closed until the browser/phone pass runs: six ROADMAP criteria and ~20 WINDOWS.md entries depend on it. Checklist in 02.1-12-SUMMARY.md
+- 04.1-01 task 3 is a BLOCKING human checkpoint and is outstanding: /core-vocabulary must be opened in a browser, a card rated, the page reloaded, and the three /review numbers confirmed unmoved, before any requirement of plan 01 is marked complete or plan 03 authors more ids.
 
 ### Roadmap Evolution
 
@@ -382,6 +383,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-08-04T21:26:42.358Z
-Stopped at: Completed 04-09-PLAN.md — Phase 4 complete
-Resume file: None
+Last session: 2026-08-05T00:00:41.921Z
+Stopped at: 04.1-01 tasks 1-2 done (ff1f6ca, aa1002c); STOPPED at task 3, blocking human checkpoint
+Resume file: .planning/phases/04.1-vocabulary-volume-deck/04.1-01-PLAN.md
