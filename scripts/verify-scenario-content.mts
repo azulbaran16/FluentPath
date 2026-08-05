@@ -122,8 +122,10 @@ import {
 import { CORE_VOCABULARY } from "../src/lib/content/core-vocabulary.ts";
 import { SKIPPED_HEADWORDS } from "../src/lib/content/core-vocabulary-skips.ts";
 import {
+  CORE_VOCAB_PREFIX,
   CORE_VOCAB_TOPIC,
   coreVocabIds,
+  coreVocabRecallItems,
   parseCoreVocabItemId,
   resolveCoreVocabItem,
 } from "../src/lib/core-vocab-items.ts";
@@ -4106,11 +4108,282 @@ group("the world page reads coverage, and reads it without shipping the banks");
       ` — ${deckOverlap.length} word(s) also in the deck browser` +
       `${deckOverlap.length > 0 ? ` (${deckOverlap.join(", ")})` : ""}, reported not asserted`,
   );
+  /* WHAT IS PRINTED HERE CHANGED AT 04.1-07, AND THE REASON IS RECORDED
+   * BECAUSE THE OLD LINE WAS A GOOD SIGNAL NOBODY WAS TOLD TO READ.
+   *
+   * Until this plan the line printed the top ten opening SHAPES (bigrams) and
+   * nothing else. Three authoring plans in a row recorded the same complaint:
+   * at n≥140 the bigrams are almost all ties at 1, so the top ten is ten
+   * alphabetically-early singletons and reads as decoration — while the figure
+   * that actually constrains an author, the opening WORD count, was computed
+   * here (the ceiling above asserts on it) and never shown. Every authoring
+   * plan had to be told in prose to hand-compute it, and 04.1-03, 04.1-04 and
+   * 04.1-05 each did exactly that in their summaries.
+   *
+   * And yet the shape line earned its keep three times: 04.1-04 found four
+   * repeated frames in it and 04.1-05 found ten, none of which could ever have
+   * FAILED — the ceiling was 13 and 19. So the fix is not to drop it but to
+   * print what binds (the words), and to print the shapes only where they carry
+   * information (x2 and above), each under an instruction rather than bare.
+   *
+   * WHAT THIS STILL CANNOT SEE, said here rather than left to be rediscovered:
+   * subject-shape monotony. See the block below the histogram. */
+  const repeatedShapes = ranked.filter(([, count]) => count >= 2);
   console.log(
-    `  top openings: ${ranked
+    `  top opening WORDS (READ THIS BEFORE AUTHORING — the ceiling above is on this figure, not on the shapes): ${rankedOpeners
       .slice(0, 10)
-      .map(([sig, count]) => `"${sig}" x${count}`)
-      .join(", ")}`,
+      .map(([word, count]) => `"${word}" x${count}`)
+      .join(", ")}` + `; ${openerCounts.size} distinct of ${n}`,
+  );
+  console.log(
+    repeatedShapes.length === 0
+      ? `  repeated opening shapes: none — every one of the ${signatureCounts.size} two-word openings is unique`
+      : `  repeated opening shapes (WARNING SIGNAL, not a failure — a shape at x2 is a` +
+          ` repeated frame worth rewriting while its id is still outside the fixture;` +
+          ` after \`--update\` the same fix costs a retire-and-re-add): ${repeatedShapes
+            .map(([sig, count]) => `"${sig}" x${count}`)
+            .join(", ")}`,
+  );
+
+  /* SUBJECT SHAPE — REPORTED, AND DELIBERATELY NEVER ASSERTED. DECIDED AT
+   * 04.1-07 RATHER THAN LEFT IMPLIED.
+   *
+   * This is the dimension that went wrong twice in four batches and that no
+   * gate in this file can see. 04.1-04 drove the pronoun share to 11.9% and
+   * left the deck leaning on bare plural and inanimate subjects; 04.1-06's
+   * first draft put bare subjects at 40.8%, worse than the lean 04.1-05 had
+   * been written to correct. Both were caught by a human running a throwaway
+   * classifier, and both were fixed by rewriting examples while their ids were
+   * still free.
+   *
+   * WHY THERE IS NO CEILING, and this is the decision rather than an omission:
+   * the shape that actually matters — "is this subject a bare plural, a mass
+   * noun or an inanimate NP?" — is not decidable from the first token. It needs
+   * animacy and part-of-speech, which this harness has no way to obtain, and
+   * `Wash the lettuce…` (a good imperative) and `Termites destroyed…` (the lean)
+   * open identically as far as any string test can tell. A ceiling on a proxy
+   * that does not track the risk is decoration, and decoration in this file is
+   * worse than nothing: it would be weakened the first time it failed a
+   * legitimate batch, which is precisely how a gate stops being a gate.
+   *
+   * SO THIS DIMENSION IS READER-CHECKED, AND WHO CHECKS IT IS NAMED:
+   *   1. the executor of any plan that authors into this bank, at DRAFT time —
+   *      before `--update`, while a rewrite is still free; and
+   *   2. the phase gate's reader pass, which reads a sample consecutively.
+   * The two coarse figures below exist so those two readers have a number
+   * printed by the harness instead of a scratch script each of them has to
+   * write again. They are inputs to a judgement, not a verdict. */
+  const PRONOUN_OPENERS = new Set([
+    "i", "you", "he", "she", "it", "we", "they",
+    "my", "your", "his", "her", "its", "our", "their",
+    "me", "him", "us", "them", "mine", "yours", "hers", "ours", "theirs",
+  ]);
+  const GRAMMATICAL_OPENERS = new Set([
+    ...PRONOUN_OPENERS,
+    "a", "an", "the", "this", "that", "these", "those",
+    "there", "here", "somebody", "someone", "something", "anybody", "anyone",
+    "anything", "everybody", "everyone", "everything", "nobody", "no-one",
+    "nothing", "one", "both", "each", "every", "few", "many", "most", "much",
+    "several", "some", "all", "half", "which", "who", "whose", "what", "when",
+    "where", "why", "how", "do", "does", "did", "is", "are", "was", "were",
+    "can", "could", "will", "would", "should", "may", "might", "have", "has",
+    "had", "don't", "doesn't", "didn't", "isn't", "aren't", "let's",
+  ]);
+  const firstWords = signatures.map((sig) => sig.split(" ")[0] ?? "");
+  const pronounShare = firstWords.filter((w) => PRONOUN_OPENERS.has(w)).length;
+  const contentShare = firstWords.filter((w) => !GRAMMATICAL_OPENERS.has(w)).length;
+  console.log(
+    `  subject shape (REPORTED, NEVER ASSERTED — reader-checked at draft time and at the phase gate;` +
+      ` no ceiling exists because animacy is not decidable from a first token):` +
+      ` pronoun/possessive openers ${pronounShare}/${n}` +
+      ` (${((pronounShare / n) * 100).toFixed(1)}%),` +
+      ` content-word openers ${contentShare}/${n}` +
+      ` (${((contentShare / n) * 100).toFixed(1)}%)` +
+      ` — the second bucket holds BOTH the good imperatives and the bare-plural lean, which is exactly why it cannot be a gate`,
+  );
+}
+
+/* ================================================================== *
+ * PHASE 04.1 (plan 04.1-07) — THE PHASE GATE'S OWN ASSERTIONS.
+ *
+ * Two properties this phase relied on and never asserted. Both were verified
+ * BY INSPECTION at an earlier plan, which is exactly why they are here: an
+ * inspection is a claim about today's source, and neither survives the obvious
+ * refactor.
+ * ================================================================== */
+
+{
+  group("volume tier: a RETIRED id cannot inflate the surface (04.1-05's orphan)");
+
+  /* 04.1-05 retired `vocab:color`. Any learner who rated that card before it was
+   * retired now holds an `srs` entry under a key NO BANK EMITS; `mergeProgress`
+   * unions keys blindly and cannot delete one, so the state is permanent and
+   * recurs with every future retirement.
+   *
+   * It is harmless today for a specific reason: CoreVocabView's "you've met"
+   * iterates the BANK and asks whether each card is in `srs`, and its "due
+   * today" filters the due set THROUGH this tier's own enumerator. Both are
+   * bank-driven — the derived-coverage rule holding one level down.
+   *
+   * The obvious "simplification" — counting `srs` keys that start with
+   * `vocab:` — would inflate "you've met" above the deck's own size, on the one
+   * surface whose entire claim is that its numbers are read off the bank, and
+   * nothing in this file would have noticed. */
+  const fixtureRaw = JSON.parse(
+    readFileSync(new URL("./fixtures/scheduled-item-ids.json", import.meta.url), "utf8"),
+  ) as { ids: Record<string, string>; retired: { id: string; reason: string }[] };
+  const retiredVolumeIds = fixtureRaw.retired
+    .map((r) => r.id)
+    .filter((id) => id.startsWith(CORE_VOCAB_PREFIX));
+
+  const VOLUME_ITEMS = coreVocabRecallItems();
+  const VOLUME_ID_SET = new Set(coreVocabIds());
+  const t = today();
+
+  // The two derivations CoreVocabView performs, transcribed from it line for
+  // line. The source assertion below is what keeps this transcription honest —
+  // together they say "the component does this, and this is orphan-proof".
+  const surfaceMet = (srs: Record<string, { box: number; due: string }>) =>
+    VOLUME_ITEMS.filter((item) => Boolean(srs[item.id])).length;
+  const surfaceDue = (srs: Record<string, { box: number; due: string }>) =>
+    new Set(
+      Object.entries(srs)
+        .filter(([, item]) => item.due <= t)
+        .map(([id]) => id)
+        .filter((id) => VOLUME_ID_SET.has(id)),
+    ).size;
+
+  const liveSample = coreVocabIds().slice(0, 7);
+  const liveOnly = Object.fromEntries(
+    liveSample.map((id) => [id, { box: 1, due: t }]),
+  );
+  // Every retired id, plus an invented one, so the fixture is not the only
+  // source of orphans this is proved against.
+  const orphanIds = [...retiredVolumeIds, `${CORE_VOCAB_PREFIX}notawordanybankemits`];
+  const withOrphans = {
+    ...liveOnly,
+    ...Object.fromEntries(orphanIds.map((id) => [id, { box: 1, due: t }])),
+  };
+
+  // Without this the two assertions below could pass over a fixture that holds
+  // no orphan at all — vacuously, which is the failure mode 04.1-02's M37
+  // recorded for the whole group.
+  const naivePrefixCount = Object.keys(withOrphans).filter((k) =>
+    k.startsWith(CORE_VOCAB_PREFIX),
+  ).length;
+  ok(
+    "volume: the orphan fixture is discriminating — a prefix count would give a different answer",
+    naivePrefixCount > liveSample.length && orphanIds.length > 0,
+    `${naivePrefixCount} \`${CORE_VOCAB_PREFIX}\` keys against ${liveSample.length} live ones — if these were equal the two assertions below would pass without testing anything`,
+  );
+  ok(
+    'volume: a retired `vocab:` key in srs does not inflate "you\'ve met"',
+    surfaceMet(withOrphans) === surfaceMet(liveOnly) &&
+      surfaceMet(withOrphans) === liveSample.length,
+    `${surfaceMet(withOrphans)} met with ${orphanIds.length} orphan(s) present vs ${surfaceMet(liveOnly)} without — the count must iterate the BANK and ask whether each card is in srs, never count srs keys by prefix`,
+  );
+  ok(
+    'volume: a retired `vocab:` key in srs does not inflate "due today"',
+    surfaceDue(withOrphans) === surfaceDue(liveOnly) &&
+      surfaceDue(withOrphans) === liveSample.length,
+    `${surfaceDue(withOrphans)} due with ${orphanIds.length} orphan(s) present vs ${surfaceDue(liveOnly)} without — the due set must be filtered through this tier's own enumerator`,
+  );
+
+  for (const id of retiredVolumeIds) {
+    ok(
+      `volume: the retired id ${id} resolves to nothing`,
+      resolveCoreVocabItem(id) === undefined &&
+        parseCoreVocabItemId(id) === undefined,
+      "a retired id is orphaned deliberately and permanently; a resolver that answered for it would render a card no bank holds",
+    );
+  }
+
+  group("volume tier: the surface's counts are DERIVED, from the source");
+
+  const stripComments = (code: string) =>
+    code.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/^[ \t]*\/\/.*$/gm, " ");
+  const surfaceSource = stripComments(
+    readFileSync(
+      new URL("../src/components/practice/CoreVocabView.tsx", import.meta.url),
+      "utf8",
+    ),
+  );
+  const pageSource = stripComments(
+    readFileSync(
+      new URL("../src/app/(catalog)/core-vocabulary/page.tsx", import.meta.url),
+      "utf8",
+    ),
+  );
+
+  // (3) of 04.1-07's retired-orphan block: the check that catches the refactor
+  // BEFORE it ships, rather than the behaviour that catches it afterwards.
+  const PREFIX_FILTER_TELLS = [
+    "startsWith",
+    "CORE_VOCAB_PREFIX",
+    "Object.keys(srs)",
+    "Object.entries(srs)",
+    "Object.keys(state.srs)",
+    "Object.entries(state.srs)",
+  ];
+  const foundTells = PREFIX_FILTER_TELLS.filter((tell) => surfaceSource.includes(tell));
+  ok(
+    "volume: the surface never counts `srs` keys by string prefix",
+    foundTells.length === 0,
+    `${foundTells.join(", ")} — counting the learner's own srs keys instead of iterating the bank is how "you've met" climbs past the deck's own size on a retired id, and it is the obvious simplification`,
+  );
+  ok(
+    "volume: the surface's counts are read off the bank and off the learner's own srs",
+    surfaceSource.includes("coreVocabRecallItems()") &&
+      surfaceSource.includes("coreVocabBands()") &&
+      surfaceSource.includes("coreVocabIds()") &&
+      /ALL_ITEMS\.filter\(/.test(surfaceSource) &&
+      /ALL_ITEMS\.length/.test(surfaceSource) &&
+      /BANDS\.length/.test(surfaceSource) &&
+      /band\.length/.test(surfaceSource),
+    "every figure on this page must come from the bank's own length or from a filter over it; the moment one is written down it is a claim that outlives the content",
+  );
+
+  /* THE NO-COPY-EDIT CHECK, REWRITTEN — 04.1-06 item 3.
+   *
+   * The old check was `git log --oneline -n 4`, and it was wrong twice over: it
+   * named the last four commits rather than the four that moved the deck, and
+   * it could not tell a file's CREATION from an edit of its counts, so read
+   * literally it failed against 04.1-01 — the commit that built the surface
+   * alongside the tracer twenty. Any plan reaching back far enough to include
+   * plan 01 would have failed it.
+   *
+   * "Untouched" was never the property worth checking anyway. THE PROPERTY IS
+   * THAT NO NUMBER IN THE COPY CLAIMS A QUANTITY — which is stronger, does not
+   * depend on a commit window, and is checkable here rather than in a plan's
+   * shell block. Strip every expression (which is where the derived counts
+   * live) and every tag (which is where Tailwind's `h-11` and `size={92}`
+   * live); what remains is the prose a learner reads, and it must contain no
+   * digit at all. */
+  const jsxText = (code: string) => {
+    let s = code;
+    for (let i = 0; i < 40; i += 1) {
+      const next = s.replace(/\{[^{}]*\}/g, " ");
+      if (next === s) break;
+      s = next;
+    }
+    return s.replace(/<[^>]*>/g, " ");
+  };
+  for (const [name, code] of [
+    ["CoreVocabView.tsx", surfaceSource],
+    ["core-vocabulary/page.tsx", pageSource],
+  ] as const) {
+    const text = jsxText(code);
+    const digits = text.match(/\d+/g) ?? [];
+    ok(
+      `volume: no number in ${name}'s copy claims a quantity`,
+      digits.length === 0,
+      `${digits.join(", ")} — a hand-written figure in the prose is a claim that survives the content changing underneath it, which is the overclaim derived coverage exists to make impossible. Every count here is an expression, so the copy needs no digit`,
+    );
+  }
+  ok(
+    "volume: the route's metadata says what the tier IS without saying how big it is",
+    !/\d/.test(pageSource.match(/description:\s*[\s\S]*?,\n/)?.[0] ?? ""),
+    "metadata is the one place nobody re-reads when the bank grows; a word count there would be stale the next batch",
   );
 }
 
