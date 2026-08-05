@@ -94,12 +94,24 @@ function card(word: string, es: string, example: string): CoreVocabCard {
 /**
  * The volume deck, in NGSL rank order.
  *
- * 260 cards as of plan 04.1-04 — the tracer batch of twenty (04.1-01, to rank
- * 71), the first volume batch of 120 (04.1-03, to rank 238) and the second
- * (04.1-04, to rank 378). They are real cards held to the volume bar, not
- * placeholders: every `es` is a natural Spanish gloss and never the English
- * word, and every `example` is a sentence somebody would say, contains the word
- * and runs at least six words.
+ * 380 cards as of plan 04.1-05 — the tracer batch of twenty (04.1-01, to rank
+ * 71), the first volume batch of 120 (04.1-03, to rank 238), the second
+ * (04.1-04, to rank 378) and the third (04.1-05, to rank 515). They are real
+ * cards held to the volume bar, not placeholders: every `es` is a natural
+ * Spanish gloss and never the English word, and every `example` is a sentence
+ * somebody would say, contains the word and runs at least six words.
+ *
+ * THE ARITHMETIC DOES NOT ADD UP BY ONE, AND THAT IS THE POINT. 20 + 120 + 120
+ * + 121 = 381, not 380, because 04.1-05 REMOVED one card as well as adding
+ * 121: `color` (rank 378) shipped in 04.1-04 glossed "color / tono", and
+ * Spanish for *color* is *color*. The gate asserts `es !== word`, so the card
+ * satisfied the assertion by appending a near-synonym rather than by having a
+ * distinct front — a fudge, recorded as one in that plan's summary. The user's
+ * decision at 04.1-05 declared `cognate` as a skip reason; under the
+ * one-way-door rule the card could not be EDITED, so `vocab:color` is declared
+ * RETIRED in scripts/fixtures/scheduled-item-ids.json with a reason and the
+ * word now sits in core-vocabulary-skips.ts. Any learner schedule on that key
+ * is orphaned, permanently and deliberately.
  *
  * THE GLOSS IS THE FRONT OF THE CARD, and that is why near-synonyms carry
  * deliberately separated glosses rather than the first dictionary word. `tell`
@@ -660,6 +672,280 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   card("top", "parte de arriba / cima", "Dust gathers on top of the wardrobe."),
   // rank 377
   card("win", "ganar", "Whoever wins tonight buys dinner for everyone."),
-  // rank 378
-  card("color", "color / tono", "This color looks orange under artificial light."),
+  // rank 378 held `color` until 04.1-05 retired it — see the header. The rank
+  // is not a hole: it is declared in core-vocabulary-skips.ts as a cognate.
+
+  // ------------------------------------------------------------------
+  // 04.1-05 — the third volume batch, ranks 379 to 515.
+  // ------------------------------------------------------------------
+  // The batch where the list stops being concrete. `involve`, `sense`,
+  // `particular`, `regard` and `approach` do not write their own sentences the
+  // way `house` and `water` did, and the two failures that get written instead
+  // are named here so the next author can see them coming:
+  //
+  //   AN EXAMPLE THAT IS A DEFINITION. "Perhaps is used when you are not sure"
+  //   is a grammar note with no register, in a type that deliberately has
+  //   nowhere to put one. The card below puts the hedging to work in a
+  //   situation instead.
+  //
+  //   A GLOSS THAT IS A LIST. `es` is the FRONT. A front reading
+  //   "quizás / tal vez / a lo mejor" is three cards pretending to be one and
+  //   the learner cannot answer it. So `perhaps` is "quizás" and `maybe` is
+  //   "a lo mejor" — the neutral hedge and the colloquial one, separated the
+  //   way tell/say and leave/let were, not stacked behind one slash.
+  // rank 379
+  card("involve", "implicar", "Fixing the roof involves scaffolding and two permits."),
+  // rank 380
+  card("reach", "alcanzar", "Can you reach the top shelf for me?"),
+  // rank 382
+  card("period", "época", "During that period nobody could find work."),
+  // rank 384
+  card("note", "nota", "Her note said the key was under the mat."),
+  // rank 385
+  card("history", "historia", "My grandmother taught history for thirty years."),
+  // rank 386
+  card("create", "crear", "Two students created the whole poster overnight."),
+  // rank 387
+  card("drive", "conducir", "Who drives to the airport tomorrow morning?"),
+  // NOT "tipo": `kind` (rank 87) holds "tipo / clase" and two cards with the
+  // same front expecting different answers is a usability defect. The verb is
+  // the sense a learner of this deck will meet on a keyboard anyway.
+  // rank 389
+  card("type", "teclear", "Type the code slowly; the keypad sticks."),
+  // rank 390
+  card("sound", "sonido", "That sound comes from the boiler upstairs."),
+  // rank 391
+  card("eye", "ojo", "Soap in your eye stings for ages."),
+  // rank 392
+  card("music", "música", "We played music until the neighbours complained."),
+  // rank 393
+  card("game", "partido", "Rain cancelled the game on Saturday afternoon."),
+  // rank 394
+  card("political", "político", "Nobody mentions political arguments at family dinners."),
+  // rank 395
+  card("free", "gratis", "Children under six travel free on this line."),
+  // rank 396
+  card("receive", "recibir", "We received the parcel three weeks late."),
+  // rank 397
+  card("moment", "momento", "For a moment nobody said anything at all."),
+  // rank 398
+  card("sale", "rebajas", "These boots were half price in the sale."),
+  // "normativa" and not "política": `political` two ranks up is "político", and
+  // two fronts a single letter apart is the same defect as two identical ones.
+  // rank 399
+  card("policy", "normativa", "Company policy forbids phones during the shift."),
+  // rank 401
+  card("body", "cuerpo", "Cold water wakes your whole body up."),
+  // rank 402
+  card("require", "exigir", "This job requires a valid driving licence."),
+  // 04.1-04 glossed `expect` "dar por hecho" specifically so that this card
+  // could own "esperar". The separation was planned a batch ahead; here it is.
+  // rank 403
+  card("wait", "esperar", "She waited an hour and then went home."),
+  // rank 405
+  card("appear", "aparecer", "A crack appeared in the ceiling overnight."),
+  // rank 407
+  card("team", "equipo", "Their team lost every match this season."),
+  // rank 408
+  card("easy", "fácil", "Nothing about that exam was easy."),
+  // rank 409
+  card("individual", "individuo", "One individual complained and the rule changed."),
+  // rank 410
+  card("full", "lleno", "The bin is full again already."),
+  // rank 411
+  card("black", "negro", "She wore a black coat to the funeral."),
+  // rank 412
+  card("sense", "sentido", "His answer made no sense to anybody."),
+  // rank 413
+  card("perhaps", "quizás", "Perhaps the train is stuck outside the station."),
+  // rank 414
+  card("add", "añadir", "Add salt only after the sauce thickens."),
+  // rank 415
+  card("rule", "regla", "House rules ban shoes past the doorway."),
+  // rank 416
+  card("pass", "aprobar (un examen)", "Everyone passed except the boy who overslept."),
+  // rank 417
+  card("produce", "producir", "Local farms produce enough milk for the valley."),
+  // rank 418
+  card("sell", "vender", "They sell hot bread from six in the morning."),
+  // rank 419
+  card("short", "corto", "My hair looks short after every haircut."),
+  // rank 420
+  card("agree", "coincidir", "Every expert agreed about the cause of the fire."),
+  // rank 421
+  card("law", "ley", "A new law bans smoking on the terraces."),
+  // rank 423
+  card("research", "investigación", "Her research took eleven years to finish."),
+  // rank 424
+  card("cover", "tapar", "Cover the dough and leave it overnight."),
+  // rank 425
+  card("paper", "papel", "There is no paper left in the printer."),
+  // rank 426
+  card("position", "puesto", "Three people applied for the same position."),
+  // rank 427
+  card("near", "cerca", "We live near the old railway bridge."),
+  // rank 428
+  card("human", "humano", "Machines cannot replace human judgement completely."),
+  // rank 429
+  card("computer", "ordenador", "My computer freezes whenever I open that file."),
+  // rank 430
+  card("situation", "situación", "By Friday the situation had calmed down."),
+  // rank 431
+  card("staff", "plantilla", "Nearly all the staff left after the takeover."),
+  // rank 432
+  card("activity", "actividad", "There was little activity on the site today."),
+  // rank 433
+  card("film", "película", "That film ends far too abruptly."),
+  // The parenthetical is doing real work: bare "mañana" is the front of
+  // *tomorrow*, and the learner would answer the wrong word without it.
+  // rank 434
+  card("morning", "mañana (antes del mediodía)", "Ring me in the morning, not tonight."),
+  // rank 435
+  card("war", "guerra", "Both grandfathers survived the war without a scratch."),
+  // rank 436
+  card("account", "cuenta", "Money left my account without any warning."),
+  // rank 437
+  card("shop", "tienda", "The shop on the corner closed last winter."),
+  // rank 438
+  card("major", "mayor (en importancia)", "Flooding is a major problem in that street."),
+  // rank 441
+  card("design", "diseño", "Whose design won the competition in the end?"),
+  // rank 442
+  card("event", "acontecimiento", "An event that size needs months of planning."),
+  // rank 443
+  card("special", "especial", "Tonight is special, so we booked a table."),
+  // rank 444
+  card("sometimes", "a veces", "Sometimes the heating stops for no reason."),
+  // rank 445
+  card("condition", "condición", "The car runs, but its condition is awful."),
+  // rank 446
+  card("carry", "cargar con", "Don't carry that box down the stairs alone."),
+  // rank 447
+  card("choose", "elegir", "Choose a seat away from the speakers."),
+  // rank 448
+  card("father", "padre", "His father repaired watches for a living."),
+  // rank 449
+  card("decision", "decisión", "That decision cost the club its best player."),
+  // rank 450
+  card("table", "mesa", "Somebody carved initials into the table."),
+  // rank 451
+  card("certain", "determinado", "Certain shops shut for the whole of August."),
+  // rank 453
+  card("main", "principal", "The main road floods after heavy rain."),
+  // rank 454
+  card("die", "morir", "Every plant on that balcony died in July."),
+  // rank 455
+  card("bear", "aguantar", "Thin walls make the upstairs racket hard to bear."),
+  // rank 456
+  card("cut", "cortar", "Cut the bread thinner or it crumbles."),
+  // rank 457
+  card("describe", "describir", "Witnesses described the car as dark green."),
+  // rank 460
+  card("especially", "sobre todo", "The kitchen gets hot, especially in August."),
+  // rank 461
+  card("strong", "fuerte", "That coffee is far too strong for me."),
+  // rank 462
+  card("rise", "subir", "Bread prices rise every single January."),
+  // rank 463
+  card("girl", "chica", "A girl from the flat downstairs fed the cat."),
+  // The colloquial hedge, deliberately not "quizás" — see the batch header.
+  // rank 464
+  card("maybe", "a lo mejor", "Maybe the shop opens later on Sundays."),
+  // rank 465
+  card("community", "comunidad", "Our community raised the money in a fortnight."),
+  // rank 467
+  card("particular", "concreto", "She wants that particular shade of green."),
+  // "función" and not "papel": `paper` five ranks up holds "papel".
+  // rank 468
+  card("role", "función", "Salt has a role in bread beyond flavour."),
+  // rank 469
+  card("join", "unirse a", "Why not join us for lunch tomorrow?"),
+  // rank 470
+  card("difficult", "complicado", "Reading his handwriting is difficult even for me."),
+  // rank 472
+  card("detail", "detalle", "One detail in her story never added up."),
+  // rank 473
+  card("difference", "diferencia", "I notice no difference after the repair."),
+  // rank 474
+  card("action", "acción", "Quick action saved the building from the fire."),
+  // rank 475
+  card("health", "salud", "Night shifts wrecked his health in two years."),
+  // rank 476
+  card("eat", "comer", "We eat at eight, so don't be late."),
+  // rank 477
+  card("step", "paso", "One step is missing from the fire escape."),
+  // rank 478
+  card("true", "verdadero", "None of that gossip is true."),
+  // rank 479
+  card("phone", "teléfono", "My phone died halfway through the call."),
+  // rank 481
+  card("draw", "dibujar", "Children draw on that wall every summer."),
+  // rank 482
+  card("white", "blanco", "White shirts never survive a week here."),
+  // rank 483
+  card("date", "fecha", "What date suits you for the appointment?"),
+  // rank 484
+  card("practice", "práctica", "Choir practice runs from seven till nine."),
+  // rank 485
+  card("model", "modelo", "This model costs less than the older one."),
+  // rank 486
+  card("raise", "levantar", "Somebody raised the barrier for the ambulance."),
+  // rank 487
+  card("customer", "cliente", "A customer complained about the cold soup."),
+  // rank 488
+  card("front", "delantera", "Someone dented the front of my car."),
+  // rank 489
+  card("explain", "explicar", "Explain the delay before they ask again."),
+  // rank 490
+  card("door", "puerta", "Slam that door and the frame shakes."),
+  // rank 491
+  card("outside", "fuera", "It's freezing outside, so wear the thick coat."),
+  // rank 493
+  card("economic", "económico", "Economic news never cheers anybody up."),
+  // rank 494
+  card("site", "emplazamiento", "They chose a site beside the old quarry."),
+  // "enfoque" here, so `focus` further down the list can own "centrarse".
+  // rank 495
+  card("approach", "enfoque", "Her approach to teaching changed everything."),
+  // rank 496
+  card("teacher", "profesor", "Our teacher marks essays on the train."),
+  // rank 497
+  card("land", "terreno", "Nothing grows on that land any more."),
+  // rank 498
+  card("charge", "cobrar", "They charge extra for luggage at the gate."),
+  // rank 499
+  card("finally", "por fin", "Finally the plumber rang us back."),
+  // rank 500
+  card("sign", "letrero", "The sign fell off during the storm."),
+  // rank 501
+  card("claim", "afirmar", "He claims the parcel never arrived."),
+  // rank 502
+  card("relationship", "relación", "Their relationship survived two years abroad."),
+  // rank 503
+  card("travel", "viajar", "We travel light because the car is tiny."),
+  // rank 504
+  card("enjoy", "disfrutar", "Did everyone enjoy the meal last night?"),
+  // rank 505
+  card("death", "muerte", "His death shocked the whole village."),
+  // rank 506
+  card("nice", "agradable", "That waiter was nice about the mix-up."),
+  // rank 507
+  card("amount", "cantidad", "Only a tiny amount of glue is needed."),
+  // rank 508
+  card("improve", "mejorar", "Her Spanish improved after the summer course."),
+  // rank 509
+  card("picture", "foto", "Who took the picture on the mantelpiece?"),
+  // rank 510
+  card("boy", "chico", "The boy next door mows lawns for pocket money."),
+  // "estima" and not "considerar": `consider` (rank 331) holds that front.
+  // rank 511
+  card("regard", "estima", "Colleagues hold her in high regard."),
+  // rank 512
+  card("organization", "organización", "Several volunteers keep the organization running."),
+  // rank 513
+  card("happy", "contento", "Nobody looked happy about the new rota."),
+  // rank 514
+  card("couple", "pareja", "The couple upstairs argue every Sunday."),
+  // rank 515
+  card("act", "actuar", "You must act quickly if the pipe bursts."),
 ];

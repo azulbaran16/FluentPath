@@ -15,8 +15,11 @@
 // EITHER in the deck OR in this register with a non-empty reason. So skipping a
 // word costs one line here, and skipping one without saying so fails.
 //
-// THE REASONS ARE A CLOSED VOCABULARY — three of them, and adding a fourth is a
-// decision, not a convenience:
+// THE REASONS ARE A CLOSED VOCABULARY — four of them, and adding a fifth is a
+// decision, not a convenience. The fourth was added exactly that way: plan
+// 04.1-04 hit `color`, could not gloss it honestly, shipped a fudge and
+// RECORDED it as one; the user then decided `cognate` at 04.1-05, and only
+// then was it declared here and used.
 //
 //   "function-word"
 //     A closed-class grammatical word — article, pronoun, preposition,
@@ -42,6 +45,24 @@
 //     assertion. This register is that rule's escape hatch, which is why the
 //     matcher must never be widened instead.
 //
+//   "cognate"
+//     No honest Spanish gloss DIFFERS from the English word. `social` is
+//     "social", `general` is "general", `total` is "total". A Spanish speaker
+//     does not need a flashcard to learn that, and the card would exist only
+//     to satisfy a rank.
+//     WHY THIS IS A SKIP AND NOT A GLOSS. The quality floor asserts
+//     `es !== word`, so such a card can only pass by appending a near-synonym
+//     it does not need — "color / tono" — which makes the FRONT of the card a
+//     small lie about what the learner is being asked to answer. Rank
+//     completeness stays derived and total because this register absorbs the
+//     word, which is exactly what the register is for.
+//     WHERE THE LINE IS, AND IT IS NARROW. This is NOT for a word that merely
+//     LOOKS Spanish. `local` → "del barrio / de la zona", `real` →
+//     "auténtico / de verdad", `idea` → "ocurrencia", `individual` →
+//     "individuo" and `particular` → "concreto" all have real, differing
+//     Spanish and are all CARDED. Reach for this reason only when forcing a
+//     gloss would produce a slash-fudge.
+//
 // No React, no hooks, no path aliases: this module is imported by
 // scripts/verify-scenario-content.mts under `node --experimental-strip-types`
 // AND BY NOTHING ELSE. It is harness input, not app content, so it never enters
@@ -50,7 +71,8 @@
 export type SkipReason =
   | "function-word"
   | "already-taught"
-  | "no-base-form-example";
+  | "no-base-form-example"
+  | "cognate";
 
 export interface SkippedHeadword {
   /** the NGSL headword, lowercase, exactly as the committed list spells it */
@@ -244,4 +266,50 @@ export const SKIPPED_HEADWORDS: SkippedHeadword[] = [
   { word: "ago", reason: "function-word" },
   { word: "per", reason: "function-word" }, // preposition
   { word: "among", reason: "function-word" }, // preposition
+
+  // ------------------------------------------------------------------
+  // 04.1-05 — the third volume batch, ranks 379 to 515.
+  // ------------------------------------------------------------------
+  // 17 skips against 121 cards added. The closed class really is exhausted
+  // here — only 15 of the 17 are function words, and what replaces them is the
+  // constraint plan 04 predicted would take over below rank 400: not "is this
+  // word grammar?" but "does this word have a Spanish that differs from it?".
+  //
+  // THIS ENTRY IS OUT OF BATCH AND IN RANK ORDER ON PURPOSE. `color` is rank
+  // 378, which belongs to 04.1-04, and it was CARDED there — "color / tono".
+  // That plan recorded the gloss as a fudge in its own summary rather than
+  // presenting it as solved, the user decided `cognate` at 04.1-05, and the
+  // repair is a RETIREMENT and not an edit: a live id's content may never be
+  // rewritten, so `vocab:color` is declared in the `retired` list of
+  // scripts/fixtures/scheduled-item-ids.json, by hand and with a reason, and
+  // the word arrives here. It is the first word this deck has ever un-carded.
+  { word: "color", reason: "cognate" }, // rank 378 — retired from the bank at 04.1-05
+  { word: "social", reason: "cognate" }, // "social"
+  { word: "across", reason: "function-word" }, // preposition
+  { word: "along", reason: "function-word" }, // preposition / particle
+  // A comparative marker, skipped on the same ground as `less` (253) and
+  // `least` (281): it is the comparative of `far`, which is carded at 245.
+  { word: "further", reason: "function-word" },
+  { word: "general", reason: "cognate" }, // "general"
+  { word: "toward", reason: "function-word" }, // preposition
+  { word: "everything", reason: "function-word" }, // indefinite pronoun, pairs with `anything` (318) and `nothing` (336)
+  { word: "someone", reason: "function-word" }, // indefinite pronoun
+  { word: "above", reason: "function-word" }, // preposition
+  // A directional particle, the class `away` was skipped on in 04.1-03. The
+  // spatial ADVERBS stay carded — `outside` (491) is one, and it names a place
+  // rather than pointing along an axis.
+  { word: "forward", reason: "function-word" },
+  { word: "himself", reason: "function-word" }, // reflexive pronoun
+  // The SECOND use of this reason, and only the second in 380 cards:
+  // scenario-vocabulary.ts already teaches "available" with a tip and a
+  // scenario around it, which is strictly the better card. The harness would
+  // have forced the issue anyway; declaring it is cheaper than discovering it.
+  { word: "available", reason: "already-taught" },
+  { word: "else", reason: "function-word" }, // postnominal determiner ("something else")
+  // Not the verb "agradar" at this frequency: rank 471 is the politeness
+  // particle, and a particle marking how a request is delivered is exactly the
+  // discourse class `just` (49) and `actually` (291) were skipped on.
+  { word: "please", reason: "function-word" },
+  { word: "themselves", reason: "function-word" }, // reflexive pronoun
+  { word: "behind", reason: "function-word" }, // preposition
 ];
