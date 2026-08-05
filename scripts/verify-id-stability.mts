@@ -30,12 +30,23 @@
 // either, so the detector lands in the phase's first plan, second task.
 //
 // ─────────────────────────────────────────────────────────────────────────────
-// SCOPE: THE SCHEDULED KINDS ONLY — phrase, vocab, grammar.
+// SCOPE: THE SCHEDULED KINDS ONLY — phrase, vocab, grammar — PLUS THE VOLUME
+// TIER'S OWN KEY SPACE.
 //
-// Those are the only kinds a Postgres `srs` entry is ever keyed by
-// (`SCHEDULED_ITEM_KINDS`). Writing, reading and speaking compose ids for
-// uniqueness and storage scoping only; nothing scores them, nothing schedules
-// them, and hashing them would gate prose that no learner's progress points at.
+// The scheduled kinds are the only kinds a Postgres `srs` entry is ever keyed by
+// inside the SCENARIO space (`SCHEDULED_ITEM_KINDS`). Writing, reading and
+// speaking compose ids for uniqueness and storage scoping only; nothing scores
+// them, nothing schedules them, and hashing them would gate prose that no
+// learner's progress points at.
+//
+// Phase 04.1 adds a SECOND KEY SPACE, not a second kind inside the first: the
+// volume tier's ids are `vocab:<slug>`, composed by `coreVocabItemId` and parsed
+// by `parseCoreVocabItemId` (src/lib/core-vocab-items.ts), and they are
+// deliberately unknown to `parseScenarioItemId` — L1 of 04.1-CONTEXT, because a
+// pseudo-scenario id would be stored, merged and scheduled correctly and NEVER
+// RENDERED. Those ids reach the same `srs` column and are the same one-way door,
+// so they belong under the same detector. Five hundred of them are authored
+// after this gate learns them, and not one before.
 //
 // ─────────────────────────────────────────────────────────────────────────────
 // WHAT IS HASHED — THE COVERED-FIELD CONTRACT.
@@ -51,6 +62,7 @@
 //   vocab    → slug, kind, term, es, example    [ScenarioVocabCard, s.-vocab.ts]
 //   grammar  → slug, kind, level, topic, prompt, options, answer, explain
 //                                            [GrammarQuestion, s.-grammar.ts]
+//   corevocab→ slug, kind, word, es, example  [CoreVocabCard, core-vocabulary.ts]
 //
 // That is every authored field of each type. `tip` is optional and hashes as
 // null when absent, so ADDING a tip to a live phrase is a change this gate
@@ -63,7 +75,13 @@
 // banks it describes.
 //
 // ─────────────────────────────────────────────────────────────────────────────
-// THE FOUR RULES.
+// THE FOUR RULES — UNCHANGED BY THE SECOND KEY SPACE, AND THAT IS WORTH SAYING.
+//
+// They operate on an id→hash MAP and are agnostic to how an id was spelled, so
+// arriving at a second key space cost them nothing: not one of the four was
+// touched when `vocab:` was added. Recording that here rather than leaving the
+// next reader to work it out, because "I did not have to touch the rules" is a
+// fact about the design — the rules gate KEYS, the tree decides what a key is.
 //
 //   1. An id in BOTH the fixture and the tree must hash the same.
 //      → a re-point fails, and so does a partial edit under a live id.
@@ -114,6 +132,15 @@ import {
   parseScenarioItemId,
   scenarioItemId,
 } from "../src/lib/review-items.ts";
+// The SECOND key space (04.1). The bank stores the bare slug; the stored key is
+// composed here by `coreVocabItemId`, exactly as the app composes it, so the
+// gate cannot record a key the app would never write.
+import { CORE_VOCABULARY } from "../src/lib/content/core-vocabulary.ts";
+import {
+  CORE_VOCAB_PREFIX,
+  coreVocabItemId,
+  parseCoreVocabItemId,
+} from "../src/lib/core-vocab-items.ts";
 
 /* ------------------------------------------------------------------ *
  * Harness — the same shape verify-scenario-content.mts uses.
@@ -223,6 +250,7 @@ const seenFields: Record<string, Set<string>> = {
   phrase: new Set(),
   vocab: new Set(),
   grammar: new Set(),
+  corevocab: new Set(),
 };
 
 function noteFields(kind: string, item: object) {
@@ -254,6 +282,7 @@ const GRAMMAR_FIELDS = [
   "answer",
   "explain",
 ] as const;
+const COREVOCAB_FIELDS = ["id", "word", "es", "example"] as const;
 
 const tree = new Map<string, string>();
 
@@ -316,14 +345,52 @@ for (const world of WORLDS) {
   }
 }
 
+// The VOLUME tier (04.1) — a second key space in the same tree, hashed on the
+// same terms. `card.id` is the SLUG; the key is composed here, because the bank
+// deliberately does not import the key space (that acyclicity is itself asserted
+// in verify-scenario-content.mts).
+for (const card of CORE_VOCABULARY) {
+  noteFields("corevocab", card);
+  tree.set(
+    coreVocabItemId(card.id),
+    digest({
+      kind: "corevocab",
+      slug: card.id,
+      word: card.word,
+      es: card.es,
+      example: card.example,
+    }),
+  );
+}
+
 assertCoveredFields("phrase", PHRASE_FIELDS);
 assertCoveredFields("vocab", VOCAB_FIELDS);
 assertCoveredFields("grammar", GRAMMAR_FIELDS);
+assertCoveredFields("corevocab", COREVOCAB_FIELDS);
 
 // Scope proof, not decoration: if an unscheduled kind ever leaked into the map
 // the gate would be hashing prose nothing schedules, and the covered-field
 // contract above would not describe it.
+//
+// TWO POSITIVE BRANCHES, not one relaxed predicate. A `vocab:` id parses to
+// nothing through `parseScenarioItemId` — by design, L1 — so the tempting repair
+// when the second key space arrived was "parses OR starts with the prefix",
+// which would wave through a MALFORMED id of either space: `vocab:` with no
+// slug, or `vocab:ghost` for a card the bank does not hold. Instead each id is
+// routed to the parser of its own space and must satisfy that parser fully. The
+// scenario branch is byte-for-byte the check it always was, unqualified; an id
+// that satisfies neither branch still fails, on whichever label it was routed
+// to. `CORE_VOCAB_PREFIX` is the router, and it is the same constant the
+// composer uses, so the two cannot drift apart.
 for (const id of tree.keys()) {
+  if (id.startsWith(CORE_VOCAB_PREFIX)) {
+    ok(
+      `scope: ${id} is a well-formed volume id the bank holds`,
+      parseCoreVocabItemId(id) !== undefined,
+      "a `vocab:` key whose slug no card carries is stored, merged and never rendered — D-05 in the second key space",
+    );
+    continue;
+  }
   const kind = parseScenarioItemId(id)?.kind;
   ok(
     `scope: ${id} is a scheduled kind`,
