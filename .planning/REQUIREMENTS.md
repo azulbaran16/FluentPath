@@ -131,12 +131,123 @@ little content**. Measured: ~280 vocabulary cards against a 1,000–2,000-word b
 2,809-word NGSL. Full reasoning, the options weighed and rejected, and the decisions in
 `.planning/NEXT-MILESTONE-REQUEST.md` and `.planning/phases/04.1-vocabulary-volume-deck/04.1-CONTEXT.md`.
 
-- [ ] **VOCAB-01**: The volume deck has its own spaced-repetition key space — `vocab:<slug>` composes, parses, resolves and enumerates through its own module, with `parseScenarioItemId`, `resolveReviewItem`, `reviewableIds()` and `verify-scenario-content.mts:389-396` **unchanged**, asserted by a committed check. The pseudo-scenario `core/vocab#word#<slug>` was measured against the live parser and found to be stored, merged and scheduled correctly and never rendered; it is dead by decision, not by omission.
-- [ ] **VOCAB-02**: `src/lib/content/core-vocabulary.ts` holds **500** cards of `{ id, word, es, example }` with **no `tip` field on the type**, so the tier's lower bar has nowhere to hide; the words come from a committed copy of the NGSL and every gloss and example is original.
-- [ ] **VOCAB-03**: The UI names the two tiers apart — its own route, its own nav entry, a tier chip on every card and a statement of what a volume card carries and what it does not — the volume deck has its **own** study queue, and no surface blends the counts: `Dashboard`'s and `ReviewHub`'s "Due today", the due list, the mistake notebook and the weak-spots drill are unchanged by its existence.
-- [ ] **VOCAB-04**: The saturated payload is measured over the **storage set** (every id that can reach the `srs` column, which is no longer the same as the shared review queue), re-measured from the harness after every authoring batch, and stays at or under **40 %** of the 1 MiB cap — a stop line where a human decides, distinct from the wall where a 413 becomes a permanent silent drop.
-- [ ] **VOCAB-05**: The quality floor is a set of harness assertions rather than a convention: every field non-empty; the `es` gloss is not the English word; the `example` contains the word (inflection allowed) and runs ≥ 6 words; no word repeats within the deck or against the 280 scenario cards; every word is on the committed NGSL list; and **no example opening-shape signature exceeds ~5 % of the deck** — the one assertion that addresses flat prose, automated because at 500 nobody reads them all.
-- [ ] **VOCAB-06**: Every new assertion has a mutation aimed at it that is **caught on its own label**, with surviving controls, run outside the working tree; all 500 ids are in `scripts/fixtures/scheduled-item-ids.json`, each batch regenerated in the same commit as its content; and `scenario-coverage.ts`'s 35/35 and 53/53 are **unmoved**, so the volume deck cannot inflate a scenario claim.
+> **Closed at the 04.1-07 phase gate on 2026-08-05.** Four of the six are `[x]`; two are `[~]`,
+> and the split is not a judgement call — it follows the wording of the requirements themselves.
+> A requirement whose own words describe a **property of the code or the content** is closed by
+> measurement, because measurement is what those words are about. A requirement whose own words
+> describe **what a learner sees** cannot be, and no number of assertions changes that.
+> **THE BLOCKING BROWSER CHECKPOINT (04.1-07 task 4) WAS NOT PERFORMED.** Nobody has opened
+> `/core-vocabulary` in a browser since the deck held twenty cards. It is open by name as
+> WINDOWS 74, with its twelve unobserved items and the ordered checklist in the plan.
+
+- [x] **VOCAB-01**: The volume deck has its own spaced-repetition key space — `vocab:<slug>` composes, parses, resolves and enumerates through its own module, with `parseScenarioItemId`, `resolveReviewItem`, `reviewableIds()` and `verify-scenario-content.mts:389-396` **unchanged**, asserted by a committed check. The pseudo-scenario `core/vocab#word#<slug>` was measured against the live parser and found to be stored, merged and scheduled correctly and never rendered; it is dead by decision, not by omission.
+
+  ***CLOSED ON MEASUREMENT.*** Every clause of this requirement is a property of source, and every
+  one is asserted. `coreVocabItemId` is the one author of the format and the bank never spells
+  `vocab:` (asserted from source; mutation M36 caught). All 500 ids parse to `undefined` through
+  `parseScenarioItemId`, resolve to `undefined` through `resolveReviewItem`, are absent from
+  `reviewableIds()` and resolve through their **own** resolver — 2,500 assertions, one per id per
+  property. `review-items.ts` has **no reference to the volume module in either direction** and the
+  key space's only reference back is a **type-only** import (M34, M35 caught). The requirement's
+  own citation `verify-scenario-content.mts:389-396` is now at **401-416** — the four tripwires are
+  byte-identical, but **cite them by their text** (*"a scenario key the curriculum does not have
+  parses to nothing"*), never by line, since twelve appended imports moved them. **One correction
+  to this requirement's wording:** it says `reviewableIds()` must be unchanged *and* names it in the
+  list of things that stay unchanged — L5 superseded L1 here, and the deck is deliberately **not**
+  in the shared enumerator. The wording is satisfied; the reason is the opposite of the one L1 gave.
+  `git diff` across the whole phase shows `curriculum.ts` and `scenario-coverage.ts` untouched.
+- [x] **VOCAB-02**: `src/lib/content/core-vocabulary.ts` holds **500** cards of `{ id, word, es, example }` with **no `tip` field on the type**, so the tier's lower bar has nowhere to hide; the words come from a committed copy of the NGSL and every gloss and example is original.
+
+  ***CLOSED ON MEASUREMENT.*** **500 cards, NGSL ranks 8 → 648**, parsed independently of the
+  module that enumerates them: **500 = 500 = 500** across the bank walked directly (with the prefix
+  spelled inside the check), `coreVocabIds()`, and the committed fixture — 04-09's 651 = 651 pattern
+  repeated for the new space, and its whole value is that it cannot share a bug with what it checks.
+  The one retired id, `vocab:color`, is in **none** of the three. `CoreVocabCard` has no `tip`
+  field, and growing the built record one is caught on `corevocab: the hashed record covers every
+  authored field` (M05). Provenance is asserted card by card against `scripts/fixtures/ngsl-headwords.tsv`
+  (NGSL 1.2, 2,809 headwords, CC BY-SA 4.0, attributed in the fixture header). **4,421 authored
+  words** — 688 of gloss, 3,733 of example, mean example 7.47 words, range 6–10. The list answers
+  *which words* and contributes no sentence: harness-only files reach **zero** client chunks
+  (`no-base-form-example`, `Culligan`, `SKIPPED_HEADWORDS` all appear in 0 files under `.next/static/`).
+- [~] **VOCAB-03**: The UI names the two tiers apart — its own route, its own nav entry, a tier chip on every card and a statement of what a volume card carries and what it does not — the volume deck has its **own** study queue, and no surface blends the counts: `Dashboard`'s and `ReviewHub`'s "Due today", the due list, the mistake notebook and the weak-spots drill are unchanged by its existence.
+
+  ***MET WITH A STATED LIMITATION, and the limitation is the requirement's own first clause.***
+  *"The UI names the two tiers apart"* and *"a learner can tell a volume card from a scenario card
+  without being told"* are claims about **what a learner sees**, and **nobody has seen it**. The
+  deck surface has not been opened in a browser since it held twenty cards; it now holds 500 in ten
+  bands of fifty. Twelve unobserved items are named in WINDOWS 74, including the one that matters
+  most here — `recallBatches` splitting a band with a rest point has **never been rendered on any
+  surface in this app**, and has been open since Phase 4 as WINDOWS 62.
+  ***WHAT IS PROVED.*** The route, the nav entry and the tier statement exist and build (114 static
+  pages, `/core-vocabulary` among them); the chip is `CORE_VOCAB_TITLE`, stamped by the one recall
+  renderer. **No surface blends the counts**, asserted three ways: `ReviewView` and `MistakesView`
+  do not know the space exists and `ReviewHub` knows the tier **by name only** (M31, M32, M33
+  caught); `reviewableIds()` is still exactly the three scenario key spaces, and pouring the volume
+  ids into it fires 503 failures (M39); a `vocab:` branch in `resolveReviewItem` fires 500 (M38).
+  **And every number on the surface is derived** — newly asserted at this gate rather than merely
+  claimed: the counts come from `ALL_ITEMS.length`, `BANDS.length` and `.filter().length`, and
+  **no digit appears in any JSX text node** of the view or the page. Writing "500" into the tier
+  statement, into the page heading or into the route metadata is caught on its own label (N07, N08,
+  N09). A **retired** id cannot inflate either count (N01, N02, N03), and the component is asserted
+  never to count `srs` keys by string prefix (N05) — which is the refactor that would break it.
+- [x] **VOCAB-04**: The saturated payload is measured over the **storage set** (every id that can reach the `srs` column, which is no longer the same as the shared review queue), re-measured from the harness after every authoring batch, and stays at or under **40 %** of the 1 MiB cap — a stop line where a human decides, distinct from the wall where a 413 becomes a permanent silent drop.
+
+  ***CLOSED ON MEASUREMENT.*** Printed by the harness on every run, not calculated in a document:
+  `payload: 317,038 B saturated over 1252 STORAGE id(s) = 752 shared-queue + 500 volume — 30.2% of
+  the 1,048,576 B cap (stop line 40%)`. **9.8 points of margin.** The storage set is a strict
+  superset of the queue set and narrowing it back is caught (M42); the **stop line and the wall are
+  two assertions on one number that fail at different moments**, proved from both directions —
+  tightening the ceiling to 25 % fires the stop line while **the wall survives** (M43). Five
+  measurements of the marginal cost across the phase: 220.6 → 222.7 → 223.4 → 224.5 → 224.9 B/id,
+  mean **223.7** over all 500, drifting +0.8 B per batch as the frequency list runs out of short
+  words. 04.1-05's projection of ~317,100 B came in **62 bytes** high, which is what four measured
+  points buy over one extrapolated table.
+- [x] **VOCAB-05**: The quality floor is a set of harness assertions rather than a convention: every field non-empty; the `es` gloss is not the English word; the `example` contains the word (inflection allowed) and runs ≥ 6 words; no word repeats within the deck or against the 280 scenario cards; every word is on the committed NGSL list; and **no example opening-shape signature exceeds ~5 % of the deck** — the one assertion that addresses flat prose, automated because at 500 nobody reads them all.
+
+  ***MET WITH A STATED LIMITATION, and the limitation is what the assertions cannot reach.*** Every
+  clause listed above is an assertion and every one was watched failing: fields non-empty (M08),
+  gloss ≠ word (M09), the example shows the word's **own** form (M10, which refuses *go/went* and
+  must never be softened), ≥ 6 words (M11), no duplicate in the deck (M12) or against the **352**
+  scenario terms (M13 — the requirement's "280" is stale by 72, and the check is derived from the
+  banks rather than pinned to either figure), provenance (M14), rank order (M15), rank completeness
+  (M18), and the three frame assertions. **The frame ceilings now bind at 25 per shape / 100 per
+  opening word / 100 distinct shapes, and the deck sits at 2 / 30 / 499.** Two findings this gate
+  owed and settled: the **distinct-shape floor can now fire ALONE** — 20 shapes of exactly 25
+  satisfies both ceilings and fails the floor, one failure, no collateral, which was impossible at
+  n=20 where it was dominated; and an **emptied bank still produces exactly ONE failure**, so
+  `the containment is not an empty deck` remains the only thing between a vacuous green and a real
+  one, and the nine assertions added at this gate survive an empty deck too (said, per 04.1-02's
+  instruction, rather than left to be found).
+  ***WHY NOT `[x]`.*** The requirement's own justification is *"automated because at 500 nobody
+  reads them all"* — and the reader pass found, in a 112-card sample (**22.4 %**), three defect
+  classes **no assertion in this list can see**: a per-**band** subject-shape lean (bands 4 and 5
+  run at 2 % pronoun openers against a deck-wide 17.8 %, and the band is the unit a learner sits
+  through); five cards whose Spanish front is most naturally answered by a *different* English word
+  (`standard` → "habitual" the sharpest, where gloss and example teach different senses); and three
+  examples that lean on a word a B1 learner will not know. The floor is a set of assertions as
+  promised, and it is **not sufficient**, which this gate says out loud rather than rounding up.
+  All three are open by name as WINDOWS 71, 72 and 73, and each is fixed only by retire-and-re-add.
+- [x] **VOCAB-06**: Every new assertion has a mutation aimed at it that is **caught on its own label**, with surviving controls, run outside the working tree; all 500 ids are in `scripts/fixtures/scheduled-item-ids.json`, each batch regenerated in the same commit as its content; and `scenario-coverage.ts`'s 35/35 and 53/53 are **unmoved**, so the volume deck cannot inflate a scenario claim.
+
+  ***CLOSED ON MEASUREMENT — this is the requirement the whole gate plan exists to satisfy.***
+  **52 mutations declared, 52 executed, 46 CAUGHT each on its own label, 6 controls SURVIVED.**
+  Run in a `git worktree` at `C:/tmp/fp-mut-0407` with `node_modules` junctioned in and **no build
+  performed inside it**; the worktree was removed, the main tree is clean under `src/` and
+  `scripts/` on a non-zero-exit check, and `.next` was wiped and rebuilt from the committed tree
+  before any claim was made from a build (03-08). Every verdict carries a **landing proof** (the
+  find string matched) and a **parse check** through TypeScript's own parser, because a non-zero
+  exit from a syntax error is not a catch. **Three mutations were defective and were found to be
+  defective before any assertion was blamed**, which is the ordering 04-01 established: M05 added an
+  unused *parameter* where the assertion reads keys off the built record; R02's regex stopped at an
+  escaped quote and produced invalid JSON, caught as SETUP-ERROR rather than scored as a catch.
+  **And one assertion was genuinely weak and was fixed** — see VOCAB-03's note on N07/N08: the copy
+  check's regex survived its own mutation twice, and now asks the compiler for `JsxText` nodes.
+  All **1,151** scheduled ids are in the fixture (500 volume, 651 scenario, 16 retired), each batch
+  regenerated in the same commit as its content, **zero re-pointed** across the phase. `--update`
+  still **refuses** to launder a changed hash, verified live. `scenario-coverage.ts` reports
+  **35/35 and 53/53** with `pendingPairs()` empty and its pair-count literals untouched, and
+  neither it nor `curriculum.ts` was modified at any point in the phase — proved from `git diff`
+  across the whole phase, not from care. Dependencies **11 + 11**; zero packages installed.
 
 ### Tutor (AI tutor end-to-end)
 
@@ -205,12 +316,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONT-03 | Phase 4 | Complete (measured, not built — see requirement) |
 | CONT-04 | Phase 4 | **Met with a stated limitation** `[~]` — closed at the 04-09 gate on measurement and a reader pass, NOT on observation. Content complete and derived: 84 phrases · 112 cards · 20 grammar questions across all five Sounding Native scenarios (from 30 · 40 · 5), 155 scheduled ids added, 15 retired with reasons, **0 re-pointed**, 53/53 pairs written and 0 pending — asserted for the first time rather than reported. Gated by 14,577 + 2,021 assertions at their high-water marks, an independent 651 = 651 id enumeration that does not import the gate's own logic, a 19-mutation sweep run in a scratch copy with its own `node_modules` (**17/17 caught on their own labels, 2 controls survived**, every verdict carrying a landing proof), and the derivation control re-proved (one emptied entry takes 53/53 → 52/53 and flips every dependent claim, with no second edit). **THE BROWSER PASS WAS NOT PERFORMED** — the batched recall deck, this phase's one component change and the surface between the learner and every recall item in the app, has never been rendered; nor has `/review` above sixteen due, a rehearsal move ticked, or anything at all on a phone. Ten unobserved items are open by name as WINDOWS 62 with an ordered checklist in `04-09-SUMMARY.md`. **"More reading" — half of D-01's own wording — was NOT delivered**, declined knowingly by the user at 04-08 on a measured ratio argument (WINDOWS 61); option D likewise (WINDOWS 63). `native/pronunciation` is deliberately the smallest of the five, for the reason written into both its banks |
 | CONT-05 | Phase 4 | Complete (measured, not built — see requirement) |
-| VOCAB-01 | Phase 04.1 | Pending |
-| VOCAB-02 | Phase 04.1 | Pending |
-| VOCAB-03 | Phase 04.1 | Pending |
-| VOCAB-04 | Phase 04.1 | Pending |
-| VOCAB-05 | Phase 04.1 | Pending |
-| VOCAB-06 | Phase 04.1 | Pending |
+| VOCAB-01 | Phase 04.1 | **Complete** — closed at the 04.1-07 gate ON MEASUREMENT. Own key space in its own module: `coreVocabItemId` is the one author of `vocab:<slug>` and the bank never spells it (M36); all 500 ids parse to nothing through `parseScenarioItemId`, resolve to nothing through `resolveReviewItem`, are absent from `reviewableIds()`, and resolve through their OWN resolver — 2,500 assertions, one per id per property. `review-items.ts` has no reference to the volume module in either direction and the key space imports back TYPE-ONLY (M34, M35). The dead `core/vocab#word#<slug>` design is recorded in AGENTS.md with the measurement that killed it. **Cite the four parse tripwires BY TEXT, never by line** — the `verify-scenario-content.mts:389-396` in this requirement's own wording is now 401-416, byte-identical but moved by twelve appended imports |
+| VOCAB-02 | Phase 04.1 | **Complete** — 500 cards, NGSL ranks 8 → 648, `{ id, word, es, example }` with no `tip` (M05 catches the built record growing one). Enumerated independently of the module under test: **500 = 500 = 500** across the bank walked directly, `coreVocabIds()` and the fixture, with the one retired id in none of the three. 4,421 authored words (688 gloss + 3,733 example; mean example 7.47 words, range 6–10). Provenance asserted card by card against a committed NGSL 1.2 copy, CC BY-SA 4.0 with attribution in the fixture header; the harness-only files reach ZERO client chunks |
+| VOCAB-03 | Phase 04.1 | **Met with a stated limitation** `[~]` — the containment is proved and **the seeing is not**. Asserted: `ReviewView` and `MistakesView` do not know the space exists and `ReviewHub` knows the tier BY NAME ONLY (M31–M33); `reviewableIds()` is still exactly the three scenario key spaces (M39 fires 503) and a resolver branch fires 500 (M38); and — new at this gate — **every count on the surface is derived and no JSX text node holds a digit**, so writing "500" into the tier statement, the page heading or the route metadata is caught on its own label (N07, N08, N09), and a retired id cannot inflate "you've met" or "due today" (N01–N03, N05). NOT asserted, because it cannot be: **this requirement leads with what a learner sees, and nobody has looked.** `/core-vocabulary` has not been opened in a browser since it held twenty cards; it now holds 500 in ten bands of fifty. Twelve unobserved items, open as WINDOWS 74 — including `recallBatches` rendering a rest point, which has never been seen on ANY surface and has been open since Phase 4 as WINDOWS 62 |
+| VOCAB-04 | Phase 04.1 | **Complete** — measured from the harness and printed on every run, not calculated in a document: **317,038 B saturated over 1,252 STORAGE ids = 30.2 % of the 1,048,576 B cap**, 9.8 points under the 40 % stop line. The storage set is a strict superset of the queue set (M42), and the stop line and the wall are two assertions on one number that fail at different moments — tightening the ceiling fires the stop line while the wall SURVIVES (M43). Marginal cost measured at five points across the phase, 220.6 → 224.9 B/id, mean 223.7 over all 500; 04.1-05's projection came in 62 bytes low |
+| VOCAB-05 | Phase 04.1 | **Met with a stated limitation** `[~]` — every clause is an assertion and every one was watched failing (M08–M15, M18, plus the three frame assertions). Two owed findings settled by measurement: the **distinct-shape floor now fires ALONE** at n=500 (20 shapes of exactly 25 satisfies both ceilings and fails the floor — one failure, no collateral; impossible at n=20 where it was dominated), and an **emptied bank still yields exactly ONE failure**, so `the containment is not an empty deck` is still the only thing between a vacuous green and a real one — and the nine assertions added at this gate survive an empty deck too, said rather than left to be found. NOT `[x]` because the requirement justifies itself with *automated because at 500 nobody reads them all* — and a 112-card reader sample (**22.4 %**) found three defect classes no assertion in this list can see: a per-BAND subject-shape lean (bands 4 and 5 run at 2 % pronoun openers against a deck-wide 17.8 %, and the band is the unit a learner sits through), five cards whose Spanish front is most naturally answered by a *different* English word, and three examples resting on a word a B1 learner will not know. WINDOWS 71, 72, 73 |
+| VOCAB-06 | Phase 04.1 | **Complete** — **52 mutations declared, 52 executed, 46 CAUGHT each on its own label, 6 controls SURVIVED**, run in a git worktree with `node_modules` junctioned in and **no build performed inside it**; worktree removed, main tree clean under `src/` and `scripts/` on a non-zero-exit check, `.next` wiped and rebuilt from the committed tree afterwards (03-08). Every verdict carries a landing proof and a parse check through TypeScript's own parser. Three mutations were DEFECTIVE and were diagnosed as defective before any assertion was blamed, which is 04-01's ordering; **one assertion was genuinely weak and was fixed** — the copy check's regex survived its own mutation twice, and now asks the compiler for `JsxText` nodes. 1,151 ids in the fixture across two key spaces, 16 retired, **zero re-pointed** in any content commit of the phase; `--update` still REFUSES to launder a changed hash, verified live. `scenario-coverage.ts` reports 35/35 and 53/53 with its pair-count literals intact, and neither it nor `curriculum.ts` was modified anywhere in the phase — proved from the diff rather than from care. Dependencies 11 + 11, zero packages installed |
 | TUTOR-01 | Phase 5 | Pending |
 | TUTOR-02 | Phase 5 | Pending |
 | TUTOR-03 | Phase 5 | Pending |

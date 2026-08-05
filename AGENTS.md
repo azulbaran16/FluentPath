@@ -117,12 +117,66 @@ Stack: Next.js 16 (App Router) · React 19 · TypeScript · Tailwind v4.
   uniqueness and storage scoping only (`SCHEDULED_ITEM_KINDS` in `review-items.ts`) because
   nothing scores them — a drafted text, a comprehension question that cannot leave its passage,
   and a ticked self-report are not answers that can come due.
+- **There is a SECOND vocabulary tier and it has its OWN key space, its own module and its own
+  queue.** `src/lib/content/core-vocabulary.ts` holds **500** NGSL cards at `/core-vocabulary`,
+  stored under `vocab:<slug>` — composed by `coreVocabItemId` in `src/lib/core-vocab-items.ts` and
+  **nowhere else**. `parseScenarioItemId` does not parse it, `resolveReviewItem` does not resolve
+  it and `reviewableIds()` does not list it, and **all three are deliberate.** The pseudo-scenario
+  `core/vocab#word#<slug>` was designed first, measured against the live parser and found to be
+  stored, merged and scheduled correctly and **never rendered** — the exact D-05 failure
+  `review-items.ts` exists to prevent, reproduced in permanent keys. It is dead by decision; do not
+  revive it. The `:` is the collision property, asserted against all four existing key spaces
+  *and* against `no deck is named vocab`, because `vocabulary.ts` already builds deck-browser ids
+  as `` `${deckId}:${i}` `` and `daily:0` exists today.
+- **The volume deck's queue is its own, and that is a product decision (L5), not an oversight.**
+  `/review` holds 752 scenario items earned across Phases 3 and 4 — the app's best content — and
+  500 lower-tier cards in the same queue would bury it within days. The Leitner engine,
+  `recordAttempt` and the `srs` store are **shared**; only the queue is not. **The trap that makes
+  this non-obvious: `ReviewView` and `MistakesView` do not filter through `reviewableIds()` at
+  all** — they resolve *every* stored id — so it is a branch in `resolveReviewItem`, not an entry
+  in the enumerator, that would leak the deck into the due list and the mistake notebook. Both
+  directions are asserted, from source and from behaviour.
+- **The tier's lower bar is encoded in the TYPE.** `CoreVocabCard` is `{ id, word, es, example }`
+  and has **no `tip` field, not even an optional one** — an optional field is a field an author
+  forgets, so the bar has nowhere to hide. A word that needs a register note belongs in a scenario
+  bank, where it gets a tip, a scenario around it and a place in `/review`.
+- **WHICH words is derived from the NGSL, not chosen.** Below the deepest rank the deck reaches,
+  every headword is either carded or declared in `core-vocabulary-skips.ts` with a reason from a
+  closed list of four (`function-word`, `already-taught`, `no-base-form-example`, `cognate`).
+  500 + 148 = 648 exactly. "Hard to example" is not a reason and never will be.
+- **The payload has a STOP LINE at 40 % and a WALL at 100 %, and they are different things.** The
+  wall is where the route answers 413, `sync-queue` classifies it permanent and drops the slot —
+  silent, unrecoverable loss of a snapshot. The stop line is where a **human decides**. **The fix
+  for a failing stop line is to stop and ask, never to raise the ceiling** — exactly as the fix for
+  a failing session-length budget is to raise `minutes` and never to lower a rate. Measured at
+  04.1-06: **317,038 B over 1,252 storage ids = 30.2 %**, at **223.7 B per volume card** (mean over
+  all 500; five measurements, drifting +0.8 B per batch). CONTEXT's 272.8 B/id is an average over
+  the *scenario* ids and over-states a volume card by 22 % — conservative, so nothing was decided
+  wrongly on it, but do not extrapolate from it a sixth time. The harness prints the figure.
+- **Two things about this deck no gate can see, recorded so they are checked by somebody rather
+  than by nobody.** (1) **Subject-shape monotony** — bare plural / mass / inanimate subjects —
+  needs animacy and part-of-speech, so it is deliberately printed and never asserted; it went
+  wrong on the first draft of two batches in four. It is reader-checked, by the executor of any
+  authoring plan **at draft time, before `--update`, while a rewrite is still free**, and by a
+  phase gate's reader pass. (2) **A front answerable by a different English word** — the
+  "taken front" re-glossing that avoids a duplicate front pushes a gloss off its headword's
+  central sense (`standard` → "habitual", `complete` → "rellenar"). Both are open by name in
+  `.planning/WINDOWS.md`, and both are fixed only by *retire and re-add*, never by an edit.
 - The gate for all of it: `node --experimental-strip-types scripts/verify-scenario-content.mts`
-  (**14,577** assertions) and `scripts/verify-id-stability.mts` (**2,021**, over 651 ids). Both are
-  low-conflict append targets — one import line, one group at the bottom. If either fails, fix the
-  content; never weaken the assertion. **And a gate that has never failed is a gate nobody has
-  tested:** aim a mutation at every assertion you add, require it to be CAUGHT *on its own label*,
-  and keep controls that must survive — a non-zero exit from a syntax error is not a catch.
+  (**21,914** assertions) and `scripts/verify-id-stability.mts` (**3,524**, over 1,151 ids in
+  **two** key spaces, 16 retired). Beside them, `scripts/verify-removed-cards.mts [baseRef]` —
+  a pre-commit diff check, not one of the nine: **a removed card must have a matching
+  hand-declared entry in the fixture's `retired` list, with a reason.** It compares parsed records
+  rather than raw lines, which is why appending a member to a union (moving a semicolon) is
+  invisible to it and a real deletion is not. The first two are low-conflict append targets — one
+  import line, one group at the bottom. If any of them fails, fix the content; never weaken the
+  assertion. **And a gate that has never failed is a gate nobody has tested:** aim a mutation at
+  every assertion you add, require it to be CAUGHT *on its own label*, and keep controls that must
+  survive — a non-zero exit from a syntax error is not a catch. 04.1-07 is the proof that this is
+  not ceremony: it wrote a "no number in the copy claims a quantity" assertion, aimed two mutations
+  at it, and **both survived** — the regex approximating "what a learner reads" was wrong in the
+  direction that makes an assertion vacuous rather than loud. The check now asks TypeScript for
+  `JsxText` nodes, because a node kind cannot be approximately right.
 - AI tutor endpoint `src/app/api/tutor/route.ts` is a stub until `ANTHROPIC_API_KEY` is set (Fase 5).
 - **A mutation sweep can poison a `.next` build that outlives it.** Sweeps restore source
   byte-for-byte and `git status` comes back clean while the build keeps the mutation — 03-08

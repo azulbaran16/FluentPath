@@ -1,10 +1,10 @@
 ---
 schema_version: 1
-open_count: 52
+open_count: 59
 waived_count: 1
 fixed_count: 17
-total_count: 70
-last_updated: 2026-08-05T02:06:17.085Z
+total_count: 77
+last_updated: 2026-08-05T03:06:24.106Z
 ---
 
 # Broken Windows Ledger
@@ -85,6 +85,13 @@ last_updated: 2026-08-05T02:06:17.085Z
 | 68 | 04.1 | deviation | src/lib/content/core-vocabulary.ts |  | 04.1-04: `color` is glossed "color / tono" purely to satisfy the es!==word gate — Spanish for color IS color. Cognates below rank 500 (total, natural, general, personal, similar) will keep hitting this in plans 05-06; decide whether a `cognate` skip reason is declared BEFORE a plan needs it. | open |  | 2026-08-05T01:25:42.811Z |  |
 | 69 | 04.1 | deviation | src/lib/content/core-vocabulary.ts |  | 04.1-05: the plan's removed-line check fails by design on the vocab:color retirement — the same plan's cognate_decision instructs the deletion the check exists to catch; it should assert a matching hand-declared entry in the fixture's retired list instead | open |  | 2026-08-05T02:06:15.952Z |  |
 | 70 | 04.1 | unrun-verify | src/app/core-vocabulary |  | 04.1-05: /core-vocabulary has never been opened in a browser (380 cards, 04.1-01 task 3 still outstanding), and it can now hold an orphaned srs key under vocab:color that no bank emits — nothing confirms the surface ignores it rather than counting it | open |  | 2026-08-05T02:06:17.085Z |  |
+| 71 | 04.1 | deviation | src/lib/content/core-vocabulary.ts |  | 04.1-07 READER PASS, the finding no gate can see: the deck-wide subject-shape figure HIDES a per-BAND lean, and the band is the unit a learner actually sits through. Pronoun/possessive openers per band of fifty: 14, 10, 6, ONE, ONE, 11, 8, 17, 15, 8. Deck-wide 17.8% is the number every plan in this phase reported; bands 4 and 5 (cards 151-250) run at 2%, i.e. 98 of 100 consecutive sentences with a non-pronoun subject. Those two bands are almost exactly 04.1-04's batch, whose own summary spent 2 pronoun openers of 120 and NAMED the risk it was creating; 04.1-05 and 04.1-06 corrected the deck-wide average by steering their OWN batches, which cannot reach back. NOT FIXED AND MUST NOT BE: every one of those ids is committed, so rewriting them is a re-point on about 49 permanent keys. Any future batch should be judged per-band, not deck-wide. | open |  | 2026-08-05T03:06:18.014Z |  |
+| 72 | 04.1 | deviation | src/lib/content/core-vocabulary.ts |  | 04.1-07 READER PASS: the TAKEN-FRONT strategy pushes a gloss off its headword's central sense, and nothing asserts the front is answerable by the card's own word. 04.1-06 re-glossed fifteen cards to avoid a front another card already held; the cost is a class of cards whose most natural English answer is a DIFFERENT word. Named, with what would change them: standard -> habitual (a learner answers *usual*; and the example 'I chose standard delivery and waited nine days' teaches the default-option sense, which is not habitual -- the sharpest of the five, because gloss and example teach different senses); complete -> rellenar (answers *fill in*); evidence -> indicios (answers *clues*); response -> reaccion (answers *reaction*); relate -> vincular (answers *link*). MITIGATION ALREADY IN PLACE, measured rather than assumed: none of fill, link, react, clue, usual or normal is a card, so no front has two right answers INSIDE the deck. Each fix is a retirement plus a new slug -- the user's decision, not a tidy-up at a gate. The bank is untouched. | open |  | 2026-08-05T03:06:19.157Z |  |
+| 73 | 04.1 | deviation | src/lib/content/core-vocabulary.ts |  | 04.1-07 READER PASS: three examples lean on a word a B1 learner is unlikely to know, which is the one thing the six-word floor cannot see. affect -- 'Damp affects the plaster on that north wall' needs BOTH damp (as a noun) and plaster; demand -- 'Demand for allotments doubled after the lockdown' turns on allotments, a low-frequency British word carrying the sense; fund -- 'He ran through the funds in under a year' hides the meaning in the phrasal verb 'ran through'. Soft, and named rather than fixed: each is a retire-and-re-add on a live id. Also a CLASS worth naming rather than any single card: a two-sense gloss with a one-sense example -- time 'tiempo / vez', back 'espalda / de vuelta', way 'manera / camino' all show only the first sense. That is legal under every assertion and is still half a card. | open |  | 2026-08-05T03:06:20.130Z |  |
+| 74 | 04.1 | unrun-verify | src/app/core-vocabulary/page.tsx |  | 04.1-07: THE BLOCKING BROWSER CHECKPOINT (plan 04.1-07 task 4) WAS NOT PERFORMED. Supersedes and widens WINDOWS 67 and 70. Nobody has opened /core-vocabulary in a browser since the deck held TWENTY cards; it now holds 500 in ten bands of fifty. Unobserved, by name: (1) the sidebar entry reached without typing a URL; (2) the surface reporting 500 words and ten bands; (3) the tier statement on screen; (4) the tier chip on every card; (5) recallBatches splitting a fifty-card band with a rest point -- still never rendered on ANY surface, the same component open as WINDOWS 62 since Phase 4; (6) Dashboard and review 'Reviews due', 'Due today' and 'Your mistakes' UNCHANGED across a study session, which is the whole of L5 and is proved today only from source and from a synthetic state; (7) the Postgres sync round trip -- rate Got it, reload, confirm it is no longer due; (8) the deck's own study-what-is-due queue returning exactly the missed cards and no scenario card; (9) Weak spots showing Core vocabulary as a LINK rather than as not-written; (10) an orphaned vocab:color srs key ignored rather than counted -- now asserted, never seen; (11) anything at all on a PHONE, the device the beta user practises on; (12) the beta user's own verdict on whether 500 NGSL cards are what she meant by 'too little content'. The ordered checklist with URLs is task 4 of 04.1-07-PLAN.md. | open |  | 2026-08-05T03:06:21.150Z |  |
+| 75 | 04.1 | deviation | scripts/verify-scenario-content.mts |  | 04.1-07: SUBJECT SHAPE IS DELIBERATELY NOT GATED, decided rather than left implied. It is the dimension that went wrong twice in four batches (04.1-04's bare-plural lean, 04.1-06's 40.8% first draft) and no assertion can see it: the shape that matters -- bare plural / mass / inanimate subject -- needs animacy and part-of-speech, and 'Wash the lettuce' and 'Termites destroyed' open identically to any string test. A ceiling on a proxy that does not track the risk would be weakened the first time it failed a legitimate batch, which is exactly how a gate stops being a gate. Two coarse figures are now PRINTED by the harness under an instruction (pronoun/possessive share, content-word-opener share) so the two named readers have a number instead of a scratch script each writes again. WHO CHECKS IT: (1) the executor of any plan authoring into this bank, at DRAFT time, before --update, while a rewrite is still free; (2) the phase gate's reader pass. If a third batch is ever authored and neither reader is named in its plan, this dimension is unguarded. | open |  | 2026-08-05T03:06:22.142Z |  |
+| 76 | 04.1 | deviation | src/lib/content/core-vocabulary.ts |  | 04.1-07: an EMPTIED bank still produces EXACTLY ONE failure at 500 cards, re-measured rather than inherited. 04.1-02's M37 found this at twenty and the property has not changed: every other volume assertion -- INCLUDING the nine 04.1-07 added -- passes vacuously over zero cards, because the loops do not run, the ceilings are satisfied and the containment is perfect. 'volume: the enumerator emits one id per card (the containment is not an empty deck)' is still the ONLY thing standing between a vacuous green and a real one. Stated as 04.1-02 instructed any later plan to state it: the new assertions DO survive an empty deck, and that is written down rather than left to be discovered. | open |  | 2026-08-05T03:06:23.179Z |  |
+| 77 | 04.1 | deviation | .planning/WINDOWS.md |  | 04.1-07: gsd-tools windows append REFUSES a CRLF ledger. On Windows with core.autocrlf, any `git checkout -- .planning/WINDOWS.md` restores the file with CRLF endings and every subsequent append dies with 'Ledger frontmatter line is not key: value' pointing at last_updated with a trailing \\r. The workaround is to rewrite the file to LF before appending. Filed beside WINDOWS 66's state.* tooling entry because it is the same class: a tool that cannot round-trip its own artifact on the platform the project is developed on. | open |  | 2026-08-05T03:06:24.106Z |  |
 
 ````json
 [
@@ -926,6 +933,90 @@ last_updated: 2026-08-05T02:06:17.085Z
     "status": "open",
     "reason": "",
     "recorded_at": "2026-08-05T02:06:17.085Z",
+    "resolved_at": null
+  },
+  {
+    "id": 71,
+    "kind": "deviation",
+    "phase": "04.1",
+    "file": "src/lib/content/core-vocabulary.ts",
+    "line": null,
+    "description": "04.1-07 READER PASS, the finding no gate can see: the deck-wide subject-shape figure HIDES a per-BAND lean, and the band is the unit a learner actually sits through. Pronoun/possessive openers per band of fifty: 14, 10, 6, ONE, ONE, 11, 8, 17, 15, 8. Deck-wide 17.8% is the number every plan in this phase reported; bands 4 and 5 (cards 151-250) run at 2%, i.e. 98 of 100 consecutive sentences with a non-pronoun subject. Those two bands are almost exactly 04.1-04's batch, whose own summary spent 2 pronoun openers of 120 and NAMED the risk it was creating; 04.1-05 and 04.1-06 corrected the deck-wide average by steering their OWN batches, which cannot reach back. NOT FIXED AND MUST NOT BE: every one of those ids is committed, so rewriting them is a re-point on about 49 permanent keys. Any future batch should be judged per-band, not deck-wide.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-05T03:06:18.014Z",
+    "resolved_at": null
+  },
+  {
+    "id": 72,
+    "kind": "deviation",
+    "phase": "04.1",
+    "file": "src/lib/content/core-vocabulary.ts",
+    "line": null,
+    "description": "04.1-07 READER PASS: the TAKEN-FRONT strategy pushes a gloss off its headword's central sense, and nothing asserts the front is answerable by the card's own word. 04.1-06 re-glossed fifteen cards to avoid a front another card already held; the cost is a class of cards whose most natural English answer is a DIFFERENT word. Named, with what would change them: standard -> habitual (a learner answers *usual*; and the example 'I chose standard delivery and waited nine days' teaches the default-option sense, which is not habitual -- the sharpest of the five, because gloss and example teach different senses); complete -> rellenar (answers *fill in*); evidence -> indicios (answers *clues*); response -> reaccion (answers *reaction*); relate -> vincular (answers *link*). MITIGATION ALREADY IN PLACE, measured rather than assumed: none of fill, link, react, clue, usual or normal is a card, so no front has two right answers INSIDE the deck. Each fix is a retirement plus a new slug -- the user's decision, not a tidy-up at a gate. The bank is untouched.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-05T03:06:19.157Z",
+    "resolved_at": null
+  },
+  {
+    "id": 73,
+    "kind": "deviation",
+    "phase": "04.1",
+    "file": "src/lib/content/core-vocabulary.ts",
+    "line": null,
+    "description": "04.1-07 READER PASS: three examples lean on a word a B1 learner is unlikely to know, which is the one thing the six-word floor cannot see. affect -- 'Damp affects the plaster on that north wall' needs BOTH damp (as a noun) and plaster; demand -- 'Demand for allotments doubled after the lockdown' turns on allotments, a low-frequency British word carrying the sense; fund -- 'He ran through the funds in under a year' hides the meaning in the phrasal verb 'ran through'. Soft, and named rather than fixed: each is a retire-and-re-add on a live id. Also a CLASS worth naming rather than any single card: a two-sense gloss with a one-sense example -- time 'tiempo / vez', back 'espalda / de vuelta', way 'manera / camino' all show only the first sense. That is legal under every assertion and is still half a card.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-05T03:06:20.130Z",
+    "resolved_at": null
+  },
+  {
+    "id": 74,
+    "kind": "unrun-verify",
+    "phase": "04.1",
+    "file": "src/app/core-vocabulary/page.tsx",
+    "line": null,
+    "description": "04.1-07: THE BLOCKING BROWSER CHECKPOINT (plan 04.1-07 task 4) WAS NOT PERFORMED. Supersedes and widens WINDOWS 67 and 70. Nobody has opened /core-vocabulary in a browser since the deck held TWENTY cards; it now holds 500 in ten bands of fifty. Unobserved, by name: (1) the sidebar entry reached without typing a URL; (2) the surface reporting 500 words and ten bands; (3) the tier statement on screen; (4) the tier chip on every card; (5) recallBatches splitting a fifty-card band with a rest point -- still never rendered on ANY surface, the same component open as WINDOWS 62 since Phase 4; (6) Dashboard and review 'Reviews due', 'Due today' and 'Your mistakes' UNCHANGED across a study session, which is the whole of L5 and is proved today only from source and from a synthetic state; (7) the Postgres sync round trip -- rate Got it, reload, confirm it is no longer due; (8) the deck's own study-what-is-due queue returning exactly the missed cards and no scenario card; (9) Weak spots showing Core vocabulary as a LINK rather than as not-written; (10) an orphaned vocab:color srs key ignored rather than counted -- now asserted, never seen; (11) anything at all on a PHONE, the device the beta user practises on; (12) the beta user's own verdict on whether 500 NGSL cards are what she meant by 'too little content'. The ordered checklist with URLs is task 4 of 04.1-07-PLAN.md.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-05T03:06:21.150Z",
+    "resolved_at": null
+  },
+  {
+    "id": 75,
+    "kind": "deviation",
+    "phase": "04.1",
+    "file": "scripts/verify-scenario-content.mts",
+    "line": null,
+    "description": "04.1-07: SUBJECT SHAPE IS DELIBERATELY NOT GATED, decided rather than left implied. It is the dimension that went wrong twice in four batches (04.1-04's bare-plural lean, 04.1-06's 40.8% first draft) and no assertion can see it: the shape that matters -- bare plural / mass / inanimate subject -- needs animacy and part-of-speech, and 'Wash the lettuce' and 'Termites destroyed' open identically to any string test. A ceiling on a proxy that does not track the risk would be weakened the first time it failed a legitimate batch, which is exactly how a gate stops being a gate. Two coarse figures are now PRINTED by the harness under an instruction (pronoun/possessive share, content-word-opener share) so the two named readers have a number instead of a scratch script each writes again. WHO CHECKS IT: (1) the executor of any plan authoring into this bank, at DRAFT time, before --update, while a rewrite is still free; (2) the phase gate's reader pass. If a third batch is ever authored and neither reader is named in its plan, this dimension is unguarded.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-05T03:06:22.142Z",
+    "resolved_at": null
+  },
+  {
+    "id": 76,
+    "kind": "deviation",
+    "phase": "04.1",
+    "file": "src/lib/content/core-vocabulary.ts",
+    "line": null,
+    "description": "04.1-07: an EMPTIED bank still produces EXACTLY ONE failure at 500 cards, re-measured rather than inherited. 04.1-02's M37 found this at twenty and the property has not changed: every other volume assertion -- INCLUDING the nine 04.1-07 added -- passes vacuously over zero cards, because the loops do not run, the ceilings are satisfied and the containment is perfect. 'volume: the enumerator emits one id per card (the containment is not an empty deck)' is still the ONLY thing standing between a vacuous green and a real one. Stated as 04.1-02 instructed any later plan to state it: the new assertions DO survive an empty deck, and that is written down rather than left to be discovered.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-05T03:06:23.179Z",
+    "resolved_at": null
+  },
+  {
+    "id": 77,
+    "kind": "deviation",
+    "phase": "04.1",
+    "file": ".planning/WINDOWS.md",
+    "line": null,
+    "description": "04.1-07: gsd-tools windows append REFUSES a CRLF ledger. On Windows with core.autocrlf, any `git checkout -- .planning/WINDOWS.md` restores the file with CRLF endings and every subsequent append dies with 'Ledger frontmatter line is not key: value' pointing at last_updated with a trailing \\r. The workaround is to rewrite the file to LF before appending. Filed beside WINDOWS 66's state.* tooling entry because it is the same class: a tool that cannot round-trip its own artifact on the platform the project is developed on.",
+    "status": "open",
+    "reason": "",
+    "recorded_at": "2026-08-05T03:06:24.106Z",
     "resolved_at": null
   }
 ]

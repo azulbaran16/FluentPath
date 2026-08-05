@@ -285,7 +285,45 @@ magnitude. Full reasoning, options weighed and rejected, and the decisions in
 
 **Requirements**: VOCAB-01, VOCAB-02, VOCAB-03, VOCAB-04, VOCAB-05, VOCAB-06
 **Depends on:** Phase 4
-**Plans:** 6/7 plans executed
+**Plans:** 7/7 plans executed
+
+**OUTCOME, recorded at the 04.1-07 gate on 2026-08-05.** Five criteria closed **on measurement**,
+two only partly, and the split is written down rather than rounded up. `verify-scenario-content`
+**21,914** and `verify-id-stability` **3,524** — both at their high-water marks; the other seven
+scripts exactly at their baselines (25,647 · 309 · 173 · 24 · 43 · 648 · 50), so no assertion was
+removed anywhere to make anything pass. **The beta user's exam section is unmoved**: all three
+`/celpip` scripts at baseline.
+
+  1. **CLOSED ON MEASUREMENT, with one clause of the criterion superseded.** A `vocab:<slug>`
+     composes, parses and resolves to a renderable card through its own module — but it is
+     **deliberately NOT counted by `reviewableIds()`**. This criterion was written under L1;
+     **L5 superseded it** before plan 01 ran, because listing the deck in the shared enumerator is
+     exactly what would bury 752 scenario items under 500 lower-tier cards. The tripwires are
+     byte-unchanged, and are now cited **by text** rather than by the line numbers this criterion
+     quotes — twelve appended imports moved 389-396 to 401-416.
+  2. **CLOSED ON MEASUREMENT.** 500 cards, ranks 8 → 648, no `tip` on the type, 4,421 authored
+     words, enumerated three independent ways that agree exactly.
+  3. **PARTLY — the containment is proved, the seeing is not.** No surface blends the counts, and
+     every number on the deck's own page is now asserted to be derived with no digit in any JSX
+     text node. But *"a learner can tell a volume card from a scenario card"* has never been
+     watched happening. See the blocking checkpoint below.
+  4. **CLOSED ON MEASUREMENT.** 317,038 B = **30.2 %**, printed by the harness after the batch,
+     9.8 points under the stop line, with the marginal cost measured at five points.
+  5. **PARTLY — the floor is a set of assertions as promised, and it is not sufficient.** All of
+     it is asserted and all of it was watched failing. A 112-card reader sample (22.4 %) then found
+     three defect classes no assertion in the list can see (WINDOWS 71–73).
+  6. **CLOSED ON MEASUREMENT.** 52 declared = 52 executed; 46 caught each on its own label, 6
+     controls survived, in a worktree with no build inside it. One assertion this gate wrote was
+     found **genuinely weak by its own mutation** and fixed.
+  7. **CLOSED ON MEASUREMENT.** 1,151 ids in the fixture, each batch regenerated in the same commit
+     as its content, zero re-pointed; `scenario-coverage.ts` still 35/35 and 53/53 with its literals
+     intact, and neither it nor `curriculum.ts` was touched at any point in the phase — proved from
+     the diff.
+
+**AND THE PHASE DOES NOT CLOSE ON ITS OWN TERMS.** Plan 07 task 4 is a `gate="blocking"` human
+checkpoint and **it was not performed** — the same failure this plan was shaped to prevent after
+CONT-04. `/core-vocabulary` has not been opened in a browser since the deck held twenty cards.
+Twelve unobserved items are open by name as **WINDOWS 74**, with the ordered checklist in the plan.
 
 **Success Criteria** (what must be TRUE):
 
@@ -338,7 +376,19 @@ Plans:
 - [x] 04.1-04-PLAN.md — Volume batch 2: the deck to 260, the first batch authored under real frame pressure
 - [x] 04.1-05-PLAN.md — Volume batch 3: the deck to 380, through the abstract middle of the list where the tier's quality is actually decided
 - [x] 04.1-06-PLAN.md — Volume batch 4: the deck to 500 and stop; the final measured payload and the derivation proved by four commits that edited no copy
-- [ ] 04.1-07-PLAN.md — Phase gate: full suite, an independent enumeration, a mutation per new assertion, the reader pass, and the browser pass Phase 4 never got
+- [x] 04.1-07-PLAN.md — Phase gate: nine scripts (two above their marks, seven at baseline), 500 = 500 = 500 enumerated independently, **52 mutations declared = executed, 46 caught on their own labels, 6 controls survived**, both latent removed-line defects closed by a real check, the no-copy-edit check rewritten as *no number in the copy claims a quantity*, and a 112-card reader pass — **but its task-4 blocking browser checkpoint was NOT performed, so VOCAB-03 and VOCAB-05 close as `[~]` and WINDOWS 74 carries the twelve unobserved items**
+
+**What this phase did NOT deliver, named rather than omitted.** 500 cards is roughly **a fifth of
+the NGSL** (2,809) and a sixteenth of a fluency deck. The deck **does not cover the 1,000–2,000-word
+beginner consensus** and does not claim to — every count on its surface is derived, so it reports
+what exists. A second batch is a **fresh decision with the payload re-measured first**: at the
+measured ~225 B/id another 500 would land near 36 %, which is a fact about arithmetic and not a
+recommendation, and the hard-cap ceiling is nearer 3,600 volume cards than CONTEXT's 3,090 — a
+ceiling that keeps rising when you re-measure is the shape of a number somebody wants to be bigger.
+The **8,000–11,000-card fluency deck is not reachable in the JSON-column design at any rate**; that
+needs **DATA-01** (normalised progress schema), which sits in the v2 backlog. Nothing here fails
+gracefully: above the cap the route answers 413, `sync-queue` classifies it permanent and drops the
+slot, so crossing it silently stops syncing the learner's progress.
 
 ### Phase 5: AI Tutor End-to-End
 
