@@ -3,17 +3,17 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 04.1
-current_phase_name: native-level-depth
+current_phase_name: vocabulary-volume-deck
 status: in-progress
-stopped_at: Completed 04.1-06-PLAN.md
-last_updated: "2026-08-05T02:34:39.129Z"
-last_activity: 2026-08-04
-last_activity_desc: "04-09 executed, THE PHASE GATE: 17 of 17 mutations CAUGHT on their own labels with 2 controls green in a scratch export with its own node_modules, an independent 651 = 651 id enumeration that does not import the gate own logic, the derivation control re-proved, and a reader pass that found NO near-duplicate exercise and rewrote nothing (same-world highest 0.286 phrases / 0.400 terms, nothing at or above 0.50 anywhere, the rise from 03-11 mostly pool size). The corpus figure is settled at 4,410 for 04-07 own tree and 4,440 at HEAD, and 04-05 broken harvester now THROWS rather than sitting importable beside the good one. CONT-04 is marked [~] met-with-a-stated-limitation and NOT [x]: the content is complete, derived and gated, but THE BROWSER PASS WAS NOT PERFORMED and ten items are open by name as WINDOWS 62 - including the batched recall deck, which is this phase one component change and has never been rendered, and any phone at all. More reading is named as a deliberate deferral the user declined knowingly. PHASE 4 IS COMPLETE."
+stopped_at: "Completed 04.1-07-PLAN.md — phase gate green, browser checkpoint NOT performed (WINDOWS 74)"
+last_updated: "2026-08-05T03:16:39.524Z"
+last_activity: 2026-08-05
+last_activity_desc: "04.1-07 executed, THE PHASE GATE: all nine verify scripts pass with NO count below its baseline (content 21,914 and id-stability 3,524 at their high-water marks, the other seven exactly at 25,647 / 309 / 173 / 24 / 43 / 648 / 50, so the beta user's CELPIP section is unmoved), 500 = 500 = 500 enumerated independently of the module under test with the one retired id in none of the three, and a 52-mutation sweep in a worktree with no build inside it in which 46 were CAUGHT each on its own label and 6 controls SURVIVED, every verdict carrying a landing proof and a parse check. Three mutations were DEFECTIVE and were diagnosed as defective before any assertion was blamed, and ONE ASSERTION WAS GENUINELY WEAK AND WAS FIXED: the no-copy-edit check written in this same plan survived its own mutation twice, because a regex approximating what a learner reads is wrong in the direction that makes an assertion vacuous, so it now asks TypeScript for JsxText nodes. Both latent removed-line defects are closed by scripts/verify-removed-cards.mts, which asserts the real rule - a removed card must have a matching hand-declared retirement with a reason - and compares parsed records rather than raw lines. A 112-card reader pass (22.4%) found three defect classes no gate can see, the sharpest being that the deck-wide subject-shape figure HIDES a per-band lean: bands 4 and 5 run at 2% pronoun openers against a deck-wide 17.8%, and the band is the unit a learner sits through. VOCAB-01/02/04/06 are [x]; VOCAB-03 and VOCAB-05 are [~] because each leads with something nobody has seen. THE BLOCKING BROWSER CHECKPOINT WAS NOT PERFORMED - nobody has opened /core-vocabulary since the deck held twenty cards and it now holds five hundred; twelve items are open by name as WINDOWS 74. PHASE 04.1 IS CONTENT-COMPLETE AND NOT OBSERVED."
 progress:
-  total_phases: 6
-  completed_phases: 5
+  total_phases: 7
+  completed_phases: 6
   total_plans: 52
-  completed_plans: 51
+  completed_plans: 52
 ---
 
 # Project State
@@ -23,7 +23,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-23)
 
 **Core value:** A learner can practice any real-life English scenario end-to-end — with an AI tutor that corrects them in context — and their progress is never lost.
-**Current focus:** Phase 05 — the AI tutor (NOT STARTED). Phase 04 native-level-depth is COMPLETE, 9 of 9 plans; CONT-04 closed at [~] with its browser pass open by name (WINDOWS 62).
+**Current focus:** Phase 05 — the AI tutor (NOT STARTED). Phase 04.1 vocabulary-volume-deck is CONTENT-COMPLETE at 7 of 7 plans — 500 NGSL cards, 30.2% of the payload cap, 21,914 + 3,524 assertions, 46 of 46 mutations caught on their own labels — but its gate=blocking browser checkpoint was NOT performed, so VOCAB-03 and VOCAB-05 close at [~] and twelve unobserved items are open by name as WINDOWS 74. Phase 04 is likewise closed with CONT-04 at [~] and WINDOWS 62 open. TWO CONSECUTIVE PHASES HAVE NOW ENDED WITH THEIR HUMAN HALF UNDONE.
 
 ## Current Position
 
@@ -135,9 +135,9 @@ plan should settle: whether `FALLBACK_LESSON` is deleted or stays asserted-dead 
 took opposite routes on the same class of problem), and whether 04-04's briefing/bank separation
 gate should widen from one scenario to all thirty-five.
 
-Last activity: 2026-08-04 — 04-09 executed, THE PHASE GATE: 17 of 17 mutations CAUGHT on their own labels with 2 controls green in a scratch export with its own node_modules, an independent 651 = 651 id enumeration that does not import the gate own logic, the derivation control re-proved, and a reader pass that found NO near-duplicate exercise and rewrote nothing (same-world highest 0.286 phrases / 0.400 terms, nothing at or above 0.50 anywhere, the rise from 03-11 mostly pool size). The corpus figure is settled at 4,410 for 04-07 own tree and 4,440 at HEAD, and 04-05 broken harvester now THROWS rather than sitting importable beside the good one. CONT-04 is marked [~] met-with-a-stated-limitation and NOT [x]: the content is complete, derived and gated, but THE BROWSER PASS WAS NOT PERFORMED and ten items are open by name as WINDOWS 62 - including the batched recall deck, which is this phase one component change and has never been rendered, and any phone at all. More reading is named as a deliberate deferral the user declined knowingly. PHASE 4 IS COMPLETE.
+Last activity: 2026-08-05 — 04.1-07 executed, THE PHASE GATE: all nine verify scripts pass with NO count below its baseline (content 21,914 and id-stability 3,524 at their high-water marks, the other seven exactly at 25,647 / 309 / 173 / 24 / 43 / 648 / 50, so the beta user's CELPIP section is unmoved), 500 = 500 = 500 enumerated independently of the module under test with the one retired id in none of the three, and a 52-mutation sweep in a worktree with no build inside it in which 46 were CAUGHT each on its own label and 6 controls SURVIVED, every verdict carrying a landing proof and a parse check. Three mutations were DEFECTIVE and were diagnosed as defective before any assertion was blamed, and ONE ASSERTION WAS GENUINELY WEAK AND WAS FIXED: the no-copy-edit check written in this same plan survived its own mutation twice, because a regex approximating what a learner reads is wrong in the direction that makes an assertion vacuous, so it now asks TypeScript for JsxText nodes. Both latent removed-line defects are closed by scripts/verify-removed-cards.mts, which asserts the real rule - a removed card must have a matching hand-declared retirement with a reason - and compares parsed records rather than raw lines. A 112-card reader pass (22.4%) found three defect classes no gate can see, the sharpest being that the deck-wide subject-shape figure HIDES a per-band lean: bands 4 and 5 run at 2% pronoun openers against a deck-wide 17.8%, and the band is the unit a learner sits through. VOCAB-01/02/04/06 are [x]; VOCAB-03 and VOCAB-05 are [~] because each leads with something nobody has seen. THE BLOCKING BROWSER CHECKPOINT WAS NOT PERFORMED - nobody has opened /core-vocabulary since the deck held twenty cards and it now holds five hundred; twelve items are open by name as WINDOWS 74. PHASE 04.1 IS CONTENT-COMPLETE AND NOT OBSERVED.
 
-Progress: [██████████] 98% — 45 of 45 written plans executed (5 of 6 phases complete; Phase 4 native-level-depth CLOSED at 9 of 9 plans, CONT-04 at [~] with its browser pass open as WINDOWS 62; Phase 5, the AI tutor, is not yet planned so 45 is the written total and not the project total)
+Progress: [██████████] 100% — 52 of 52 written plans executed (6 of 7 phases complete; Phase 04.1 vocabulary-volume-deck CLOSED at 7 of 7 plans with VOCAB-03 and VOCAB-05 at [~] and its browser pass open as WINDOWS 74; Phase 4 CLOSED at 9 of 9 with CONT-04 at [~] and WINDOWS 62; Phase 5, the AI tutor, is not yet planned, so 52 is the WRITTEN total and not the project total — the bar reads 100% of what has been written, not of the milestone)
 
 ## Performance Metrics
 
@@ -208,6 +208,7 @@ Progress: [██████████] 98% — 45 of 45 written plans execut
 | Phase 04.1 P04 | ~2h | 2 tasks | 3 files |
 | Phase 04.1 P05 | ~2h | 2 tasks | 3 files |
 | Phase 04.1 P06 | ~2h | 2 tasks | 3 files |
+| Phase 04.1 P07 | ~3h | 5 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -399,6 +400,9 @@ Recent decisions affecting current work:
 - [Phase ?]: A derivational noun/verb pair (empleo/empleado) is not a front collision; two fronts a letter apart with unrelated answers is
 - [Phase ?]: The volume tier's measured marginal cost is 223.7 B/id, 82% of CONTEXT's 272.8 B/id scenario average — the deck finished at 30.2% of the 1 MiB cap
 - [Phase ?]: Subject-shape lean is invisible to the harness and went wrong on the first draft for the second time in three batches; 17 examples were rewritten before their ids entered the fixture
+- [Phase 04.1]: 04.1-07: subject-shape monotony gets NO ceiling — animacy is not decidable from a first token, so it is printed under an instruction and reader-checked by two named readers
+- [Phase 04.1]: 04.1-07: the no-copy-edit check is replaced by a property — no number in the copy claims a quantity, read off JsxText nodes because the regex survived its own mutation twice
+- [Phase 04.1]: 04.1-07: VOCAB-03 and VOCAB-05 close as [~] — a requirement about what a learner SEES cannot close on measurement, and the blocking browser checkpoint was not performed
 
 ### Pending Todos
 
@@ -429,6 +433,7 @@ Recent decisions affecting current work:
 - Phase 2.1 cannot be closed until the browser/phone pass runs: six ROADMAP criteria and ~20 WINDOWS.md entries depend on it. Checklist in 02.1-12-SUMMARY.md
 - 04.1-01 task 3 is a BLOCKING human checkpoint and is outstanding: /core-vocabulary must be opened in a browser, a card rated, the page reloaded, and the three /review numbers confirmed unmoved, before any requirement of plan 01 is marked complete or plan 03 authors more ids.
 - 04.1: the removed-line check in plans 05-06 fails BY DESIGN on a retirement — it exits non-zero on any removed non-comment bank line while the same plan's cognate_decision instructs removing the color card. It should assert instead that a removed card line has a matching hand-declared entry in the fixture's retired list.
+- 04.1-07 task 4 is a gate=blocking human checkpoint and was NOT performed: nobody has opened /core-vocabulary in a browser since the deck held twenty cards; it now holds 500. Twelve unobserved items are named in WINDOWS 74 with an ordered checklist in the plan. VOCAB-03 and VOCAB-05 are [~] waiting on exactly this.
 
 ### Roadmap Evolution
 
@@ -447,6 +452,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-08-05T02:34:24.713Z
-Stopped at: Completed 04.1-06-PLAN.md
+Last session: 2026-08-05T03:16:38.186Z
+Stopped at: Completed 04.1-07-PLAN.md — phase gate green, browser checkpoint NOT performed (WINDOWS 74)
 Resume file: None

@@ -301,20 +301,26 @@ removed anywhere to make anything pass. **The beta user's exam section is unmove
      exactly what would bury 752 scenario items under 500 lower-tier cards. The tripwires are
      byte-unchanged, and are now cited **by text** rather than by the line numbers this criterion
      quotes — twelve appended imports moved 389-396 to 401-416.
+
   2. **CLOSED ON MEASUREMENT.** 500 cards, ranks 8 → 648, no `tip` on the type, 4,421 authored
      words, enumerated three independent ways that agree exactly.
+
   3. **PARTLY — the containment is proved, the seeing is not.** No surface blends the counts, and
      every number on the deck's own page is now asserted to be derived with no digit in any JSX
      text node. But *"a learner can tell a volume card from a scenario card"* has never been
      watched happening. See the blocking checkpoint below.
+
   4. **CLOSED ON MEASUREMENT.** 317,038 B = **30.2 %**, printed by the harness after the batch,
      9.8 points under the stop line, with the marginal cost measured at five points.
+
   5. **PARTLY — the floor is a set of assertions as promised, and it is not sufficient.** All of
      it is asserted and all of it was watched failing. A 112-card reader sample (22.4 %) then found
      three defect classes no assertion in the list can see (WINDOWS 71–73).
+
   6. **CLOSED ON MEASUREMENT.** 52 declared = 52 executed; 46 caught each on its own label, 6
      controls survived, in a worktree with no build inside it. One assertion this gate wrote was
      found **genuinely weak by its own mutation** and fixed.
+
   7. **CLOSED ON MEASUREMENT.** 1,151 ids in the fixture, each batch regenerated in the same commit
      as its content, zero re-pointed; `scenario-coverage.ts` still 35/35 and 53/53 with its literals
      intact, and neither it nor `curriculum.ts` was touched at any point in the phase — proved from
