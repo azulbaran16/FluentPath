@@ -94,16 +94,26 @@ function card(word: string, es: string, example: string): CoreVocabCard {
 /**
  * The volume deck, in NGSL rank order.
  *
- * 380 cards as of plan 04.1-05 — the tracer batch of twenty (04.1-01, to rank
- * 71), the first volume batch of 120 (04.1-03, to rank 238), the second
- * (04.1-04, to rank 378) and the third (04.1-05, to rank 515). They are real
- * cards held to the volume bar, not placeholders: every `es` is a natural
- * Spanish gloss and never the English word, and every `example` is a sentence
- * somebody would say, contains the word and runs at least six words.
+ * 500 cards as of plan 04.1-06, and THE DECK IS FINISHED — the tracer batch of
+ * twenty (04.1-01, to rank 71), the first volume batch of 120 (04.1-03, to rank
+ * 238), the second (04.1-04, to rank 378), the third (04.1-05, to rank 515) and
+ * the fourth and last (04.1-06, to rank 648). They are real cards held to the
+ * volume bar, not placeholders: every `es` is a natural Spanish gloss and never
+ * the English word, and every `example` is a sentence somebody would say,
+ * contains the word and runs at least six words.
+ *
+ * FIVE HUNDRED IS A CEILING DECISION, NOT A STOPPING POINT SOMEBODY GOT TIRED
+ * AT. The learner's whole progress record is one JSON column behind a 1 MiB
+ * route cap; the harness measures what this bank costs there and prints it on
+ * every run, and 500 cards land near 30 % of that cap against a 40 % stop line.
+ * Another 500 would not fit under the rule. Growing this bank is therefore a
+ * fresh decision with the payload RE-MEASURED first — never an assumed
+ * continuation, and never an extrapolation, which is what produced the wrong
+ * per-id figure this phase had to correct twice.
  *
  * THE ARITHMETIC DOES NOT ADD UP BY ONE, AND THAT IS THE POINT. 20 + 120 + 120
- * + 121 = 381, not 380, because 04.1-05 REMOVED one card as well as adding
- * 121: `color` (rank 378) shipped in 04.1-04 glossed "color / tono", and
+ * + 121 + 120 = 501, not 500, because 04.1-05 REMOVED one card as well as
+ * adding 121: `color` (rank 378) shipped in 04.1-04 glossed "color / tono", and
  * Spanish for *color* is *color*. The gate asserts `es !== word`, so the card
  * satisfied the assertion by appending a near-synonym rather than by having a
  * distinct front — a fudge, recorded as one in that plan's summary. The user's
@@ -948,4 +958,339 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   card("couple", "pareja", "The couple upstairs argue every Sunday."),
   // rank 515
   card("act", "actuar", "You must act quickly if the pipe bursts."),
+
+  // ------------------------------------------------------------------
+  // 04.1-06 — the FOURTH and LAST volume batch, ranks 516 to 648.
+  // ------------------------------------------------------------------
+  // THE DECK STOPS AT 500. Not because the list runs out — the NGSL has 2,809
+  // headwords and rank 649 is `pause` — but because 500 is the number the
+  // payload decision was taken against, measured rather than modelled. Growing
+  // past it is a fresh decision with the ceiling re-measured first, and this
+  // batch does not take it and does not prepare for it.
+  //
+  // THE CONSTRAINT THAT DOMINATES THIS BAND IS THE TAKEN FRONT, not the closed
+  // class and not the cognate. Below rank 500 the list is largely Latinate and
+  // largely lexical: only six of this batch's thirteen skips are function
+  // words. What actually decides a gloss here is which Spanish word an earlier
+  // card already owns, because `es` is the FRONT and two cards with the same
+  // front expecting different answers is the usability defect this deck has
+  // refused since plan 01. Fifteen of these 120 glosses were chosen against a
+  // taken front rather than from a dictionary, and each carries its reason
+  // beside the card.
+  //
+  // A DERIVATIONAL PAIR IS NOT A COLLISION, AND THE LINE IS WORTH STATING.
+  // `job` is "empleo" and `employee` is "empleado"; `grow` is "crecer" and
+  // `growth` would be "crecimiento". Those are 1:1 in both languages, so the
+  // learner who answers each front correctly has learnt something real. What is
+  // forbidden is two fronts a letter apart whose answers are UNRELATED — the
+  // `policy`/`political` case plan 05 avoided. Same-stem is fine; same-shape
+  // with different meanings is not.
+
+  // rank 516
+  card("range", "gama", "Their range of sizes stops at extra large."),
+  // rank 517
+  card("quality", "calidad", "You lose sound quality on that cheap speaker."),
+  // "proyecto" is also the second half of `plan`'s front ("planear / proyecto",
+  // rank 232). Kept: the two fronts are different strings a learner answers
+  // differently, and every honest alternative here is worse than the overlap.
+  // rank 518
+  card("project", "proyecto", "Which project needs the most volunteers this month?"),
+  // rank 519
+  card("round", "redondo", "A round table seats more guests than a square one."),
+  // rank 520
+  card("opportunity", "oportunidad", "Missing that opportunity kept her in the same job."),
+  // rank 521
+  card("road", "carretera", "The road to the beach closes every winter."),
+  // rank 523
+  card("list", "lista", "Pin the list where everybody can see it."),
+  // rank 524
+  card("wish", "desear", "I wish this bus went past the hospital."),
+  // "llevar (ropa)" and not "llevar": `take` (rank 59) holds "llevar / tomar".
+  // The parenthetical rather than "llevar puesto", which the scan put at 0.500
+  // against `position` (426, "puesto") — a front wholly containing another
+  // front. Same device as `morning`, `class` and `person`.
+  // rank 526
+  card("wear", "llevar (ropa)", "They make us wear a black apron all day."),
+  // rank 527
+  card("fund", "fondos", "He ran through the funds in under a year."),
+  // rank 528
+  card("rest", "descansar", "Rest your leg for a week, the doctor said."),
+  // rank 529
+  card("kid", "crío", "Both kids fell asleep before the film ended."),
+  // rank 530
+  card("industry", "industria", "Which industry still employs anybody in this valley?"),
+  // rank 531
+  card("education", "educación", "Her education stopped when the family moved abroad."),
+  // rank 532
+  card("measure", "medir", "Measure the window twice before ordering blinds."),
+  // rank 533
+  card("kill", "matar", "Frost killed every tomato plant last April."),
+  // rank 534
+  card("serve", "servir", "Nobody serves you at that counter after six."),
+  // rank 535
+  card("likely", "probable", "Snow is likely above a thousand metres tonight."),
+  // A stance adverb, and it is CARDED rather than skipped on the same line
+  // `probably` (328) was carded on: an epistemic adverb names the speaker's
+  // confidence and can be glossed, unlike the degree particles `quite` and
+  // `rather`. "desde luego" and not "seguro": `sure` (279) holds that front.
+  // rank 536
+  card("certainly", "desde luego", "That certainly explains the smell in the hallway."),
+  // rank 537
+  card("national", "nacional", "Nobody warned us about the national holiday."),
+  // rank 539
+  card("teach", "enseñar", "Who teaches the beginners' class on Tuesdays?"),
+  // rank 540
+  card("field", "campo", "Our neighbour keeps two horses in that field."),
+  // rank 541
+  card("security", "seguridad", "I lost my nail scissors at airport security."),
+  // rank 542
+  card("air", "aire", "Warm air escapes through that gap under the door."),
+  // "ventaja" and not "beneficio", which teaches nothing a Spanish speaker does
+  // not already have — the same reasoning the `cognate` skips rest on, applied
+  // to a word that DOES have a differing gloss and so stays carded.
+  // rank 543
+  card("benefit", "ventaja", "One benefit of night shifts is the empty roads."),
+  // rank 544
+  card("trade", "comercio", "Both islands lost their trade when the ferry stopped."),
+  // rank 545
+  card("risk", "riesgo", "Climbing that ladder alone is a real risk."),
+  // rank 546
+  card("news", "noticias", "She heard the news from a colleague first."),
+  // "habitual" and not "estándar". The Spanish orthography differs, so the
+  // cognate reason does not apply by its own narrow line — but a card whose
+  // front is the English word wearing an accent teaches nothing, so the
+  // adjective's real sense is glossed instead. `norma` was rejected because
+  // `policy` (399) holds "normativa" and the two are a letter apart.
+  // rank 547
+  card("standard", "habitual", "I chose standard delivery and waited nine days."),
+  // rank 548
+  card("vote", "votar", "We vote on the shift pattern each September."),
+  // rank 549
+  card("percent", "por ciento", "Barely ten percent of the seats were sold."),
+  // 04.1-05 glossed `approach` "enfoque" specifically so this card could own
+  // "centrarse". The separation was planned a batch ahead; here it is.
+  // rank 550
+  card("focus", "centrarse", "Try to focus on one chapter at a time."),
+  // rank 551
+  card("stage", "etapa", "The final stage of the walk is uphill."),
+  // rank 552
+  card("space", "espacio", "Is there space for one more suitcase?"),
+  // The NGSL spells this US-style, so the example does too — the matcher admits
+  // realize/realized and would refuse "realised". Same rule `center` (334)
+  // follows.
+  // rank 554
+  card("realize", "darse cuenta", "Few passengers realized the train had changed platform."),
+  // rank 555
+  card("usually", "normalmente", "He usually parks behind the bakery on Fridays."),
+  // rank 556
+  card("data", "datos", "Our data disappeared when the laptop was stolen."),
+  // rank 557
+  card("single", "único", "Not a single ticket was left for Saturday."),
+  // rank 558
+  card("address", "dirección", "Send the parcel to my new address, please."),
+  // "rendimiento" and not "actuación", which is one suffix from `act` (515)
+  // "actuar" — and the work sense is the one this deck's learner meets.
+  // rank 559
+  card("performance", "rendimiento", "You notice the performance drop in this heat."),
+  // "casualidad" and not "oportunidad": `opportunity` (520) holds that front,
+  // and the luck sense is the one that distinguishes this word anyway.
+  // rank 560
+  card("chance", "casualidad", "By chance we sat beside her on the plane."),
+  // rank 561
+  card("accept", "aceptar", "Will they accept a cheque for the deposit?"),
+  // rank 562
+  card("society", "sociedad", "Spanish society changed enormously in twenty years."),
+  // rank 563
+  card("technology", "tecnología", "Our clinic got the new technology last spring."),
+  // rank 564
+  card("mention", "mencionar", "She mentioned the leak twice and nobody came."),
+  // "opción" and not "elección", which is both a letter from `choose` (447)
+  // "elegir" and ambiguous with the political sense.
+  // rank 565
+  card("choice", "opción", "You have almost no choice on that menu."),
+  // rank 566
+  card("save", "ahorrar", "Cycling to work saves me forty euros monthly."),
+  // rank 567
+  card("common", "común", "Power cuts are common during the dry season."),
+  // rank 568
+  card("culture", "cultura", "Office culture changed once the founder retired."),
+  // "demanda" (the noun) because `require` (402) holds "exigir".
+  // rank 570
+  card("demand", "demanda", "Demand for allotments doubled after the lockdown."),
+  // rank 572
+  card("limit", "límite", "Speed limits drop to thirty near the school."),
+  // rank 573
+  card("listen", "escuchar", "Listen carefully; the announcement is only made once."),
+  // The ADJECTIVE, deliberately. "due to" is a complex preposition and would be
+  // glossed "debido a", which is grammar; "the rent is due Friday" is the
+  // lexical sense a learner can answer.
+  // rank 574
+  card("due", "previsto para", "Her baby is due the week after Easter."),
+  // rank 575
+  card("wrong", "equivocado", "You dialled the wrong number twice tonight."),
+  // rank 576
+  card("foot", "pie", "A blister on his foot ended the hike."),
+  // rank 577
+  card("effort", "esfuerzo", "Little effort went into painting the hallway."),
+  // rank 578
+  card("attention", "atención", "Small print rarely gets the attention it deserves."),
+  // rank 580
+  card("check", "comprobar", "Check the tyres before a long journey."),
+  // THE SECONDARY SENSE, on purpose, and the fourth time this deck has done it
+  // (`type`, `pass`, `bear`). "completo" is the second half of `whole`'s front
+  // (310, "entero / completo"), so the adjective is untaught here and the
+  // form-filling verb — which a learner meets at every counter — is carded.
+  // rank 581
+  card("complete", "rellenar", "Complete this section in capital letters, please."),
+  // rank 582
+  card("lie", "mentir", "He lied about the mileage on the car."),
+  // "recoger" and not "escoger", which is a true Spanish synonym of `choose`'s
+  // front "elegir" — two fronts a learner would answer with the same word.
+  // rank 583
+  card("pick", "recoger", "Farmers pick olives here throughout November."),
+  // rank 584
+  card("reduce", "reducir", "Insulation reduced our heating bill by half."),
+  // rank 586
+  card("ground", "suelo", "Wet ground ruined the shoes on that walk."),
+  // rank 588
+  card("arrive", "llegar", "Winter arrives suddenly in these mountain villages."),
+  // rank 589
+  card("patient", "paciente", "Two patients waited all morning for a bed."),
+  // rank 590
+  card("current", "actual", "Our current landlord answers the phone at least."),
+  // rank 591
+  card("century", "siglo", "Nothing in this church is older than the last century."),
+  // "indicios" and not "pruebas", which is one letter from the second half of
+  // `test`'s front (332, "examen / prueba").
+  // rank 592
+  card("evidence", "indicios", "Investigators found no evidence of a break-in."),
+  // rank 593
+  card("exist", "existir", "That footpath no longer exists on the new map."),
+  // rank 595
+  card("fight", "pelear", "Seagulls fight over chips all along the promenade."),
+  // "dirigente" and not "líder", which is the English word with an accent.
+  // `lead` (241) holds "dirigir / encabezar" — a verb, so the noun is free.
+  // rank 596
+  card("leader", "dirigente", "Union leaders met the company on Thursday."),
+  // The false friend, and it is the whole value of the card: `fine` is not
+  // "fino" and not "bien".
+  // rank 597
+  card("fine", "multa", "A fine arrived three weeks after the trip."),
+  // rank 598
+  card("street", "calle", "Cyclists use that street to avoid the roundabout."),
+  // rank 599
+  card("former", "anterior", "Her former flatmate still owes her money."),
+  // rank 600
+  card("contact", "contactar", "Contact the surgery first thing on Monday morning."),
+  // rank 602
+  card("wife", "esposa", "His wife runs the bakery on Sunday mornings."),
+  // rank 603
+  card("sport", "deporte", "Rowing is the only sport she has ever enjoyed."),
+  // rank 604
+  card("prepare", "preparar", "Prepare the salad while the oven heats up."),
+  // "debatir" and NOT "discutir", which in Spanish means to argue — the false
+  // friend a bare cognate gloss would have taught backwards.
+  // rank 605
+  card("discuss", "debatir", "Neighbours discussed the noise for an hour."),
+  // "reacción" because `answer` (355) holds "respuesta / responder".
+  // rank 606
+  card("response", "reacción", "The response to the advert was overwhelming."),
+  // rank 607
+  card("voice", "voz", "Somebody's voice carried right through the wall."),
+  // "pieza" because `bit` (352) holds "un trozo / un poco".
+  // rank 608
+  card("piece", "pieza", "A missing piece ruined the whole jigsaw."),
+  // "acabar" because `end` (152) holds "final / terminar".
+  // rank 609
+  card("finish", "acabar", "Builders finish at three on Fridays here."),
+  // rank 610
+  card("suppose", "suponer", "I suppose the rain will stop eventually."),
+  // "solicitar", the sense a learner needs, and `ask` (134) holds
+  // "pedir / preguntar" anyway.
+  // rank 611
+  card("apply", "solicitar", "Anybody can apply for the grant before June."),
+  // rank 612
+  card("president", "presidente", "The club president resigned without any explanation."),
+  // rank 613
+  card("fire", "fuego", "Someone left a fire burning near the tents."),
+  // rank 614
+  card("compare", "comparar", "Compare the two quotes before signing anything."),
+  // rank 615
+  card("court", "tribunal", "The court ordered him to repay the deposit."),
+  // rank 616
+  card("police", "policía", "Police stopped three drivers outside the school gate."),
+  // The VERB, because `shop` (437) already holds "tienda".
+  // rank 617
+  card("store", "almacenar", "Store the paint somewhere the frost cannot reach."),
+  // rank 618
+  card("poor", "pobre", "Poor lighting makes the stairs dangerous at night."),
+  // rank 619
+  card("knowledge", "conocimientos", "Practical knowledge beats a certificate in this trade."),
+  // rank 620
+  card("laugh", "reírse", "Everybody laughed except the man being teased."),
+  // rank 621
+  card("arm", "brazo", "Both arms ached for days after the move."),
+  // rank 622
+  card("heart", "corazón", "Coffee makes my heart race before an exam."),
+  // rank 623
+  card("source", "fuente", "Wind became the island's main source of power."),
+  // The derivational pair with `job` (231, "empleo") is deliberate — see the
+  // batch header. Spanish and English both have it, so both fronts are answerable.
+  // rank 624
+  card("employee", "empleado", "Employees clock in through the side entrance."),
+  // rank 625
+  card("manage", "gestionar", "She manages three shops and still finds time to read."),
+  // rank 627
+  card("bank", "banco", "Our bank closed the only branch in town."),
+  // The ADJECTIVE: `company` (107) holds "empresa", so the business noun has no
+  // front left, and "firme" is a real sense a learner meets on a building site.
+  // rank 628
+  card("firm", "firme", "Press the soil down until it feels firm."),
+  // "celda" and not "célula": the prison sense is a genuinely different Spanish
+  // word, and the biology one is the English word with an accent.
+  // rank 629
+  card("cell", "celda", "Prisoners share a cell with two other men."),
+  // rank 630
+  card("article", "artículo", "An article about the flood appeared on Tuesday."),
+  // rank 631
+  card("fast", "rápido", "Those trains are fast but always overcrowded."),
+  // rank 632
+  card("attack", "ataque", "A dog attacked the postman near the gate."),
+  // rank 633
+  card("foreign", "extranjero", "Does that machine take foreign cards at all?"),
+  // rank 634
+  card("surprise", "sorpresa", "The bill was a nasty surprise at the end."),
+  // "característica" and not "detalle": `detail` (472) holds that front.
+  // rank 635
+  card("feature", "característica", "This phone's best feature is the battery."),
+  // The ADJECTIVE, not the degree particle "pretty good" — a particle is the
+  // class `quite` and `rather` were skipped on, and this word has a real
+  // adjective a card can hold. `nice` (506) holds "agradable".
+  // rank 637
+  card("pretty", "bonito", "Somebody hung pretty lanterns along the whole terrace."),
+  // rank 638
+  card("recently", "hace poco", "Recently somebody has been feeding the stray cats."),
+  // rank 639
+  card("affect", "afectar", "Damp affects the plaster on that north wall."),
+  // "soltar" and not "dejar caer", which contains `fall`'s front (320, "caer(se)").
+  // rank 640
+  card("drop", "soltar", "He dropped the tray halfway across the room."),
+  // rank 641
+  card("recent", "reciente", "Recent rain filled the reservoir at last."),
+  // "vincular" and not "relacionar", which is one suffix from `relationship`
+  // (502, "relación") — unlike empleo/empleado those two would compete.
+  // rank 642
+  card("relate", "vincular", "Detectives related the two burglaries to one van."),
+  // rank 643
+  card("official", "oficial", "The official figures came out a week late."),
+  // rank 644
+  card("financial", "financiero", "Financial worries kept her awake for months."),
+  // rank 645
+  card("miss", "echar de menos", "I miss the noise of the old market."),
+  // rank 646
+  card("art", "arte", "Street art covers the wall behind the station."),
+  // rank 647
+  card("campaign", "campaña", "Their campaign collected signatures outside the library."),
+  // rank 648 — the five hundredth card, and where this deck stops.
+  card("private", "privado", "Private lessons cost double what the school charges."),
 ];

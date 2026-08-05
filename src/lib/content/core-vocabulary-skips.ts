@@ -312,4 +312,40 @@ export const SKIPPED_HEADWORDS: SkippedHeadword[] = [
   { word: "please", reason: "function-word" },
   { word: "themselves", reason: "function-word" }, // reflexive pronoun
   { word: "behind", reason: "function-word" }, // preposition
+
+  // ------------------------------------------------------------------
+  // 04.1-06 — the fourth and last volume batch, ranks 516 to 648.
+  // ------------------------------------------------------------------
+  // 13 skips against 120 cards: 9.8 % of the band, DOWN from 11.7 % in the
+  // previous 137 ranks and 14 % before that. The rate falling in the last batch
+  // matters as evidence rather than as trivia — reaching for this register more
+  // often near the finish line is the fatigue signal 04.1-06 was told to watch
+  // for, and the rate went the other way.
+  //
+  // ONLY SIX OF THE THIRTEEN ARE FUNCTION WORDS. Below rank 500 the closed
+  // class is spent, and what does the deciding here is neither grammar nor
+  // cognate status but the TAKEN FRONT — which is a gloss problem, not a skip
+  // problem, so it produced fifteen re-glossed cards and zero skips. The five
+  // cognates below are the residue: words whose Spanish is the English word.
+  { word: "accord", reason: "function-word" }, // the rank-522 frequency is "according to", a complex preposition; the noun sense would be "acuerdo", which `deal` (321) holds
+  { word: "therefore", reason: "function-word" }, // conjunctive adverb, the class `however` (215) was skipped on
+  { word: "itself", reason: "function-word" }, // reflexive pronoun, pairs with `himself` (458) and `themselves` (480)
+  // A connective adverb of the `however` / `therefore` class. The deck browser
+  // also holds it ("en vez de"), but that is not the reason recorded: overlap
+  // with that deck is reported and never asserted, and the reason has to be the
+  // real one or the register stops meaning anything.
+  { word: "instead", reason: "function-word" },
+  { word: "total", reason: "cognate" }, // "total" — predicted by 04.1-05 and met
+  { word: "material", reason: "cognate" }, // "material" — likewise
+  { word: "upon", reason: "function-word" }, // preposition
+  { word: "personal", reason: "cognate" }, // "personal"
+  { word: "animal", reason: "cognate" }, // "animal"
+  { word: "similar", reason: "cognate" }, // "similar"
+  // A degree/focus intensifier ("particularly difficult"), the class `quite`
+  // (285), `rather` (299) and `almost` (300) were skipped on. Its focus
+  // reading's honest Spanish is "sobre todo", which is already the front of
+  // `especially` (460), so a card here could only duplicate a front or fudge one.
+  { word: "particularly", reason: "function-word" },
+  { word: "simply", reason: "function-word" }, // focus particle, the class `just` (49) and `really` (104) were skipped on
+  { word: "factor", reason: "cognate" }, // "factor"
 ];
