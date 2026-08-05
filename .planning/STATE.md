@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 04.1
 current_phase_name: native-level-depth
 status: in-progress
-stopped_at: Completed 04.1-03-PLAN.md
-last_updated: "2026-08-05T01:00:49.147Z"
+stopped_at: Completed 04.1-04-PLAN.md
+last_updated: "2026-08-05T01:24:57.205Z"
 last_activity: 2026-08-04
 last_activity_desc: "04-09 executed, THE PHASE GATE: 17 of 17 mutations CAUGHT on their own labels with 2 controls green in a scratch export with its own node_modules, an independent 651 = 651 id enumeration that does not import the gate own logic, the derivation control re-proved, and a reader pass that found NO near-duplicate exercise and rewrote nothing (same-world highest 0.286 phrases / 0.400 terms, nothing at or above 0.50 anywhere, the rise from 03-11 mostly pool size). The corpus figure is settled at 4,410 for 04-07 own tree and 4,440 at HEAD, and 04-05 broken harvester now THROWS rather than sitting importable beside the good one. CONT-04 is marked [~] met-with-a-stated-limitation and NOT [x]: the content is complete, derived and gated, but THE BROWSER PASS WAS NOT PERFORMED and ten items are open by name as WINDOWS 62 - including the batched recall deck, which is this phase one component change and has never been rendered, and any phone at all. More reading is named as a deliberate deferral the user declined knowingly. PHASE 4 IS COMPLETE."
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 52
-  completed_plans: 48
+  completed_plans: 49
 ---
 
 # Project State
@@ -28,21 +28,23 @@ See: .planning/PROJECT.md (updated 2026-07-23)
 ## Current Position
 
 Phase: 04.1 (vocabulary-volume-deck) — IN PROGRESS
-Plan: 3 of 7 executed (01 tracer, 02 gates)
-Status: **THE GATES ARE IN, BEFORE A SINGLE CARD IS AUTHORED AT VOLUME.** 04.1-02 put all
-twenty of the tracer's `vocab:` ids under a committed hash of their whole authored record
-(651 → **671** ids, `verify-id-stability.mts` 2,021 → **2,082** assertions, fixture regenerated
-once with an additions-only diff and no changed hash); made the quality floor mechanical
-(`verify-scenario-content.mts` 14,577 → **14,991**), including the frame-diversity ceiling that
-is the one assertion able to see flat prose — **a deliberately flattened twenty-card deck that
-passes every other check produces exactly THREE failures, all of them frame**; and re-pointed the
-payload gate at the **STORAGE** set, which 04.1 is the first phase in this project to have differ
-from the queue set: `209,586 B over 772 storage ids = 752 shared-queue + 20 volume — 20.0 % of
-the cap`, with a **40 % STOP LINE** beside the route's own wall and the sentence *the fix is never
-to raise the ceiling* written next to the constant. **45 of 45 mutations were CAUGHT on their own
-labels** in a scratch worktree, with the wall surviving both stop-line mutations. **The marginal
-cost of a volume id is 220.6 B, not the 272.8 CONTEXT extrapolates from** — +480 lands near 30 %.
-**04.1-01's blocking human checkpoint is STILL OUTSTANDING and no VOCAB requirement is marked.**
+Plan: 4 of 7 executed (01 tracer, 02 gates, 03 first volume batch, 04 second)
+Status: **THE DECK IS PAST HALFWAY — 260 cards of L3's 500, NGSL ranks 8 to 378.** 04.1-04 added
+120 cards and 20 skips, so rank completeness below 378 is **total and exact**: 260 carded + 118
+declared = 378, nothing cherry-picked. Both gates green — `verify-scenario-content` 16,765 →
+**18,485** (+1,720, decomposed exactly) and `verify-id-stability` 2,442 → **2,802** (+360 = 120 × 3)
+over **911** recorded ids. The fixture was regenerated **once**, after the near-duplicate scan, and
+additions-only was proved by running the id gate *before* `--update`: **120 failures, all on `is
+recorded in the fixture`, ZERO on `still holds the content it was recorded with`.** Payload
+re-measured from the harness: `263,120 B over 1012 STORAGE ids = 752 shared-queue + 260 volume —
+**25.1 %** of the cap`, against the 40 % stop line; the marginal cost is now measured four times
+(220.6 / 222.7 / **223.4** B/id) and the full 500 still lands near 30 %. Frame pressure was the
+real constraint and it held: **259 distinct opening shapes over 260 cards**, this batch spending
+`the` 3 times in 120 and a pronoun twice, with **four examples rewritten before their ids
+committed** — three repeated bigrams the harness prints but cannot fail on, and one Jaccard 0.455
+frame the scan caught. **04.1-01's blocking human checkpoint is STILL OUTSTANDING and no VOCAB
+requirement is marked** — 260 permanent keys now exist and nobody has opened `/core-vocabulary`
+in a browser since the deck was twenty cards.
 
 Previously: **PHASE 4 COMPLETE on `main`** — 04-09, the gate, is done. **ALL FIVE native scenarios now carry depth — four of them
 deeply and one deliberately less, and the record says which is which.**
@@ -109,7 +111,7 @@ gate should widen from one scenario to all thirty-five.
 
 Last activity: 2026-08-04 — 04-09 executed, THE PHASE GATE: 17 of 17 mutations CAUGHT on their own labels with 2 controls green in a scratch export with its own node_modules, an independent 651 = 651 id enumeration that does not import the gate own logic, the derivation control re-proved, and a reader pass that found NO near-duplicate exercise and rewrote nothing (same-world highest 0.286 phrases / 0.400 terms, nothing at or above 0.50 anywhere, the rise from 03-11 mostly pool size). The corpus figure is settled at 4,410 for 04-07 own tree and 4,440 at HEAD, and 04-05 broken harvester now THROWS rather than sitting importable beside the good one. CONT-04 is marked [~] met-with-a-stated-limitation and NOT [x]: the content is complete, derived and gated, but THE BROWSER PASS WAS NOT PERFORMED and ten items are open by name as WINDOWS 62 - including the batched recall deck, which is this phase one component change and has never been rendered, and any phone at all. More reading is named as a deliberate deferral the user declined knowingly. PHASE 4 IS COMPLETE.
 
-Progress: [█████████░] 92% — 45 of 45 written plans executed (5 of 6 phases complete; Phase 4 native-level-depth CLOSED at 9 of 9 plans, CONT-04 at [~] with its browser pass open as WINDOWS 62; Phase 5, the AI tutor, is not yet planned so 45 is the written total and not the project total)
+Progress: [█████████░] 94% — 45 of 45 written plans executed (5 of 6 phases complete; Phase 4 native-level-depth CLOSED at 9 of 9 plans, CONT-04 at [~] with its browser pass open as WINDOWS 62; Phase 5, the AI tutor, is not yet planned so 45 is the written total and not the project total)
 
 ## Performance Metrics
 
@@ -177,6 +179,7 @@ Progress: [█████████░] 92% — 45 of 45 written plans execut
 | Phase 04 P09 | ~135 min | 3 tasks | 4 files |
 | Phase 04.1 P02 | ~3h | 3 tasks | 3 files |
 | Phase 04.1 P03 | ~2h | 2 tasks | 3 files |
+| Phase 04.1 P04 | ~2h | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -358,6 +361,9 @@ Recent decisions affecting current work:
 - [Phase ?]: The near-duplicate scan runs BEFORE the fixture regeneration: content is not final until the scan has rewritten, and --update runs exactly once after that
 - [Phase ?]: The gloss is the FRONT of a recall card, so near-synonyms carry deliberately separated glosses (tell/say, leave/let, meet/know, love/want, job/work, believe/think)
 - [Phase ?]: here (NGSL 98) is skipped as a deictic pro-form, pairing it with there (40); temporal and frequency adverbs remain carded
+- [Phase ?]: 04.1-04: `already` (NGSL 302) is CARDED despite an EXACT gloss collision with the deck browser (both "ya") — the first overlap whose FRONT is byte-identical. Plan 02 decided deck-browser overlap is reported and never asserted, because asserting it would force the volume deck to skip the high-frequency words it exists to teach; the only skip reason available, `already-taught`, is declared for SCENARIO vocabulary banks and would be a false reason in the register. The reasoning is written onto the card, not left in a summary.
+- [Phase ?]: 04.1-04: `color` is glossed "color / tono" and that is a fudge, recorded as one — the gate asserts es !== word and Spanish for color IS color. Cognates below rank 500 (total, natural, general, personal, similar) will keep hitting this, and whether a `cognate` skip reason is worth declaring should be decided BEFORE a plan needs it, the way `already-taught` was declared at plan 01 and first used at plan 03.
+- [Phase ?]: 04.1-04: the harness's printed top-ten openings IS a real signal at x2 and is presented as if it were not — four bigrams sat at x2 (ceiling 13) on the first run and all four were genuine repeated frames, rewritten while free. The fix is one harness line: print the top ten opening WORDS beside the top ten shapes and mark any shape at x2 or more.
 
 ### Pending Todos
 
@@ -405,6 +411,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-08-05T01:00:36.835Z
-Stopped at: Completed 04.1-03-PLAN.md
+Last session: 2026-08-05T01:23:56.893Z
+Stopped at: Completed 04.1-04-PLAN.md
 Resume file: None
