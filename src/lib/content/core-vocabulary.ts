@@ -56,6 +56,36 @@
 //
 // No React, no hooks, no path aliases: the harness loads this under
 // `node --experimental-strip-types`.
+//
+// ------------------------------------------------------------------
+// 04.1-08 REWROTE 37 CARDS IN PLACE. THAT WAS A ONE-TIME EXCEPTION AND
+// IT HAS EXPIRED. DO NOT CITE IT AS PRECEDENT.
+// ------------------------------------------------------------------
+// The phase gate's reader pass (04.1-07, task 3) found three defect classes no
+// assertion can see. Every fix is normally a RETIREMENT plus a new slug, because
+// an id is a one-way door. Plan 08 instead rewrote `es` and `example` under the
+// live ids — a deliberate re-point of 37 hashes — and the authorisation was a
+// measured fact rather than a judgement:
+//
+//     main is 27 commits ahead of origin/main   -> the deck is local only
+//     curl -sI https://fluenthapp.com/core-vocabulary -> HTTP/1.1 404
+//     git cat-file -e origin/main:<this file>   -> ABSENT from the remote
+//
+// THE DECK HAD NEVER SHIPPED. No learner held progress under any `vocab:` key,
+// so the reason the one-way-door rule exists — a rename orphans LIVE progress
+// with no migration path and no way to detect it — did not yet apply. The rule
+// was not weakened; its precondition was absent, and that was proved three ways
+// before a card was touched rather than assumed.
+//
+// **The exception expires on the first deploy, and this file cannot tell you
+// whether that has happened.** Assume it has. The next author who wants to fix
+// a gloss here retires the id and adds a new slug, exactly as AGENTS.md says,
+// and `verify-id-stability.mts` will refuse anything else. Nothing below is a
+// licence to run `--update` over a changed hash.
+//
+// The ID SET did not move: 500 before, 500 after, zero additions, zero
+// removals, zero retirements. Only hashes changed. `word` and `id` were not
+// touched on any card.
 
 export interface CoreVocabCard {
   /**
@@ -154,7 +184,12 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 48
   card("make", "hacer", "Could you make a copy of this form?"),
   // rank 49
-  card("time", "tiempo / vez", "There isn't enough time to finish today."),
+  // NARROWED at 04.1-08 from "tiempo / vez": the example teaches the
+  // uncountable sense and only that, so the second half of the front was a
+  // sense the card never showed. The parenthetical also does a second job —
+  // bare "tiempo" is equally the front of *weather*, which this deck does not
+  // card, so a learner could answer it correctly and still be wrong.
+  card("time", "tiempo (que pasa)", "There isn't enough time to finish today."),
   // rank 50
   card("see", "ver", "From here you can see the whole valley."),
   // rank 56
@@ -195,7 +230,9 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 79
   card("new", "nuevo", "Her new job starts on Monday morning."),
   // rank 80
-  card("way", "manera / camino", "There must be a better way to do this."),
+  // NARROWED at 04.1-08 from "manera / camino": the example shows the manner
+  // sense alone, so "camino" was a front the card never paid off.
+  card("way", "manera", "There must be a better way to do this."),
   // rank 81
   card("find", "encontrar", "I cannot find my keys anywhere in this flat."),
   // rank 85
@@ -207,7 +244,10 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 92
   card("right", "correcto", "Your answer is right, but the spelling is not."),
   // rank 94
-  card("back", "espalda / de vuelta", "Grandma hurt her back lifting those heavy boxes."),
+  // NARROWED at 04.1-08 from "espalda / de vuelta": the example is the body
+  // part and nothing else. "espalda" also points at *back* and at no other
+  // English word, which the two-part front did not.
+  card("back", "espalda", "Grandma hurt her back lifting those heavy boxes."),
   // rank 95
   card("mean", "significar", "What does this word mean in Spanish?"),
   // rank 101
@@ -461,11 +501,11 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 251
   card("idea", "ocurrencia", "Whose idea was it to paint everything green?"),
   // rank 252
-  card("cost", "costar / coste", "Repairs cost more than the bike is worth."),
+  card("cost", "costar / coste", "It cost me twice what the bike is worth."),
   // rank 254
   card("room", "habitación", "Their room looks onto a noisy street."),
   // rank 256
-  card("reason", "motivo", "Health was the only reason she resigned."),
+  card("reason", "motivo", "Her only reason for leaving was the noise."),
   // rank 257
   card("form", "formulario", "Fill in the form with black ink."),
   // rank 258
@@ -477,7 +517,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 261
   card("learn", "aprender", "Children learn languages faster than adults do."),
   // rank 262
-  card("level", "nivel", "Noise levels rise every night after eleven."),
+  card("level", "nivel", "We keep the noise level down after eleven."),
   // rank 263
   card("person", "persona (un individuo)", "Just one person replied to the whole advertisement."),
   // rank 264
@@ -487,9 +527,9 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 266
   card("member", "socio / miembro", "Members of the club park for free."),
   // rank 268
-  card("bad", "malo", "Bad weather ruined the whole weekend for us."),
+  card("bad", "malo", "They had bad luck with the weather all weekend."),
   // rank 269
-  card("city", "ciudad", "Airports outside the city are always cheaper."),
+  card("city", "ciudad", "Half a million people live in this city."),
   // rank 270
   card("night", "noche", "Last night the neighbours argued until three."),
   // rank 271
@@ -497,7 +537,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 272
   card("support", "apoyo / apoyar", "Without support from the council, the project dies."),
   // rank 274
-  card("line", "línea / fila", "Draw a straight line under the total."),
+  card("line", "línea / fila", "The waiter drew a straight line under the total."),
   // rank 275
   card("present", "regalo", "Wrap the present before the guests arrive."),
   // rank 276
@@ -505,11 +545,11 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 279
   card("sure", "seguro (convencido)", "Double-check the address if you aren't sure."),
   // rank 280
-  card("term", "trimestre", "Exams fall at the end of term."),
+  card("term", "trimestre", "Nobody enjoys the last week of term."),
   // rank 282
   card("age", "edad", "At what age can you drive here?"),
   // rank 283
-  card("low", "bajo", "Petrol prices are unusually low this month."),
+  card("low", "bajo", "My electricity bill is unusually low this month."),
   // rank 284
   card("speak", "hablar (un idioma)", "Does anyone at reception speak Turkish?"),
   // rank 286
@@ -519,7 +559,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 288
   card("often", "a menudo", "How often does the ferry cross the bay?"),
   // rank 289
-  card("train", "tren", "Trains to the coast run every hour."),
+  card("train", "tren", "I take the early train to the coast."),
   // rank 290
   card("possible", "posible", "Is it possible to change my seat?"),
   // rank 293
@@ -537,7 +577,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 299
   card("party", "fiesta", "Bring something to drink to the party."),
   // rank 300
-  card("local", "del barrio / de la zona", "Local shops shut for two hours at lunchtime."),
+  card("local", "del barrio / de la zona", "Our local butcher shuts for two hours at lunchtime."),
   // rank 301
   card("control", "controlar / dominar", "Who controls the thermostat in this building?"),
   // rank 302
@@ -555,25 +595,29 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 303
   card("concern", "preocupación", "Safety is my only concern with that ladder."),
   // rank 304
-  card("product", "producto", "Cheap products usually break within a single month."),
+  card("product", "producto", "She makes her own beauty products at home."),
   // rank 305
   card("lose", "perder", "Don't lose the receipt for the warranty."),
   // rank 306
   card("story", "relato / cuento", "Grandpa tells the same story every Christmas."),
   // rank 308
-  card("continue", "continuar / proseguir", "Rain continued all afternoon without a break."),
+  card("continue", "continuar / proseguir", "The builders continued working without a lunch break."),
   // rank 309
   card("stand", "estar de pie", "Standing for three hours ruined my knees."),
   // rank 310
-  card("whole", "entero / completo", "Termites destroyed a whole section of the roof."),
+  // NARROWED at 04.1-08 from "entero / completo". Two jobs: the example shows
+  // "entero" alone, and giving up "completo" is what FREES that front for
+  // `complete` (581), which had been pushed onto "rellenar" and was therefore
+  // answered by *fill in*. One narrowing, two defects.
+  card("whole", "entero", "Termites destroyed a whole section of the roof."),
   // rank 312
-  card("rate", "tarifa / tasa", "Hotel rates double during the festival week."),
+  card("rate", "tarifa / tasa", "They double their rates during the festival week."),
   // rank 313
   card("care", "cuidado / cuidar", "Handle the box with care; it's glass."),
   // rank 314
   card("expect", "dar por hecho", "Guests are expected to check out by eleven."),
   // rank 315
-  card("effect", "efecto", "The pills had no effect on her cough."),
+  card("effect", "efecto", "I felt no effect from the tablets at all."),
   // rank 316
   card("sort", "clasificar / ordenar", "Sort these papers into two neat piles."),
   // rank 319
@@ -585,7 +629,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 322
   card("water", "agua", "Filter the water before you drink it."),
   // rank 323
-  card("send", "enviar", "Send me the address when you decide."),
+  card("send", "enviar", "Who else should I send this invoice to?"),
   // rank 324
   card("allow", "autorizar / dar permiso", "Dogs are not allowed inside the market."),
   // rank 325
@@ -595,7 +639,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 327
   card("base", "basar / fundamentar", "Producers based the series on a true crime."),
   // rank 328
-  card("probably", "probablemente", "Traffic will probably be terrible after the match."),
+  card("probably", "probablemente", "We will probably leave before the second half."),
   // rank 329
   card("suggest", "sugerir / proponer", "May I suggest a quieter table near the window?"),
   // rank 330
@@ -609,7 +653,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 334
   card("center", "centro", "Everything shuts early in the center on Sundays."),
   // rank 335
-  card("grow", "crecer", "Tomatoes grow well on that sunny balcony."),
+  card("grow", "crecer", "He grows taller every time I see him."),
   // rank 337
   card("return", "devolver", "Return the borrowed tools before Saturday, please."),
   // rank 338
@@ -621,31 +665,40 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 341
   card("mind", "mente", "Something odd crossed my mind during dinner."),
   // rank 342
-  card("value", "valor", "Old coins gain value if nobody cleans them."),
+  card("value", "valor", "He keeps old coins because they gain value."),
   // rank 343
-  card("office", "oficina", "Post arrives at the office before nine."),
+  card("office", "oficina", "Our office moves to the third floor in June."),
   // rank 344
   card("record", "grabar / registrar", "Someone recorded the whole concert on a phone."),
   // rank 345
-  card("stay", "quedarse", "Stay under the awning until the rain stops."),
+  card("stay", "quedarse", "Two of us stayed behind to lock up."),
   // rank 346
-  card("force", "fuerza / obligar", "Wind forced the ferry back to port."),
+  card("force", "fuerza / obligar", "He forced me to wait outside in the rain."),
   // rank 347
   card("stop", "parar", "Buses stop running at half past eleven."),
   // rank 349
   card("light", "luz", "Leave a light on for the cat."),
   // rank 350
-  card("develop", "desarrollar", "Photographers still develop film in that basement."),
+  // REWRITTEN at 04.1-08. The old example was "Photographers still develop
+  // film in that basement." — but developing FILM is "revelar" in Spanish, not
+  // "desarrollar", so the front and the example taught different verbs. Same
+  // defect class as `standard`, found in the same reader pass.
+  card("develop", "desarrollar", "She developed the idea into a real business."),
   // rank 351
   card("remember", "recordar", "Nobody remembers who left the tap running."),
   // rank 352
-  card("bit", "un trozo / un poco", "Cut a bit of cheese for the sauce."),
+  card("bit", "un trozo / un poco", "Everyone wanted a bit of the leftover pizza."),
   // rank 353
   card("share", "compartir", "Would you share a taxi to the airport?"),
   // rank 354
   card("real", "auténtico / de verdad", "Those flowers look real from a distance."),
   // rank 355
-  card("answer", "respuesta / responder", "Answer the door; I'm covered in flour."),
+  // NARROWED at 04.1-08 from "respuesta / responder". The example is the verb
+  // and only the verb, so "respuesta" was a front this card never paid off.
+  // Narrowing it does NOT free "respuesta" for `response` (606): *answer* is a
+  // card, so a bare "respuesta" front would still have two right answers inside
+  // the deck. `response` took a parenthetical instead.
+  card("answer", "responder", "Answer the door; I'm covered in flour."),
   // rank 356
   card("sit", "sentarse", "Sit on the floor; the chairs are wet."),
   // rank 357
@@ -655,7 +708,7 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 359
   card("decide", "decidir", "Decide quickly; the offer ends at midnight."),
   // rank 360
-  card("language", "idioma", "Sign language classes fill up very fast."),
+  card("language", "idioma", "Her sign language class is full until March."),
   // rank 361
   card("subject", "asignatura", "Maths was my worst subject at school."),
   // rank 362
@@ -978,6 +1031,21 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // taken front rather than from a dictionary, and each carries its reason
   // beside the card.
   //
+  // AND THAT STRATEGY HAS A COST THIS HEADER ORIGINALLY DID NOT NAME. Avoiding
+  // a duplicate front by re-glossing pushes the gloss off the headword's
+  // central sense, and far enough off, the card's most natural answer becomes a
+  // DIFFERENT ENGLISH WORD. The 04.1-07 reader pass found five: `standard`
+  // ("habitual" -> *usual*), `complete` ("rellenar" -> *fill in*), `evidence`
+  // ("indicios" -> *clues*), `response` ("reacción" -> *reaction*) and `relate`
+  // ("vincular" -> *link*). All five were re-glossed at 04.1-08 and each says
+  // so beside the card. The lesson for the next author is the ORDER of
+  // preference when a front is taken: first free the front by narrowing the
+  // card that holds it (that is how `complete` got "completar"), then reach for
+  // the PARENTHETICAL that names the sense (`evidence`, `response`, `relate`),
+  // and only then accept a different sense — checking, before you do, which
+  // English word the new gloss actually asks for. Reaching straight for a
+  // synonym is what produced all five.
+  //
   // A DERIVATIONAL PAIR IS NOT A COLLISION, AND THE LINE IS WORTH STATING.
   // `job` is "empleo" and `employee` is "empleado"; `grow` is "crecer" and
   // `growth` would be "crecimiento". Those are 1:1 in both languages, so the
@@ -1012,7 +1080,10 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 526
   card("wear", "llevar (ropa)", "They make us wear a black apron all day."),
   // rank 527
-  card("fund", "fondos", "He ran through the funds in under a year."),
+  // REWRITTEN at 04.1-08. The old example hid the meaning inside the phrasal
+  // verb *ran through*: a learner who does not already know that idiom learns
+  // nothing about *funds* from the sentence.
+  card("fund", "fondos", "Charity funds paid for the new playground equipment."),
   // rank 528
   card("rest", "descansar", "Rest your leg for a week, the doctor said."),
   // rank 529
@@ -1056,13 +1127,21 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   card("risk", "riesgo", "Climbing that ladder alone is a real risk."),
   // rank 546
   card("news", "noticias", "She heard the news from a colleague first."),
-  // "habitual" and not "estándar". The Spanish orthography differs, so the
-  // cognate reason does not apply by its own narrow line — but a card whose
-  // front is the English word wearing an accent teaches nothing, so the
-  // adjective's real sense is glossed instead. `norma` was rejected because
-  // `policy` (399) holds "normativa" and the two are a letter apart.
+  // RE-GLOSSED at 04.1-08, and this was the phase's sharpest content defect
+  // rather than a near-miss. The card read "habitual" / "I chose standard
+  // delivery and waited nine days." — the FRONT taught the customary sense and
+  // the EXAMPLE taught the default-option sense. Gloss and example taught
+  // DIFFERENT senses, which is exactly what 04.1-05 fixed on `agree`, and on
+  // top of that "habitual" is answered by *usual*, not by this headword.
+  //
+  // "de serie" fixes both at once: it is the ordinary Spanish for
+  // factory-fitted / included-as-standard, it is answered by *standard* and by
+  // essentially nothing else, and the example now teaches the same sense the
+  // front asks for. "estándar" stays rejected — a front that is the English
+  // word wearing an accent teaches nothing — and "norma" stays rejected
+  // because `policy` (399) holds "normativa" and the two are a letter apart.
   // rank 547
-  card("standard", "habitual", "I chose standard delivery and waited nine days."),
+  card("standard", "de serie", "Air conditioning comes as standard on the cheapest model."),
   // rank 548
   card("vote", "votar", "We vote on the shift pattern each September."),
   // rank 549
@@ -1115,8 +1194,10 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 568
   card("culture", "cultura", "Office culture changed once the founder retired."),
   // "demanda" (the noun) because `require` (402) holds "exigir".
+  // REWRITTEN at 04.1-08: the old example turned on *allotments*, a
+  // low-frequency British word that carried the whole sense.
   // rank 570
-  card("demand", "demanda", "Demand for allotments doubled after the lockdown."),
+  card("demand", "demanda", "Demand for cheap flights rises every summer."),
   // rank 572
   card("limit", "límite", "Speed limits drop to thirty near the school."),
   // rank 573
@@ -1136,12 +1217,15 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   card("attention", "atención", "Small print rarely gets the attention it deserves."),
   // rank 580
   card("check", "comprobar", "Check the tyres before a long journey."),
-  // THE SECONDARY SENSE, on purpose, and the fourth time this deck has done it
-  // (`type`, `pass`, `bear`). "completo" is the second half of `whole`'s front
-  // (310, "entero / completo"), so the adjective is untaught here and the
-  // form-filling verb — which a learner meets at every counter — is carded.
+  // RE-GLOSSED at 04.1-08 from "rellenar", which was answered by *fill in* —
+  // a two-word phrasal verb this deck does not card — rather than by its own
+  // headword. The blocker was `whole` (310) holding "entero / completo"; that
+  // front was NARROWED to "entero" in this same commit, which frees the
+  // completion sense here. So the card no longer teaches a secondary sense at
+  // all: "completar" points at *complete* and at nothing else, and the example
+  // moved off the form-filling counter to match it.
   // rank 581
-  card("complete", "rellenar", "Complete this section in capital letters, please."),
+  card("complete", "completar", "Nobody completed the crossword that rainy afternoon."),
   // rank 582
   card("lie", "mentir", "He lied about the mileage on the car."),
   // "recoger" and not "escoger", which is a true Spanish synonym of `choose`'s
@@ -1160,10 +1244,14 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   card("current", "actual", "Our current landlord answers the phone at least."),
   // rank 591
   card("century", "siglo", "Nothing in this church is older than the last century."),
-  // "indicios" and not "pruebas", which is one letter from the second half of
-  // `test`'s front (332, "examen / prueba").
+  // RE-GLOSSED at 04.1-08 from "indicios", which is answered by *clues*. Bare
+  // "pruebas" is still refused — it is one letter from the second half of
+  // `test`'s front (332, "examen / prueba") — but the PARENTHETICAL settles it,
+  // the same device `morning`, `class`, `person` and `sure` already use. A
+  // learner reading "pruebas (de un delito)" is not going to answer *test*, and
+  // the forensic example says the same thing the front does.
   // rank 592
-  card("evidence", "indicios", "Investigators found no evidence of a break-in."),
+  card("evidence", "pruebas (de un delito)", "Investigators found no evidence of a break-in."),
   // rank 593
   card("exist", "existir", "That footpath no longer exists on the new map."),
   // rank 595
@@ -1192,9 +1280,14 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // friend a bare cognate gloss would have taught backwards.
   // rank 605
   card("discuss", "debatir", "Neighbours discussed the noise for an hour."),
-  // "reacción" because `answer` (355) holds "respuesta / responder".
+  // RE-GLOSSED at 04.1-08 from "reacción", which is answered by *reaction*.
+  // Bare "respuesta" is NOT available even though `answer` (355) narrowed to
+  // "responder" in this same commit: *answer* is itself a card, so "respuesta"
+  // would be a front with two right answers inside the deck — which is worse
+  // than the defect being fixed. The parenthetical pins the uptake sense the
+  // example actually shows.
   // rank 606
-  card("response", "reacción", "The response to the advert was overwhelming."),
+  card("response", "respuesta (del público)", "The response to the advert was overwhelming."),
   // rank 607
   card("voice", "voz", "Somebody's voice carried right through the wall."),
   // "pieza" because `bit` (352) holds "un trozo / un poco".
@@ -1271,16 +1364,25 @@ export const CORE_VOCABULARY: CoreVocabCard[] = [
   // rank 638
   card("recently", "hace poco", "Recently somebody has been feeding the stray cats."),
   // rank 639
-  card("affect", "afectar", "Damp affects the plaster on that north wall."),
+  // REWRITTEN at 04.1-08. The old example needed BOTH *damp* as a noun and
+  // *plaster* — two words above this deck's own learner, in the one place the
+  // >= 6-word floor cannot look: the OTHER words.
+  card("affect", "afectar", "Cold weather affects her knees every winter."),
   // "soltar" and not "dejar caer", which contains `fall`'s front (320, "caer(se)").
   // rank 640
   card("drop", "soltar", "He dropped the tray halfway across the room."),
   // rank 641
   card("recent", "reciente", "Recent rain filled the reservoir at last."),
-  // "vincular" and not "relacionar", which is one suffix from `relationship`
-  // (502, "relación") — unlike empleo/empleado those two would compete.
+  // RE-GLOSSED at 04.1-08 from "vincular", which is answered by *link*.
+  // 04.1-06 rejected "relacionar" as competing with `relationship` (502,
+  // "relación") — but that call contradicted the derivational-pair rule stated
+  // in this file's own 04.1-06 batch header three paragraphs later:
+  // relacionar/relación is 1:1 with relate/relationship exactly as
+  // empleo/empleado is with job/employee, and what the rule forbids is two
+  // fronts a letter apart whose answers are UNRELATED. The parenthetical
+  // removes the residual doubt by naming the verb's argument structure.
   // rank 642
-  card("relate", "vincular", "Detectives related the two burglaries to one van."),
+  card("relate", "relacionar (dos cosas)", "Detectives related the two burglaries to one van."),
   // rank 643
   card("official", "oficial", "The official figures came out a week late."),
   // rank 644
