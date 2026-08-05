@@ -115,6 +115,18 @@ import {
   RECALL_BATCH_CEILING,
   recallBatches,
 } from "../src/lib/recall-batches.ts";
+// The VOLUME tier (04.1). Three modules, appended as one chunk under the
+// two-edit rule: the bank, its skip register, and the key space that composes,
+// parses, resolves and enumerates `vocab:` ids without review-items.ts ever
+// learning that the space exists.
+import { CORE_VOCABULARY } from "../src/lib/content/core-vocabulary.ts";
+import { SKIPPED_HEADWORDS } from "../src/lib/content/core-vocabulary-skips.ts";
+import {
+  CORE_VOCAB_TOPIC,
+  coreVocabIds,
+  parseCoreVocabItemId,
+  resolveCoreVocabItem,
+} from "../src/lib/core-vocab-items.ts";
 
 /* ------------------------------------------------------------------ *
  * Shared harness. Every group below uses these and nothing else.
@@ -3538,6 +3550,515 @@ group("the world page reads coverage, and reads it without shipping the banks");
       worldPageSource.includes("written={") &&
       !worldViewSource.includes("scenario-coverage"),
     "the derivation belongs in the SERVER component: WorldView is a client component and scenario-coverage.ts pulls in all six content banks, measured at +217,154 B (+52.1%) on this route's client bundle when imported there. Derive it in page.tsx and pass it down",
+  );
+}
+
+/* ================================================================== *
+ * PHASE 04.1 (plan 04.1-02) — THE VOLUME TIER'S GATES.
+ *
+ * One group appended under the header's two-edit rule, before a single card is
+ * authored at volume. Five hundred permanent spaced-repetition keys land after
+ * this; every one of them lands inside these assertions rather than outside.
+ *
+ * WHAT IS NOT TOUCHED, AND WHY IT IS WORTH SAYING. The four assertions above
+ * (`a scenario key the curriculum does not have parses to nothing` and its
+ * three siblings) are deliberate tripwires: an unknown key must parse to
+ * NOTHING. L1 chose a separate key space precisely so that this phase never
+ * needs to qualify them — a `vocab:` id parsing to nothing through
+ * `parseScenarioItemId` is the design working, and it is asserted below as a
+ * property rather than tolerated as an accident.
+ * ================================================================== */
+
+{
+  group("volume tier: the quality floor is mechanical, not conventional");
+
+  const VOLUME_CARDS = CORE_VOCABULARY;
+  const VOLUME_MIN_EXAMPLE_WORDS = 6;
+
+  /** Letters only — the normalisation used for MATCHING a headword inside an
+   * example, where "meeting?" and "It'll" must reduce to something comparable. */
+  const matchToken = (token: string) => token.toLowerCase().replace(/[^a-z]/g, "");
+
+  /**
+   * Does the example show the headword's OWN form?
+   *
+   * A whitespace token of the example, stripped of punctuation and lowercased,
+   * matches when one of the two strings is a prefix of the other AND the shorter
+   * is at least `min(4, word.length)` characters. That admits house/houses and
+   * run/running, and REFUSES go/went.
+   *
+   * THE REFUSAL IS DELIBERATE AND MUST NOT BE SOFTENED. A vocabulary card whose
+   * example never shows the headword's own form is teaching the word by
+   * assertion — the learner reads a sentence, and the thing she is supposed to
+   * be learning is not in it. The escape hatch already exists and is one line:
+   * put the word in core-vocabulary-skips.ts with reason "no-base-form-example".
+   * Widening this matcher instead would silently re-admit every card the rule
+   * exists to keep out.
+   */
+  function exampleShowsWord(example: string, word: string): boolean {
+    const target = matchToken(word);
+    if (!target) return false;
+    const floor = Math.min(4, target.length);
+    return example.split(/\s+/).some((raw) => {
+      const token = matchToken(raw);
+      if (!token) return false;
+      const shorter = token.length <= target.length ? token : target;
+      const longer = token.length <= target.length ? target : token;
+      return shorter.length >= floor && longer.startsWith(shorter);
+    });
+  }
+
+  const wordCount = (text: string) =>
+    text.trim().split(/\s+/).filter(Boolean).length;
+
+  for (const card of VOLUME_CARDS) {
+    ok(`volume: ${card.id} has an id`, filled(card.id));
+    ok(`volume: ${card.id} has an English word`, filled(card.word));
+    ok(`volume: ${card.id} has a Spanish gloss`, filled(card.es));
+    ok(`volume: ${card.id} has an example`, filled(card.example));
+    ok(
+      `volume: ${card.id}'s gloss is not the English word`,
+      card.es.trim().toLowerCase() !== card.word.trim().toLowerCase(),
+      `es "${card.es}" vs word "${card.word}" — a card whose translation is its own headword is a card nobody wrote`,
+    );
+    ok(
+      `volume: ${card.id}'s example shows the word's own form`,
+      exampleShowsWord(card.example, card.word),
+      `"${card.example}" never shows "${card.word}". Rewrite the example, or declare the word in core-vocabulary-skips.ts with reason "no-base-form-example" — never widen the matcher`,
+    );
+    ok(
+      `volume: ${card.id}'s example runs at least ${VOLUME_MIN_EXAMPLE_WORDS} words`,
+      wordCount(card.example) >= VOLUME_MIN_EXAMPLE_WORDS,
+      `${wordCount(card.example)} word(s): "${card.example}"`,
+    );
+  }
+
+  group("volume tier: no word is taught twice, here or against the scenario tier");
+
+  const volumeWords = VOLUME_CARDS.map((c) => c.word.trim().toLowerCase());
+  ok(
+    "volume: no word appears twice in the deck",
+    duplicates(volumeWords).length === 0,
+    duplicates(volumeWords).join(", "),
+  );
+
+  // Built from the bank rather than from a number written here: the scenario
+  // corpus was recorded as "~280" in two planning documents and is in fact 352,
+  // and a duplicate check pinned to a stale figure would be a check on nothing.
+  const scenarioTermList = SCENARIOS.flatMap((s) =>
+    (getScenarioVocabulary(s.world, s.scenario) ?? []).map((c) =>
+      c.term.trim().toLowerCase(),
+    ),
+  );
+  const scenarioTerms = new Set(scenarioTermList);
+  const collidingTerms = volumeWords.filter((w) => scenarioTerms.has(w));
+  ok(
+    `volume: no word duplicates one of the ${scenarioTermList.length} scenario vocabulary terms`,
+    collidingTerms.length === 0,
+    `${collidingTerms.join(", ")} — the scenario card has a tip, a scenario around it and a place in /review, so it is strictly the better card. Skip the word here with reason "already-taught"`,
+  );
+
+  // REPORTED, NOT ASSERTED — and the difference is deliberate, so that an
+  // unexplained figure beside five assertions is not read as an assertion
+  // somebody forgot to write. The deck browser (VOCAB_DECKS) holds
+  // high-frequency words ON PURPOSE — `actually`, `maybe`, `because` — in a
+  // different store with a different mechanic (flip-and-mark, not Leitner).
+  // Asserting no overlap would force the volume deck to skip the very words it
+  // exists to teach; printing it keeps the figure visible without turning a
+  // legacy deck into a veto.
+  const deckTerms = new Set(
+    VOCAB_DECKS.flatMap((d) => d.cards.map((c) => c.term.trim().toLowerCase())),
+  );
+  const deckOverlap = volumeWords.filter((w) => deckTerms.has(w));
+
+  group("volume tier: which words is answered by the NGSL and by nothing else");
+
+  const ngslRows = readFileSync(
+    new URL("./fixtures/ngsl-headwords.tsv", import.meta.url),
+    "utf8",
+  )
+    .split(/\r?\n/)
+    .filter((line) => line.trim() !== "" && !line.startsWith("#"))
+    .map((line) => line.split("\t"));
+  const ngslWords = ngslRows.map((row) => (row[1] ?? "").trim());
+  ok(
+    "the committed NGSL list parses: ranks contiguous from 1",
+    ngslRows.length > 0 &&
+      ngslRows.every((row, i) => Number(row[0]) === i + 1),
+    `${ngslRows.length} row(s); first mismatch at index ${ngslRows.findIndex((row, i) => Number(row[0]) !== i + 1)}`,
+  );
+  ok(
+    "the committed NGSL list parses: headwords are unique and lowercase",
+    duplicates(ngslWords).length === 0 &&
+      ngslWords.every((w) => w !== "" && w === w.toLowerCase()),
+    duplicates(ngslWords).slice(0, 5).join(", "),
+  );
+  const NGSL_RANK = new Map(ngslWords.map((w, i) => [w, i + 1]));
+
+  for (const card of VOLUME_CARDS) {
+    ok(
+      `volume: "${card.word}" is on the committed NGSL list`,
+      NGSL_RANK.has(card.word.trim().toLowerCase()),
+      "the frequency-coverage claim that justifies this whole tier is only true if every word comes off the list",
+    );
+  }
+
+  const volumeRanks = volumeWords.map((w) => NGSL_RANK.get(w) ?? Number.NaN);
+  ok(
+    "volume: the bank is ordered by ascending NGSL rank",
+    volumeRanks.every(
+      (r, i) => Number.isFinite(r) && (i === 0 || r > volumeRanks[i - 1]),
+    ),
+    `${volumeRanks.join(", ")} — the order is what gives the study bands their meaning: band 1 must be the most frequent words in the language, not an arbitrary first fifty`,
+  );
+
+  // The assertion that keeps *which words* an NGSL decision rather than an
+  // authoring convenience. Without it, five hundred cards drift towards the
+  // words that are easy to write an example for and the coverage claim quietly
+  // stops being true with nothing failing.
+  const deckByWord = new Set(volumeWords);
+  const skipWords = SKIPPED_HEADWORDS.map((s) => s.word.trim().toLowerCase());
+  const skipByWord = new Map(
+    SKIPPED_HEADWORDS.map((s) => [s.word.trim().toLowerCase(), s]),
+  );
+  const deepestRank = volumeRanks.every((r) => Number.isFinite(r))
+    ? Math.max(...volumeRanks)
+    : 0;
+
+  for (let rank = 1; rank <= deepestRank; rank += 1) {
+    const word = ngslWords[rank - 1];
+    const skip = skipByWord.get(word);
+    ok(
+      `volume: NGSL rank ${rank} ("${word}") is carded or declared skipped`,
+      deckByWord.has(word) || (skip !== undefined && filled(skip.reason)),
+      "below the deepest rank the deck reaches, a headword that is neither carded nor declared is a word passed over in silence — add a card, or one line to core-vocabulary-skips.ts with a reason",
+    );
+  }
+
+  for (const skip of SKIPPED_HEADWORDS) {
+    ok(
+      `volume: the skip of "${skip.word}" carries a reason`,
+      filled(skip.reason),
+      "a skip with no reason is cherry-picking with a comment",
+    );
+  }
+  ok(
+    "volume: no headword is both carded and skipped",
+    skipWords.every((w) => !deckByWord.has(w)),
+    skipWords.filter((w) => deckByWord.has(w)).join(", "),
+  );
+  ok(
+    "volume: no headword is skipped twice",
+    duplicates(skipWords).length === 0,
+    duplicates(skipWords).join(", "),
+  );
+  ok(
+    "volume: every skipped headword is on the committed NGSL list",
+    skipWords.every((w) => NGSL_RANK.has(w)),
+    `${skipWords.filter((w) => !NGSL_RANK.has(w)).join(", ")} — a skip for a word the list does not hold excuses nothing and hides a typo`,
+  );
+
+  group("volume tier: the examples do not all open the same way");
+
+  /* THE ASSERTION THAT ADDRESSES THE ACTUAL RISK. The corpus scan elsewhere in
+   * this file sees repeated WORDS; it cannot see five hundred examples that all
+   * begin "I have a…". Those pass every other check in this group perfectly and
+   * are exactly what "flat" means — and at five hundred nobody is going to read
+   * them all, which is why this is automated rather than left to the
+   * consecutive read that caught repeated syntactic frames in Phases 3 and 4.
+   *
+   * The ceilings are FRACTIONS OF THE DECK'S OWN LENGTH, so they tighten as it
+   * grows and no number is hand-written. The floors (2, 3) exist so the group is
+   * meaningful at twenty cards as well as at five hundred. */
+  const frameToken = (token: string) =>
+    token
+      .toLowerCase()
+      .replace(/^[^a-z0-9']+/, "")
+      .replace(/[^a-z0-9']+$/, "");
+  const openingSignature = (example: string) =>
+    example
+      .trim()
+      .split(/\s+/)
+      .map(frameToken)
+      .filter(Boolean)
+      .slice(0, 2)
+      .join(" ");
+
+  const n = VOLUME_CARDS.length;
+  const signatures = VOLUME_CARDS.map((c) => openingSignature(c.example));
+  const signatureCounts = new Map<string, number>();
+  for (const sig of signatures) {
+    signatureCounts.set(sig, (signatureCounts.get(sig) ?? 0) + 1);
+  }
+  const openerCounts = new Map<string, number>();
+  for (const sig of signatures) {
+    const first = sig.split(" ")[0] ?? "";
+    openerCounts.set(first, (openerCounts.get(first) ?? 0) + 1);
+  }
+  const ranked = [...signatureCounts.entries()].sort(
+    (a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1),
+  );
+  const rankedOpeners = [...openerCounts.entries()].sort(
+    (a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1),
+  );
+
+  const bigramCeiling = Math.max(2, Math.floor(n * 0.05));
+  const openerCeiling = Math.max(3, Math.floor(n * 0.2));
+  const distinctFloor = Math.ceil(n / 5);
+
+  ok(
+    `volume: no two-word opening holds more than ${bigramCeiling} of ${n} cards (~5%)`,
+    ranked.every(([, count]) => count <= bigramCeiling),
+    `worst: "${ranked[0]?.[0] ?? "—"}" x${ranked[0]?.[1] ?? 0}`,
+  );
+  ok(
+    `volume: no single opening word holds more than ${openerCeiling} of ${n} cards (~20%)`,
+    rankedOpeners.every(([, count]) => count <= openerCeiling),
+    `worst: "${rankedOpeners[0]?.[0] ?? "—"}" x${rankedOpeners[0]?.[1] ?? 0} — a bigram ceiling alone permits five hundred sentences that all begin "I" with a different second word`,
+  );
+  ok(
+    `volume: the deck has at least ${distinctFloor} distinct opening shapes`,
+    signatureCounts.size >= distinctFloor,
+    `${signatureCounts.size} distinct — this bounds the tail the ceiling cannot see`,
+  );
+
+  group("volume tier: the `vocab:` key space collides with nothing that exists");
+
+  /* L1 claimed the `:` was unique to this space because no scenario id and none
+   * of the global grammar ids carries one. True, and NARROWER THAN THE
+   * COLLISION SURFACE: vocabulary.ts builds the deck browser's card ids as
+   * `${deckId}:${i}`, so `daily:0` exists in this app today. `vocab:` is safe
+   * only because no deck is NAMED `vocab`. That is a fact to assert, not to
+   * remember, so all four existing key spaces are checked and so is the
+   * structural property underneath them. */
+  const volumeIds = coreVocabIds();
+  const composedIdSet = new Set(composedIds);
+  const exerciseIdSet = new Set(exerciseIds);
+
+  ok(
+    "volume: no `vocab:` id collides with a global grammar question id",
+    volumeIds.every((id) => !grammarIds.has(id)),
+    volumeIds.filter((id) => grammarIds.has(id)).join(", "),
+  );
+  ok(
+    "volume: no `vocab:` id collides with a composed scenario item id",
+    volumeIds.every((id) => !composedIdSet.has(id)),
+    volumeIds.filter((id) => composedIdSet.has(id)).join(", "),
+  );
+  ok(
+    "volume: no `vocab:` id collides with a scenario exercise id",
+    volumeIds.every((id) => !exerciseIdSet.has(id)),
+    volumeIds.filter((id) => exerciseIdSet.has(id)).join(", "),
+  );
+  ok(
+    "volume: no `vocab:` id collides with a deck-browser card id",
+    volumeIds.every((id) => !deckCardIds.has(id)),
+    volumeIds.filter((id) => deckCardIds.has(id)).join(", "),
+  );
+  ok(
+    "no VOCAB_DECKS deck is named `vocab` (the `:` is NOT unique to this space)",
+    VOCAB_DECKS.every((d) => d.id !== "vocab"),
+    `deck ids: ${VOCAB_DECKS.map((d) => d.id).join(", ")} — a deck named "vocab" would compose vocab:0, vocab:1 … straight into the volume tier's key space`,
+  );
+  ok(
+    "volume: every id the enumerator emits is unique",
+    duplicates(volumeIds).length === 0,
+    duplicates(volumeIds).join(", "),
+  );
+
+  group("volume tier: the containment (L5), from the source");
+
+  /* The one-author group's technique, for the same reason: whether a component
+   * IMPORTS a module is a property of the source and is not recoverable from
+   * behaviour here. Comments stripped first, so the paragraphs explaining the
+   * containment cannot satisfy it. */
+  const stripComments = (code: string) =>
+    code.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/^[ \t]*\/\/.*$/gm, " ");
+  const sourceOf = (path: string) =>
+    stripComments(readFileSync(new URL(path, import.meta.url), "utf8"));
+
+  const reviewViewSource = sourceOf("../src/components/practice/ReviewView.tsx");
+  const mistakesViewSource = sourceOf(
+    "../src/components/practice/MistakesView.tsx",
+  );
+  const reviewHubSource = sourceOf("../src/components/practice/ReviewHub.tsx");
+  const reviewItemsSource = sourceOf("../src/lib/review-items.ts");
+  const keySpaceSource = sourceOf("../src/lib/core-vocab-items.ts");
+  const bankSource = sourceOf("../src/lib/content/core-vocabulary.ts");
+
+  // These two resolve EVERY stored id and do not filter through
+  // `reviewableIds()`, so an import here is a leak by construction: the volume
+  // cards would appear in the due list and the mistake notebook no matter what
+  // the enumerators say.
+  ok(
+    "ReviewView does not know the volume space exists",
+    !reviewViewSource.includes("core-vocab"),
+    "/review resolves every stored id without filtering, so importing the volume resolver here pours 500 lower-tier cards into the queue L5 exists to protect",
+  );
+  ok(
+    "MistakesView does not know the volume space exists",
+    !mistakesViewSource.includes("core-vocab"),
+    "the mistake notebook resolves every stored id without filtering — same leak, one screen over",
+  );
+  ok(
+    "ReviewHub knows the tier BY NAME ONLY",
+    reviewHubSource.includes("CORE_VOCAB_TOPIC") &&
+      !reviewHubSource.includes("resolveCoreVocabItem") &&
+      !reviewHubSource.includes("coreVocabIds"),
+    "the weak-spots tab must be able to name the tier and link to its deck — and must not be able to render or enumerate it",
+  );
+  ok(
+    "review-items.ts has no reference to the volume module, in either direction",
+    !reviewItemsSource.includes("core-vocab"),
+    "the shared resolver never learns this space exists; that absence IS the containment",
+  );
+  ok(
+    "the volume key space's only reference to review-items.ts is TYPE-ONLY",
+    keySpaceSource
+      .split(/\r?\n/)
+      .filter((line) => line.includes("review-items"))
+      .every((line) => /^\s*import\s+type\s/.test(line)),
+    keySpaceSource
+      .split(/\r?\n/)
+      .filter((line) => line.includes("review-items") && !/^\s*import\s+type\s/.test(line))
+      .join(" | ") + " — a runtime edge here is an import cycle waiting to happen and the end of 'the shared resolver is byte-unchanged' as a git fact",
+  );
+  /* CORRECTED against the plan text, which additionally required that the bank
+   * `calls coreVocabItemId(`. It does not, and must not: the bank stores the
+   * bare SLUG in `id` and does not import the key space at all — that is what
+   * keeps the two files acyclic, and what verify-id-stability.mts assumes when
+   * it composes `coreVocabItemId(card.id)` itself. Asserting the call would
+   * fail against a correct bank. The one-author rule here is the ABSENCE of the
+   * literal: nothing outside core-vocab-items.ts spells `vocab:`. */
+  ok(
+    "the volume bank never spells the id format by hand",
+    !bankSource.includes("vocab:"),
+    "the id is a one-way door on live learner data, so it gets exactly one author — and here that author is coreVocabItemId, which the bank deliberately does not import",
+  );
+
+  group("volume tier: the containment (L5), from the behaviour");
+
+  ok(
+    "volume: the enumerator emits one id per card (the containment is not an empty deck)",
+    volumeIds.length === VOLUME_CARDS.length && volumeIds.length > 0,
+    `${volumeIds.length} id(s) for ${VOLUME_CARDS.length} card(s)`,
+  );
+
+  const queueIdSet = new Set(reviewableIds());
+  for (const id of volumeIds) {
+    ok(
+      `volume: ${id} resolves through its OWN resolver (D-05 in this space)`,
+      resolveCoreVocabItem(id) !== undefined,
+      "an id that is stored, merged and scheduled but never rendered is the exact failure L1 chose a separate key space to avoid",
+    );
+    ok(
+      `volume: ${id} resolves to nothing through resolveReviewItem`,
+      resolveReviewItem(id) === undefined,
+      "the shared resolver must never grow a branch for this space — ReviewView and MistakesView resolve every stored id, so a branch there IS the leak",
+    );
+    ok(
+      `volume: ${id} parses to nothing through parseScenarioItemId`,
+      parseScenarioItemId(id) === undefined,
+      "the four tripwires above say an unknown key parses to nothing; this space is designed so they never need qualifying",
+    );
+    ok(
+      `volume: ${id} is absent from the SHARED queue enumerator`,
+      !queueIdSet.has(id),
+      "reviewableIds() is what /review counts; L5 keeps 752 scenario items from being buried under 500 lower-tier cards",
+    );
+    ok(
+      `volume: ${id} is a well-formed key of its own space`,
+      parseCoreVocabItemId(id) !== undefined,
+      "composition and parsing must stay inverses, or the key stores and never comes back",
+    );
+  }
+
+  // Stated rather than inherited: the group at the top of this file already
+  // proves this equality, and this phase's whole containment claim rests on it
+  // not moving. An assertion of its own means the property is named where the
+  // phase that depends on it can be seen to depend on it.
+  ok(
+    "the SHARED queue did not move: reviewableIds() is still exactly the three scenario key spaces",
+    reviewableIds().length ===
+      grammarIds.size + composedIds.length + exerciseIds.length,
+    `${reviewableIds().length} vs ${grammarIds.size} + ${composedIds.length} + ${exerciseIds.length} — a volume id inside this number is 500 cards flooding /review`,
+  );
+
+  group("volume tier: a `vocab:` key survives the schema and the merge");
+
+  /* Neither of these is obvious and both are load-bearing: the schema strips
+   * unknown FIELDS and keeps arbitrary KEYS, and the merge unions keys blindly.
+   * If either were false the symptom would be 500 ids that store, sync and
+   * vanish — silently, because nothing in the app reads a key it did not
+   * write. */
+  const roundTrip: ProgressState = {
+    ...EMPTY,
+    srs: Object.fromEntries(
+      volumeIds.map((id) => [id, { box: 3, due: addDays(7) }]),
+    ),
+    attempts: Object.fromEntries(
+      volumeIds.map((id) => [
+        id,
+        {
+          topic: CORE_VOCAB_TOPIC,
+          level: "A1",
+          tries: 2,
+          wrong: 1,
+          resolved: false,
+          updatedAt: today(),
+        },
+      ]),
+    ),
+    updatedAt: new Date().toISOString(),
+  };
+  const afterSchema = safeReadProgress(JSON.stringify({ ...roundTrip }));
+  ok(
+    "volume: every `vocab:` srs key survives safeReadProgress",
+    volumeIds.every((id) => afterSchema.srs[id] !== undefined),
+    `${volumeIds.filter((id) => afterSchema.srs[id] === undefined).length} key(s) dropped by the schema`,
+  );
+  ok(
+    "volume: an srs entry's box and due survive safeReadProgress unchanged",
+    volumeIds.every(
+      (id) =>
+        afterSchema.srs[id]?.box === 3 &&
+        afterSchema.srs[id]?.due === roundTrip.srs[volumeIds[0]].due,
+    ),
+    canon(afterSchema.srs[volumeIds[0]]),
+  );
+  ok(
+    "volume: every `vocab:` attempts key survives safeReadProgress",
+    volumeIds.every((id) => afterSchema.attempts[id] !== undefined),
+    `${volumeIds.filter((id) => afterSchema.attempts[id] === undefined).length} key(s) dropped by the schema`,
+  );
+  const afterMerge = mergeProgress(afterSchema, afterSchema);
+  ok(
+    "volume: every `vocab:` srs key survives mergeProgress against itself",
+    volumeIds.every((id) => afterMerge.srs[id] !== undefined),
+    `${volumeIds.filter((id) => afterMerge.srs[id] === undefined).length} key(s) lost by the merge`,
+  );
+  ok(
+    "volume: every `vocab:` attempts key survives mergeProgress against itself",
+    volumeIds.every((id) => afterMerge.attempts[id] !== undefined),
+    `${volumeIds.filter((id) => afterMerge.attempts[id] === undefined).length} key(s) lost by the merge`,
+  );
+
+  /* THE HISTOGRAM IS THE POINT OF PRINTING ANYTHING HERE. Every authoring plan
+   * in this phase reads it before it writes: it is the difference between
+   * authoring against known pressure and authoring blind, and the ceiling above
+   * only fires once the pressure has already built. */
+  console.log(
+    `  volume deck: ${n} card(s), deepest NGSL rank ${deepestRank},` +
+      ` ${signatureCounts.size} distinct opening shape(s);` +
+      ` ceilings ${bigramCeiling} per shape / ${openerCeiling} per opening word` +
+      ` — ${deckOverlap.length} word(s) also in the deck browser` +
+      `${deckOverlap.length > 0 ? ` (${deckOverlap.join(", ")})` : ""}, reported not asserted`,
+  );
+  console.log(
+    `  top openings: ${ranked
+      .slice(0, 10)
+      .map(([sig, count]) => `"${sig}" x${count}`)
+      .join(", ")}`,
   );
 }
 
