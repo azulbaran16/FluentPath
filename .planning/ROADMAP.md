@@ -285,7 +285,7 @@ magnitude. Full reasoning, options weighed and rejected, and the decisions in
 
 **Requirements**: VOCAB-01, VOCAB-02, VOCAB-03, VOCAB-04, VOCAB-05, VOCAB-06
 **Depends on:** Phase 4
-**Plans:** 5/7 plans executed
+**Plans:** 6/7 plans executed
 
 **Success Criteria** (what must be TRUE):
 
@@ -337,7 +337,7 @@ Plans:
 - [x] 04.1-03-PLAN.md — Volume batch 1: the deck to 140, the first measured payload and the first histogram
 - [x] 04.1-04-PLAN.md — Volume batch 2: the deck to 260, the first batch authored under real frame pressure
 - [x] 04.1-05-PLAN.md — Volume batch 3: the deck to 380, through the abstract middle of the list where the tier's quality is actually decided
-- [ ] 04.1-06-PLAN.md — Volume batch 4: the deck to 500 and stop; the final measured payload and the derivation proved by four commits that edited no copy
+- [x] 04.1-06-PLAN.md — Volume batch 4: the deck to 500 and stop; the final measured payload and the derivation proved by four commits that edited no copy
 - [ ] 04.1-07-PLAN.md — Phase gate: full suite, an independent enumeration, a mutation per new assertion, the reader pass, and the browser pass Phase 4 never got
 
 ### Phase 5: AI Tutor End-to-End

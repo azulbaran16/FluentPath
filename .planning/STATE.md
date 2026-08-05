@@ -5,15 +5,15 @@ milestone_name: milestone
 current_phase: 04.1
 current_phase_name: native-level-depth
 status: in-progress
-stopped_at: Completed 04.1-05-PLAN.md
-last_updated: "2026-08-05T02:06:00.737Z"
+stopped_at: Completed 04.1-06-PLAN.md
+last_updated: "2026-08-05T02:34:39.129Z"
 last_activity: 2026-08-04
 last_activity_desc: "04-09 executed, THE PHASE GATE: 17 of 17 mutations CAUGHT on their own labels with 2 controls green in a scratch export with its own node_modules, an independent 651 = 651 id enumeration that does not import the gate own logic, the derivation control re-proved, and a reader pass that found NO near-duplicate exercise and rewrote nothing (same-world highest 0.286 phrases / 0.400 terms, nothing at or above 0.50 anywhere, the rise from 03-11 mostly pool size). The corpus figure is settled at 4,410 for 04-07 own tree and 4,440 at HEAD, and 04-05 broken harvester now THROWS rather than sitting importable beside the good one. CONT-04 is marked [~] met-with-a-stated-limitation and NOT [x]: the content is complete, derived and gated, but THE BROWSER PASS WAS NOT PERFORMED and ten items are open by name as WINDOWS 62 - including the batched recall deck, which is this phase one component change and has never been rendered, and any phone at all. More reading is named as a deliberate deferral the user declined knowingly. PHASE 4 IS COMPLETE."
 progress:
   total_phases: 6
   completed_phases: 5
   total_plans: 52
-  completed_plans: 50
+  completed_plans: 51
 ---
 
 # Project State
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-07-23)
 ## Current Position
 
 Phase: 04.1 (vocabulary-volume-deck) — IN PROGRESS
-Plan: 6 of 7 next (01 tracer, 02 gates, 03 first volume batch, 04 second, 05 third)
+Plan: 7 of 7 next (01 tracer, 02 gates, 03 first volume batch, 04 second, 05 third)
 Status: **THE DECK IS AT 380 OF L3's 500 — NGSL ranks 8 to 515, 76 % of the target.** 04.1-05 added
 **121** cards and **17** skips and **removed one card**, so rank completeness below 515 is **total
 and exact**: 380 carded + 135 declared = 515, nothing cherry-picked. Both gates green —
@@ -137,7 +137,7 @@ gate should widen from one scenario to all thirty-five.
 
 Last activity: 2026-08-04 — 04-09 executed, THE PHASE GATE: 17 of 17 mutations CAUGHT on their own labels with 2 controls green in a scratch export with its own node_modules, an independent 651 = 651 id enumeration that does not import the gate own logic, the derivation control re-proved, and a reader pass that found NO near-duplicate exercise and rewrote nothing (same-world highest 0.286 phrases / 0.400 terms, nothing at or above 0.50 anywhere, the rise from 03-11 mostly pool size). The corpus figure is settled at 4,410 for 04-07 own tree and 4,440 at HEAD, and 04-05 broken harvester now THROWS rather than sitting importable beside the good one. CONT-04 is marked [~] met-with-a-stated-limitation and NOT [x]: the content is complete, derived and gated, but THE BROWSER PASS WAS NOT PERFORMED and ten items are open by name as WINDOWS 62 - including the batched recall deck, which is this phase one component change and has never been rendered, and any phone at all. More reading is named as a deliberate deferral the user declined knowingly. PHASE 4 IS COMPLETE.
 
-Progress: [██████████] 96% — 45 of 45 written plans executed (5 of 6 phases complete; Phase 4 native-level-depth CLOSED at 9 of 9 plans, CONT-04 at [~] with its browser pass open as WINDOWS 62; Phase 5, the AI tutor, is not yet planned so 45 is the written total and not the project total)
+Progress: [██████████] 98% — 45 of 45 written plans executed (5 of 6 phases complete; Phase 4 native-level-depth CLOSED at 9 of 9 plans, CONT-04 at [~] with its browser pass open as WINDOWS 62; Phase 5, the AI tutor, is not yet planned so 45 is the written total and not the project total)
 
 ## Performance Metrics
 
@@ -207,6 +207,7 @@ Progress: [██████████] 96% — 45 of 45 written plans execut
 | Phase 04.1 P03 | ~2h | 2 tasks | 3 files |
 | Phase 04.1 P04 | ~2h | 2 tasks | 3 files |
 | Phase 04.1 P05 | ~2h | 2 tasks | 3 files |
+| Phase 04.1 P06 | ~2h | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -394,6 +395,10 @@ Recent decisions affecting current work:
 - [Phase ?]: 04.1-05: `cognate` is the skip register's fourth reason (user, 2026-08-05) — no honest Spanish gloss DIFFERS from the English word; the line is narrow, so individual→"individuo" and particular→"concreto" stay carded and only social/general met it
 - [Phase ?]: 04.1-05: vocab:color is RETIRED, not edited — declared by hand in the fixture's retired list with a reason BEFORE --update ran; a live id's content may never be rewritten and --update refuses to launder a changed hash
 - [Phase ?]: 04.1-05: agree is "coincidir" not "estar de acuerdo" — the scan put the original at J=0.667 against the deck browser's "de acuerdo", over the 0.60 acting line, and unlike 04.1-04's `already` an honest alternative existed
+- [Phase ?]: The taken FRONT, not grammar or cognate status, is what decides a gloss below NGSL rank 500 — it produced 15 re-glossed cards and zero skips
+- [Phase ?]: A derivational noun/verb pair (empleo/empleado) is not a front collision; two fronts a letter apart with unrelated answers is
+- [Phase ?]: The volume tier's measured marginal cost is 223.7 B/id, 82% of CONTEXT's 272.8 B/id scenario average — the deck finished at 30.2% of the 1 MiB cap
+- [Phase ?]: Subject-shape lean is invisible to the harness and went wrong on the first draft for the second time in three batches; 17 examples were rewritten before their ids entered the fixture
 
 ### Pending Todos
 
@@ -442,6 +447,6 @@ Items acknowledged and carried forward:
 
 ## Session Continuity
 
-Last session: 2026-08-05T02:04:43.206Z
-Stopped at: Completed 04.1-05-PLAN.md
+Last session: 2026-08-05T02:34:24.713Z
+Stopped at: Completed 04.1-06-PLAN.md
 Resume file: None
